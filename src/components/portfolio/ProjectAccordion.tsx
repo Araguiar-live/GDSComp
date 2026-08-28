@@ -167,19 +167,20 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                 }}
               />
 
-              {/* Full accordion width — top-aligned like Odicci phone rows (avoids crop) */}
+              {/* Prototype left (content-sized); copy fills remaining width */}
               <div className="mx-auto flex min-h-0 w-full flex-1 items-start px-[68px] pt-2">
-                <div className="grid w-full grid-cols-1 items-start gap-8 overflow-visible md:grid-cols-[minmax(0,1fr)_minmax(0,980px)] md:gap-10">
-                {/* LEFT — case-study copy beside prototype */}
-                <div className="flex max-h-[874px] min-h-0 flex-col overflow-y-auto overscroll-contain">
-                  <CaseStudyCopy project={project} tab={activeTab} content={tabContent} />
-                </div>
-
-                {/* RIGHT — prototype flush to frame edge; CRCLE phone nudges left for composition */}
-                <div className="relative flex w-full min-w-0 items-start justify-end">
+                <div className="grid w-full grid-cols-1 items-start gap-8 overflow-visible md:grid-cols-[auto_minmax(0,1fr)] md:gap-10">
+                {/* LEFT — prototype sized to the device / browser frame */}
+                <div
+                  className={`relative flex shrink-0 items-start justify-start ${
+                    project.slug === "odicci"
+                      ? "w-full min-w-0 max-w-[980px] md:w-[min(980px,46vw)]"
+                      : "w-max max-w-full"
+                  }`}
+                >
                   <div
-                    className={`flex w-full min-w-0 max-w-full items-start justify-end overflow-visible ${
-                      project.slug === "crcle" ? "relative left-[-112px]" : ""
+                    className={`flex items-start justify-start overflow-visible ${
+                      project.slug === "odicci" ? "w-full" : "w-max max-w-full"
                     }`}
                   >
                     {tabContent.customBody ? (
@@ -211,6 +212,11 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                       </MockupGradientRing>
                     )}
                   </div>
+                </div>
+
+                {/* RIGHT — case-study copy fills leftover space */}
+                <div className="flex max-h-[874px] min-h-0 min-w-0 flex-col overflow-y-auto overscroll-contain">
+                  <CaseStudyCopy project={project} tab={activeTab} content={tabContent} />
                 </div>
                 </div>
               </div>
@@ -251,15 +257,15 @@ function CaseStudyCopy({
     "Replace this outcome — what shipped, what you learned, and what you’d iterate next.";
 
   return (
-    <div className="flex flex-col gap-[36px] py-0">
+    <div className="flex w-full min-w-0 flex-col gap-[36px] py-0">
       <div className="flex flex-col gap-5">
         <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-400">
           {content.label ?? `${project.title} — ${tab}`}
         </span>
-        <h3 className="text-3xl font-medium leading-[1.15] tracking-tight text-zinc-900 md:text-4xl">
+        <h3 className="text-3xl font-medium leading-[1.15] tracking-tight text-zinc-900 md:text-[40px]">
           {content.subtitle ?? "Case study headline — edit me"}
         </h3>
-        <p className="text-[15px] leading-7 text-zinc-500">{overview}</p>
+        <p className="text-base leading-8 text-zinc-500">{overview}</p>
       </div>
 
       <TextBlock heading="Challenge">{challenge}</TextBlock>
@@ -275,7 +281,7 @@ function TextBlock({ heading, children }: { heading: string; children: React.Rea
       <div className="text-[10px] font-semibold tracking-[0.2em] uppercase text-zinc-900">
         {heading}
       </div>
-      <p className="text-sm leading-7 text-zinc-500">{children}</p>
+      <p className="text-base leading-8 text-zinc-500">{children}</p>
     </div>
   );
 }

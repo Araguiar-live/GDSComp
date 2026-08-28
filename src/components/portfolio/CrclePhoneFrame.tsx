@@ -17,7 +17,7 @@ export function CrclePhoneFrame({
 }) {
   return (
     <div
-      className={`relative mx-auto h-[874px] w-[402px] shrink-0 overflow-hidden rounded-[58px] ${className}`}
+      className={`relative ml-0 h-[874px] w-[402px] shrink-0 overflow-hidden rounded-[58px] ${className}`}
       style={{ clipPath: "inset(0 round 58px)" }}
       data-device="iphone-crcle-402x874"
     >
