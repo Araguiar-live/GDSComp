@@ -1,0 +1,1414 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@utility animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+/* Portfolio page base fill — structural cells live in SiteWireframe (DOM). */
+.portfolio-hero-grid {
+  background-color: #f3f4f6;
+}
+
+@keyframes mockup-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes mockup-ring-shimmer {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes mockup-blob-float-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.28;
+  }
+  50% {
+    transform: translate(6%, -8%) scale(1.1);
+    opacity: 0.55;
+  }
+}
+
+@keyframes mockup-blob-float-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.05);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-8%, 6%) scale(0.92);
+    opacity: 0.48;
+  }
+}
+
+@keyframes mockup-blob-float-c {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(4%, 4%) rotate(8deg);
+    opacity: 0.62;
+  }
+}
+
+/* Footer jenga glass tiles — refractive chips with specular rim */
+.jenga-glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.38) 0%,
+    rgba(255, 255, 255, 0.12) 45%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(18px) saturate(180%) contrast(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 8px 20px rgba(0, 0, 0, 0.35),
+    -2px 0 12px rgba(255, 120, 80, 0.12),
+    2px 0 12px rgba(90, 160, 255, 0.1);
+}
+
+.jenga-glass--soft {
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.jenga-glass--dim {
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0.14) 42%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(28px) saturate(190%) contrast(1.06);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    -2px 0 12px rgba(255, 120, 80, 0.1),
+    2px 0 12px rgba(90, 160, 255, 0.08);
+}
+
+.jenga-glass--base {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    4px 0 10px rgba(255, 96, 38, 0.28) inset,
+    0 8px 22px rgba(0, 0, 0, 0.4),
+    -2px 0 14px rgba(255, 96, 38, 0.18);
+}
+
+.jenga-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.08) 36%,
+    transparent 58%
+  );
+  opacity: 0.75;
+}
+
+@property --jenga-outline-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes jenga-outline-move {
+  to {
+    --jenga-outline-angle: 360deg;
+  }
+}
+
+/* Traveling prismatic rim — replaces the old sheen spotlight */
+.jenga-glass::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1.25px;
+  background: conic-gradient(
+    from var(--jenga-outline-angle),
+    rgba(255, 180, 140, 0.85) 0%,
+    rgba(255, 255, 255, 0.12) 22%,
+    rgba(140, 200, 255, 0.8) 48%,
+    rgba(255, 255, 255, 0.1) 72%,
+    rgba(255, 180, 140, 0.85) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.9;
+  animation: jenga-outline-move 4.5s linear infinite;
+  animation-delay: var(--outline-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jenga-glass::after {
+    animation: none;
+    background: linear-gradient(
+      120deg,
+      rgba(255, 180, 140, 0.45) 0%,
+      rgba(255, 255, 255, 0.2) 40%,
+      rgba(140, 200, 255, 0.4) 75%,
+      rgba(255, 255, 255, 0.12) 100%
+    );
+  }
+}
+
+.mockup-tile-blob-a {
+  animation: mockup-blob-float-a 7s ease-in-out infinite;
+  animation-delay: var(--blob-delay, 0s);
+}
+
+.mockup-tile-blob-b {
+  animation: mockup-blob-float-b 9s ease-in-out infinite;
+  animation-delay: calc(var(--blob-delay, 0s) + 0.8s);
+}
+
+.mockup-tile-blob-c {
+  animation: mockup-blob-float-c 8s ease-in-out infinite;
+  animation-delay: calc(var(--blob-delay, 0s) + 1.4s);
+}
+
+/* Odicci Template Library — welcome banner (Figma 393:172694) */
+@property --odicci-welcome-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes odicci-welcome-outline {
+  to {
+    --odicci-welcome-angle: 360deg;
+  }
+}
+
+@keyframes odicci-welcome-atmosphere-pan {
+  0%,
+  100% {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.08) translate3d(-1.6%, 0.6%, 0);
+  }
+}
+
+@keyframes odicci-welcome-mesh-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(4%, -3%, 0) rotate(2deg);
+    opacity: 0.55;
+  }
+}
+
+@keyframes odicci-welcome-orbs-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(-5%, 4%, 0) scale(1.08);
+    opacity: 0.9;
+  }
+}
+
+.odicci-welcome-ring {
+  position: relative;
+  isolation: isolate;
+}
+
+.odicci-welcome-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  border-radius: inherit;
+  padding: 4px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--odicci-welcome-angle),
+    #ff9500 0deg,
+    #ff9500 210deg,
+    #ffe0a8 248deg,
+    #fff6e4 268deg,
+    #ffb84d 292deg,
+    #ff9500 320deg,
+    #ff9500 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: odicci-welcome-outline 3.6s linear infinite;
+  box-shadow: 0 0 12px rgba(255, 149, 0, 0.35);
+}
+
+.odicci-welcome-atmosphere {
+  animation: odicci-welcome-atmosphere-pan 14s ease-in-out infinite;
+  will-change: transform;
+}
+
+.odicci-welcome-mesh {
+  animation: odicci-welcome-mesh-drift 11s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.odicci-welcome-orbs {
+  animation: odicci-welcome-orbs-drift 9s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .odicci-welcome-ring::after {
+    animation: none;
+    background: #ff9500;
+    padding: 4px;
+  }
+
+  .odicci-welcome-atmosphere,
+  .odicci-welcome-mesh,
+  .odicci-welcome-orbs {
+    animation: none;
+  }
+}
+
+.mockup-ring {
+  position: relative;
+  isolation: isolate;
+}
+
+.mockup-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 255, 255, 1) 32deg,
+    rgba(255, 255, 255, 0.25) 64deg,
+    transparent 110deg,
+    transparent 190deg,
+    rgba(255, 255, 255, 0.95) 248deg,
+    rgba(255, 255, 255, 0.2) 280deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation:
+    mockup-ring-spin 7s linear infinite,
+    mockup-ring-shimmer 3.2s ease-in-out infinite;
+  animation-delay: var(--ring-delay, 0s), var(--ring-delay, 0s);
+  pointer-events: none;
+}
+
+.dock-glass {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.dock-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    transparent 42%
+  );
+  opacity: 0.4;
+}
+
+.dock-glass::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 0.5px;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.45;
+}
+
+.dock-glass-lens {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 90% at 50% -20%,
+    rgba(255, 255, 255, 0.35),
+    transparent 55%
+  );
+  mix-blend-mode: soft-light;
+}
+
+/* Compact glass control — CRCLE chrome pills (Apple Music–style splay + refraction) */
+.crcle-glass-btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.32) 0%,
+    rgba(253, 252, 251, 0.12) 42%,
+    rgba(253, 252, 251, 0.06) 100%
+  );
+  backdrop-filter: blur(18px) saturate(190%);
+  -webkit-backdrop-filter: blur(18px) saturate(190%);
+  border: 1px solid rgba(247, 246, 242, 0.28);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.42) inset,
+    0 -0.5px 0 rgba(255, 255, 255, 0.1) inset,
+    0 8px 20px rgba(0, 0, 0, 0.18),
+    -3px 0 12px rgba(255, 120, 160, 0.1),
+    3px 0 12px rgba(90, 170, 255, 0.12);
+}
+
+.crcle-glass-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.48) 0%,
+    rgba(255, 255, 255, 0.1) 36%,
+    transparent 58%
+  );
+  opacity: 0.85;
+}
+
+.crcle-glass-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1px;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 170, 200, 0.45) 0%,
+    rgba(255, 255, 255, 0.2) 32%,
+    rgba(150, 210, 255, 0.4) 68%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.75;
+}
+
+.crcle-glass-btn::before {
+  z-index: 0;
+}
+
+.crcle-glass-btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Light-wireframe glass chip — soft prismatic rim on cream */
+.crcle-glass-chip-light {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 0;
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.72) 0%,
+    rgba(253, 252, 251, 0.38) 48%,
+    rgba(247, 246, 242, 0.28) 100%
+  );
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.75) inset,
+    0 -0.5px 0 rgba(2, 3, 29, 0.06) inset,
+    0 4px 12px rgba(2, 3, 29, 0.06);
+}
+
+.crcle-glass-chip-light::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.12) 40%,
+    transparent 62%
+  );
+  opacity: 0.9;
+}
+
+.crcle-glass-chip-light::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1px;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(2, 3, 29, 0.16) 32%,
+    rgba(255, 255, 255, 0.55) 58%,
+    rgba(90, 140, 200, 0.28) 78%,
+    rgba(2, 3, 29, 0.2) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.9;
+}
+
+.crcle-glass-chip-light > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Intent push chips — frosted glass + top-left crescent rim (Figma 841:225008 / 847:225133) */
+.crcle-intent-chip {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  border: 0;
+  /* Exact Figma fill */
+  background: rgba(247, 246, 242, 0.2);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  --chip-accent: rgba(255, 255, 255, 0.55);
+}
+
+/* Soft specular wash (glass body) */
+.crcle-intent-chip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.06) 32%,
+    transparent 55%
+  );
+}
+
+.crcle-intent-chip.is-lit {
+  background: rgba(247, 246, 242, 0.28);
+}
+
+/* Lighter fill — Pulse / chrome that sits on dark photo */
+.crcle-intent-chip--soft {
+  background: rgba(247, 246, 242, 0.14);
+}
+
+.crcle-intent-chip--soft::before {
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.04) 32%,
+    transparent 55%
+  );
+}
+
+/* Keep icons above glass layers without forcing position (absolute rim/icons must stay absolute) */
+.crcle-intent-chip__icon {
+  position: relative;
+  z-index: 1;
+}
+
+/* Extra frost — Locus close / heavy chrome */
+.crcle-glass-btn--frost {
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.55) 0%,
+    rgba(253, 252, 251, 0.28) 45%,
+    rgba(253, 252, 251, 0.16) 100%
+  );
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border-color: rgba(247, 246, 242, 0.45);
+  box-shadow:
+    0 1.5px 0 rgba(255, 255, 255, 0.55) inset,
+    0 -0.5px 0 rgba(255, 255, 255, 0.12) inset,
+    0 8px 20px rgba(0, 0, 0, 0.2),
+    -3px 0 14px rgba(255, 120, 160, 0.14),
+    3px 0 14px rgba(90, 170, 255, 0.16);
+}
+
+.crcle-glass-btn--frost::before {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.65) 0%,
+    rgba(255, 255, 255, 0.18) 38%,
+    transparent 62%
+  );
+  opacity: 0.95;
+}
+
+/* Success glass — You're In / accept chrome */
+.crcle-glass-btn--success {
+  background: linear-gradient(
+    165deg,
+    rgba(15, 201, 80, 0.42) 0%,
+    rgba(15, 201, 80, 0.18) 45%,
+    rgba(15, 201, 80, 0.1) 100%
+  );
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(15, 201, 80, 0.55);
+  box-shadow:
+    0 1.5px 0 rgba(180, 255, 200, 0.45) inset,
+    0 -0.5px 0 rgba(15, 201, 80, 0.2) inset,
+    0 8px 20px rgba(0, 0, 0, 0.18),
+    -3px 0 14px rgba(15, 201, 80, 0.18),
+    3px 0 14px rgba(90, 200, 140, 0.16);
+}
+
+.crcle-glass-btn--success::before {
+  background: linear-gradient(
+    180deg,
+    rgba(200, 255, 220, 0.55) 0%,
+    rgba(15, 201, 80, 0.12) 40%,
+    transparent 65%
+  );
+  opacity: 0.9;
+}
+
+.crcle-glass-btn--success::after {
+  background: linear-gradient(
+    115deg,
+    rgba(120, 255, 170, 0.7) 0%,
+    rgba(255, 255, 255, 0.25) 40%,
+    rgba(15, 201, 80, 0.55) 100%
+  );
+  opacity: 0.85;
+}
+
+/* The Locus — Figma 781:207205 / Signal Panel Dark #02031d66
+ * Dense frost so chat under the sheet is blurred, not readable. */
+.crcle-locus-sheet {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 32px 32px 36px 36px;
+  background: transparent;
+  border: 0.5px solid rgba(247, 246, 242, 0.35);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.28) inset,
+    0 -0.5px 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+/* Frost plate — dark Signal Panel + heavy blur (chat must not stay legible) */
+.crcle-locus-frost {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(45, 48, 68, 0.82) 0%,
+      rgba(2, 3, 29, 0.88) 55%,
+      rgba(2, 3, 29, 0.92) 100%
+    );
+  backdrop-filter: blur(48px) saturate(160%);
+  -webkit-backdrop-filter: blur(48px) saturate(160%);
+}
+
+/* Soft top specular only — keep neutral like Figma (no pink/blue wash) */
+.crcle-locus-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.06) 14%,
+    transparent 36%
+  );
+  opacity: 0.9;
+}
+
+/* Hairline rim */
+.crcle-locus-sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  padding: 0.5px;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.12) 40%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.85;
+}
+
+/* Figma 781:207207 — rgba(255,255,255,0.1) */
+.crcle-locus-header {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 0.5px solid rgba(247, 246, 242, 0.12);
+  box-shadow: none;
+}
+
+.crcle-locus-header::before,
+.crcle-locus-header::after {
+  content: none;
+}
+
+/* Figma 781:207210 — Signal Panel Dark #02031d66 */
+.crcle-locus-body {
+  position: relative;
+  z-index: 1;
+  background: rgba(2, 3, 29, 0.4);
+  box-shadow: none;
+}
+
+/* Figma 781:207226 — rgba(255,255,255,0.1) rail */
+.crcle-locus-rail {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.crcle-locus-rail::before,
+.crcle-locus-rail::after {
+  content: none;
+}
+
+.crcle-locus-rail > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Intent chips — transparent pads in Figma; light ring for affordance */
+.crcle-locus-chip {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  border: 0.5px solid rgba(247, 246, 242, 0.22);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.crcle-locus-chip::before,
+.crcle-locus-chip::after {
+  content: none;
+}
+
+.crcle-locus-chip > * {
+  position: relative;
+  z-index: 1;
+}
+
+.crcle-locus-chip.is-active {
+  background: rgba(247, 246, 242, 0.12);
+  border-color: rgba(247, 246, 242, 0.35);
+}
+
+/* Venue time/location chips still need a soft glass fill */
+.crcle-locus-chip.crcle-locus-chip--glass {
+  background: rgba(253, 252, 251, 0.14);
+  border-color: rgba(247, 246, 242, 0.3);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.28) inset;
+}
+
+.crcle-locus-chip.crcle-locus-chip--glass.is-active {
+  background: rgba(247, 246, 242, 0.22);
+  border-color: rgba(247, 246, 242, 0.42);
+}
+
+/* Figma tabs — transparent track, selected pill only */
+.crcle-locus-tabs {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.crcle-locus-tabs::after {
+  content: none;
+}
+
+/* Signal card — Figma 769:205972 liquid glass panel */
+.crcle-signal-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: rgba(2, 3, 29, 0.4);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid rgba(247, 246, 242, 0.18);
+  box-shadow:
+    0 1.5px 0 rgba(255, 255, 255, 0.28) inset,
+    0 -0.5px 0 rgba(255, 255, 255, 0.06) inset,
+    inset 10px 0 20px -14px rgba(255, 140, 180, 0.16),
+    inset -10px 0 20px -14px rgba(100, 180, 255, 0.18),
+    0 12px 32px rgba(0, 0, 0, 0.28),
+    -4px 0 16px rgba(255, 120, 160, 0.08),
+    4px 0 16px rgba(90, 170, 255, 0.1);
+}
+
+.crcle-signal-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.06) 18%,
+    transparent 42%
+  );
+  opacity: 0.7;
+  mix-blend-mode: soft-light;
+}
+
+.crcle-signal-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1px;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 180, 210, 0.55) 0%,
+    rgba(255, 255, 255, 0.28) 40%,
+    rgba(150, 210, 255, 0.5) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.75;
+}
+
+.crcle-signal-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.crcle-signal-card:hover {
+  background: rgba(2, 3, 29, 0.52);
+}
+
+/* Radar portrait card — soft gradient rim that blends into dark chrome */
+.crcle-portrait-card {
+  border: 0;
+  isolation: isolate;
+}
+
+.crcle-portrait-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1px;
+  background: linear-gradient(
+    155deg,
+    rgba(247, 246, 242, 0.42) 0%,
+    rgba(247, 246, 242, 0.16) 28%,
+    rgba(247, 246, 242, 0.04) 55%,
+    rgba(1, 2, 17, 0.35) 78%,
+    rgba(247, 246, 242, 0.12) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+.crcle-phone--light .crcle-portrait-card::after {
+  background: linear-gradient(
+    155deg,
+    rgba(247, 246, 242, 0.85) 0%,
+    rgba(247, 246, 242, 0.45) 40%,
+    rgba(247, 246, 242, 0.25) 100%
+  );
+}
+
+/* CRCLE Fine-tune drawer — frosted glass like Signal Intercept (light)
+   Backdrop-filter must sit on THIS node. isolation:isolate on a parent with a
+   child frost plate only blurs an empty stacking context. */
+.crcle-tune-sheet {
+  position: absolute;
+  overflow: hidden;
+  background: rgba(247, 246, 242, 0.45);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+}
+
+.crcle-tune-frost {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.crcle-tune-frost > img {
+  opacity: 0.42;
+  filter: blur(48px) saturate(0.85);
+}
+
+/* CRCLE primary dock — white frosted glass (Profile / Messaging / Signal Home)
+   Backdrop-filter must sit on THIS node so content behind the pill is sampled. */
+.crcle-nav-glass-light {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  background:
+    linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.74) 0%,
+      rgba(255, 255, 255, 0.62) 48%,
+      rgba(247, 246, 242, 0.58) 100%
+    );
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.76);
+}
+
+.crcle-nav-glass-light::before {
+  content: none;
+}
+
+/* Legacy frost node from earlier markup — blur is on the parent now */
+.crcle-nav-glass-light__frost {
+  display: none;
+}
+
+.crcle-nav-glass-light > *:not(.crcle-nav-glass-light__frost) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dark glyphs on frosted docks (website dock-glass + phone primary) */
+.crcle-nav-glass-light .crcle-dock-icon {
+  filter: brightness(0) opacity(0.72);
+}
+
+.crcle-nav-glass-light button[aria-current="page"] .crcle-dock-icon {
+  filter: brightness(0) opacity(1);
+}
+
+.crcle-nav-glass-light .crcle-signal-bars > span {
+  background: rgba(2, 3, 29, 0.45);
+}
+
+.crcle-nav-glass-light .crcle-signal-bars.is-active > span,
+.crcle-nav-glass-light button[aria-current="page"] .crcle-signal-bars > span {
+  background: #02031d;
+}
+
+/* Phone primary dock — white glyphs on dark; dark glyphs on light phone */
+.crcle-primary-dock .crcle-dock-icon {
+  filter: brightness(0) invert(1) opacity(0.85);
+}
+
+.crcle-primary-dock button[aria-current="page"] .crcle-dock-icon {
+  filter: brightness(0) invert(1) opacity(1);
+}
+
+.crcle-primary-dock .crcle-signal-bars > span {
+  background: rgba(247, 246, 242, 0.55);
+}
+
+.crcle-primary-dock .crcle-signal-bars.is-active > span,
+.crcle-primary-dock button[aria-current="page"] .crcle-signal-bars > span {
+  background: #f7f6f2;
+}
+
+.crcle-phone--light .crcle-primary-dock .crcle-dock-icon {
+  filter: brightness(0) opacity(0.72);
+}
+
+.crcle-phone--light .crcle-primary-dock button[aria-current="page"] .crcle-dock-icon {
+  filter: brightness(0) opacity(1);
+}
+
+.crcle-phone--light .crcle-primary-dock .crcle-signal-bars > span {
+  background: rgba(2, 3, 29, 0.45);
+}
+
+.crcle-phone--light .crcle-primary-dock .crcle-signal-bars.is-active > span,
+.crcle-phone--light .crcle-primary-dock button[aria-current="page"] .crcle-signal-bars > span {
+  background: #02031d;
+}
+
+/* Signal Panel — matching white frosted sheet above the dock */
+.crcle-signal-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  background:
+    linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(247, 246, 242, 0.74) 100%
+    );
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.crcle-signal-panel .crcle-dock-icon {
+  filter: brightness(0) opacity(0.85);
+}
+
+.crcle-signal-panel .crcle-signal-bars > span {
+  background: #02031d;
+}
+
+.crcle-signal-panel__btn {
+  border: 1px solid rgba(2, 3, 29, 0.18);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* CRCLE bottom nav — frosted glass, no outline (shared dark-mode dock) */
+.crcle-nav-glass {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  background: linear-gradient(
+    165deg,
+    rgba(20, 22, 48, 0.78) 0%,
+    rgba(12, 14, 36, 0.82) 48%,
+    rgba(8, 10, 28, 0.88) 100%
+  );
+  backdrop-filter: blur(48px) saturate(180%);
+  -webkit-backdrop-filter: blur(48px) saturate(180%);
+  box-shadow:
+    0 10px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.crcle-nav-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    transparent 62%
+  );
+}
+
+.crcle-nav-glass::after {
+  content: none;
+}
+
+.crcle-nav-glass > .dock-glass-lens {
+  display: none;
+}
+
+.crcle-nav-glass > *:not(.dock-glass-lens) {
+  position: relative;
+  z-index: 1;
+}
+
+/* CRCLE phone preview — light / dark theme tokens (scoped to wireframe) */
+.crcle-phone {
+  --crcle-bg: #020217;
+  --crcle-bg-deep: #010211;
+  --crcle-fg: #f7f6f2;
+  --crcle-fg-muted: #6b7280;
+  --crcle-fg-subtle: #9ca3af;
+  --crcle-fg-faint: rgba(247, 246, 242, 0.4);
+  --crcle-fg-ghost: rgba(247, 246, 242, 0.2);
+  --crcle-border: rgba(247, 246, 242, 0.2);
+  --crcle-glass-bg: rgba(253, 252, 251, 0.1);
+  --crcle-glass-border: #f7f6f2;
+  --crcle-badge: rgba(247, 246, 242, 0.2);
+  --crcle-badge-fg: #ffffff;
+  --crcle-list-hover: rgba(255, 255, 255, 0.03);
+  --crcle-icon-filter: none;
+  --crcle-panel: rgba(2, 3, 29, 0.2);
+  --crcle-panel-border: rgba(247, 246, 242, 0.2);
+  --crcle-nc-header-bg: #1e2939;
+  --crcle-nc-title: #f7f6f2;
+  --crcle-nc-badge: rgba(247, 246, 242, 0.2);
+  --crcle-toggle-idle: #f7f6f2;
+  --crcle-section-title: #f7f6f2;
+  --crcle-online-dot-fill: #020217;
+  --crcle-avatar-border: #f7f6f2;
+  --crcle-handle: rgba(247, 246, 242, 0.55);
+  --crcle-empty-icon-border: rgba(247, 246, 242, 0.1);
+  color: var(--crcle-fg);
+  background-color: var(--crcle-bg);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.crcle-phone--light {
+  --crcle-bg: #f7f6f2;
+  --crcle-bg-deep: #f7f6f2;
+  --crcle-fg: #020426;
+  --crcle-fg-muted: #6b7280;
+  --crcle-fg-subtle: #9ca3af;
+  --crcle-fg-faint: rgba(2, 4, 38, 0.4);
+  --crcle-fg-ghost: rgba(2, 4, 38, 0.2);
+  --crcle-border: #e6e6e9;
+  --crcle-glass-bg: rgba(253, 252, 251, 0.55);
+  --crcle-glass-border: rgba(0, 0, 0, 0.25);
+  --crcle-badge: #02031d;
+  --crcle-badge-fg: #ffffff;
+  --crcle-list-hover: rgba(2, 4, 38, 0.04);
+  --crcle-icon-filter: brightness(0);
+  --crcle-panel: rgba(255, 255, 255, 0.6);
+  --crcle-panel-border: rgba(0, 0, 0, 0.25);
+  --crcle-nc-header-bg: #f7f6f2;
+  --crcle-nc-title: #030426;
+  --crcle-nc-badge: #030426;
+  --crcle-toggle-idle: rgba(2, 3, 29, 0.4);
+  --crcle-section-title: #030426;
+  --crcle-online-dot-fill: #f7f6f2;
+  --crcle-avatar-border: #e6e6e9;
+  --crcle-handle: rgba(2, 4, 38, 0.35);
+  --crcle-empty-icon-border: rgba(2, 4, 38, 0.12);
+}
+
+.crcle-phone .crcle-theme-icon {
+  filter: var(--crcle-icon-filter);
+  transition: filter 0.3s ease;
+}
+
+/* NOC / Night Owl Radar — Figma 957:31045 (exact wash; mesh is DOM ellipses) */
+.crcle-noc-radar {
+  background-color: rgb(1, 2, 17);
+  background-image: linear-gradient(
+    156.6deg,
+    rgb(1, 2, 17) 54.847%,
+    rgb(2, 63, 58) 99.685%
+  );
+}
+
+.crcle-phone--light .crcle-nav-glass {
+  border: 0;
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.82) 0%,
+    rgba(247, 246, 242, 0.72) 50%,
+    rgba(247, 246, 242, 0.65) 100%
+  );
+  box-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.crcle-phone--light .crcle-glass-btn {
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.75) 0%,
+    rgba(253, 252, 251, 0.45) 45%,
+    rgba(253, 252, 251, 0.35) 100%
+  );
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.129 0.042 264.695);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.129 0.042 264.695);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.129 0.042 264.695);
+  --primary: oklch(0.208 0.042 265.755);
+  --primary-foreground: oklch(0.984 0.003 247.858);
+  --secondary: oklch(0.968 0.007 247.896);
+  --secondary-foreground: oklch(0.208 0.042 265.755);
+  --muted: oklch(0.968 0.007 247.896);
+  --muted-foreground: oklch(0.554 0.046 257.417);
+  --accent: oklch(0.968 0.007 247.896);
+  --accent-foreground: oklch(0.208 0.042 265.755);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.929 0.013 255.508);
+  --input: oklch(0.929 0.013 255.508);
+  --ring: oklch(0.704 0.04 256.788);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.984 0.003 247.858);
+  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --sidebar-primary: oklch(0.208 0.042 265.755);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.968 0.007 247.896);
+  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
+  --sidebar-border: oklch(0.929 0.013 255.508);
+  --sidebar-ring: oklch(0.704 0.04 256.788);
+}
+
+.dark {
+  --background: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.984 0.003 247.858);
+  --card: oklch(0.208 0.042 265.755);
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  --primary: oklch(0.929 0.013 255.508);
+  --primary-foreground: oklch(0.208 0.042 265.755);
+  --secondary: oklch(0.279 0.041 260.031);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.279 0.041 260.031);
+  --muted-foreground: oklch(0.704 0.04 256.788);
+  --accent: oklch(0.279 0.041 260.031);
+  --accent-foreground: oklch(0.984 0.003 247.858);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.551 0.027 264.364);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.208 0.042 265.755);
+  --sidebar-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.279 0.041 260.031);
+  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
