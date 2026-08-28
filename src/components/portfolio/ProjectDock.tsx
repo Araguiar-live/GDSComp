@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type Ref } from "react";
 import { X } from "lucide-react";
 import {
   GRADUATE_PROJECTS,
@@ -25,7 +25,9 @@ export function ProjectDock({ onPlus }: Props) {
   const [folderOpen, setFolderOpen] = useState(false);
   const [previewId, setPreviewId] = useState<GraduateProjectId | null>(null);
   const [hovered, setHovered] = useState(false);
+  const [onDark, setOnDark] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const plusRef = useRef<HTMLButtonElement>(null);
 
   const preview = GRADUATE_PROJECTS.find((p) => p.id === previewId) ?? null;
 
@@ -69,6 +71,29 @@ export function ProjectDock({ onPlus }: Props) {
     setFolderOpen(false);
     setPreviewId(id);
   };
+
+  // Invert the plus when it sits over the black marquee/footer band.
+  useEffect(() => {
+    const update = () => {
+      const band = document.querySelector<HTMLElement>("[data-dark-band]");
+      const plus = plusRef.current;
+      if (!band || !plus) {
+        setOnDark(false);
+        return;
+      }
+      const b = band.getBoundingClientRect();
+      const p = plus.getBoundingClientRect();
+      setOnDark(p.bottom > b.top && p.top < b.bottom);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
 
   return (
     <>
@@ -142,6 +167,8 @@ export function ProjectDock({ onPlus }: Props) {
 
           <div className="relative z-[1] grid w-full grid-cols-3 gap-x-[9px] gap-y-[8px]">
             <PlusButton
+              ref={plusRef}
+              onDark={onDark}
               onClick={(e) => {
                 e.stopPropagation();
                 onPlus?.();
@@ -242,13 +269,22 @@ export function ProjectDock({ onPlus }: Props) {
   );
 }
 
-function PlusButton({
+const PlusButton = ({
   onClick,
+  onDark,
+  ref,
 }: {
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
-}) {
+  onDark?: boolean;
+  ref?: Ref<HTMLButtonElement>;
+}) => {
+  const bar = onDark
+    ? "bg-white shadow-[0px_2px_6px_rgba(0,0,0,0.35)]"
+    : "bg-[#2c313a] shadow-[0px_2px_3px_rgba(0,0,0,0.25)]";
+
   return (
     <button
+      ref={ref}
       type="button"
       onClick={onClick}
       aria-label="Open profile"
@@ -256,12 +292,18 @@ function PlusButton({
       style={{ width: ICON, height: ICON }}
     >
       <span className="relative inline-grid size-[15px] place-items-start leading-none">
-        <span className="col-start-1 row-start-1 mt-[5.5px] h-[4px] w-[15px] rounded-[2px] bg-[#2c313a] shadow-[0px_2px_3px_rgba(0,0,0,0.25)]" />
-        <span className="col-start-1 row-start-1 ml-[5.5px] h-[15px] w-[4px] rounded-[2px] border border-white/40 bg-[#2c313a] shadow-[0px_2px_4px_rgba(0,0,0,0.3)]" />
+        <span
+          className={`col-start-1 row-start-1 mt-[5.5px] h-[4px] w-[15px] rounded-[2px] transition-colors duration-300 ${bar}`}
+        />
+        <span
+          className={`col-start-1 row-start-1 ml-[5.5px] h-[15px] w-[4px] rounded-[2px] border transition-colors duration-300 ${
+            onDark ? "border-white/80" : "border-white/40"
+          } ${bar}`}
+        />
       </span>
     </button>
   );
-}
+};
 
 function DockSphere({
   project,
