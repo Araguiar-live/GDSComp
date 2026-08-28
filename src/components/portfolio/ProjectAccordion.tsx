@@ -167,19 +167,24 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                 }}
               />
 
-              {/* Prototype left (content-sized); copy fills remaining width */}
+              {/* Copy fills leftover width; prototypes stay on the right */}
               <div className="mx-auto flex min-h-0 w-full flex-1 items-start px-[68px] pt-2">
-                <div className="grid w-full grid-cols-1 items-start gap-8 overflow-visible md:grid-cols-[auto_minmax(0,1fr)] md:gap-10">
-                {/* LEFT — prototype sized to the device / browser frame */}
+                <div className="grid w-full grid-cols-1 items-start gap-8 overflow-visible md:grid-cols-[minmax(0,1fr)_auto] md:gap-10">
+                {/* LEFT — case-study copy fills leftover space */}
+                <div className="flex max-h-[874px] min-h-0 min-w-0 flex-col overflow-y-auto overscroll-contain">
+                  <CaseStudyCopy project={project} tab={activeTab} content={tabContent} />
+                </div>
+
+                {/* RIGHT — prototype sized to the device / browser frame */}
                 <div
-                  className={`relative flex shrink-0 items-start justify-start ${
+                  className={`relative flex shrink-0 items-start justify-end ${
                     project.slug === "odicci"
                       ? "w-full min-w-0 max-w-[980px] md:w-[min(980px,46vw)]"
                       : "w-max max-w-full"
                   }`}
                 >
                   <div
-                    className={`flex items-start justify-start overflow-visible ${
+                    className={`flex items-start justify-end overflow-visible ${
                       project.slug === "odicci" ? "w-full" : "w-max max-w-full"
                     }`}
                   >
@@ -212,11 +217,6 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                       </MockupGradientRing>
                     )}
                   </div>
-                </div>
-
-                {/* RIGHT — case-study copy fills leftover space */}
-                <div className="flex max-h-[874px] min-h-0 min-w-0 flex-col overflow-y-auto overscroll-contain">
-                  <CaseStudyCopy project={project} tab={activeTab} content={tabContent} />
                 </div>
                 </div>
               </div>
