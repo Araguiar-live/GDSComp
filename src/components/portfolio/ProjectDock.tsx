@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState, type MouseEvent, type Ref } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { X } from "lucide-react";
 import {
   GRADUATE_PROJECTS,
@@ -27,7 +27,6 @@ export function ProjectDock({ onPlus }: Props) {
   const [hovered, setHovered] = useState(false);
   const [onDark, setOnDark] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const plusRef = useRef<HTMLButtonElement>(null);
 
   const preview = GRADUATE_PROJECTS.find((p) => p.id === previewId) ?? null;
 
@@ -72,25 +71,46 @@ export function ProjectDock({ onPlus }: Props) {
     setPreviewId(id);
   };
 
-  // Invert the plus when it sits over the black marquee/footer band.
+  // Invert the plus when the fixed dock overlaps the black marquee/footer.
   useEffect(() => {
+    let io: IntersectionObserver | null = null;
+    let raf = 0;
+
     const update = () => {
-      const band = document.querySelector<HTMLElement>("[data-dark-band]");
-      const plus = plusRef.current;
-      if (!band || !plus) {
+      const dark = document.getElementById("site-dark-band");
+      const dock = rootRef.current;
+      if (!dark || !dock) {
         setOnDark(false);
         return;
       }
-      const b = band.getBoundingClientRect();
-      const p = plus.getBoundingClientRect();
-      setOnDark(p.bottom > b.top && p.top < b.bottom);
+      const b = dark.getBoundingClientRect();
+      const d = dock.getBoundingClientRect();
+      setOnDark(b.top < d.bottom && b.bottom > d.top);
+    };
+
+    const observe = () => {
+      const el = document.getElementById("site-dark-band");
+      if (!el || io) return;
+      io = new IntersectionObserver(update, {
+        root: null,
+        threshold: [0, 0.01, 0.1, 0.5, 1],
+      });
+      io.observe(el);
+      update();
     };
 
     update();
-    window.addEventListener("scroll", update, { passive: true });
+    observe();
+    raf = window.requestAnimationFrame(observe);
+
+    window.addEventListener("scroll", update, { passive: true, capture: true });
+    document.addEventListener("scroll", update, { passive: true, capture: true });
     window.addEventListener("resize", update);
     return () => {
-      window.removeEventListener("scroll", update);
+      window.cancelAnimationFrame(raf);
+      io?.disconnect();
+      window.removeEventListener("scroll", update, true);
+      document.removeEventListener("scroll", update, true);
       window.removeEventListener("resize", update);
     };
   }, []);
@@ -167,7 +187,6 @@ export function ProjectDock({ onPlus }: Props) {
 
           <div className="relative z-[1] grid w-full grid-cols-3 gap-x-[9px] gap-y-[8px]">
             <PlusButton
-              ref={plusRef}
               onDark={onDark}
               onClick={(e) => {
                 e.stopPropagation();
@@ -272,11 +291,9 @@ export function ProjectDock({ onPlus }: Props) {
 const PlusButton = ({
   onClick,
   onDark,
-  ref,
 }: {
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   onDark?: boolean;
-  ref?: Ref<HTMLButtonElement>;
 }) => {
   const bar = onDark
     ? "bg-white shadow-[0px_2px_6px_rgba(0,0,0,0.35)]"
@@ -284,10 +301,10 @@ const PlusButton = ({
 
   return (
     <button
-      ref={ref}
       type="button"
       onClick={onClick}
       aria-label="Open profile"
+      data-on-dark={onDark ? "true" : "false"}
       className="relative z-[2] flex shrink-0 items-center justify-center rounded-md transition-transform hover:scale-110 active:scale-95"
       style={{ width: ICON, height: ICON }}
     >

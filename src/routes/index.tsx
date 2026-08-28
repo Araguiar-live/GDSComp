@@ -337,7 +337,7 @@ function Index() {
       <div className="relative z-20 h-[2px] w-full shrink-0 bg-[#f3f4f6]" aria-hidden />
 
       {/* Marquee + footer — continuous black plane under the bento strip */}
-      <div className="relative z-20 bg-black" data-dark-band>
+      <div id="site-dark-band" className="relative z-20 bg-black" data-dark-band>
         <Marquee />
         <Footer
           onSelectProject={handleDockSelect}
