@@ -1126,9 +1126,7 @@
   box-shadow:
     inset 2px 3px 0 rgba(255, 255, 255, 0.58),
     inset -1px -2px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -10px 18px rgba(2, 3, 29, 0.16),
-    -5px 0 14px rgba(255, 70, 150, 0.42),
-    5px 0 14px rgba(50, 180, 255, 0.48);
+    inset 0 -10px 18px rgba(2, 3, 29, 0.16);
 }
 
 .crcle-area-card-lens {
@@ -1169,33 +1167,6 @@
   );
   opacity: 0.8;
   mix-blend-mode: screen;
-}
-
-.crcle-area-card-glass::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  pointer-events: none;
-  padding: 1.5px;
-  background: linear-gradient(
-    115deg,
-    rgba(255, 70, 150, 0.95) 0%,
-    rgba(255, 255, 255, 0.75) 22%,
-    rgba(80, 200, 255, 0.95) 48%,
-    rgba(170, 255, 140, 0.55) 72%,
-    rgba(255, 90, 160, 0.85) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0.95;
 }
 
 .crcle-area-card-glass > *:not(.crcle-area-card-lens) {
