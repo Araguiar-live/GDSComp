@@ -4,10 +4,9 @@ import { forwardRef, useState, type MutableRefObject } from "react";
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
 import { useCrcleAreaInboxOpen } from "@/components/portfolio/crcleBroadcast";
 
-// Tabs shown inside every expanded project row.
-// Add/remove entries here to change the case-study steps globally.
-const TABS = ["Create Workspace\u00a0", "Brand Personality", "Sign Up", "Template Library"] as const;
-export type ProjectTab = (typeof TABS)[number];
+// Default tabs for projects that don't set `project.tabs`.
+const DEFAULT_TABS = ["Create Workspace\u00a0", "Brand Personality", "Sign Up", "Template Library"] as const;
+export type ProjectTab = string;
 type Tab = ProjectTab;
 
 /** Shared open-panel body height — tabs + Figma 402×874 phone + padding */
@@ -19,8 +18,10 @@ export interface Project {
   title: string;
   role: string;
   year: string;
+  /** Override the default four case-study steps. */
+  tabs?: readonly string[];
   // Per-tab content slots. Each returns whatever prototype/text you want to drop in later.
-  content?: Partial<Record<Tab, ProjectTabContent>>;
+  content?: Partial<Record<string, ProjectTabContent>>;
 }
 
 export type CaseStudyText = {
@@ -91,8 +92,12 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
   { project, isOpen, onToggle },
   ref,
 ) {
-  const [activeTab, setActiveTab] = useState<Tab>("Template Library");
+  const tabs = project.tabs?.length ? [...project.tabs] : [...DEFAULT_TABS];
+  const [activeTab, setActiveTab] = useState<Tab>(
+    project.tabs?.[0] ?? (tabs.includes("Template Library") ? "Template Library" : tabs[0]),
+  );
   const tabContent = project.content?.[activeTab] ?? {};
+  const tabIndex = Math.max(0, tabs.indexOf(activeTab));
 
   return (
     <div ref={ref} className="border-b border-[#d1d5db] last:border-b-0">
@@ -135,7 +140,7 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
               {/* Tab switcher (capsule pills) */}
               <div className="mb-6 flex shrink-0 justify-center">
                 <div className="inline-flex items-center gap-1 rounded-full border border-white bg-white/70 p-1 shadow-2xl shadow-slate-200/50 backdrop-blur-xl">
-                  {TABS.map((tab) => {
+                  {tabs.map((tab) => {
                     const active = tab === activeTab;
                     return (
                       <button
@@ -156,21 +161,22 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                 </div>
               </div>
 
-              {/* Absolute-positioned navigation arrows — 24px inset from accordion edges */}
-              <NavArrow
-                direction="prev"
-                onClick={() => {
-                  const i = TABS.indexOf(activeTab);
-                  setActiveTab(TABS[(i - 1 + TABS.length) % TABS.length]);
-                }}
-              />
-              <NavArrow
-                direction="next"
-                onClick={() => {
-                  const i = TABS.indexOf(activeTab);
-                  setActiveTab(TABS[(i + 1) % TABS.length]);
-                }}
-              />
+              {tabs.length > 1 ? (
+                <>
+                  <NavArrow
+                    direction="prev"
+                    onClick={() => {
+                      setActiveTab(tabs[(tabIndex - 1 + tabs.length) % tabs.length]);
+                    }}
+                  />
+                  <NavArrow
+                    direction="next"
+                    onClick={() => {
+                      setActiveTab(tabs[(tabIndex + 1) % tabs.length]);
+                    }}
+                  />
+                </>
+              ) : null}
 
               {/* Copy fills leftover width; prototypes stay on the right */}
               <div className="mx-auto flex min-h-0 w-full flex-1 items-start px-[68px] pt-2">
@@ -197,12 +203,10 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                       typeof tabContent.customBody === "function"
                         ? tabContent.customBody({
                             onNextTab: () => {
-                              const i = TABS.indexOf(activeTab);
-                              setActiveTab(TABS[(i + 1) % TABS.length]);
+                              setActiveTab(tabs[(tabIndex + 1) % tabs.length]);
                             },
                             onPrevTab: () => {
-                              const i = TABS.indexOf(activeTab);
-                              setActiveTab(TABS[(i - 1 + TABS.length) % TABS.length]);
+                              setActiveTab(tabs[(tabIndex - 1 + tabs.length) % tabs.length]);
                             },
                             goToTab: (tab) => setActiveTab(tab),
                           })

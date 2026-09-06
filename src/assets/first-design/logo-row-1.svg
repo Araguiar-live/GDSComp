@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="282" height="50" viewBox="0 0 282 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Row">
+<circle id="Dot" cx="25" cy="25" r="25" fill="#428FF5"/>
+<rect id="Bar" x="80" y="11" width="180" height="28" rx="14" fill="#428FF5"/>
+</g>
+</svg>

@@ -17,6 +17,7 @@ import { CrcleMessaging } from "@/components/portfolio/CrcleMessaging";
 import { CrcleProfile } from "@/components/portfolio/CrcleProfile";
 import { CrcleRadar } from "@/components/portfolio/CrcleRadar";
 import { CrcleSignalHome } from "@/components/portfolio/CrcleSignalHome";
+import { FirstDesignComingSoon } from "@/components/portfolio/FirstDesignComingSoon";
 import { WireframeStage } from "@/components/portfolio/SiteWireframe";
 
 export const Route = createFileRoute("/")({
@@ -132,43 +133,21 @@ const PROJECTS: Project[] = [
     title: "first design",
     role: "Bending Spoons Hackathon",
     year: "2026",
-    // Case-study text mockup — edit strings in ProjectAccordion content slots
+    tabs: ["Productive"],
     content: {
-      "Create Workspace\u00a0": {
-        label: "First Design — Kickoff",
-        subtitle: "Shipping a product story in 48 hours",
-        overview:
-          "A hackathon sprint to define a crisp product narrative, then prove it with a clickable flow.",
-        challenge:
-          "Limited time, a broad brief, and the need to communicate intent without a full research cycle.",
-        approach:
-          "Frame one sharp user job, sketch the critical path, and prototype only the moments that sell the idea.",
-        outcome:
-          "A focused demo narrative, a working prototype path, and clear next steps for post-hackathon polish.",
-      },
-      "Brand Personality": {
-        label: "First Design — Voice",
-        subtitle: "Tone that feels built, not bolted on",
-        overview: "Visual and verbal cues that make the hackathon product feel intentional.",
-        challenge: "Avoid generic startup aesthetics while staying fast to produce.",
-        approach: "Lock a small type + color system early; reuse it across every screen.",
-        outcome: "A cohesive look that reads as a product, not a deck.",
-      },
-      "Sign Up": {
-        label: "First Design — Entry",
-        subtitle: "The first five seconds",
-        overview: "Onboarding that explains value before asking for commitment.",
-        challenge: "Hackathon judges skim — the value prop has to land immediately.",
-        approach: "Lead with outcome language; defer account friction until after the aha.",
-        outcome: "A short entry path that still feels complete in the demo.",
-      },
-      "Template Library": {
-        label: "First Design — Core loop",
+      Productive: {
+        tabLabel: "Productive",
+        label: "First Design — Productive",
         subtitle: "Where the product actually lives",
-        overview: "The interactive heart of the case — edit this once the final flow is locked.",
-        challenge: "Show depth without burying the demo in edge cases.",
-        approach: "One primary loop, one delightful detail, zero dead ends in the happy path.",
-        outcome: "A memorable interaction judges can retell in one sentence.",
+        overview:
+          "Productive is the hackathon build — a task list that should feel like a product, not a spreadsheet. The interactive loop is coming soon; this frame holds the mark until that prototype lands.",
+        challenge:
+          "Show depth without burying the demo in edge cases, and without shipping a hollow placeholder.",
+        approach:
+          "One primary loop, one memorable detail. Until the flow is locked, the phone carries the list mark and ghost frames instead of a fake UI.",
+        outcome:
+          "A coming-soon wireframe that still reads as the product: same device language as CRCLE, with the First Design identity already on screen.",
+        customBody: <FirstDesignComingSoon />,
       },
     },
   },
