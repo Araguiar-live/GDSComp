@@ -249,9 +249,9 @@ export function CrcleProfile({
 
       <CrclePhoneFrame light={isLightMode}>
         <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
-          <div className="relative min-h-0 flex-1">
+          <div className="relative min-h-0 flex-1 overflow-hidden">
             {/* Absolute scroll so the dock can sample this layer for backdrop-filter */}
-            <div className="absolute inset-0 overflow-x-hidden overflow-y-auto px-3 pb-28 pt-[94px]">
+            <div className="absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-contain px-3 pb-[7.25rem] pt-[94px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <ProfileMainView
                 profile={profile}
                 socialCount={socialCount}
@@ -278,6 +278,12 @@ export function CrcleProfile({
                 </div>
               </div>
             </div>
+
+            {/* Bottom fade — clip scroll content at the dock / home-indicator edge */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[7.5rem] bg-gradient-to-t from-[#010211] from-45% via-[#010211]/92 to-transparent transition-colors duration-300 [.crcle-phone--light_&]:from-[var(--crcle-bg)] [.crcle-phone--light_&]:via-[var(--crcle-bg)]/92"
+            />
 
             <CrclePrimaryDock
               active="profile"
@@ -411,7 +417,7 @@ function ProfileMainView({
   const isEmptyWidgets = !hasEducation && !hasWork && !hasRelationship && !hasLocation;
 
   return (
-    <div className="flex flex-col gap-4 pb-4">
+    <div className="flex flex-col gap-4 pb-2">
       {/* Identity — Figma 1005:49864 / light 1005:49620 */}
       <div className="flex w-full items-end justify-between px-0">
         <div className="flex flex-col items-start justify-center">
