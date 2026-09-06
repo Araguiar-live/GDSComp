@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Sun } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
@@ -44,6 +44,11 @@ import strengthFillIcon from "@/assets/crcle/profile/strength-fill.svg";
 import strengthTrackIcon from "@/assets/crcle/profile/strength-track.svg";
 import trashIcon from "@/assets/crcle/profile/trash.svg";
 import trendingUpIcon from "@/assets/crcle/profile/trending-up.svg";
+import verifyCloseIcon from "@/assets/crcle/profile/verify/close.svg";
+import verifyCrcleWordmark from "@/assets/crcle/profile/verify/crcle-wordmark.svg";
+import verifyFourthlineLogo from "@/assets/crcle/profile/verify/fourthline-logo.svg";
+import verifyHandleIcon from "@/assets/crcle/profile/verify/handle.svg";
+import verifySecuritySafeIcon from "@/assets/crcle/profile/verify/security-safe.svg";
 import vincentPortrait from "@/assets/crcle/profile/vincent-portrait.png";
 import workBriefcaseIcon from "@/assets/crcle/profile/work-briefcase.svg";
 import workLogoPreviewIcon from "@/assets/crcle/profile/work-logo-preview.svg";
@@ -58,6 +63,7 @@ import {
   requestAreaInboxOnMessaging,
   requestMoodSwitchOnMessaging,
   setCrcleBroadcast,
+  setCrcleVerifyOpen,
   useCrcleBroadcast,
   useCrcleIncognito,
   type BroadcastState,
@@ -150,7 +156,14 @@ export type ProfileState = {
   };
 };
 
-type Overlay = null | "education" | "work" | "relationship" | "location" | "socials";
+type Overlay =
+  | null
+  | "education"
+  | "work"
+  | "relationship"
+  | "location"
+  | "socials"
+  | "verify";
 
 const INITIAL: ProfileState = {
   user: {
@@ -205,6 +218,14 @@ export function CrcleProfile({
   }));
   const [overlay, setOverlay] = useState<Overlay>(null);
 
+  useEffect(() => {
+    setCrcleVerifyOpen(overlay === "verify");
+  }, [overlay]);
+
+  useEffect(() => {
+    return () => setCrcleVerifyOpen(false);
+  }, []);
+
   const socialCount = Object.values(profile.socials).filter(Boolean).length;
 
   return (
@@ -244,6 +265,7 @@ export function CrcleProfile({
                 onOpenRelationship={() => setOverlay("relationship")}
                 onOpenLocation={() => setOverlay("location")}
                 onOpenSocials={() => setOverlay("socials")}
+                onOpenVerify={() => setOverlay("verify")}
               />
             </div>
 
@@ -341,6 +363,11 @@ export function CrcleProfile({
               />
             ) : null}
           </AnimatePresence>
+
+          {/* KYC drawer sits outside Presence so backdrop-filter can sample the profile. */}
+          {overlay === "verify" ? (
+            <VerificationSheet onClose={() => setOverlay(null)} />
+          ) : null}
         </div>
       </CrclePhoneFrame>
     </div>
@@ -356,6 +383,7 @@ function ProfileMainView({
   onOpenRelationship,
   onOpenLocation,
   onOpenSocials,
+  onOpenVerify,
 }: {
   profile: ProfileState;
   socialCount: number;
@@ -365,6 +393,7 @@ function ProfileMainView({
   onOpenRelationship: () => void;
   onOpenLocation: () => void;
   onOpenSocials: () => void;
+  onOpenVerify: () => void;
 }) {
   const { user, widgets } = profile;
   const [isIncognito] = useCrcleIncognito();
@@ -398,9 +427,15 @@ function ProfileMainView({
                 draggable={false}
               />
             </span>
-            <span className="hidden items-center rounded-[24px] border border-[#030426] px-3 py-1 text-[11px] leading-[1.4] text-[#030426] [.crcle-phone--light_&]:inline-flex" style={{ fontFamily: FONT }}>
+            <button
+              type="button"
+              aria-label="Verify identity"
+              onClick={onOpenVerify}
+              className="hidden items-center rounded-[24px] border border-[#030426] px-3 py-1 text-[11px] leading-[1.4] text-[#030426] [.crcle-phone--light_&]:inline-flex"
+              style={{ fontFamily: FONT }}
+            >
               Verify
-            </span>
+            </button>
           </div>
           <p className="text-[11px] leading-[1.4] text-[#b1b1bc]" style={{ fontFamily: FONT }}>
             {user.handle}
@@ -1497,6 +1532,134 @@ function WorkEditSheet({
         </div>
       </motion.div>
     </motion.div>
+  );
+}
+
+/** Figma 257:83140 — Join the verified crcle (light KYC drawer). */
+function VerificationSheet({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className="absolute inset-0 z-40 flex flex-col justify-end overflow-hidden rounded-[53px]"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Join the verified crcle"
+      style={{ clipPath: "inset(0 round 53px)" }}
+    >
+      <button
+        type="button"
+        aria-label="Dismiss verification"
+        className="absolute inset-0 bg-[rgba(2,3,29,0.12)]"
+        onClick={onClose}
+      />
+
+      <div className="relative z-[1] flex h-[386px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]">
+        {/* Header — Figma 257:83141 */}
+        <div className="relative flex h-[52px] shrink-0 items-center gap-[25px] border border-[rgba(2,3,29,0.1)] border-b-0 bg-[#f7f6f2] px-3 pb-3 pt-4">
+          <img
+            alt=""
+            src={verifyHandleIcon}
+            className="pointer-events-none absolute left-1/2 top-[5px] h-[3px] w-[56px] -translate-x-1/2 max-w-none"
+            draggable={false}
+          />
+          <p
+            className="min-w-0 flex-1 text-[16px] font-medium leading-none text-[#02031d]"
+            style={{ fontFamily: FONT }}
+          >
+            Join the verified crcle
+          </p>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[rgba(2,3,29,0.05)] p-1"
+          >
+            <span className="relative size-4 shrink-0 overflow-hidden">
+              <img
+                alt=""
+                src={verifyCloseIcon}
+                className="absolute inset-0 size-full max-w-none object-contain"
+                draggable={false}
+              />
+            </span>
+          </button>
+        </div>
+
+        {/* Body — Figma 257:83150, glass blur 40 */}
+        <div className="crcle-verify-sheet-body flex min-h-0 flex-1 flex-col items-center justify-between border-t border-[rgba(2,3,29,0.1)] px-3 pb-4 pt-6">
+          <div className="flex items-center justify-center rounded-[36px] bg-[rgba(247,246,242,0.6)] px-3 py-1">
+            <p
+              className="text-center text-[12px] leading-[1.2] tracking-[-0.15px] text-[rgba(2,3,29,0.5)]"
+              style={{ fontFamily: FONT }}
+            >
+              Verified Social
+            </p>
+          </div>
+
+          <div className="flex w-full flex-col items-center gap-6">
+            <span className="relative size-[46px] shrink-0 overflow-hidden">
+              <img
+                alt=""
+                src={verifySecuritySafeIcon}
+                className="absolute inset-0 size-full max-w-none object-contain"
+                draggable={false}
+              />
+            </span>
+            <p
+              className="w-full text-center text-[14px] font-medium leading-[1.2] tracking-[-0.15px] text-[#02031d]"
+              style={{ fontFamily: FONT }}
+            >
+              To keep the community authentic, verify your identity and claim your verified status.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <span className="relative h-[15px] w-[102px] shrink-0 overflow-hidden">
+              <img
+                alt="Fourthline"
+                src={verifyFourthlineLogo}
+                className="absolute inset-0 size-full max-w-none object-contain object-left"
+                draggable={false}
+              />
+            </span>
+            <span
+              className="flex h-[15px] w-1.5 flex-col justify-end text-center text-[8px] leading-[1.4] text-[#02031d]"
+              style={{ fontFamily: FONT }}
+            >
+              X
+            </span>
+            <span className="relative h-[13px] w-[38px] shrink-0 overflow-hidden">
+              <img
+                alt="crcle"
+                src={verifyCrcleWordmark}
+                className="absolute inset-0 size-full max-w-none object-contain"
+                draggable={false}
+              />
+            </span>
+          </div>
+
+          <div className="flex w-full flex-col items-center gap-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex items-center justify-center rounded-full bg-[#02031d] px-9 py-3"
+            >
+              <span
+                className="text-center text-[16px] font-medium leading-[1.2] tracking-[-0.44px] text-[#f7f6f2]"
+                style={{ fontFamily: FONT }}
+              >
+                Start Verification
+              </span>
+            </button>
+            <p
+              className="w-full text-center text-[9px] leading-[1.1] tracking-[-0.15px] text-[rgba(2,3,29,0.4)]"
+              style={{ fontFamily: FONT }}
+            >
+              Your data is encrypted and used only to identify verification
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

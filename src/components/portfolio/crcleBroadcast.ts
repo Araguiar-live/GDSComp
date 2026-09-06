@@ -11,6 +11,7 @@ let incognitoState = false;
 let pendingMoodSwitch = false;
 let pendingAreaInbox = false;
 let areaInboxOpen = false;
+let verifyOpen = false;
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -77,6 +78,25 @@ export function useCrcleAreaInboxOpen(): boolean {
     subscribeCrcleBroadcast,
     getCrcleAreaInboxOpen,
     getCrcleAreaInboxOpen,
+  );
+}
+
+/** True while the Profile KYC / verification drawer is open. */
+export function getCrcleVerifyOpen(): boolean {
+  return verifyOpen;
+}
+
+export function setCrcleVerifyOpen(next: boolean) {
+  if (next === verifyOpen) return;
+  verifyOpen = next;
+  emit();
+}
+
+export function useCrcleVerifyOpen(): boolean {
+  return useSyncExternalStore(
+    subscribeCrcleBroadcast,
+    getCrcleVerifyOpen,
+    getCrcleVerifyOpen,
   );
 }
 

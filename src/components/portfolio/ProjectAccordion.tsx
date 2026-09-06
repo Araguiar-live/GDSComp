@@ -2,7 +2,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { forwardRef, useState, type MutableRefObject } from "react";
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
-import { useCrcleAreaInboxOpen } from "@/components/portfolio/crcleBroadcast";
+import {
+  useCrcleAreaInboxOpen,
+  useCrcleVerifyOpen,
+} from "@/components/portfolio/crcleBroadcast";
 
 // Default tabs for projects that don't set `project.tabs`.
 const DEFAULT_TABS = ["Create Workspace\u00a0", "Brand Personality", "Sign Up", "Template Library"] as const;
@@ -251,9 +254,17 @@ function CaseStudyCopy({
   content: ProjectTabContent;
 }) {
   const areaInboxOpen = useCrcleAreaInboxOpen();
-  const featureActive =
-    project.slug === "crcle" && tab === "Sign Up" && areaInboxOpen && Boolean(content.featureCopy);
-  const copy: CaseStudyText = featureActive ? { ...content, ...content.featureCopy } : content;
+  const verifyOpen = useCrcleVerifyOpen();
+  const featureKey =
+    project.slug === "crcle" && tab === "Sign Up" && areaInboxOpen && content.featureCopy
+      ? "in-the-area"
+      : project.slug === "crcle" &&
+          tab === "Template Library" &&
+          verifyOpen &&
+          content.featureCopy
+        ? "kyc"
+        : null;
+  const copy: CaseStudyText = featureKey ? { ...content, ...content.featureCopy } : content;
 
   const overview =
     copy.overview ??
@@ -272,7 +283,7 @@ function CaseStudyCopy({
 
   return (
     <div
-      key={featureActive ? "in-the-area" : "tab"}
+      key={featureKey ?? "tab"}
       className="flex w-full min-w-0 flex-col gap-[36px] py-0"
     >
       <div className="flex flex-col gap-5">

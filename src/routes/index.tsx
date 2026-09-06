@@ -117,6 +117,18 @@ const PROJECTS: Project[] = [
           "Lead with portrait + strength, then a 2×2 bento. Edit sheets keep depth off the main surface.",
         outcome:
           "Signal Live and the mood chip jump back to Messaging Hub, where Mood Switch and the Sent/Received control live.",
+        featureCopy: {
+          label: "CRCLE — Know Your Customer",
+          subtitle: "Identity checks so the crcle stays real people",
+          overview:
+            "CRCLE is a small, high-trust graph — dating, work, and location shared with people you might actually meet. Know Your Customer (KYC) is the gate that keeps every profile a person, not a borrowed photo or a bot, before that intimacy is on the table.",
+          challenge:
+            "Exclusive networks collapse the moment fake accounts sit next to real ones. Members will not share a live venue, a dating status, or a work ask if they cannot tell who has proven they are who they say they are.",
+          approach:
+            "Partner with Fourthline for an encrypted identity check, not a social scrape. Verification lives as a quiet Profile chip, then a short drawer that explains the why — data is used only to confirm the person, then discarded from the product surface.",
+          outcome:
+            "A verified raindrop replaces Verify. Trust is earned before Radar, In The Area, or messaging deepen, so the product can stay intimate at small scale without turning into another unmoderated feed.",
+        },
         customBody: ({ goToTab }) => (
           <CrcleProfile
             onGoToSignalHome={() => goToTab("Create Workspace\u00a0")}

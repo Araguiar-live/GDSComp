@@ -991,6 +991,15 @@
   -webkit-backdrop-filter: blur(18px) saturate(160%);
 }
 
+/* Profile KYC drawer body — Figma 257:83150 Glass (radius 40). */
+.crcle-verify-sheet-body {
+  position: relative;
+  overflow: hidden;
+  background: rgba(247, 246, 242, 0.8);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+}
+
 /* In The Area notifications drawer — Figma 1142:34943 Glass (radius 15).
    Frost like .dock-glass + the nearby-card bar: blur samples the hub behind
    this node. Do not raise fill opacity — translucency is what lets the blur show.
