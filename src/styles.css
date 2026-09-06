@@ -1219,11 +1219,14 @@
   background: var(--crcle-panel);
 }
 
-/* In The Area drawer — Figma 1142:34943 frost plate blurs chat beneath entire panel */
+/* In The Area drawer — Figma 1142:34943 frost + refraction + dispersion over chat */
 .crcle-area-inbox-glass {
   position: relative;
   overflow: hidden;
   background: transparent;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.14) inset;
 }
 
 .crcle-area-inbox-glass-plate {
@@ -1237,8 +1240,19 @@
     rgba(255, 255, 255, 0.4) 25.54%,
     rgba(2, 3, 29, 0.04) 98.49%
   );
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  filter: url("#crcle-nearby-glass");
+}
+
+.crcle-area-inbox-glass-plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 44%);
+  opacity: 0.5;
 }
 
 .crcle-phone--light .crcle-area-inbox-glass-plate {
@@ -1251,7 +1265,46 @@
   -webkit-backdrop-filter: blur(24px) saturate(160%);
 }
 
-.crcle-area-inbox-glass > *:not(.crcle-area-inbox-glass-plate) {
+.crcle-area-inbox-glass-lens {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 90% at 50% -22%,
+    rgba(255, 255, 255, 0.42),
+    transparent 56%
+  );
+  mix-blend-mode: soft-light;
+  opacity: 0.58;
+}
+
+.crcle-area-inbox-glass-dispersion {
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 0.5px;
+  background: linear-gradient(
+    118deg,
+    rgba(255, 92, 92, 0.18) 0%,
+    rgba(255, 255, 255, 0.12) 42%,
+    rgba(92, 140, 255, 0.16) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.5;
+}
+
+.crcle-area-inbox-glass > *:not(.crcle-area-inbox-glass-plate):not(.crcle-area-inbox-glass-lens):not(.crcle-area-inbox-glass-dispersion) {
   position: relative;
   z-index: 1;
 }
