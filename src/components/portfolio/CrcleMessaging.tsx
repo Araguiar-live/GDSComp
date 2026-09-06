@@ -1028,7 +1028,7 @@ function NotificationCenter({
           aria-hidden={!expanded}
           style={{ pointerEvents: expanded ? "auto" : "none" }}
         >
-          <div className="relative flex w-full flex-col items-start gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[var(--crcle-panel-border)] bg-[var(--crcle-panel)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)] transition-all duration-300 hover:bg-[rgba(247,246,242,0.1)] hover:backdrop-blur-[14px]">
+          <div className="crcle-panel-dropdown relative flex w-full flex-col items-start gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[var(--crcle-panel-border)] px-[9px] pb-[11px] pt-[10px]">
             {tab === "received" ? <DailyDropBanner onView={onViewDailyDrop} /> : null}
             <div className="flex items-start gap-4">
               {profiles.map((profile) => (

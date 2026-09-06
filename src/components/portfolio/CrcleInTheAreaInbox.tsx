@@ -2,7 +2,6 @@ import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import { useCallback, useState } from "react";
 import arrowRightIcon from "@/assets/crcle/area/arrow-right.svg";
 import emmaPortrait from "@/assets/crcle/area/emma-portrait.png";
-import handleIcon from "@/assets/crcle/area/handle.svg";
 import heartIcon from "@/assets/crcle/area/heart.svg";
 import linkIcon from "@/assets/crcle/area/link.svg";
 import raindropIcon from "@/assets/crcle/area/raindrop.svg";
@@ -138,20 +137,7 @@ export function CrcleInTheAreaInbox({
         />
       </div>
 
-      <div className="crcle-area-inbox-glass flex flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[rgba(255,255,255,0.15)] border-t-0 px-[13px] pb-3 pt-4">
-        <div
-          aria-hidden
-          className="crcle-area-inbox-backdrop pointer-events-none absolute inset-0 z-0 rounded-[inherit]"
-        />
-        <div
-          aria-hidden
-          className="dock-glass-splay pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/20 via-white/[0.08] to-white/[0.05]"
-        />
-        <div
-          aria-hidden
-          className="crcle-area-inbox-bottom-frost pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[140px] rounded-b-[inherit]"
-        />
-        <div className="dock-glass-lens z-0 opacity-30" aria-hidden />
+      <div className="crcle-panel-dropdown crcle-area-inbox-glass flex flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[var(--crcle-panel-border)] border-t-0 px-[9px] pb-[11px] pt-[10px]">
         <button
           type="button"
           onClick={() => (expanded ? onCollapse() : onExpand())}
@@ -212,9 +198,9 @@ export function CrcleInTheAreaInbox({
           type="button"
           aria-label={expanded ? "Collapse In The Area" : "Expand In The Area"}
           onClick={() => (expanded ? onCollapse() : onExpand())}
-          className="flex h-3 w-9 items-center justify-center"
+          className="mx-auto flex h-3 w-9 touch-none items-center justify-center opacity-80 transition-opacity hover:opacity-100"
         >
-          <img alt="" src={handleIcon} className="h-[3px] w-[36px] max-w-none object-contain" />
+          <span className="block h-[3px] w-9 rounded-full bg-[var(--crcle-handle)] transition-colors duration-300" />
         </button>
       </div>
     </div>
@@ -359,7 +345,7 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
 function NearbyCategoryPills({ variant }: { variant: NearbyVariant }) {
   if (variant === "purpose") {
     return (
-      <div className="flex max-w-full min-w-0 items-center gap-2 rounded-[120px] bg-[rgba(2,3,29,0.16)] p-1.5">
+      <div className="flex max-w-full min-w-0 items-center gap-3 rounded-[120px] bg-[rgba(247,246,242,0.1)] p-1.5">
         <span className="inline-flex items-center gap-1 rounded-[120px] border border-[#f7f6f2] px-2 py-1.5">
           <img alt="" src={lightbulbIcon} className="size-3.5 object-contain" draggable={false} />
           <span className="text-[16px] leading-[1.4] text-white" style={{ fontFamily: FONT }}>
@@ -396,7 +382,7 @@ function NearbyCategoryPills({ variant }: { variant: NearbyVariant }) {
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-[120px] bg-[rgba(2,3,29,0.16)] p-1.5">
+    <div className="flex items-center gap-3 rounded-[120px] bg-[rgba(247,246,242,0.1)] p-1.5">
       <span className="inline-flex items-center gap-1 rounded-[120px] bg-[#f7f6f2] px-2 py-1.5">
         <span className="relative size-4 overflow-hidden">
           <img alt="" src={unlockIcon} className="absolute inset-0 size-full object-contain" />

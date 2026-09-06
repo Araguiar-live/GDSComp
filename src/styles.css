@@ -1210,109 +1210,25 @@
   -webkit-backdrop-filter: blur(40px) saturate(180%);
 }
 
-/* In The Area notifications drawer — Figma 1142:34943 Glass (radius 15).
-   Vertical opacity: frost at top (white 40%), dock-like frost at bottom (~5% white).
-   Backdrop blur lives on .crcle-area-inbox-backdrop so chat beneath is sampled. */
-.crcle-area-inbox-glass {
+/* Shared frosted panel — Notification Center body + In The Area drawer */
+.crcle-panel-dropdown {
   position: relative;
   overflow: hidden;
-  background: transparent;
-  box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.22),
-    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+  background: var(--crcle-panel);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  transition:
+    background-color 0.3s ease,
+    backdrop-filter 0.3s ease;
 }
 
-.crcle-area-inbox-backdrop {
-  background: linear-gradient(
-    182deg,
-    rgba(255, 255, 255, 0.4) 25.54%,
-    rgba(255, 255, 255, 0.1) 62%,
-    rgba(255, 255, 255, 0.05) 98.49%
-  );
-  backdrop-filter: blur(40px) saturate(140%);
-  -webkit-backdrop-filter: blur(40px) saturate(140%);
-  transform: translateZ(0);
+.crcle-panel-dropdown:hover {
+  background: rgba(247, 246, 242, 0.1);
 }
 
-.crcle-phone--light .crcle-area-inbox-backdrop {
-  background: linear-gradient(
-    182deg,
-    rgba(253, 252, 251, 0.52) 25%,
-    rgba(253, 252, 251, 0.12) 62%,
-    rgba(247, 246, 242, 0.06) 98%
-  );
-}
-
-.crcle-phone--light .crcle-area-inbox-glass {
-  background: transparent;
-}
-
-.crcle-area-inbox-glass::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.06) 48%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
-  opacity: 0.85;
-}
-
-.crcle-area-inbox-bottom-frost {
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.04) 28%,
-    rgba(255, 255, 255, 0.07) 100%
-  );
-  backdrop-filter: blur(40px) saturate(140%);
-  -webkit-backdrop-filter: blur(40px) saturate(140%);
-  mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.65) 42%, #000 100%);
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.65) 42%, #000 100%);
-}
-
-.crcle-phone--light .crcle-area-inbox-bottom-frost {
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(253, 252, 251, 0.06) 28%,
-    rgba(247, 246, 242, 0.1) 100%
-  );
-}
-
-.crcle-area-inbox-glass::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  z-index: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  padding: 0.5px;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.28) 0%,
-    rgba(255, 255, 255, 0.05) 45%,
-    rgba(255, 255, 255, 0.18) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0.45;
-}
-
-.crcle-area-inbox-glass > *:not(.dock-glass-lens):not(.dock-glass-splay):not(.crcle-area-inbox-bottom-frost):not(.crcle-area-inbox-backdrop) {
-  position: relative;
-  z-index: 1;
+.crcle-phone--light .crcle-panel-dropdown:hover {
+  background: var(--crcle-panel);
 }
 
 /* In The Area nearby notification — Figma 1142:35114 */
