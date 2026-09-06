@@ -165,6 +165,7 @@ type Overlay =
   | "work"
   | "relationship"
   | "location"
+  | "locationInfo"
   | "socials"
   | "verify";
 
@@ -267,6 +268,7 @@ export function CrcleProfile({
                 onOpenWork={() => setOverlay("work")}
                 onOpenRelationship={() => setOverlay("relationship")}
                 onOpenLocation={() => setOverlay("location")}
+                onOpenLocationInfo={() => setOverlay("locationInfo")}
                 onOpenSocials={() => setOverlay("socials")}
                 onOpenVerify={() => setOverlay("verify")}
               />
@@ -374,6 +376,11 @@ export function CrcleProfile({
           </AnimatePresence>
 
           {/* KYC drawer sits outside Presence so backdrop-filter can sample the profile. */}
+          <AnimatePresence>
+            {overlay === "locationInfo" ? (
+              <LocationInfoSheet key="location-info" onClose={() => setOverlay(null)} />
+            ) : null}
+          </AnimatePresence>
           {overlay === "verify" ? (
             <VerificationSheet onClose={() => setOverlay(null)} />
           ) : null}
@@ -391,6 +398,7 @@ function ProfileMainView({
   onOpenWork,
   onOpenRelationship,
   onOpenLocation,
+  onOpenLocationInfo,
   onOpenSocials,
   onOpenVerify,
 }: {
@@ -401,6 +409,7 @@ function ProfileMainView({
   onOpenWork: () => void;
   onOpenRelationship: () => void;
   onOpenLocation: () => void;
+  onOpenLocationInfo: () => void;
   onOpenSocials: () => void;
   onOpenVerify: () => void;
 }) {
@@ -710,7 +719,17 @@ function ProfileMainView({
                   <span className="text-[13px] leading-[1.1] text-[#030426]" style={{ fontFamily: FONT }}>
                     Location
                   </span>
-                  <img alt="" src={bytesizeInfoIcon} className="size-4 object-contain" draggable={false} />
+                  <button
+                    type="button"
+                    aria-label="Location privacy information"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenLocationInfo();
+                    }}
+                    className="flex size-4 shrink-0 items-center justify-center"
+                  >
+                    <img alt="" src={bytesizeInfoIcon} className="size-4 object-contain" draggable={false} />
+                  </button>
                 </span>
                 <div
                   className="relative z-[2] flex w-[165px] items-center justify-between rounded-[24px] py-1 pl-2 pr-1.5"
@@ -1558,6 +1577,81 @@ function WorkEditSheet({
             This helps find common ground and start conversations
           </p>
         </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/** Figma 1007:50201 — Location privacy glass drawer (info on map widget). */
+function LocationInfoSheet({ onClose }: { onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="absolute inset-0 z-40 flex flex-col justify-end overflow-hidden rounded-[53px]"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Location privacy"
+      style={{ clipPath: "inset(0 round 53px)" }}
+    >
+      <button
+        type="button"
+        aria-label="Dismiss location privacy information"
+        className="absolute inset-0 overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.18)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]"
+        onClick={onClose}
+      />
+
+      <motion.div
+        initial={{ y: 48 }}
+        animate={{ y: 0 }}
+        exit={{ y: 36 }}
+        transition={{ duration: 0.32, ease: EASE }}
+        className="dock-glass crcle-location-info-sheet relative z-[1] flex w-full flex-col items-center gap-6 overflow-hidden rounded-bl-[24px] rounded-br-[24px] rounded-tl-[1px] rounded-tr-[1px] border-x border-b border-[rgba(247,246,242,0.6)] px-4 py-6"
+      >
+        <div
+          aria-hidden
+          data-glass-deco
+          className="pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/12 via-transparent to-transparent"
+        />
+        <div className="dock-glass-lens z-0 opacity-25" aria-hidden />
+
+        <img
+          alt=""
+          src={bytesizeInfoIcon}
+          className="absolute left-[14px] top-7 z-[1] size-4 object-contain brightness-0 opacity-40"
+          draggable={false}
+        />
+
+        <img
+          alt="crcle"
+          src={crcleLogo}
+          className="relative z-[1] h-[13px] w-[38px] object-contain brightness-0"
+          draggable={false}
+        />
+
+        <div className="relative z-[1] flex w-full flex-col gap-3">
+          <p className="text-[13px] leading-[1.4] text-[#01010d]" style={{ fontFamily: FONT }}>
+            For your privacy, only your neighborhood or city area is shown—never your exact address or
+            pinpoint position.
+          </p>
+          <div className="h-px w-full bg-[rgba(1,1,13,0.12)]" aria-hidden />
+          <p
+            className="text-center text-[16px] font-medium leading-[1.4] text-[#01010d]"
+            style={{ fontFamily: FONT }}
+          >
+            Designed to connect - Not consume
+          </p>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Close location privacy information"
+          onClick={onClose}
+          className="relative z-[1] mx-auto flex h-3 w-9 touch-none items-center justify-center opacity-80 transition-opacity hover:opacity-100"
+        >
+          <span className="block h-[3px] w-9 rounded-full bg-[rgba(2,4,38,0.35)]" />
+        </button>
       </motion.div>
     </motion.div>
   );

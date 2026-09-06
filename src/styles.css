@@ -1229,6 +1229,22 @@
   z-index: 1;
 }
 
+/* Profile — Location privacy info drawer (Figma 1007:50201) */
+.crcle-location-info-sheet.dock-glass {
+  background: rgba(247, 246, 242, 0.5);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  border-top: none;
+  box-shadow:
+    0 -12px 32px rgba(0, 0, 0, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.35) inset;
+}
+
+.crcle-location-info-sheet > *:not(.dock-glass-lens):not([data-glass-deco]) {
+  position: relative;
+  z-index: 1;
+}
+
 /* In The Area nearby notification — Figma 1142:35114 */
 .crcle-area-nearby-modal {
   background: linear-gradient(
