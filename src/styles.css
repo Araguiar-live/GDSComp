@@ -1357,6 +1357,19 @@
 }
 
 /* Profile — Location privacy info drawer (Figma 1007:50201) */
+@keyframes crcle-location-info-sheet-slide {
+  from {
+    margin-top: -48px;
+  }
+  to {
+    margin-top: 0;
+  }
+}
+
+.crcle-location-info-sheet-enter {
+  animation: crcle-location-info-sheet-slide 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 .crcle-location-info-sheet {
   position: relative;
   overflow: hidden;

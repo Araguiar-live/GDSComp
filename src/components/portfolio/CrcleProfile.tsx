@@ -301,6 +301,11 @@ export function CrcleProfile({
                 onGoToMessages?.();
               }}
             />
+
+            {/* Same layer as scroll + dock so backdrop-filter can sample profile content. */}
+            {overlay === "locationInfo" ? (
+              <LocationInfoSheet onClose={() => setOverlay(null)} />
+            ) : null}
           </div>
 
           <AnimatePresence>
@@ -375,12 +380,6 @@ export function CrcleProfile({
             ) : null}
           </AnimatePresence>
 
-          {/* KYC drawer sits outside Presence so backdrop-filter can sample the profile. */}
-          <AnimatePresence>
-            {overlay === "locationInfo" ? (
-              <LocationInfoSheet key="location-info" onClose={() => setOverlay(null)} />
-            ) : null}
-          </AnimatePresence>
           {overlay === "verify" ? (
             <VerificationSheet onClose={() => setOverlay(null)} />
           ) : null}
@@ -1590,22 +1589,15 @@ function LocationInfoSheet({ onClose }: { onClose: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label="Location privacy"
-      style={{ clipPath: "inset(0 round 53px)" }}
     >
       <button
         type="button"
         aria-label="Dismiss location privacy information"
-        className="absolute inset-0 overflow-hidden rounded-[53px] bg-black/20"
+        className="absolute inset-0 bg-black/20"
         onClick={onClose}
       />
 
-      <motion.div
-        initial={{ marginTop: -48 }}
-        animate={{ marginTop: 0 }}
-        exit={{ marginTop: -36 }}
-        transition={{ duration: 0.32, ease: EASE }}
-        className="relative z-[1] w-full"
-      >
+      <div className="crcle-location-info-sheet-enter relative z-[1] w-full">
         <div className="crcle-location-info-sheet flex w-full flex-col items-center gap-6 overflow-hidden rounded-bl-[24px] rounded-br-[24px] rounded-tl-[1px] rounded-tr-[1px] px-4 py-6">
           <div aria-hidden className="crcle-location-info-sheet-frost rounded-[inherit]" />
           <div aria-hidden className="crcle-location-info-sheet-lens rounded-[inherit]" />
@@ -1648,7 +1640,7 @@ function LocationInfoSheet({ onClose }: { onClose: () => void }) {
           <span className="block h-[3px] w-9 rounded-full bg-[rgba(2,4,38,0.35)]" />
         </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
