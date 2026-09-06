@@ -212,7 +212,7 @@ export function CrcleProfile({
         <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211]">
           <div className="relative min-h-0 flex-1">
             {/* Absolute scroll so the dock can sample this layer for backdrop-filter */}
-            <div className="absolute inset-0 overflow-x-hidden overflow-y-auto px-3 pb-28 pt-[86px]">
+            <div className="absolute inset-0 overflow-x-hidden overflow-y-auto px-3 pb-28 pt-[94px]">
               <ProfileMainView
                 profile={profile}
                 socialCount={socialCount}
@@ -233,7 +233,7 @@ export function CrcleProfile({
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
               <div className="bg-gradient-to-b from-[#010211] from-40% via-[#010211]/85 to-transparent pb-8">
                 <StatusBar />
-                <div className="mt-[5px] flex justify-center pb-1">
+                <div className="mt-[5px] flex justify-center pb-[12px]">
                   <IconImg src={crcleLogo} className="h-[13px] w-[38px]" />
                 </div>
               </div>

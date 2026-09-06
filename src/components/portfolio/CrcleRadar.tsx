@@ -314,7 +314,7 @@ export function CrcleRadar({
         >
           {isNoc ? <NocDotField /> : null}
           <StatusBar />
-          <div className="relative z-[1] mt-[5px] flex shrink-0 justify-center pb-1">
+          <div className="relative z-[1] mt-[5px] flex shrink-0 justify-center pb-[12px]">
             <IconImg src={crcleLogo} className="crcle-theme-icon h-[13px] w-[38px]" />
           </div>
 

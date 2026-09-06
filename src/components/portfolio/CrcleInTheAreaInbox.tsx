@@ -58,7 +58,7 @@ export function CrcleInTheAreaInbox({
             <IconBox src={batteryIcon} className="h-[13px] w-[27.328px]" />
           </div>
         </div>
-        <IconBox src={crcleLogo} className="mb-1 h-[9px] w-[26px]" />
+        <IconBox src={crcleLogo} className="mb-[12px] h-[9px] w-[26px]" />
       </div>
 
       <div
