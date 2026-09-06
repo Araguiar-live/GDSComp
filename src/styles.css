@@ -1269,39 +1269,39 @@
   background: #02031d;
 }
 
-/* Phone primary dock — white glyphs on dark; dark glyphs on light phone */
+/* Phone primary dock — CRCLE black (#02031d) glyphs; invert to cream only on dark phone */
 .crcle-primary-dock .crcle-dock-icon {
-  filter: brightness(0) invert(1) opacity(0.85);
+  filter: brightness(0) opacity(0.72);
 }
 
 .crcle-primary-dock button[aria-current="page"] .crcle-dock-icon {
-  filter: brightness(0) invert(1) opacity(1);
+  filter: brightness(0) opacity(1);
 }
 
 .crcle-primary-dock .crcle-signal-bars > span {
-  background: rgba(247, 246, 242, 0.55);
+  background: rgba(2, 3, 29, 0.45);
 }
 
 .crcle-primary-dock .crcle-signal-bars.is-active > span,
 .crcle-primary-dock button[aria-current="page"] .crcle-signal-bars > span {
-  background: #f7f6f2;
-}
-
-.crcle-phone--light .crcle-primary-dock .crcle-dock-icon {
-  filter: brightness(0) opacity(0.72);
-}
-
-.crcle-phone--light .crcle-primary-dock button[aria-current="page"] .crcle-dock-icon {
-  filter: brightness(0) opacity(1);
-}
-
-.crcle-phone--light .crcle-primary-dock .crcle-signal-bars > span {
-  background: rgba(2, 3, 29, 0.45);
-}
-
-.crcle-phone--light .crcle-primary-dock .crcle-signal-bars.is-active > span,
-.crcle-phone--light .crcle-primary-dock button[aria-current="page"] .crcle-signal-bars > span {
   background: #02031d;
+}
+
+.crcle-phone:not(.crcle-phone--light) .crcle-primary-dock .crcle-dock-icon {
+  filter: brightness(0) invert(1) opacity(0.85);
+}
+
+.crcle-phone:not(.crcle-phone--light) .crcle-primary-dock button[aria-current="page"] .crcle-dock-icon {
+  filter: brightness(0) invert(1) opacity(1);
+}
+
+.crcle-phone:not(.crcle-phone--light) .crcle-primary-dock .crcle-signal-bars > span {
+  background: rgba(247, 246, 242, 0.55);
+}
+
+.crcle-phone:not(.crcle-phone--light) .crcle-primary-dock .crcle-signal-bars.is-active > span,
+.crcle-phone:not(.crcle-phone--light) .crcle-primary-dock button[aria-current="page"] .crcle-signal-bars > span {
+  background: #f7f6f2;
 }
 
 /* Signal Panel — matching white frosted sheet above the dock */
