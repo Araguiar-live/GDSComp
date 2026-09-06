@@ -1,5 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import areaPinIcon from "@/assets/crcle/mood/area-pin.svg";
+import radarTwoIcon from "@/assets/crcle/mood/radar-two.svg";
 import navHomeIcon from "@/assets/crcle/nav-home.svg";
 import navMessageIcon from "@/assets/crcle/nav-message-figma.svg";
 import navRadarIcon from "@/assets/crcle/nav-radar.svg";
@@ -7,6 +9,7 @@ import navUserIcon from "@/assets/crcle/nav-user-figma.svg";
 import arrowLeftIcon from "@/assets/crcle/arrow-left.svg";
 import moreHorizIcon from "@/assets/crcle/more-horiz.svg";
 import moreDotsIcon from "@/assets/crcle/more-dots.svg";
+import { useCrcleBroadcast, useCrcleIncognito } from "@/components/portfolio/crcleBroadcast";
 
 export type CrcleDockTab = "profile" | "signal" | "messages";
 
@@ -41,6 +44,9 @@ export function CrclePrimaryDock({
   const [hovered, setHovered] = useState(false);
   const [pinnedOpen, setPinnedOpen] = useState(false);
   const [forceClosed, setForceClosed] = useState(false);
+  const [broadcastMood] = useCrcleBroadcast();
+  const [isIncognito] = useCrcleIncognito();
+  const showAreaRadar = broadcastMood === "in_the_area" && !isIncognito;
   const controlled = signalOpenProp !== undefined;
   const signalOpen = controlled ? signalOpenProp : pinnedOpen;
   const panelVisible = !forceClosed && (hovered || Boolean(signalOpen));
@@ -63,8 +69,8 @@ export function CrclePrimaryDock({
     <div
       className={
         embedded
-          ? "pointer-events-none relative mx-auto flex w-[134.4px] flex-col items-center gap-3"
-          : "pointer-events-none absolute bottom-5 left-0 right-0 z-20 mx-auto flex w-[134.4px] flex-col items-center gap-3"
+          ? "pointer-events-none relative mx-auto flex w-[134.4px] flex-col items-center gap-3 overflow-visible"
+          : "pointer-events-none absolute bottom-5 left-0 right-0 z-20 mx-auto flex w-[134.4px] flex-col items-center gap-3 overflow-visible"
       }
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => {
@@ -72,6 +78,43 @@ export function CrclePrimaryDock({
         setForceClosed(false);
       }}
     >
+      <AnimatePresence>
+        {showAreaRadar ? (
+          <motion.button
+            key="area-radar"
+            type="button"
+            aria-label="In The Area — open radar"
+            initial={{ opacity: 0, scale: 0.86, x: 10 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.9, x: 8 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            onClick={onRadar}
+            className="pointer-events-auto absolute bottom-0 right-full mr-1 flex items-start overflow-visible"
+          >
+            <span className="relative mr-[-12px] flex w-11 shrink-0 items-center justify-center rounded-[46px] bg-[rgba(247,246,242,0.4)] p-2.5">
+              <span className="relative size-6 shrink-0 overflow-hidden">
+                <img
+                  alt=""
+                  src={radarTwoIcon}
+                  className="absolute inset-0 size-full max-w-none object-contain"
+                  draggable={false}
+                />
+              </span>
+            </span>
+            <span className="relative z-[1] flex size-5 shrink-0 flex-col items-center justify-center rounded-[64px] bg-[rgba(17,223,89,0.8)] p-1">
+              <span className="relative h-3 w-[7px] shrink-0 overflow-hidden">
+                <img
+                  alt=""
+                  src={areaPinIcon}
+                  className="absolute inset-0 size-full max-w-none object-contain"
+                  draggable={false}
+                />
+              </span>
+            </span>
+          </motion.button>
+        ) : null}
+      </AnimatePresence>
+
       <AnimatePresence>
         {panelVisible ? (
           <motion.div

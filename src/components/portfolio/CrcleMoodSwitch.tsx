@@ -193,6 +193,9 @@ export function CrcleMoodSwitch({
                   onClick={() => {
                     if (isIncognito) return;
                     setActiveState(m.id);
+                    if (m.id === "in_the_area") {
+                      window.setTimeout(onClose, 280);
+                    }
                   }}
                   onMouseEnter={() => setHoveredMood(m.id)}
                   onMouseLeave={() => setHoveredMood(null)}
