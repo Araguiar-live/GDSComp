@@ -732,7 +732,7 @@ function ProfileMainView({
                   </button>
                 </span>
                 <div
-                  className="relative z-[2] flex w-[165px] items-center justify-between rounded-[24px] py-1 pl-2 pr-1.5"
+                  className="relative z-[2] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1.5 backdrop-blur-[4px]"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
@@ -751,7 +751,7 @@ function ProfileMainView({
                           : "justify-start bg-[rgba(2,4,38,0.25)]"
                       }`}
                     >
-                      <span className="size-2 rounded bg-[#fefefe]" />
+                      <span className="size-2 rounded-[4px] bg-[#fefefe]" />
                     </span>
                   </button>
                 </div>
