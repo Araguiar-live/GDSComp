@@ -59,7 +59,7 @@ export function AreaNearbyNotificationModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="pointer-events-auto absolute inset-0 z-[50] flex items-end justify-center overflow-hidden rounded-[53px] px-3 pb-[104px] pt-8"
+      className="pointer-events-auto absolute inset-0 z-[50] overflow-hidden rounded-[53px]"
       style={{ clipPath: "inset(0 round 53px)" }}
       role="dialog"
       aria-modal="true"
@@ -77,9 +77,18 @@ export function AreaNearbyNotificationModal({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.98 }}
         transition={SPRING}
-        className="crcle-area-nearby-modal relative z-[1] flex w-full max-w-[360px] flex-col items-center gap-4 rounded-[52px] border border-white/80 p-6"
+        className="absolute inset-x-2 bottom-[76px] z-[1] flex justify-center"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="dock-glass relative flex w-full max-w-[360px] flex-col items-center gap-4 overflow-hidden rounded-[52px] p-6 shadow-2xl">
+          <div
+            aria-hidden
+            data-glass-deco
+            className="pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/12 via-transparent to-transparent"
+          />
+          <div className="dock-glass-lens z-0 opacity-25" aria-hidden />
+
+        <div className="relative z-[1] flex w-full flex-col items-center gap-4">
         <div className="flex w-full flex-col items-center gap-6">
           <span className="flex size-5 items-center justify-center rounded-[64px] bg-[rgba(17,223,89,0.8)] p-1">
             <span className="relative h-3 w-[7px] overflow-hidden">
@@ -195,6 +204,8 @@ export function AreaNearbyNotificationModal({
         <p className="w-full text-center text-[10px] font-medium leading-normal text-[#9ca3af]" style={{ fontFamily: FONT }}>
           No exact location shared · double opt-in required
         </p>
+        </div>
+        </div>
       </motion.div>
     </motion.div>
   );
