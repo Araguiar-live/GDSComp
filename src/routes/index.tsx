@@ -91,6 +91,18 @@ const PROJECTS: Project[] = [
             onGoToRadar={() => goToTab("Brand Personality")}
           />
         ),
+        featureCopy: {
+          label: "CRCLE — In The Area",
+          subtitle: "Nearby connections without sacrificing location privacy",
+          overview:
+            "An ambient social radar designed to surface nearby connections without sacrificing user location privacy. By leveraging venue-based proximity detection instead of raw GPS coordinates, the feature highlights shared context and mutual intent through dense, low-friction profile cards.",
+          challenge:
+            "People want to know who is actually around them, but live GPS sharing feels like surveillance — so most proximity products never get turned on.",
+          approach:
+            "Detect shared venues instead of coordinates. Cards carry intent and context — same place, privacy protected — so proximity reads as social, not a map pin on a stranger.",
+          outcome:
+            "In The Area turns ambient presence into a conversation: venue-based detection, protected location, and dense profile cards that surface mutual intent without asking for a live fix.",
+        },
       },
       "Template Library": {
         tabLabel: "Profile",

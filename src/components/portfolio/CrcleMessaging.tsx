@@ -45,6 +45,7 @@ import { CrcleMoodSwitch } from "@/components/portfolio/CrcleMoodSwitch";
 import {
   consumeAreaInboxOnMessaging,
   consumeMoodSwitchOnMessaging,
+  setCrcleAreaInboxOpen,
   subscribeCrcleBroadcast,
 } from "@/components/portfolio/crcleBroadcast";
 import {
@@ -221,7 +222,16 @@ export function CrcleMessaging({
   const [locusOpen, setLocusOpen] = useState(false);
   const [signalCard, setSignalCard] = useState<SignalCardModel | null>(null);
   const [moodOpen, setMoodOpen] = useState(false);
-  const [areaInbox, setAreaInbox] = useState<"off" | "screen" | "drawer">("off");
+  const [areaInbox, setAreaInboxState] = useState<"off" | "screen" | "drawer">("off");
+
+  const setAreaInbox = useCallback((next: "off" | "screen" | "drawer") => {
+    setAreaInboxState(next);
+    setCrcleAreaInboxOpen(next !== "off");
+  }, []);
+
+  useEffect(() => {
+    return () => setCrcleAreaInboxOpen(false);
+  }, []);
 
   const openAreaInbox = useCallback(() => {
     setMoodOpen(false);
@@ -230,7 +240,7 @@ export function CrcleMessaging({
     setPhase("inbox");
     setNotificationsOpen(false);
     setAreaInbox("screen");
-  }, []);
+  }, [setAreaInbox]);
 
   useEffect(() => {
     const tryOpen = () => {

@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { forwardRef, useState, type MutableRefObject } from "react";
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
+import { useCrcleAreaInboxOpen } from "@/components/portfolio/crcleBroadcast";
 
 // Tabs shown inside every expanded project row.
 // Add/remove entries here to change the case-study steps globally.
@@ -22,18 +23,22 @@ export interface Project {
   content?: Partial<Record<Tab, ProjectTabContent>>;
 }
 
-export interface ProjectTabContent {
-  /** Optional pill label in the accordion tab switcher (defaults to the tab key). */
-  tabLabel?: string;
+export type CaseStudyText = {
   label?: string;
   subtitle?: string;
-  /** Short lede under the title — edit per case study */
   overview?: string;
   challenge?: string;
   approach?: string;
   outcome?: string;
+};
+
+export interface ProjectTabContent extends CaseStudyText {
+  /** Optional pill label in the accordion tab switcher (defaults to the tab key). */
+  tabLabel?: string;
   hypothesis?: string;
   notes?: string;
+  /** Nested prototype copy — e.g. In The Area on the Messaging Hub tab. */
+  featureCopy?: CaseStudyText;
   // Slot for your live interactive prototype / mockup asset.
   mockup?: React.ReactNode;
   // Optional: fully replace the default two-column body with a custom render.
@@ -241,29 +246,37 @@ function CaseStudyCopy({
   tab: Tab;
   content: ProjectTabContent;
 }) {
+  const areaInboxOpen = useCrcleAreaInboxOpen();
+  const featureActive =
+    project.slug === "crcle" && tab === "Sign Up" && areaInboxOpen && Boolean(content.featureCopy);
+  const copy: CaseStudyText = featureActive ? { ...content, ...content.featureCopy } : content;
+
   const overview =
-    content.overview ??
+    copy.overview ??
     `Replace this overview for ${project.title}. One or two sentences on what this step in the case study is about and why it matters.`;
   const challenge =
-    content.challenge ??
+    copy.challenge ??
     "Replace this challenge — the user problem, business constraint, or friction that framed the work.";
   const approach =
-    content.approach ??
+    copy.approach ??
     content.hypothesis ??
     "Replace this approach — principles, flows, and decisions that shaped the solution.";
   const outcome =
-    content.outcome ??
+    copy.outcome ??
     content.notes ??
     "Replace this outcome — what shipped, what you learned, and what you’d iterate next.";
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-[36px] py-0">
+    <div
+      key={featureActive ? "in-the-area" : "tab"}
+      className="flex w-full min-w-0 flex-col gap-[36px] py-0"
+    >
       <div className="flex flex-col gap-5">
         <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-400">
-          {content.label ?? `${project.title} — ${tab}`}
+          {copy.label ?? `${project.title} — ${tab}`}
         </span>
         <h3 className="text-3xl font-medium leading-[1.15] tracking-tight text-zinc-900 md:text-[40px]">
-          {content.subtitle ?? "Case study headline — edit me"}
+          {copy.subtitle ?? "Case study headline — edit me"}
         </h3>
         <p className="text-base leading-8 text-zinc-500">{overview}</p>
       </div>

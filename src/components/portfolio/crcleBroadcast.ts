@@ -10,6 +10,7 @@ let broadcastState: BroadcastState = "open_day";
 let incognitoState = false;
 let pendingMoodSwitch = false;
 let pendingAreaInbox = false;
+let areaInboxOpen = false;
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -58,6 +59,25 @@ export function consumeAreaInboxOnMessaging() {
   const pending = pendingAreaInbox;
   pendingAreaInbox = false;
   return pending;
+}
+
+/** True while the In The Area overlay is on the Messaging Hub prototype. */
+export function getCrcleAreaInboxOpen(): boolean {
+  return areaInboxOpen;
+}
+
+export function setCrcleAreaInboxOpen(next: boolean) {
+  if (next === areaInboxOpen) return;
+  areaInboxOpen = next;
+  emit();
+}
+
+export function useCrcleAreaInboxOpen(): boolean {
+  return useSyncExternalStore(
+    subscribeCrcleBroadcast,
+    getCrcleAreaInboxOpen,
+    getCrcleAreaInboxOpen,
+  );
 }
 
 export function subscribeCrcleBroadcast(listener: () => void) {
