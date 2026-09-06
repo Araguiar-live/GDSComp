@@ -646,6 +646,68 @@
   background: rgba(247, 246, 242, 0.28);
 }
 
+.crcle-intent-chip.is-lit-green {
+  background: rgba(17, 223, 89, 0.12);
+}
+
+.crcle-intent-chip.is-lit-green::before {
+  background: linear-gradient(
+    155deg,
+    rgba(17, 223, 89, 0.22) 0%,
+    rgba(17, 223, 89, 0.06) 32%,
+    transparent 55%
+  );
+}
+
+.crcle-intent-chip.is-lit-green .crcle-intent-chip__icon img {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(520%)
+    hue-rotate(93deg) brightness(98%) contrast(92%);
+}
+
+/* Fully tuned signal bars — Figma 257:67366 pulsing halo */
+.crcle-signal-bars-glow {
+  width: 54px;
+  height: 54px;
+}
+
+.crcle-signal-bars-glow::before,
+.crcle-signal-bars-glow::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.crcle-signal-bars-glow::before {
+  width: 54px;
+  height: 55px;
+  border: 1px solid rgba(15, 201, 80, 0.35);
+  animation: crcle-signal-halo-pulse 2.4s ease-in-out infinite;
+}
+
+.crcle-signal-bars-glow::after {
+  width: 35px;
+  height: 35px;
+  border: 1px solid rgba(15, 201, 80, 0.55);
+  animation: crcle-signal-halo-pulse 2.4s ease-in-out infinite 0.35s;
+}
+
+@keyframes crcle-signal-halo-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    scale: 0.96;
+  }
+  50% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
 /* Lighter fill — Pulse / chrome that sits on dark photo */
 .crcle-intent-chip--soft {
   background: rgba(247, 246, 242, 0.14);

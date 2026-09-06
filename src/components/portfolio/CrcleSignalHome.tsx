@@ -33,6 +33,7 @@ import {
   CrclePrimaryDock,
 } from "@/components/portfolio/CrcleChrome";
 import { requestAreaInboxOnMessaging } from "@/components/portfolio/crcleBroadcast";
+import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
 import { SignalTuneDrawer } from "@/components/portfolio/SignalTuneDrawer";
 
 /**
@@ -59,16 +60,19 @@ export function CrcleSignalHome({
   const [tuneOpen, setTuneOpen] = useState(false);
   const [locationOpen, setLocationOpen] = useState(false);
   const [locationDone, setLocationDone] = useState(false);
+  const [intentOpen, setIntentOpen] = useState(false);
+  const [intentDone, setIntentDone] = useState(false);
   const [signalStrength, setSignalStrength] = useState(10);
   /* Figma 322:118233 — Signal Features overlay on light Daily 3 */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
   /* Light default matches Signal Onboarding - Light; sun flips to dark Daily 3 */
   const [isLightMode, setIsLightMode] = useState(true);
-  /** Fine-tune drawer completed (stage 3) */
+  /** Fine-tune drawer completed */
   const tuned = signalStrength >= 90;
-  /** Stage 1 photo → 1 bar; stage 2 location → 2 bars; fine-tune → 3 bars */
+  /** Stage 1 photo → 1 bar; stage 2 location → 2 bars; intent tune → 3 bars */
   const activeBars =
-    screen !== "photo" ? 0 : tuned ? 3 : locationDone ? 2 : 1;
+    screen !== "photo" ? 0 : intentDone ? 3 : locationDone ? 2 : 1;
+  const signalLive = intentDone;
 
   const dismissOnboarding = useCallback(() => {
     setOnboardingOpen(false);
@@ -101,6 +105,14 @@ export function CrcleSignalHome({
             onSave={() => setSignalStrength(100)}
             backdropImage={screen === "photo" ? dropPhoto : undefined}
           />
+          <IntentTuneModal
+            open={intentOpen}
+            onClose={() => setIntentOpen(false)}
+            onSave={() => {
+              setIntentDone(true);
+              setSignalStrength(100);
+            }}
+          />
           <AnimatePresence>
             {locationOpen ? (
               <LocationRequiredModal
@@ -125,7 +137,9 @@ export function CrcleSignalHome({
                   setScreen("empty");
                   setSignalStrength(10);
                   setLocationDone(false);
+                  setIntentDone(false);
                   setLocationOpen(false);
+                  setIntentOpen(false);
                   setTuneOpen(false);
                 }}
               />
@@ -140,7 +154,7 @@ export function CrcleSignalHome({
                 {isLightMode ? "03:40" : "00:40"}
               </p>
               <p
-                className="text-[11px] leading-[1.4] tracking-[0.35em] text-[rgba(247,246,242,0.4)] transition-colors duration-300 [.crcle-phone--light_&]:text-[rgba(2,3,29,0.1)]"
+                className="text-[11px] leading-[1.4] tracking-[0.35em] text-[rgba(247,246,242,0.48)] transition-colors duration-300 [.crcle-phone--light_&]:text-[rgba(2,3,29,0.12)]"
                 style={{ fontFamily: FONT }}
               >
                 HRS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MIN
@@ -347,7 +361,11 @@ export function CrcleSignalHome({
                     </OverlayToolButton>
                   </div>
                   <div className="pointer-events-auto">
-                    <OverlayToolButton ariaLabel="Intent">
+                    <OverlayToolButton
+                      ariaLabel="Intent"
+                      onClick={() => setIntentOpen(true)}
+                      lit={intentDone || intentOpen}
+                    >
                       <div className="flex items-center gap-[2.9px]">
                         <span className="h-[12.3px] w-[4.8px] rounded-[4.7px] border border-[#f7f6f2] bg-[#f7f6f2]" />
                         <span className="h-[20.4px] w-[5.2px] rounded-[4.7px] bg-[#f7f6f2]" />
@@ -367,7 +385,13 @@ export function CrcleSignalHome({
                       <span className="size-1.5 rounded-full bg-white/40" />
                     </div>
                     <div className="absolute bottom-0 right-0">
-                      <OverlayToolButton ariaLabel="Pulse" size={36} soft>
+                      <OverlayToolButton
+                        ariaLabel="Pulse"
+                        size={36}
+                        soft
+                        lit={signalLive}
+                        greenLit={signalLive}
+                      >
                         <IconImg src={pulseIcon} className="size-6" />
                       </OverlayToolButton>
                     </div>
@@ -380,6 +404,7 @@ export function CrcleSignalHome({
               tone={screen === "photo" ? "live" : "neutral"}
               activeBars={activeBars}
               isLight={isLightMode}
+              glow={signalLive}
             />
           </div>
 
@@ -571,6 +596,7 @@ function OverlayToolButton({
   size = 46,
   soft = false,
   lit = false,
+  greenLit = false,
 }: {
   children: ReactNode;
   ariaLabel: string;
@@ -578,6 +604,7 @@ function OverlayToolButton({
   size?: number;
   soft?: boolean;
   lit?: boolean;
+  greenLit?: boolean;
 }) {
   const rimId = `signal-overlay-rim-${ariaLabel.toLowerCase().replace(/\s+/g, "-")}`;
   const mid = size / 2;
@@ -590,7 +617,7 @@ function OverlayToolButton({
       onClick={onClick}
       className={`crcle-intent-chip relative z-[1] flex shrink-0 items-center justify-center rounded-full p-1${
         soft ? " crcle-intent-chip--soft" : ""
-      }${lit ? " is-lit" : ""}`}
+      }${lit ? " is-lit" : ""}${greenLit ? " is-lit-green" : ""}`}
       style={{ width: size, height: size }}
     >
       {/* Glass crescent rim — same treatment as Radar intent chips */}
@@ -830,14 +857,16 @@ function FooterSignal({
   tone,
   activeBars = 0,
   isLight = false,
+  glow = false,
 }: {
   tone: "neutral" | "live";
   activeBars?: number;
   isLight?: boolean;
+  glow?: boolean;
 }) {
   return (
     <div className="flex w-full flex-col items-center gap-4 px-3">
-      <SignalBars tone={tone} activeBars={activeBars} isLight={isLight} />
+      <SignalBars tone={tone} activeBars={activeBars} isLight={isLight} glow={glow} />
       <p
         className="max-w-[392px] text-center text-[11px] leading-[1.4] text-[#b1b1bc]"
         style={{ fontFamily: FONT }}
@@ -917,39 +946,50 @@ function SignalBars({
   tone = "neutral",
   activeBars = 0,
   isLight = false,
+  glow = false,
 }: {
   tone?: "neutral" | "live";
   activeBars?: number;
   isLight?: boolean;
+  glow?: boolean;
 }) {
+  const allLit = glow && activeBars >= 3;
+
   return (
-    <div className="flex h-[30.6px] items-center gap-[4.9px]" aria-hidden>
-      {SIGNAL_WIDTHS.map((width, i) => {
-        const { heights, times, duration } = buildSignalKeyframes(i);
-        const lit = i < activeBars;
-        const barClass = lit
-          ? "bg-[#0fc950]"
-          : tone === "live"
-            ? "bg-[rgba(15,201,80,0.2)]"
-            : isLight
-              ? "bg-black/20"
-              : "bg-[rgba(247,246,242,0.3)]";
-        return (
-          <motion.span
-            key={`${tone}-${activeBars}-${isLight}-${i}`}
-            className={`block shrink-0 rounded-[8px] ${barClass}`}
-            style={{ width }}
-            initial={{ height: heights[0] }}
-            animate={{ height: heights }}
-            transition={{
-              duration,
-              repeat: Infinity,
-              ease: "easeInOut",
-              times,
-            }}
-          />
-        );
-      })}
+    <div
+      className={`relative flex h-[30.6px] items-center justify-center ${allLit ? "crcle-signal-bars-glow px-[8px] py-[11px]" : ""}`}
+      aria-hidden
+    >
+      <div className={`flex items-center gap-[4.9px] ${allLit ? "relative z-[1]" : ""}`}>
+        {SIGNAL_WIDTHS.map((width, i) => {
+          const { heights, times, duration } = buildSignalKeyframes(i);
+          const lit = i < activeBars;
+          const barClass = lit
+            ? allLit
+              ? "border border-[#e7fcee] bg-[#0fc950]"
+              : "bg-[#0fc950]"
+            : tone === "live"
+              ? "bg-[rgba(15,201,80,0.2)]"
+              : isLight
+                ? "bg-black/20"
+                : "bg-[rgba(247,246,242,0.3)]";
+          return (
+            <motion.span
+              key={`${tone}-${activeBars}-${isLight}-${glow}-${i}`}
+              className={`block shrink-0 rounded-[8px] ${barClass}`}
+              style={{ width }}
+              initial={{ height: heights[0] }}
+              animate={{ height: heights }}
+              transition={{
+                duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+                times,
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
