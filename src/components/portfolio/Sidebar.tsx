@@ -21,7 +21,7 @@ const FONT_MONO =
 export const SIDEBAR_PANEL_ID = "profile-sidebar-panel";
 
 const CONTACT = {
-  email: "hello@example.com",
+  email: "A.rafaela.aguiar@outlook.com",
   phone: "+44 0000 000000",
   linkedin: "https://www.linkedin.com/",
   github: "https://github.com/",
