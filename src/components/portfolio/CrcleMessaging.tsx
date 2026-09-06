@@ -484,13 +484,7 @@ export function CrcleMessaging({
 
         <AnimatePresence>
           {moodOpen ? (
-            <CrcleMoodSwitch
-              onClose={() => setMoodOpen(false)}
-              onConnectNearby={() => {
-                setMoodOpen(false);
-                openSignal(CONNECTION_PROFILES[1]);
-              }}
-            />
+            <CrcleMoodSwitch onClose={() => setMoodOpen(false)} />
           ) : null}
         </AnimatePresence>
 
