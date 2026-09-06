@@ -55,27 +55,24 @@ export function AreaNearbyNotificationModal({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <div
       className="pointer-events-auto absolute inset-0 z-[50] overflow-hidden rounded-[53px]"
       style={{ clipPath: "inset(0 round 53px)" }}
       role="dialog"
       aria-modal="true"
       aria-label="Nearby connection"
     >
-      <motion.button
+      <button
         type="button"
         aria-label="Dismiss"
-        className="absolute inset-0 bg-black/40 backdrop-blur-[6px]"
+        className="absolute inset-0 bg-black/40"
         onClick={onDismiss}
       />
 
       <motion.div
-        initial={{ opacity: 0, y: 28, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 20, scale: 0.98 }}
+        initial={{ marginBottom: -28 }}
+        animate={{ marginBottom: 0 }}
+        exit={{ marginBottom: -20 }}
         transition={SPRING}
         className="absolute inset-x-2 bottom-2 z-[1] flex justify-center"
         onClick={(e) => e.stopPropagation()}
@@ -203,7 +200,7 @@ export function AreaNearbyNotificationModal({
         </div>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
 

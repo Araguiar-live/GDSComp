@@ -1309,11 +1309,13 @@
   z-index: 1;
 }
 
-/* Nearby notification modal — Figma 1142:35114 frost + lens over hub */
+/* Nearby notification modal — Figma 1142:35114 */
 .crcle-nearby-modal-glass {
   position: relative;
   overflow: hidden;
-  background: transparent;
+  background: rgba(2, 3, 29, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.28),
@@ -1330,10 +1332,8 @@
     165deg,
     rgba(255, 255, 255, 0.14) 0%,
     rgba(255, 255, 255, 0.05) 42%,
-    rgba(2, 3, 29, 0.38) 100%
+    rgba(2, 3, 29, 0.2) 100%
   );
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
 }
 
 .crcle-nearby-modal-glass-lens {
@@ -1356,12 +1356,13 @@
   z-index: 1;
 }
 
-/* Profile — Location privacy info drawer (Figma 1007:50201)
-   Frost plate samples profile beneath; lens + dispersion rim simulate refraction. */
+/* Profile — Location privacy info drawer (Figma 1007:50201) */
 .crcle-location-info-sheet {
   position: relative;
   overflow: hidden;
-  background: transparent;
+  background: rgba(247, 246, 242, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.22),
@@ -1376,13 +1377,10 @@
   pointer-events: none;
   background: linear-gradient(
     165deg,
-    rgba(255, 255, 255, 0.32) 0%,
-    rgba(247, 246, 242, 0.22) 48%,
-    rgba(255, 255, 255, 0.1) 100%
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(247, 246, 242, 0.12) 48%,
+    rgba(255, 255, 255, 0.06) 100%
   );
-  backdrop-filter: blur(24px) saturate(150%);
-  -webkit-backdrop-filter: blur(24px) saturate(150%);
-  filter: url("#crcle-location-info-glass");
 }
 
 .crcle-location-info-sheet-frost::before {
