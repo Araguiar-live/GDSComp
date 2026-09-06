@@ -906,29 +906,38 @@ function StatusBar() {
 /** Figma Frame 2147225187 — Default → Variant7 height cycle (middle stays full). */
 const SIGNAL_FRAMES: readonly [number, number, number][] = [
   [18.4, 30.6, 18.4],
-  [10, 30.6, 18.4],
-  [18.4, 30.6, 11],
+  [14, 30.6, 18.4],
+  [18.4, 30.6, 14],
   [15, 30.6, 18.4],
-  [18.4, 30.6, 8],
-  [7, 30.6, 15],
+  [18.4, 30.6, 12],
+  [14, 30.6, 15],
   [14, 30.6, 15],
 ];
-const SIGNAL_WIDTHS = [9, 9.2, 9] as const;
+/** Same proportions as the signal-strength overlay chip, scaled for the footer row. */
+const SIGNAL_BAR_WIDTHS = [6, 6.4, 6] as const;
+const SIGNAL_BAR_HEIGHTS = [12, 20, 12] as const;
+const SIGNAL_FOOTER_SCALE = 1.55;
+const SIGNAL_GLOW_FRAMES: readonly [number, number, number][] = [
+  [18.4, 30.6, 18.4],
+  [16, 30.6, 17],
+  [18.4, 28, 18.4],
+  [17, 30.6, 18.4],
+];
 /** 200ms hold per Figma variant + soft morph into the next */
 const SIGNAL_HOLD_S = 0.2;
 const SIGNAL_MOVE_S = 0.55;
 const SIGNAL_STEP_S = SIGNAL_HOLD_S + SIGNAL_MOVE_S;
 
-function buildSignalKeyframes(barIndex: number) {
+function buildSignalKeyframes(barIndex: number, frames: readonly [number, number, number][]) {
   const heights: number[] = [];
   const times: number[] = [];
-  const n = SIGNAL_FRAMES.length;
+  const n = frames.length;
   const total = n * SIGNAL_STEP_S;
 
   for (let i = 0; i < n; i++) {
     const holdStart = (i * SIGNAL_STEP_S) / total;
     const holdEnd = (i * SIGNAL_STEP_S + SIGNAL_HOLD_S) / total;
-    const h = SIGNAL_FRAMES[i][barIndex];
+    const h = frames[i][barIndex];
     heights.push(h);
     times.push(holdStart);
     heights.push(h);
@@ -936,7 +945,7 @@ function buildSignalKeyframes(barIndex: number) {
   }
 
   // Close the loop gently back to the first frame
-  heights.push(SIGNAL_FRAMES[0][barIndex]);
+  heights.push(frames[0][barIndex]);
   times.push(1);
 
   return { heights, times, duration: total };
@@ -957,12 +966,13 @@ function SignalBars({
 
   return (
     <div
-      className={`relative flex h-[30.6px] items-center justify-center ${allLit ? "crcle-signal-bars-glow px-[8px] py-[11px]" : ""}`}
+      className={`relative flex h-[30.6px] items-center justify-center ${allLit ? "crcle-signal-bars-glow" : ""}`}
       aria-hidden
     >
-      <div className={`flex items-center gap-[4.9px] ${allLit ? "relative z-[1]" : ""}`}>
-        {SIGNAL_WIDTHS.map((width, i) => {
-          const { heights, times, duration } = buildSignalKeyframes(i);
+      <div className={`flex items-end gap-[3.2px] ${allLit ? "relative z-[1]" : ""}`}>
+        {SIGNAL_BAR_WIDTHS.map((width, i) => {
+          const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
+          const { heights, times, duration } = buildSignalKeyframes(i, frames);
           const lit = i < activeBars;
           const barClass = lit
             ? allLit
@@ -973,12 +983,14 @@ function SignalBars({
               : isLight
                 ? "bg-black/20"
                 : "bg-[rgba(247,246,242,0.3)]";
+          const scaledWidth = width * SIGNAL_FOOTER_SCALE;
+          const baseHeight = SIGNAL_BAR_HEIGHTS[i] * SIGNAL_FOOTER_SCALE;
           return (
             <motion.span
               key={`${tone}-${activeBars}-${isLight}-${glow}-${i}`}
-              className={`block shrink-0 rounded-[8px] ${barClass}`}
-              style={{ width }}
-              initial={{ height: heights[0] }}
+              className={`block shrink-0 rounded-[5px] ${barClass}`}
+              style={{ width: scaledWidth }}
+              initial={{ height: allLit ? baseHeight : heights[0] }}
               animate={{ height: heights }}
               transition={{
                 duration,
