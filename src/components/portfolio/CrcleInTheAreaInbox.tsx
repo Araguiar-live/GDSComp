@@ -58,7 +58,7 @@ export function CrcleInTheAreaInbox({
 
   return (
     <div
-      className="pointer-events-auto absolute -left-3 -right-3 top-0 z-[35] flex w-auto flex-col"
+      className="pointer-events-auto absolute inset-x-0 top-0 bottom-[100px] z-[35] flex flex-col"
       role="dialog"
       aria-label="In The Area"
     >
@@ -137,9 +137,7 @@ export function CrcleInTheAreaInbox({
         />
       </div>
 
-      <div className="dock-glass crcle-area-inbox-glass relative flex w-full flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-b border-t-0 border-[var(--crcle-panel-border)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
-        <div aria-hidden className="dock-glass-lens z-0 opacity-30" />
-        <div aria-hidden className="crcle-area-inbox-bottom-frost rounded-b-[inherit]" />
+      <div className="crcle-area-inbox-glass relative flex w-full flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] px-[13px] pb-[12px] pt-[16px] shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
         <button
           type="button"
           onClick={() => (expanded ? onCollapse() : onExpand())}

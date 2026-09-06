@@ -491,14 +491,12 @@ export function CrcleMessaging({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, ease: EASE }}
                   transformTemplate={() => ""}
-                  className={`absolute inset-x-3 top-0 bottom-[100px] ${
-                    areaInbox !== "off" ? "overflow-visible" : "overflow-hidden"
-                  }`}
+                  className="absolute inset-x-3 top-0 bottom-[100px] overflow-hidden"
                 >
-                  {/* Chat list under overlay — fixed offset for Closed header (Figma ~95px) */}
+                  {/* Chat list — scrolls beneath In The Area overlay (Figma 1142:34833) */}
                   <div
                     className={`absolute inset-0 z-0 overflow-y-auto overflow-x-hidden pb-6 ${
-                      areaInbox !== "off" ? "pt-[72px]" : "pt-[155px]"
+                      areaInbox !== "off" ? "pt-[136px]" : "pt-[155px]"
                     }`}
                   >
                     <ActiveChatList
@@ -518,21 +516,22 @@ export function CrcleMessaging({
                       onViewDailyDrop={goRadar}
                     />
                   ) : null}
-
-                  {areaInbox !== "off" ? (
-                    <CrcleInTheAreaInbox
-                      phase={areaInbox === "drawer" ? "drawer" : "screen"}
-                      onExpand={() => setAreaInbox("drawer")}
-                      onCollapse={() => setAreaInbox("screen")}
-                      onConnect={() => {
-                        setAreaInbox("off");
-                        openSignal(CONNECTION_PROFILES[1]);
-                      }}
-                      onMarkRead={() => setAreaInbox("off")}
-                    />
-                  ) : null}
                 </motion.div>
               </div>
+
+              {/* In The Area — sibling of chat stack so backdrop-filter samples chat (Figma 1290:39417) */}
+              {areaInbox !== "off" ? (
+                <CrcleInTheAreaInbox
+                  phase={areaInbox === "drawer" ? "drawer" : "screen"}
+                  onExpand={() => setAreaInbox("drawer")}
+                  onCollapse={() => setAreaInbox("screen")}
+                  onConnect={() => {
+                    setAreaInbox("off");
+                    openSignal(CONNECTION_PROFILES[1]);
+                  }}
+                  onMarkRead={() => setAreaInbox("off")}
+                />
+              ) : null}
 
               {!onboardingOpen ? (
                 <CrclePrimaryDock
