@@ -444,31 +444,39 @@ function ProfileMainView({
         <CrcleMoreButton />
       </div>
 
-      {/* Signal Live + mood — Figma 851:225665 */}
+      {/* Signal Live + mood — Figma 851:225665 / glass chrome like CrcleMoreButton */}
       <div className="flex items-start justify-center gap-2 px-0.5">
         <button
           type="button"
           onClick={onOpenMood}
-          className="flex items-center gap-1 self-stretch rounded-[24px] border border-[rgba(15,201,80,0.2)] bg-gradient-to-r from-white/[0.03] to-[rgba(15,201,80,0.12)] px-4 py-2"
+          className="crcle-glass-btn crcle-glass-btn--signal relative flex items-center gap-1 self-stretch overflow-hidden rounded-[24px] px-4 py-2 backdrop-blur-[12px] transition hover:brightness-110"
         >
-          <span className="relative flex size-2 items-center justify-center">
+          <div className="dock-glass-lens opacity-40" aria-hidden />
+          <span className="relative z-[1] flex size-2 items-center justify-center">
             <span
               aria-hidden
               className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/70"
             />
             <span className="relative size-1 rounded-full bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.85)]" />
           </span>
-          <span className="text-[11px] leading-[1.4] text-[#22c55e]" style={{ fontFamily: FONT }}>
+          <span
+            className="relative z-[1] text-[11px] leading-[1.4] text-[#22c55e]"
+            style={{ fontFamily: FONT }}
+          >
             Signal Live
           </span>
         </button>
         <button
           type="button"
           onClick={onOpenMood}
-          className="relative flex items-center justify-center gap-0.5 self-stretch overflow-hidden rounded-[64px] border border-[#0fc950] bg-gradient-to-r from-white/[0.03] to-[rgba(15,201,80,0.12)] py-1 pl-2 pr-1"
+          className="crcle-glass-btn crcle-glass-btn--signal crcle-glass-btn--signal-accent relative flex items-center justify-center gap-0.5 self-stretch overflow-hidden rounded-[64px] py-1 pl-2 pr-1 backdrop-blur-[12px] transition hover:brightness-110"
         >
+          <div className="dock-glass-lens opacity-40" aria-hidden />
           <IconImg src={profileMaskGreenIcon} className="relative z-[1] size-6" />
-          <ChevronDown className="relative z-[1] size-6 text-[#0fc950]" strokeWidth={1.5} />
+          <ChevronDown
+            className="relative z-[1] size-6 text-[rgba(247,246,242,0.4)] [.crcle-phone--light_&]:text-[rgba(2,3,29,0.4)]"
+            strokeWidth={1.5}
+          />
         </button>
       </div>
 
