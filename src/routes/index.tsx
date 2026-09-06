@@ -103,7 +103,7 @@ const PROJECTS: Project[] = [
         approach:
           "Lead with portrait + strength, then a 2×2 bento. Edit sheets keep depth off the main surface.",
         outcome:
-          "An interactive profile flow: Signal Live jumps to Messaging Hub Mood Switch, bento taps → edit sheets, social chips → links.",
+          "Signal Live and the mood chip jump back to Messaging Hub, where Mood Switch and the Sent/Received control live.",
         customBody: ({ goToTab }) => (
           <CrcleProfile
             onGoToSignalHome={() => goToTab("Create Workspace\u00a0")}

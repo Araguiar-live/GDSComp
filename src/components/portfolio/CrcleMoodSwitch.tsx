@@ -2,12 +2,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
 import locusCloseIcon from "@/assets/crcle/locus/close-x.svg";
+import lockFilledIcon from "@/assets/crcle/profile/lock-filled.svg";
 import profileLaptopIcon from "@/assets/crcle/profile/laptop.svg";
 import profileMaskIcon from "@/assets/crcle/profile/mask.svg";
 import masksTheaterIcon from "@/assets/crcle/profile/masks-theater.svg";
 import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
 import profilePinIcon from "@/assets/crcle/profile/pin.svg";
 import profilePlaneIcon from "@/assets/crcle/profile/plane.svg";
+import serenaPortrait from "@/assets/crcle/serena-portrait.png";
+import shareIcon from "@/assets/crcle/share.svg";
 import {
   type BroadcastState,
   useCrcleBroadcast,
@@ -61,12 +64,20 @@ function IconImg({ src, className = "size-6" }: { src: string; className?: strin
   );
 }
 
-/** Mood Switch overlay — lives on the Messaging Hub (Figma 853:225874 / screenshots). */
-export function CrcleMoodSwitch({ onClose }: { onClose: () => void }) {
+/** Mood Switch overlay — lives on the Messaging Hub (Figma 1142:34693 / 853:225874). */
+export function CrcleMoodSwitch({
+  onClose,
+  onConnectNearby,
+}: {
+  onClose: () => void;
+  onConnectNearby?: () => void;
+}) {
   const [activeState, setActiveState] = useCrcleBroadcast();
   const [isIncognito, setIncognito] = useCrcleIncognito();
   const [hoveredMood, setHoveredMood] = useState<BroadcastState | null>(null);
+  const [areaDismissed, setAreaDismissed] = useState(false);
   const activeMood = MOODS.find((m) => m.id === activeState) ?? MOODS[0];
+  const showAreaCard = activeState === "in_the_area" && !areaDismissed;
 
   return (
     <motion.div
@@ -128,30 +139,43 @@ export function CrcleMoodSwitch({ onClose }: { onClose: () => void }) {
         </div>
 
         <div
-          className={`relative mt-8 flex min-h-0 flex-1 flex-col items-center justify-center transition ${
+          className={`relative mt-6 flex min-h-0 flex-1 flex-col items-center px-1 transition ${
             isIncognito ? "pointer-events-none opacity-35" : "opacity-100"
           }`}
         >
           <AnimatePresence mode="wait">
-            <motion.div
-              key={activeMood.id}
-              initial={{ opacity: 0, y: 94, scale: 0.92 }}
-              animate={{ opacity: 1, y: 80, scale: 1 }}
-              exit={{ opacity: 0, y: 70, scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 380, damping: 28 }}
-              className="flex w-full max-w-[300px] flex-col items-center gap-4 text-center"
-            >
-              <IconImg src={activeMood.icon} className="size-6" />
-              <motion.p
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.28, ease: EASE, delay: 0.04 }}
-                className="text-[16px] font-normal leading-[1.4] text-[rgba(247,246,242,0.6)]"
-                style={{ fontFamily: FONT }}
+            {showAreaCard ? (
+              <motion.div
+                key="in-the-area-card"
+                initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                className="mt-2 w-full max-w-[268px] self-start"
               >
-                {activeMood.description}
-              </motion.p>
-            </motion.div>
+                <InTheAreaCard
+                  onConnect={() => onConnectNearby?.()}
+                  onMarkRead={() => setAreaDismissed(true)}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key={activeMood.id}
+                initial={{ opacity: 0, y: 24, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 12, scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                className="mt-16 flex w-full max-w-[280px] flex-col items-center gap-4 text-center"
+              >
+                <IconImg src={activeMood.icon} className="size-6" />
+                <p
+                  className="text-[16px] font-normal leading-[1.4] text-[rgba(247,246,242,0.6)]"
+                  style={{ fontFamily: FONT }}
+                >
+                  {activeMood.description}
+                </p>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
 
@@ -192,6 +216,7 @@ export function CrcleMoodSwitch({ onClose }: { onClose: () => void }) {
                   onClick={() => {
                     if (isIncognito) return;
                     setActiveState(m.id);
+                    if (m.id === "in_the_area") setAreaDismissed(false);
                   }}
                   onMouseEnter={() => setHoveredMood(m.id)}
                   onMouseLeave={() => setHoveredMood(null)}
@@ -278,5 +303,87 @@ export function CrcleMoodSwitch({ onClose }: { onClose: () => void }) {
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function InTheAreaCard({
+  onConnect,
+  onMarkRead,
+}: {
+  onConnect: () => void;
+  onMarkRead: () => void;
+}) {
+  return (
+    <div
+      className="flex w-full flex-col gap-3 rounded-[20px] bg-[rgba(2,3,29,0.55)] p-3 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-[10px]"
+      style={{ fontFamily: FONT }}
+    >
+      <div className="flex items-start gap-2">
+        <span className="mt-1 flex size-2.5 shrink-0 items-center justify-center">
+          <span className="size-2 rounded-full bg-[#0fc950] shadow-[0_0_8px_rgba(15,201,80,0.8)]" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-[13px] font-medium leading-[1.3] text-[#f7f6f2]">In The Area</p>
+              <p className="mt-0.5 text-[15px] font-medium leading-[1.3] text-white">Serena Min</p>
+              <p className="mt-0.5 text-[11px] leading-[1.3] text-[#0fc950]">
+                Same venue detected - privacy protected.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onConnect}
+              className="shrink-0 rounded-full bg-white/15 px-3 py-1 text-[11px] leading-[1.4] text-[#f7f6f2] backdrop-blur-sm transition hover:bg-white/25"
+            >
+              Connect
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-[16px] bg-[#10122c]">
+        <div className="relative h-[92px] w-full overflow-hidden">
+          <img
+            alt=""
+            src={serenaPortrait}
+            className="absolute inset-0 size-full object-cover object-[center_20%]"
+            draggable={false}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#10122c] via-[#10122c]/20 to-transparent" />
+        </div>
+        <div className="flex flex-col gap-2 px-3 pb-3 pt-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="truncate text-[12px] text-[#f7f6f2]">@SerenaMin</span>
+            <img alt="" src={shareIcon} className="size-3.5 opacity-70" draggable={false} />
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-[#f7f6f2]">
+              24 Yrs
+            </span>
+            <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-[#f7f6f2]">
+              In The Area
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-[#f7f6f2]">
+              Single
+              <img alt="" src={lockFilledIcon} className="size-2.5 object-contain opacity-80" />
+            </span>
+            <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-[#f7f6f2]">
+              Hetero
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={onMarkRead}
+        className="w-full rounded-[14px] bg-[rgba(247,246,242,0.08)] py-2.5 text-center text-[12px] text-[#f7f6f2] transition hover:bg-[rgba(247,246,242,0.14)]"
+      >
+        Mark as read
+      </button>
+    </div>
   );
 }

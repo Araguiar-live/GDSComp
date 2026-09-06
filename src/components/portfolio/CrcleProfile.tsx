@@ -56,6 +56,7 @@ import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import { CrcleMoreButton, CrclePrimaryDock } from "@/components/portfolio/CrcleChrome";
 import {
   requestMoodSwitchOnMessaging,
+  setCrcleBroadcast,
   useCrcleBroadcast,
   useCrcleIncognito,
   type BroadcastState,
@@ -215,6 +216,7 @@ export function CrcleProfile({
                 profile={profile}
                 socialCount={socialCount}
                 onOpenMood={() => {
+                  setCrcleBroadcast("in_the_area");
                   requestMoodSwitchOnMessaging();
                   onGoToMessages?.();
                 }}

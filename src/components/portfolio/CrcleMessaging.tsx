@@ -41,7 +41,7 @@ import {
   type UserProfile,
 } from "@/components/portfolio/SignalInterceptModal";
 import { CrcleMoodSwitch } from "@/components/portfolio/CrcleMoodSwitch";
-import { consumeMoodSwitchOnMessaging } from "@/components/portfolio/crcleBroadcast";
+import { consumeMoodSwitchOnMessaging, subscribeCrcleBroadcast } from "@/components/portfolio/crcleBroadcast";
 import {
   SignalCard,
   TheLocusDrawer,
@@ -218,10 +218,14 @@ export function CrcleMessaging({
   const [moodOpen, setMoodOpen] = useState(false);
 
   useEffect(() => {
-    if (!consumeMoodSwitchOnMessaging()) return;
-    setOnboardingOpen(false);
-    setPhase("inbox");
-    setMoodOpen(true);
+    const tryOpen = () => {
+      if (!consumeMoodSwitchOnMessaging()) return;
+      setOnboardingOpen(false);
+      setPhase("inbox");
+      setMoodOpen(true);
+    };
+    tryOpen();
+    return subscribeCrcleBroadcast(tryOpen);
   }, []);
 
   const openInbox = useCallback(() => {
@@ -479,7 +483,15 @@ export function CrcleMessaging({
         </AnimatePresence>
 
         <AnimatePresence>
-          {moodOpen ? <CrcleMoodSwitch onClose={() => setMoodOpen(false)} /> : null}
+          {moodOpen ? (
+            <CrcleMoodSwitch
+              onClose={() => setMoodOpen(false)}
+              onConnectNearby={() => {
+                setMoodOpen(false);
+                openSignal(CONNECTION_PROFILES[1]);
+              }}
+            />
+          ) : null}
         </AnimatePresence>
 
         <AnimatePresence>
@@ -1004,7 +1016,7 @@ function SentReceivedToggle({
     <div
       role="tablist"
       aria-label="Notification direction"
-      className="flex w-[178px] items-center gap-1 rounded-[24px] bg-[rgba(255,255,255,0.05)] p-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)]"
+      className="flex w-[178px] items-center gap-1 rounded-[24px] bg-[rgba(255,255,255,0.05)] p-[4px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)]"
     >
       {(["sent", "received"] as const).map((key) => {
         const active = tab === key;

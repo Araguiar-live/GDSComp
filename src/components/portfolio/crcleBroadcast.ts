@@ -38,6 +38,7 @@ export function setCrcleIncognito(next: boolean) {
 /** Profile mood control: jump to Messaging Hub with Mood Switch open. */
 export function requestMoodSwitchOnMessaging() {
   pendingMoodSwitch = true;
+  emit();
 }
 
 export function consumeMoodSwitchOnMessaging() {
