@@ -58,7 +58,7 @@ export function CrcleInTheAreaInbox({
 
   return (
     <div
-      className="pointer-events-auto absolute inset-x-0 top-0 z-[35] flex flex-col"
+      className="pointer-events-auto absolute -left-3 -right-3 top-0 z-[35] flex w-auto flex-col"
       role="dialog"
       aria-label="In The Area"
     >
@@ -117,7 +117,7 @@ export function CrcleInTheAreaInbox({
           <feBlend in="rg" in2="blue" mode="screen" />
         </filter>
       </svg>
-      <div className="flex flex-col items-center bg-[#02031d] [.crcle-phone--light_&]:bg-[#fdfcfb]">
+      <div className="flex w-full flex-col items-center bg-[#02031d] [.crcle-phone--light_&]:bg-[#fdfcfb]">
         <div className="mx-auto flex h-[62px] w-[84%] items-end justify-between px-2 pb-[10px] text-[#f7f6f2] [.crcle-phone--light_&]:text-black">
           <span
             className="text-[17px] font-semibold leading-[22px]"
@@ -137,7 +137,7 @@ export function CrcleInTheAreaInbox({
         />
       </div>
 
-      <div className="crcle-area-inbox-glass relative flex flex-col items-center gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-t-0 border-[var(--crcle-panel-border)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
+      <div className="crcle-area-inbox-glass relative flex w-full flex-col items-center gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-t-0 border-[var(--crcle-panel-border)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
         <div aria-hidden className="crcle-area-inbox-backdrop rounded-[inherit]" />
         <div aria-hidden className="crcle-area-inbox-bottom-frost rounded-b-[inherit]" />
         <button
