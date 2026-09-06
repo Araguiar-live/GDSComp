@@ -452,7 +452,7 @@ export function CrcleMessaging({
               {/* Header stack — status → Messages row (never overlapped) */}
               <div
                 className={`relative z-30 shrink-0 ${
-                  areaInbox !== "off" ? "pointer-events-none select-none opacity-0" : ""
+                  areaInbox !== "off" ? "hidden" : ""
                 }`}
                 aria-hidden={areaInbox !== "off"}
               >
@@ -469,7 +469,9 @@ export function CrcleMessaging({
 
               {/* Content below header */}
               <div
-                className="relative z-10 min-h-0 flex-1"
+                className={`relative min-h-0 flex-1 ${
+                  areaInbox !== "off" ? "z-[34]" : "z-10"
+                }`}
                 onClick={() => menuOpen && setMenuOpen(false)}
               >
                 <motion.div
@@ -481,7 +483,11 @@ export function CrcleMessaging({
                   className="absolute inset-x-3 top-0 bottom-[100px] overflow-hidden"
                 >
                   {/* Chat list under overlay — fixed offset for Closed header (Figma ~95px) */}
-                  <div className="absolute inset-0 z-0 overflow-y-auto overflow-x-hidden pb-6 pt-[155px]">
+                  <div
+                    className={`absolute inset-0 z-0 overflow-y-auto overflow-x-hidden pb-6 ${
+                      areaInbox !== "off" ? "pt-[72px]" : "pt-[155px]"
+                    }`}
+                  >
                     <ActiveChatList
                       conversations={MOCK_CONVERSATIONS}
                       onSelectConversation={openConversation}

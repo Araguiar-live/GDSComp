@@ -1211,32 +1211,40 @@
 }
 
 /* In The Area notifications drawer — Figma 1142:34943 Glass (radius 15).
-   Vertical opacity: frost at top (white 40%), dock-like frost at bottom (~5% white)
-   so backdrop-filter stays visible through the fade (dark 4% alone reads as no blur).
-   Blur stack matches .dock-glass. No isolation on opacity-animated ancestors. */
+   Vertical opacity: frost at top (white 40%), dock-like frost at bottom (~5% white).
+   Backdrop blur lives on .crcle-area-inbox-backdrop so chat beneath is sampled. */
 .crcle-area-inbox-glass {
   position: relative;
   overflow: hidden;
+  background: transparent;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.crcle-area-inbox-backdrop {
   background: linear-gradient(
     182deg,
     rgba(255, 255, 255, 0.4) 25.54%,
     rgba(255, 255, 255, 0.1) 62%,
     rgba(255, 255, 255, 0.05) 98.49%
   );
-  backdrop-filter: blur(6px) saturate(120%);
-  -webkit-backdrop-filter: blur(6px) saturate(120%);
-  box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.22),
-    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+  backdrop-filter: blur(40px) saturate(140%);
+  -webkit-backdrop-filter: blur(40px) saturate(140%);
+  transform: translateZ(0);
 }
 
-.crcle-phone--light .crcle-area-inbox-glass {
+.crcle-phone--light .crcle-area-inbox-backdrop {
   background: linear-gradient(
     182deg,
     rgba(253, 252, 251, 0.52) 25%,
     rgba(253, 252, 251, 0.12) 62%,
     rgba(247, 246, 242, 0.06) 98%
   );
+}
+
+.crcle-phone--light .crcle-area-inbox-glass {
+  background: transparent;
 }
 
 .crcle-area-inbox-glass::before {
@@ -1262,8 +1270,8 @@
     rgba(255, 255, 255, 0.04) 28%,
     rgba(255, 255, 255, 0.07) 100%
   );
-  backdrop-filter: blur(6px) saturate(120%);
-  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  backdrop-filter: blur(40px) saturate(140%);
+  -webkit-backdrop-filter: blur(40px) saturate(140%);
   mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.65) 42%, #000 100%);
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.65) 42%, #000 100%);
 }
@@ -1302,7 +1310,7 @@
   opacity: 0.45;
 }
 
-.crcle-area-inbox-glass > *:not(.dock-glass-lens):not(.dock-glass-splay):not(.crcle-area-inbox-bottom-frost) {
+.crcle-area-inbox-glass > *:not(.dock-glass-lens):not(.dock-glass-splay):not(.crcle-area-inbox-bottom-frost):not(.crcle-area-inbox-backdrop) {
   position: relative;
   z-index: 1;
 }

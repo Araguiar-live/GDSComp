@@ -141,6 +141,10 @@ export function CrcleInTheAreaInbox({
       <div className="crcle-area-inbox-glass flex flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[rgba(255,255,255,0.15)] border-t-0 px-[13px] pb-3 pt-4">
         <div
           aria-hidden
+          className="crcle-area-inbox-backdrop pointer-events-none absolute inset-0 z-0 rounded-[inherit]"
+        />
+        <div
+          aria-hidden
           className="dock-glass-splay pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/20 via-white/[0.08] to-white/[0.05]"
         />
         <div
