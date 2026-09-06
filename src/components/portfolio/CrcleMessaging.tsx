@@ -436,6 +436,7 @@ export function CrcleMessaging({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
+              transformTemplate={() => ""}
               className="relative flex h-full min-h-0 flex-col"
             >
               {/* Header stack — status → Messages row (never overlapped) */}
@@ -491,20 +492,18 @@ export function CrcleMessaging({
                 </motion.div>
               </div>
 
-              <AnimatePresence>
-                {areaInbox !== "off" ? (
-                  <CrcleInTheAreaInbox
-                    phase={areaInbox === "drawer" ? "drawer" : "screen"}
-                    onExpand={() => setAreaInbox("drawer")}
-                    onCollapse={() => setAreaInbox("screen")}
-                    onConnect={() => {
-                      setAreaInbox("off");
-                      openSignal(CONNECTION_PROFILES[1]);
-                    }}
-                    onMarkRead={() => setAreaInbox("off")}
-                  />
-                ) : null}
-              </AnimatePresence>
+              {areaInbox !== "off" ? (
+                <CrcleInTheAreaInbox
+                  phase={areaInbox === "drawer" ? "drawer" : "screen"}
+                  onExpand={() => setAreaInbox("drawer")}
+                  onCollapse={() => setAreaInbox("screen")}
+                  onConnect={() => {
+                    setAreaInbox("off");
+                    openSignal(CONNECTION_PROFILES[1]);
+                  }}
+                  onMarkRead={() => setAreaInbox("off")}
+                />
+              ) : null}
 
               {!onboardingOpen ? (
                 <CrclePrimaryDock

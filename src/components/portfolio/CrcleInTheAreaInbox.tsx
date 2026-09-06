@@ -35,12 +35,7 @@ export function CrcleInTheAreaInbox({
   const expanded = phase === "drawer";
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.32, ease: EASE }}
-      transformTemplate={() => ""}
+    <div
       className="pointer-events-auto absolute inset-x-0 top-0 z-[35] flex flex-col"
       role="dialog"
       aria-label="In The Area"
@@ -65,7 +60,7 @@ export function CrcleInTheAreaInbox({
         />
       </div>
 
-      <div className="crcle-area-inbox-glass flex flex-col items-center gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] px-[13px] pb-3 pt-4">
+      <div className="crcle-area-inbox-glass flex flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] bg-[rgba(247,246,242,0.2)] px-[13px] pb-3 pt-4 backdrop-blur-[15px] [-webkit-backdrop-filter:blur(15px)]">
         <div
           aria-hidden
           className="dock-glass-splay pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/12 via-transparent to-transparent"
@@ -136,7 +131,7 @@ export function CrcleInTheAreaInbox({
           <img alt="" src={handleIcon} className="h-[3px] w-[36px] max-w-none object-contain" />
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
