@@ -944,10 +944,9 @@ function SignalStrengthIcon({
 
   const barClass = (index: number) => {
     if (index < activeBars) {
-      return allLit ? "border border-[#e7fcee] bg-[#22c55e]" : "bg-[#22c55e]";
+      return allLit ? "border border-[#e7fcee] bg-[#0fc950]" : "bg-[#0fc950]";
     }
-    if (index === 2 && activeBars >= 2) return "bg-[rgba(2,4,38,0.2)]";
-    return "bg-[#020426]";
+    return "bg-[rgba(15,201,80,0.2)]";
   };
 
   return (
@@ -992,11 +991,7 @@ function SignalBars({
             ? allLit
               ? "border border-[#e7fcee] bg-[#0fc950]"
               : "bg-[#0fc950]"
-            : tone === "live"
-              ? "bg-[rgba(15,201,80,0.2)]"
-              : isLight
-                ? "bg-black/20"
-                : "bg-[rgba(247,246,242,0.3)]";
+            : "bg-[rgba(15,201,80,0.2)]";
           const baseHeight = SIGNAL_BAR_HEIGHTS[i];
           return (
             <motion.span
