@@ -1,4 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, type PanInfo } from "framer-motion";
+import { useCallback, useState } from "react";
 import arrowRightIcon from "@/assets/crcle/area/arrow-right.svg";
 import emmaPortrait from "@/assets/crcle/area/emma-portrait.png";
 import handleIcon from "@/assets/crcle/area/handle.svg";
@@ -6,15 +7,37 @@ import heartIcon from "@/assets/crcle/area/heart.svg";
 import linkIcon from "@/assets/crcle/area/link.svg";
 import raindropIcon from "@/assets/crcle/area/raindrop.svg";
 import unlockIcon from "@/assets/crcle/area/unlock.svg";
+import arrowChevronIcon from "@/assets/crcle/arrow-chevron.svg";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
 import areaPinIcon from "@/assets/crcle/mood/area-pin.svg";
+import brainIcon from "@/assets/crcle/signal/brain.svg";
+import fireIcon from "@/assets/crcle/signal/fire.svg";
+import lightbulbIcon from "@/assets/crcle/signal/lightbulb.svg";
+import laptopStrokeIcon from "@/assets/crcle/signal/laptop-stroke.svg";
 import shareIcon from "@/assets/crcle/share.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
 
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 const EASE = [0.22, 1, 0.36, 1] as const;
+const SWIPE_SPRING = { type: "spring", stiffness: 380, damping: 22, mass: 0.8 } as const;
+const DRAG_THRESHOLD = 48;
+
+type NearbyVariant = "love" | "purpose" | "soul";
+const VARIANT_ORDER: NearbyVariant[] = ["love", "purpose", "soul"];
+
+const pillSlideVariants = {
+  enter: (dir: number) => ({
+    x: dir >= 0 ? 56 : -56,
+    opacity: 0,
+  }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({
+    x: dir >= 0 ? -56 : 56,
+    opacity: 0,
+  }),
+};
 
 type AreaPhase = "screen" | "drawer";
 
@@ -191,6 +214,26 @@ export function CrcleInTheAreaInbox({
 }
 
 function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
+  const [variantIndex, setVariantIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const variant = VARIANT_ORDER[variantIndex];
+  const accentIcon =
+    variant === "love" ? heartIcon : variant === "purpose" ? fireIcon : laptopStrokeIcon;
+
+  const goTo = useCallback((nextIndex: number, dir: number) => {
+    setDirection(dir);
+    setVariantIndex((nextIndex + VARIANT_ORDER.length) % VARIANT_ORDER.length);
+  }, []);
+
+  const goPrev = useCallback(() => goTo(variantIndex - 1, -1), [goTo, variantIndex]);
+  const goNext = useCallback(() => goTo(variantIndex + 1, 1), [goTo, variantIndex]);
+
+  const onPillDragEnd = (_: unknown, info: PanInfo) => {
+    const { offset, velocity } = info;
+    if (offset.x < -DRAG_THRESHOLD || velocity.x < -200) goNext();
+    else if (offset.x > DRAG_THRESHOLD || velocity.x > 200) goPrev();
+  };
+
   return (
     <div className="flex w-full flex-col items-start">
       <div className="flex w-full items-center justify-center rounded-tl-[24px] rounded-tr-[24px] border-x border-t border-[rgba(0,0,0,0.25)] bg-[#02031d] p-3 [.crcle-phone--light_&]:bg-[#f7f6f2]">
@@ -227,39 +270,139 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
             <img alt="" src={emmaPortrait} draggable={false} />
           </span>
           <div className="flex w-full items-start justify-between">
-            <span className="relative size-3.5 overflow-hidden">
-              <img alt="" src={heartIcon} className="absolute inset-0 size-full object-contain" />
-            </span>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={variant}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={SWIPE_SPRING}
+                className="relative size-3.5 overflow-hidden"
+              >
+                <img alt="" src={accentIcon} className="absolute inset-0 size-full object-contain" />
+              </motion.span>
+            </AnimatePresence>
             <span className="relative size-[22px] overflow-hidden">
               <img alt="" src={raindropIcon} className="absolute inset-0 size-full object-contain" />
             </span>
           </div>
-          <div className="flex items-center gap-[50px]">
-            <span className="relative size-6 rotate-180 overflow-hidden">
-              <img alt="" src={arrowRightIcon} className="absolute inset-0 size-full object-contain" />
-            </span>
-            <div className="flex items-center gap-3 rounded-[120px] bg-[rgba(2,3,29,0.16)] p-1.5">
-              <span className="inline-flex items-center gap-1 rounded-[120px] bg-[#f7f6f2] px-2 py-1.5">
-                <span className="relative size-4 overflow-hidden">
-                  <img alt="" src={unlockIcon} className="absolute inset-0 size-full object-contain" />
-                </span>
-                <span className="text-[16px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
-                  Single
+          <div className="flex h-[44px] w-full items-center justify-between gap-2">
+            <motion.button
+              type="button"
+              aria-label="Previous category"
+              onClick={goPrev}
+              className="relative flex size-6 shrink-0 items-center justify-center"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.92 }}
+            >
+              <span className="relative size-6 -scale-y-100 rotate-180 overflow-hidden">
+                <img alt="" src={arrowRightIcon} className="absolute inset-0 size-full object-contain" />
+                <span className="absolute inset-[29.17%_37.5%]">
+                  <img alt="" src={arrowChevronIcon} className="size-full object-contain" />
                 </span>
               </span>
-              <span
-                className="rounded-[120px] border border-[#f7f6f2] px-3 py-1.5 text-[16px] leading-[1.4] text-white"
-                style={{ fontFamily: FONT }}
-              >
-                Hetero
+            </motion.button>
+
+            <motion.div
+              className="relative flex h-full min-w-0 flex-1 touch-pan-y items-center justify-center overflow-hidden"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.25}
+              onDragEnd={onPillDragEnd}
+            >
+              <AnimatePresence mode="wait" custom={direction} initial={false}>
+                <motion.div
+                  key={variant}
+                  custom={direction}
+                  variants={pillSlideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={SWIPE_SPRING}
+                  className="absolute inset-x-0 flex min-w-0 items-center justify-center"
+                >
+                  <NearbyCategoryPills variant={variant} />
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+
+            <motion.button
+              type="button"
+              aria-label="Next category"
+              onClick={goNext}
+              className="relative flex size-6 shrink-0 items-center justify-center"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.92 }}
+            >
+              <span className="relative size-6 overflow-hidden">
+                <img alt="" src={arrowRightIcon} className="absolute inset-0 size-full object-contain" />
+                <span className="absolute inset-[29.17%_37.5%]">
+                  <img alt="" src={arrowChevronIcon} className="size-full object-contain" />
+                </span>
               </span>
-            </div>
-            <span className="relative size-6 overflow-hidden">
-              <img alt="" src={arrowRightIcon} className="absolute inset-0 size-full object-contain" />
-            </span>
+            </motion.button>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function NearbyCategoryPills({ variant }: { variant: NearbyVariant }) {
+  if (variant === "purpose") {
+    return (
+      <div className="flex max-w-full min-w-0 items-center gap-2 rounded-[120px] bg-[rgba(2,3,29,0.16)] p-1.5">
+        <span className="inline-flex items-center gap-1 rounded-[120px] border border-[#f7f6f2] px-2 py-1.5">
+          <img alt="" src={lightbulbIcon} className="size-3.5 object-contain" draggable={false} />
+          <span className="text-[16px] leading-[1.4] text-white" style={{ fontFamily: FONT }}>
+            Learn
+          </span>
+        </span>
+        <span className="inline-flex items-center gap-1 rounded-[120px] border border-[#f7f6f2] px-2 py-1.5">
+          <img alt="" src={brainIcon} className="h-3 w-3.5 object-contain" draggable={false} />
+          <span className="text-[16px] leading-[1.4] text-white" style={{ fontFamily: FONT }}>
+            Mind
+          </span>
+        </span>
+      </div>
+    );
+  }
+
+  if (variant === "soul") {
+    return (
+      <div className="flex max-w-full min-w-0 items-center gap-3 rounded-[120px] bg-[rgba(247,246,242,0.4)] py-1.5 pl-4 pr-1.5">
+        <span
+          className="min-w-0 truncate text-[13px] leading-[1.4] text-[#f7f6f2]"
+          style={{ fontFamily: FONT }}
+        >
+          Product Designer@Circle
+        </span>
+        <span
+          className="shrink-0 rounded-[120px] bg-[#f7f6f2] px-2 py-1 text-[13px] leading-[1.4] text-[#020426]"
+          style={{ fontFamily: FONT }}
+        >
+          Looking
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-3 rounded-[120px] bg-[rgba(2,3,29,0.16)] p-1.5">
+      <span className="inline-flex items-center gap-1 rounded-[120px] bg-[#f7f6f2] px-2 py-1.5">
+        <span className="relative size-4 overflow-hidden">
+          <img alt="" src={unlockIcon} className="absolute inset-0 size-full object-contain" />
+        </span>
+        <span className="text-[16px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
+          Single
+        </span>
+      </span>
+      <span
+        className="rounded-[120px] border border-[#f7f6f2] px-3 py-1.5 text-[16px] leading-[1.4] text-white"
+        style={{ fontFamily: FONT }}
+      >
+        Hetero
+      </span>
     </div>
   );
 }
