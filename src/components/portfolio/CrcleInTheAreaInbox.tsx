@@ -18,7 +18,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 type AreaPhase = "screen" | "drawer";
 
-/** Figma 1142:34808 (In The Area screen) → 1142:34923 (notifications drawer). */
+/** Figma 1142:34808 / 1142:34923 (dark) → 1142:33486 (light). */
 export function CrcleInTheAreaInbox({
   phase,
   onExpand,
@@ -45,21 +45,24 @@ export function CrcleInTheAreaInbox({
       role="dialog"
       aria-label="In The Area"
     >
-      <div className="flex flex-col items-center bg-[#02031d]">
-        <div className="mx-auto flex h-[62px] w-[84%] items-end justify-between px-2 pb-[10px] text-[#f7f6f2]">
+      <div className="flex flex-col items-center bg-[#02031d] [.crcle-phone--light_&]:bg-[#fdfcfb]">
+        <div className="mx-auto flex h-[62px] w-[84%] items-end justify-between px-2 pb-[10px] text-[#f7f6f2] [.crcle-phone--light_&]:text-black">
           <span
             className="text-[17px] font-semibold leading-[22px]"
             style={{ fontFamily: "SF Pro, system-ui, -apple-system, sans-serif" }}
           >
             9:41
           </span>
-          <div className="flex items-center gap-[7px] pb-0.5">
+          <div className="crcle-theme-icon flex items-center gap-[7px] pb-0.5">
             <IconBox src={cellularIcon} className="h-[12.226px] w-[19.2px]" />
             <IconBox src={wifiIcon} className="h-[12.328px] w-[17.142px]" />
             <IconBox src={batteryIcon} className="h-[13px] w-[27.328px]" />
           </div>
         </div>
-        <IconBox src={crcleLogo} className="mb-[12px] h-[9px] w-[26px]" />
+        <IconBox
+          src={crcleLogo}
+          className="crcle-theme-icon mb-[12px] h-[9px] w-[26px] [.crcle-phone--light_&]:opacity-40"
+        />
       </div>
 
       <div className="crcle-area-inbox-glass flex flex-col items-center gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] px-[13px] pb-3 pt-4">
@@ -75,7 +78,7 @@ export function CrcleInTheAreaInbox({
             </span>
           </span>
           <p
-            className="min-w-0 flex-1 text-center text-[19px] font-medium leading-[1.4] text-[#f7f6f2]"
+            className="min-w-0 flex-1 text-center text-[19px] font-medium leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]"
             style={{ fontFamily: FONT }}
           >
             In The Area
@@ -99,7 +102,7 @@ export function CrcleInTheAreaInbox({
                 <button
                   type="button"
                   onClick={onMarkRead}
-                  className="w-full rounded-[36px] border border-[#f7f6f2] p-3 text-center text-[14px] leading-[21px] text-[#f7f6f2] transition hover:bg-white/5"
+                  className="w-full rounded-[36px] border border-[#f7f6f2] p-3 text-center text-[14px] leading-[21px] text-[#f7f6f2] transition hover:bg-white/5 [.crcle-phone--light_&]:border-black [.crcle-phone--light_&]:bg-[rgba(2,3,29,0.1)] [.crcle-phone--light_&]:text-[#030426] [.crcle-phone--light_&]:hover:bg-[rgba(2,3,29,0.16)]"
                   style={{ fontFamily: FONT }}
                 >
                   Mark as read
@@ -135,7 +138,7 @@ export function CrcleInTheAreaInbox({
 function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
   return (
     <div className="flex w-full flex-col items-start">
-      <div className="flex w-full items-center justify-center rounded-tl-[24px] rounded-tr-[24px] border-x border-t border-[rgba(0,0,0,0.25)] bg-[#02031d] p-3">
+      <div className="flex w-full items-center justify-center rounded-tl-[24px] rounded-tr-[24px] border-x border-t border-[rgba(0,0,0,0.25)] bg-[#02031d] p-3 [.crcle-phone--light_&]:bg-[#f7f6f2]">
         <NearbyIdentity onConnect={onConnect} />
       </div>
       <div className="relative flex h-[251px] w-full flex-col justify-between overflow-hidden rounded-bl-[24px] rounded-br-[24px] border border-[rgba(247,246,242,0.3)] p-2">
@@ -205,7 +208,7 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
 
 function CompactNearbyRow({ onConnect }: { onConnect: () => void }) {
   return (
-    <div className="w-full rounded-[36px] border border-[#0fc950] bg-[#02031d] py-2 pl-4 pr-2">
+    <div className="w-full rounded-[36px] border border-[#0fc950] bg-[#02031d] py-2 pl-4 pr-2 [.crcle-phone--light_&]:bg-[#f7f6f2]">
       <NearbyIdentity onConnect={onConnect} compact />
     </div>
   );
@@ -222,7 +225,7 @@ function NearbyIdentity({
     <div className="flex w-full items-center gap-2">
       <div className="min-w-0 flex-1 text-left">
         <p
-          className="text-[13px] font-semibold leading-[1.4] text-[#f7f6f2]"
+          className="text-[13px] font-semibold leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]"
           style={{ fontFamily: FONT }}
         >
           Emma Rodriguez
@@ -234,7 +237,7 @@ function NearbyIdentity({
       <button
         type="button"
         onClick={onConnect}
-        className={`shrink-0 rounded-[36px] bg-[rgba(247,246,242,0.2)] text-[11px] leading-[1.4] text-[#f7f6f2] ${
+        className={`shrink-0 rounded-[36px] bg-[rgba(247,246,242,0.2)] text-[11px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:bg-[#030426] [.crcle-phone--light_&]:text-[#fefefe] ${
           compact ? "px-3 py-1.5" : "px-4 py-2"
         }`}
         style={{ fontFamily: FONT }}

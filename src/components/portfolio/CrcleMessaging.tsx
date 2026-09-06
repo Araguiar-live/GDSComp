@@ -442,7 +442,7 @@ export function CrcleMessaging({
               <div className="relative z-30 shrink-0">
                 <StatusBar />
                 <div className="mt-[5px] flex justify-center pb-[12px]">
-                  <IconImg src={crcleLogo} className="h-[13px] w-[38px]" />
+                  <IconImg src={crcleLogo} className="crcle-theme-icon h-[13px] w-[38px]" />
                 </div>
                 <MessagesHeader
                   onBack={goProfile}
