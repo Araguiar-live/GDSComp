@@ -137,8 +137,8 @@ export function CrcleInTheAreaInbox({
         />
       </div>
 
-      <div className="crcle-area-inbox-glass relative flex w-full flex-col items-center gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-t-0 border-[var(--crcle-panel-border)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
-        <div aria-hidden className="crcle-area-inbox-backdrop rounded-[inherit]" />
+      <div className="dock-glass crcle-area-inbox-glass relative flex w-full flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-b border-t-0 border-[var(--crcle-panel-border)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
+        <div aria-hidden className="dock-glass-lens z-0 opacity-30" />
         <div aria-hidden className="crcle-area-inbox-bottom-frost rounded-b-[inherit]" />
         <button
           type="button"

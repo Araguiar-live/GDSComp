@@ -491,7 +491,9 @@ export function CrcleMessaging({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, ease: EASE }}
                   transformTemplate={() => ""}
-                  className="absolute inset-x-3 top-0 bottom-[100px] overflow-hidden"
+                  className={`absolute inset-x-3 top-0 bottom-[100px] ${
+                    areaInbox !== "off" ? "overflow-visible" : "overflow-hidden"
+                  }`}
                 >
                   {/* Chat list under overlay — fixed offset for Closed header (Figma ~95px) */}
                   <div
