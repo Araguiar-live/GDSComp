@@ -1100,7 +1100,7 @@ function SentReceivedToggle({
     <div
       role="tablist"
       aria-label="Notification direction"
-      className="flex w-[178px] items-center gap-1 rounded-[24px] bg-[rgba(255,255,255,0.05)] p-[4px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)]"
+      className="crcle-glass-btn flex w-[178px] items-center gap-1 rounded-[24px] bg-transparent p-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)] backdrop-blur-[8px]"
     >
       {(["sent", "received"] as const).map((key) => {
         const active = tab === key;
@@ -1112,8 +1112,8 @@ function SentReceivedToggle({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(key)}
-            className={`flex flex-1 items-center justify-center whitespace-nowrap rounded-[20px] px-2.5 py-1 text-[13px] leading-[1.4] transition-colors duration-300 ${
-              active ? "bg-[rgba(2,3,29,0.2)] text-white" : "bg-transparent text-[#f7f6f2]"
+            className={`relative z-[1] flex flex-1 items-center justify-center whitespace-nowrap rounded-[20px] px-2.5 py-1 text-[13px] leading-[1.4] transition-colors duration-300 ${
+              active ? "bg-[rgba(2,3,29,0.2)] text-white" : "bg-transparent text-[var(--crcle-toggle-idle)]"
             }`}
             style={{ fontFamily: FONT }}
           >
