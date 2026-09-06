@@ -223,27 +223,7 @@ export function CrcleSignalHome({
                     ) : (
                       <>
                         <div className="flex min-w-0 flex-1 items-center gap-3">
-                          <div className="flex shrink-0 items-center gap-[3.2px]" aria-hidden>
-                            <span
-                              className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${
-                                activeBars >= 1 ? "bg-[#22c55e]" : "bg-[#020426]"
-                              }`}
-                            />
-                            <span
-                              className={`h-5 w-[6.4px] rounded-[5px] transition-colors duration-300 ${
-                                activeBars >= 2 ? "bg-[#22c55e]" : "bg-[#020426]"
-                              }`}
-                            />
-                            <span
-                              className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${
-                                activeBars >= 3
-                                  ? "bg-[#22c55e]"
-                                  : activeBars >= 2
-                                    ? "bg-[rgba(2,4,38,0.2)]"
-                                    : "bg-[#020426]"
-                              }`}
-                            />
-                          </div>
+                          <SignalStrengthIcon activeBars={activeBars} />
                           <div className="min-w-0 flex-1 leading-[1.2] text-[#030426]">
                             <p className="text-[14px] font-medium" style={{ fontFamily: FONT }}>
                               Signal Strength: {signalStrength}%
@@ -447,12 +427,7 @@ export function CrcleSignalHome({
               </div>
             </div>
 
-            <FooterSignal
-              tone={screen === "photo" ? "live" : "neutral"}
-              activeBars={activeBars}
-              isLight={isLightMode}
-              glow={signalLive}
-            />
+            <FooterSignal activeBars={activeBars} glow={signalLive} />
           </div>
 
           {!onboardingOpen ? (
@@ -901,32 +876,20 @@ function LocationRequiredModal({
 }
 
 function FooterSignal({
-  tone,
   activeBars = 0,
-  isLight = false,
   glow = false,
 }: {
-  tone: "neutral" | "live";
   activeBars?: number;
-  isLight?: boolean;
   glow?: boolean;
 }) {
   return (
     <div className="flex w-full flex-col items-center gap-4 px-3">
-      <SignalBars tone={tone} activeBars={activeBars} isLight={isLight} glow={glow} />
+      <SignalBars activeBars={activeBars} glow={glow} />
       <p
         className="max-w-[392px] text-center text-[11px] leading-[1.4] text-[#b1b1bc]"
         style={{ fontFamily: FONT }}
       >
-        {tone === "live" || !isLight ? (
-          <>Your signal will connect you with compatible users nearby when your drop goes live.</>
-        ) : (
-          <>
-            Your tuned signal will broadcast to compatible users.
-            <br />
-            The algorithm calibrates high-fidelity matches based on your frequency
-          </>
-        )}
+        Your signal will connect you with compatible users nearby when your drop goes live.
       </p>
     </div>
   );
@@ -950,105 +913,60 @@ function StatusBar() {
   );
 }
 
-/** Figma Frame 2147225187 — Default → Variant7 height cycle (middle stays full). */
-const SIGNAL_FRAMES: readonly [number, number, number][] = [
-  [18.4, 30.6, 18.4],
-  [14, 30.6, 18.4],
-  [18.4, 30.6, 14],
-  [15, 30.6, 18.4],
-  [18.4, 30.6, 12],
-  [14, 30.6, 15],
-  [14, 30.6, 15],
-];
-/** Same proportions as the signal-strength overlay chip, scaled for the footer row. */
-const SIGNAL_BAR_WIDTHS = [6, 6.4, 6] as const;
-const SIGNAL_BAR_HEIGHTS = [12, 20, 12] as const;
-const SIGNAL_FOOTER_SCALE = 1.55;
-const SIGNAL_GLOW_FRAMES: readonly [number, number, number][] = [
-  [18.4, 30.6, 18.4],
-  [16, 30.6, 17],
-  [18.4, 28, 18.4],
-  [17, 30.6, 18.4],
-];
-/** 200ms hold per Figma variant + soft morph into the next */
-const SIGNAL_HOLD_S = 0.2;
-const SIGNAL_MOVE_S = 0.55;
-const SIGNAL_STEP_S = SIGNAL_HOLD_S + SIGNAL_MOVE_S;
+/** Signal strength bars — shared by overlay chip + footer (Figma signal-strength icon). */
+function SignalStrengthIcon({
+  activeBars,
+  glow = false,
+  className = "",
+}: {
+  activeBars: number;
+  glow?: boolean;
+  className?: string;
+}) {
+  const allLit = glow && activeBars >= 3;
 
-function buildSignalKeyframes(barIndex: number, frames: readonly [number, number, number][]) {
-  const heights: number[] = [];
-  const times: number[] = [];
-  const n = frames.length;
-  const total = n * SIGNAL_STEP_S;
+  const barClass = (index: number) => {
+    if (index < activeBars) {
+      return allLit ? "border border-[#e7fcee] bg-[#22c55e]" : "bg-[#22c55e]";
+    }
+    if (index === 2 && activeBars >= 2) return "bg-[rgba(2,4,38,0.2)]";
+    return "bg-[#020426]";
+  };
 
-  for (let i = 0; i < n; i++) {
-    const holdStart = (i * SIGNAL_STEP_S) / total;
-    const holdEnd = (i * SIGNAL_STEP_S + SIGNAL_HOLD_S) / total;
-    const h = frames[i][barIndex];
-    heights.push(h);
-    times.push(holdStart);
-    heights.push(h);
-    times.push(holdEnd);
-  }
-
-  // Close the loop gently back to the first frame
-  heights.push(frames[0][barIndex]);
-  times.push(1);
-
-  return { heights, times, duration: total };
+  return (
+    <div className={`flex shrink-0 items-center gap-[3.2px] ${className}`} aria-hidden>
+      <span
+        className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${barClass(0)}`}
+      />
+      <span
+        className={`h-5 w-[6.4px] rounded-[5px] transition-colors duration-300 ${barClass(1)}`}
+      />
+      <span
+        className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${barClass(2)}`}
+      />
+    </div>
+  );
 }
 
 function SignalBars({
-  tone = "neutral",
   activeBars = 0,
-  isLight = false,
   glow = false,
 }: {
-  tone?: "neutral" | "live";
   activeBars?: number;
-  isLight?: boolean;
   glow?: boolean;
 }) {
   const allLit = glow && activeBars >= 3;
 
   return (
     <div
-      className={`relative flex h-[30.6px] items-center justify-center ${allLit ? "crcle-signal-bars-glow" : ""}`}
+      className={`relative flex h-5 items-center justify-center ${allLit ? "crcle-signal-bars-glow" : ""}`}
       aria-hidden
     >
-      <div className={`flex items-end gap-[3.2px] ${allLit ? "relative z-[1]" : ""}`}>
-        {SIGNAL_BAR_WIDTHS.map((width, i) => {
-          const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
-          const { heights, times, duration } = buildSignalKeyframes(i, frames);
-          const lit = i < activeBars;
-          const barClass = lit
-            ? allLit
-              ? "border border-[#e7fcee] bg-[#0fc950]"
-              : "bg-[#0fc950]"
-            : tone === "live"
-              ? "bg-[rgba(15,201,80,0.2)]"
-              : isLight
-                ? "bg-black/20"
-                : "bg-[rgba(247,246,242,0.3)]";
-          const scaledWidth = width * SIGNAL_FOOTER_SCALE;
-          const baseHeight = SIGNAL_BAR_HEIGHTS[i] * SIGNAL_FOOTER_SCALE;
-          return (
-            <motion.span
-              key={`${tone}-${activeBars}-${isLight}-${glow}-${i}`}
-              className={`block shrink-0 rounded-[5px] ${barClass}`}
-              style={{ width: scaledWidth }}
-              initial={{ height: allLit ? baseHeight : heights[0] }}
-              animate={{ height: heights }}
-              transition={{
-                duration,
-                repeat: Infinity,
-                ease: "easeInOut",
-                times,
-              }}
-            />
-          );
-        })}
-      </div>
+      <SignalStrengthIcon
+        activeBars={activeBars}
+        glow={glow}
+        className={allLit ? "relative z-[1]" : ""}
+      />
     </div>
   );
 }
