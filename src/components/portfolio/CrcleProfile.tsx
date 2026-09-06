@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Sun } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
@@ -10,9 +10,7 @@ import cameraIcon from "@/assets/crcle/profile/camera.svg";
 import datingCoffeeIcon from "@/assets/crcle/profile/dating-coffee.svg";
 import datingGroupWhiteIcon from "@/assets/crcle/profile/dating-group-white.svg";
 import datingHeartWhiteIcon from "@/assets/crcle/profile/dating-heart-white.svg";
-import datingLinkIcon from "@/assets/crcle/profile/dating-link.svg";
 import datingLoveSeatIcon from "@/assets/crcle/profile/dating-love-seat.svg";
-import datingSendIcon from "@/assets/crcle/profile/dating-send.svg";
 import eduDragHandleIcon from "@/assets/crcle/profile/drag-handle-edu.svg";
 import eduGraduationIcon from "@/assets/crcle/profile/edu-graduation.svg";
 import eduPlusIcon from "@/assets/crcle/profile/edu-plus.svg";
@@ -25,6 +23,8 @@ import eyeWeekIcon from "@/assets/crcle/profile/eye-week.svg";
 import graduationIcon from "@/assets/crcle/profile/graduation.svg";
 import heartDatingIcon from "@/assets/crcle/profile/heart-dating.svg";
 import laptopWorkIcon from "@/assets/crcle/profile/laptop-work.svg";
+import bytesizeInfoIcon from "@/assets/crcle/profile/bytesize-info.svg";
+import locationCurrentIcon from "@/assets/crcle/profile/location-current.svg";
 import locationMapImg from "@/assets/crcle/profile/location-map.png";
 import lockFilledIcon from "@/assets/crcle/profile/lock-filled.svg";
 import loughboroughCrest from "@/assets/crcle/profile/loughborough-crest.png";
@@ -66,7 +66,7 @@ import {
 export type { BroadcastState };
 
 /**
- * CRCLE Profile — Figma 851:225640 (dark profile widget grid).
+ * CRCLE Profile — Figma 1005:49850 (dark) / 1005:49606 (light).
  */
 
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
@@ -169,7 +169,7 @@ const INITIAL: ProfileState = {
     education: {
       school: "Loughborough University",
       degree: "Product Design",
-      years: "2019 - 2022",
+      years: "Graduated 2024",
     },
     work: {
       company: "Startup",
@@ -198,6 +198,7 @@ export function CrcleProfile({
 } = {}) {
   const [broadcastMood] = useCrcleBroadcast();
   const [isIncognito] = useCrcleIncognito();
+  const [isLightMode, setIsLightMode] = useState(false);
   const [profile, setProfile] = useState<ProfileState>(() => ({
     ...INITIAL,
     broadcast: { ...INITIAL.broadcast, activeState: broadcastMood, isIncognito },
@@ -208,8 +209,25 @@ export function CrcleProfile({
 
   return (
     <div className="relative ml-auto w-fit">
-      <CrclePhoneFrame>
-        <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211]">
+      <motion.button
+        type="button"
+        aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
+        aria-pressed={isLightMode}
+        onClick={() => setIsLightMode((v) => !v)}
+        className="absolute left-1/2 -top-10 z-30 flex size-8 -translate-x-1/2 items-center justify-center border-0 bg-transparent p-0 shadow-none outline-none ring-0"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.92 }}
+      >
+        <Sun
+          strokeWidth={1.5}
+          className={`size-6 transition-colors duration-300 ${
+            isLightMode ? "fill-amber-400 text-amber-400" : "fill-none text-zinc-800"
+          }`}
+        />
+      </motion.button>
+
+      <CrclePhoneFrame light={isLightMode}>
+        <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
           <div className="relative min-h-0 flex-1">
             {/* Absolute scroll so the dock can sample this layer for backdrop-filter */}
             <div className="absolute inset-0 overflow-x-hidden overflow-y-auto px-3 pb-28 pt-[94px]">
@@ -231,10 +249,10 @@ export function CrcleProfile({
 
             {/* Status + wordmark float over content with a soft fade — no hard cutoff */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-              <div className="bg-gradient-to-b from-[#010211] from-40% via-[#010211]/85 to-transparent pb-8">
+              <div className="bg-gradient-to-b from-[#010211] from-40% via-[#010211]/85 to-transparent pb-8 transition-colors duration-300 [.crcle-phone--light_&]:from-[#f7f6f2] [.crcle-phone--light_&]:via-[#f7f6f2]/85">
                 <StatusBar />
                 <div className="mt-[5px] flex justify-center pb-[12px]">
-                  <IconImg src={crcleLogo} className="h-[13px] w-[38px]" />
+                  <IconImg src={crcleLogo} className="crcle-theme-icon h-[13px] w-[38px]" />
                 </div>
               </div>
             </div>
@@ -350,8 +368,9 @@ function ProfileMainView({
 }) {
   const { user, widgets } = profile;
   const [isIncognito] = useCrcleIncognito();
-  const [locationEnabled, setLocationEnabled] = useState(false);
-  const lookingForWork = widgets.work?.location?.toLowerCase().includes("looking") ?? false;
+  const [locationEnabled, setLocationEnabled] = useState(true);
+  const [lookingForWork, setLookingForWork] = useState(false);
+  const [shareStatus, setShareStatus] = useState(true);
   const relationshipMeta =
     RELATIONSHIP_OPTIONS.find((o) => o.id === widgets.relationship) ?? RELATIONSHIP_OPTIONS[1];
   const showLocationDetails = !isIncognito || locationEnabled;
@@ -364,20 +383,23 @@ function ProfileMainView({
 
   return (
     <div className="flex flex-col gap-4 pb-4">
-      {/* Identity — Figma 851:225654 */}
+      {/* Identity — Figma 1005:49864 / light 1005:49620 */}
       <div className="flex w-full items-end justify-between px-0">
         <div className="flex flex-col items-start justify-center">
           <div className="flex items-center gap-2">
-            <p className="text-[16px] leading-[1.4] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
+            <p className="text-[16px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-black" style={{ fontFamily: FONT }}>
               {user.name}
             </p>
-            <span className="flex h-[22px] w-[22px] items-center justify-center rounded-[36px] bg-[#f7f6f2] p-1">
+            <span className="flex h-[22px] w-[22px] items-center justify-center rounded-[36px] bg-[#f7f6f2] p-1 [.crcle-phone--light_&]:hidden">
               <img
                 alt=""
                 src={raindropBadgeIcon}
                 className="h-[11px] w-2.5 object-contain"
                 draggable={false}
               />
+            </span>
+            <span className="hidden items-center rounded-[24px] border border-[#030426] px-3 py-1 text-[11px] leading-[1.4] text-[#030426] [.crcle-phone--light_&]:inline-flex" style={{ fontFamily: FONT }}>
+              Verify
             </span>
           </div>
           <p className="text-[11px] leading-[1.4] text-[#b1b1bc]" style={{ fontFamily: FONT }}>
@@ -408,15 +430,15 @@ function ProfileMainView({
         <button
           type="button"
           onClick={onOpenMood}
-          className="crcle-glass-btn relative flex items-center justify-center gap-1 self-stretch overflow-hidden rounded-[64px] py-1 pl-2 pr-1"
+          className="relative flex items-center justify-center gap-0.5 self-stretch overflow-hidden rounded-[64px] border border-[#0fc950] bg-gradient-to-r from-white/[0.03] to-[rgba(15,201,80,0.12)] py-1 pl-2 pr-1"
         >
           <IconImg src={profileMaskGreenIcon} className="relative z-[1] size-6" />
-          <ChevronDown className="relative z-[1] size-5 text-white/50" strokeWidth={1.5} />
+          <ChevronDown className="relative z-[1] size-6 text-[#0fc950]" strokeWidth={1.5} />
         </button>
       </div>
 
-      {/* Top row: portrait + stats — Figma 851:225673 */}
-      <div className="mx-auto flex h-[255px] w-full gap-4">
+      {/* Top row: portrait + stats — Figma 1005:49883 / light 1005:49632 */}
+      <div className="mx-auto flex h-[255px] w-full items-stretch gap-4 [.crcle-phone--light_&]:h-[251px]">
         <div className="relative min-w-0 flex-1 overflow-hidden rounded-[24px]">
           <img
             alt=""
@@ -429,84 +451,98 @@ function ProfileMainView({
           </div>
         </div>
 
-        <div
-          className="relative flex min-w-0 flex-1 flex-col gap-3 overflow-hidden rounded-2xl p-3"
-          style={{ background: "linear-gradient(90deg, #1e2939 0%, #1e2939 100%)" }}
-        >
+        <div className="relative flex min-w-0 flex-1 flex-col gap-3 overflow-hidden rounded-2xl bg-[#1e2939] p-3 [.crcle-phone--light_&]:gap-2 [.crcle-phone--light_&]:bg-[#f7f6f2] [.crcle-phone--light_&]:p-2">
           <img
             alt=""
             src={statsDecoIcon}
             className="pointer-events-none absolute -left-2 -top-2 h-[270px] w-[225px] max-w-none opacity-90"
             draggable={false}
           />
-          <div className="relative z-[1] flex min-h-0 flex-1 flex-col gap-1">
-            <div className="flex h-[16.5px] items-center gap-1.5">
-              <img alt="" src={eyeWeekIcon} className="size-3.5 object-contain" draggable={false} />
-              <span className="text-[11px] leading-[16.5px] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
-                This week
-              </span>
-            </div>
-            <div className="flex min-h-0 flex-1 flex-col gap-2 rounded-xl bg-[rgba(247,246,242,0.2)] p-2">
+          <div className="relative z-[1] flex h-[16.5px] shrink-0 items-center gap-1.5">
+            <img
+              alt=""
+              src={eyeWeekIcon}
+              className="size-3.5 object-contain [.crcle-phone--light_&]:brightness-0"
+              draggable={false}
+            />
+            <span className="text-[11px] leading-[16.5px] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]" style={{ fontFamily: FONT }}>
+              This week
+            </span>
+          </div>
+          <div className="relative z-[1] flex min-h-0 flex-1 flex-col justify-between gap-2">
+            <div className="flex shrink-0 flex-col gap-2 rounded-xl bg-[rgba(247,246,242,0.2)] p-2 backdrop-blur-[30px]">
               <div>
                 <p
-                  className="text-[24px] font-medium leading-[25px] text-[#f7f6f2]"
+                  className="text-[24px] font-medium leading-[25px] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]"
                   style={{ fontFamily: FONT }}
                 >
                   {user.views}
                 </p>
                 <p
-                  className="text-[13px] font-light leading-[1.4] text-[#f7f6f2]"
+                  className="text-[13px] font-light leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]"
                   style={{ fontFamily: FONT }}
                 >
                   Profile views
                 </p>
               </div>
               <div>
-                <p className="text-[19px] leading-[1.4] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
+                <p className="text-[19px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]" style={{ fontFamily: FONT }}>
                   {user.connections}
                 </p>
                 <p
-                  className="text-[13px] font-light leading-[1.4] text-[#f7f6f2]"
+                  className="text-[13px] font-light leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]"
                   style={{ fontFamily: FONT }}
                 >
                   connections
                 </p>
               </div>
               <div className="flex items-center gap-1">
-                <img alt="" src={trendingUpIcon} className="size-3.5 object-contain" draggable={false} />
+                <img
+                  alt=""
+                  src={trendingUpIcon}
+                  className="size-3.5 object-contain [.crcle-phone--light_&]:brightness-0"
+                  draggable={false}
+                />
                 <span
-                  className="text-[11px] font-light leading-[1.4] text-[#f7f6f2]"
+                  className="text-[11px] font-light leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]"
                   style={{ fontFamily: FONT }}
                 >
                   +5 this week
                 </span>
               </div>
             </div>
-          </div>
-          <div className="relative z-[1] flex flex-col gap-2">
-            <div className="flex items-start justify-between text-[11px] text-[#f7f6f2]">
-              <div style={{ fontFamily: FONT }}>
-                <p className="leading-[1.2]">PROFILE STRENGTH</p>
-                <p className="font-medium leading-[1.2]">Intermediate</p>
+            <div className="flex shrink-0 flex-col gap-2">
+              <div className="flex items-start justify-between text-[11px] text-[#f7f6f2] [.crcle-phone--light_&]:text-black">
+                <div style={{ fontFamily: FONT }}>
+                  <p className="leading-[1.2]">PROFILE STRENGTH</p>
+                  <p className="font-medium leading-[1.2]">Intermediate</p>
+                </div>
+                <p className="font-light leading-[1.2] [.crcle-phone--light_&]:text-[#030426]" style={{ fontFamily: FONT }}>
+                  {user.strengthPct}%
+                </p>
               </div>
-              <p className="font-light leading-[1.2]" style={{ fontFamily: FONT }}>
-                {user.strengthPct}%
-              </p>
-            </div>
-            <div className="relative h-[4px] w-full px-0.5">
-              <img
-                alt=""
-                src={strengthTrackIcon}
-                className="absolute inset-x-0.5 top-1/2 h-1 w-[calc(100%-4px)] -translate-y-1/2 object-fill"
-                draggable={false}
-              />
-              <img
-                alt=""
-                src={strengthFillIcon}
-                className="absolute left-0.5 top-1/2 h-1 -translate-y-1/2 object-fill"
-                style={{ width: `${user.strengthPct}%` }}
-                draggable={false}
-              />
+              <div className="relative h-[4px] w-full px-0.5">
+                <img
+                  alt=""
+                  src={strengthTrackIcon}
+                  className="absolute inset-x-0.5 top-1/2 h-1 w-[calc(100%-4px)] -translate-y-1/2 object-fill [.crcle-phone--light_&]:brightness-0 [.crcle-phone--light_&]:opacity-25"
+                  draggable={false}
+                />
+                <img
+                  alt=""
+                  src={strengthFillIcon}
+                  className="absolute left-0.5 top-1/2 h-1 -translate-y-1/2 object-fill [.crcle-phone--light_&]:brightness-0"
+                  style={{ width: `${user.strengthPct}%` }}
+                  draggable={false}
+                />
+              </div>
+              <button
+                type="button"
+                className="hidden w-fit rounded-[24px] border border-[#030426] bg-[#030426] px-3 py-1 text-[11px] leading-[1.4] text-[#e6e6e9] [.crcle-phone--light_&]:inline-flex"
+                style={{ fontFamily: FONT }}
+              >
+                Boost Profile
+              </button>
             </div>
           </div>
         </div>
@@ -556,7 +592,7 @@ function ProfileMainView({
               <button
                 type="button"
                 onClick={onOpenLocation}
-                className="relative h-[181px] min-w-0 overflow-hidden rounded-2xl text-left"
+                className="relative flex h-[184px] min-w-0 flex-col justify-between overflow-hidden rounded-2xl p-2 text-left"
               >
                 <img
                   alt=""
@@ -567,7 +603,7 @@ function ProfileMainView({
                 <div className="absolute inset-0 rounded-2xl bg-[rgba(2,4,38,0.1)]" />
                 {showLocationDetails ? (
                   <>
-                    <span className="absolute left-[72px] top-[84px] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
+                    <span className="absolute left-[72px] top-[84px] z-[2] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
                       <span className="size-0.5 rounded-full bg-white" />
                       <span
                         className="text-[11px] leading-[1.4] text-[#fefefe]"
@@ -579,12 +615,11 @@ function ProfileMainView({
                     <img
                       alt=""
                       src={mapPinPreciseIcon}
-                      className="absolute left-[72px] top-[107px] size-2.5"
+                      className="absolute left-[72px] top-[107px] z-[2] size-2.5"
                       draggable={false}
                     />
                   </>
                 ) : null}
-                {/* Figma 866:243439 — incognito frost */}
                 {frostMap ? (
                   <div className="absolute inset-0 z-[1] flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[rgba(255,255,255,0.1)] px-[35px] backdrop-blur-[4px]">
                     <div className="flex w-[110px] flex-col items-center justify-center gap-[7px]">
@@ -607,82 +642,55 @@ function ProfileMainView({
                     </div>
                   </div>
                 ) : null}
-                <span
-                  className="absolute left-2 top-2 z-[2] rounded-[24px] bg-[#030426] py-0.5 pl-2 pr-2.5 text-[13px] leading-[1.4] text-[#fefefe]"
-                  style={{ fontFamily: FONT }}
-                >
-                  Current Location
+                <span className="relative z-[2] flex w-full items-center justify-between rounded-[24px] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1 backdrop-blur-[4px]">
+                  <img alt="" src={locationCurrentIcon} className="size-4 object-contain" draggable={false} />
+                  <span className="text-[13px] leading-[1.1] text-[#030426]" style={{ fontFamily: FONT }}>
+                    Location
+                  </span>
+                  <img alt="" src={bytesizeInfoIcon} className="size-4 object-contain" draggable={false} />
                 </span>
-                {isIncognito ? (
-                  <div
-                    className="absolute bottom-2 left-2 right-2 z-[2]"
-                    onClick={(e) => e.stopPropagation()}
+                <div
+                  className="relative z-[2] flex w-[165px] items-center justify-between rounded-[24px] py-1 pl-2 pr-1.5"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setLocationEnabled((v) => !v)}
+                    className="flex w-full items-center justify-between"
+                    aria-pressed={locationEnabled}
                   >
-                    <button
-                      type="button"
-                      onClick={() => setLocationEnabled((v) => !v)}
-                      className="flex w-full items-center justify-between rounded-[24px] border border-[rgba(2,4,38,0.4)] bg-transparent py-1 pl-2 pr-1.5"
-                      aria-pressed={locationEnabled}
-                    >
-                      <span
-                        className="text-[11px] leading-[1.4] text-[#030426]"
-                        style={{ fontFamily: FONT }}
-                      >
-                        Shared location
-                      </span>
-                      <span
-                        className={`flex w-6 items-center rounded-[24px] p-0.5 transition ${
-                          locationEnabled
-                            ? "justify-end bg-[#0fc950]"
-                            : "justify-start bg-[rgba(2,4,38,0.25)]"
-                        }`}
-                      >
-                        <span className="size-2 rounded bg-[#fefefe]" />
-                      </span>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="absolute bottom-2 left-1 right-1 z-[2] flex items-center gap-1 rounded-[24px] bg-[rgba(253,252,251,0.35)] p-1 shadow-[0_4px_4px_rgba(0,0,0,0.05)] backdrop-blur-[10px]">
+                    <span className="text-[11px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
+                      Shared location
+                    </span>
                     <span
-                      className="flex flex-1 items-center justify-center px-2.5 py-1 text-[11px] leading-[1.4] text-[#010211]"
-                      style={{ fontFamily: FONT }}
+                      className={`flex w-6 items-center rounded-[24px] p-0.5 transition ${
+                        locationEnabled
+                          ? "justify-end bg-[#0fc950]"
+                          : "justify-start bg-[rgba(2,4,38,0.25)]"
+                      }`}
                     >
-                      Target City
+                      <span className="size-2 rounded bg-[#fefefe]" />
                     </span>
-                    <span className="flex flex-1 items-center justify-center gap-1 rounded-[20px] bg-[#02031d] p-1">
-                      <img
-                        alt=""
-                        src={mapPinPreciseIcon}
-                        className="size-2.5 brightness-0 invert"
-                        draggable={false}
-                      />
-                      <span
-                        className="text-[11px] leading-[1.4] text-white"
-                        style={{ fontFamily: FONT }}
-                      >
-                        Precise
-                      </span>
-                    </span>
-                  </div>
-                )}
+                  </button>
+                </div>
               </button>
 
               {hasWork ? (
                 <button
                   type="button"
                   onClick={onOpenWork}
-                  className="crcle-glass-btn flex min-w-0 flex-col gap-2 rounded-[20px] p-2 text-left"
+                  className="flex h-[184px] min-w-0 flex-col gap-2 rounded-[20px] border border-[rgba(0,0,0,0.25)] bg-[rgba(254,254,254,0.3)] p-[9px] text-left shadow-[0_4px_4px_rgba(0,0,0,0.05)] backdrop-blur-[7px] [.crcle-phone--light_&]:border-[rgba(0,0,0,0.25)] [.crcle-phone--light_&]:bg-[#fefefe]"
                 >
-                  <div className="flex w-full flex-col items-center gap-2 rounded-2xl bg-[#f7f6f2] p-2">
+                  <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-between">
                     <div className="flex w-full items-center gap-1">
                       <img
                         alt=""
                         src={laptopWorkIcon}
-                        className="size-4 object-contain"
+                        className="size-4 object-contain brightness-0 invert [.crcle-phone--light_&]:invert-0"
                         draggable={false}
                       />
                       <span
-                        className="text-[12px] leading-[18px] text-[#6b7280]"
+                        className="text-[12px] leading-[18px] text-[rgba(247,246,242,0.6)] [.crcle-phone--light_&]:text-[#6b7280]"
                         style={{ fontFamily: FONT }}
                       >
                         Work
@@ -696,31 +704,32 @@ function ProfileMainView({
                     />
                     <div className="text-center">
                       <p
-                        className="text-[14px] leading-[21px] text-[#020426]"
+                        className="text-[14px] leading-[21px] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#020426]"
                         style={{ fontFamily: FONT }}
                       >
                         {widgets.work?.role ?? "Add role"}
                       </p>
                       <p
-                        className="text-[12px] font-light leading-[18px] text-[#6b7280]"
+                        className="text-[12px] font-light leading-[18px] text-[rgba(222,221,218,0.6)] [.crcle-phone--light_&]:text-[#6b7280]"
                         style={{ fontFamily: FONT }}
                       >
                         {widgets.work?.company ?? "Company"}
                       </p>
                     </div>
                   </div>
-                  <div className="flex w-full items-center justify-between rounded-[24px] border border-[rgba(247,246,242,0.1)] py-1 pl-2 pr-1.5">
-                    <span
-                      className="text-[11px] leading-[1.4] text-[#f7f6f2]"
-                      style={{ fontFamily: FONT }}
-                    >
+                  <div
+                    className="flex w-full items-center justify-between rounded-[24px] bg-[#deddda] py-1 pl-2 pr-1.5"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLookingForWork((v) => !v);
+                    }}
+                  >
+                    <span className="text-[11px] leading-[1.4] text-[#02031d]" style={{ fontFamily: FONT }}>
                       Looking for work
                     </span>
                     <span
                       className={`flex w-6 items-center rounded-[24px] p-0.5 ${
-                        lookingForWork
-                          ? "justify-end bg-[#0fc950]/40"
-                          : "justify-end bg-[rgba(247,246,242,0.4)]"
+                        lookingForWork ? "justify-end bg-[#0fc950]" : "justify-start bg-[rgba(2,3,29,0.4)]"
                       }`}
                     >
                       <span className="size-2 rounded bg-[#fdfcfb]" />
@@ -739,9 +748,14 @@ function ProfileMainView({
             </div>
 
             {/* Dating + Education */}
-            <div className="grid grid-cols-2 items-start gap-4">
+            <div className="grid grid-cols-2 items-stretch gap-4">
               {hasRelationship ? (
-                <DatingWidget option={relationshipMeta} onOpen={onOpenRelationship} />
+                <DatingWidget
+                  option={relationshipMeta}
+                  onOpen={onOpenRelationship}
+                  shareStatus={shareStatus}
+                  onToggleShare={() => setShareStatus((v) => !v)}
+                />
               ) : (
                 <EmptyWidgetCard
                   icon={emptyHeartIcon}
@@ -756,9 +770,9 @@ function ProfileMainView({
                 <button
                   type="button"
                   onClick={onOpenEducation}
-                  className="flex min-w-0 flex-col rounded-[20px] border border-[rgba(247,246,242,0.4)] bg-[rgba(247,246,242,0.4)] p-[9px] text-left shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                  className="flex min-w-0 flex-col self-stretch rounded-[20px] border border-[rgba(247,246,242,0.4)] bg-gradient-to-b from-[rgba(1,2,17,0.6)] to-[rgba(170,194,240,0.6)] p-[5px] text-left shadow-[0_4px_4px_rgba(0,0,0,0.25)] [.crcle-phone--light_&]:border-[#f7f6f2] [.crcle-phone--light_&]:from-[rgba(0,85,255,0.3)] [.crcle-phone--light_&]:to-[rgba(170,194,240,0.3)] [.crcle-phone--light_&]:shadow-none"
                 >
-                  <div className="flex w-full flex-col items-center gap-3 rounded-2xl bg-[#f7f6f2] p-2">
+                  <div className="flex min-h-0 w-full flex-1 flex-col items-center gap-3 rounded-2xl bg-[#f7f6f2] p-2">
                     <div className="flex w-full items-center gap-1">
                       <img
                         alt=""
@@ -815,7 +829,7 @@ function ProfileMainView({
       <button
         type="button"
         onClick={onOpenSocials}
-        className="mx-auto flex w-full flex-col gap-2 rounded-[24px] border border-[rgba(247,246,242,0.2)] bg-[rgba(247,246,242,0.05)] p-2 text-left"
+        className="mx-auto flex w-full flex-col gap-2 rounded-[24px] border border-[rgba(247,246,242,0.2)] bg-[rgba(247,246,242,0.05)] p-2 text-left [.crcle-phone--light_&]:border-transparent [.crcle-phone--light_&]:bg-[#020217]"
       >
         <div className="flex w-full items-start justify-between">
           <div className="flex items-center gap-1 pl-1 pt-0.5">
@@ -847,12 +861,12 @@ function ProfileMainView({
       {/* Add widget — Figma 851:225829 */}
       <button
         type="button"
-        className="relative mx-auto flex w-full items-center justify-center rounded-[24px] border border-[#f7f6f2] p-3"
+        className="relative mx-auto flex w-full items-center justify-center rounded-[24px] border border-[#f7f6f2] p-3 [.crcle-phone--light_&]:border-[#030426] [.crcle-phone--light_&]:bg-[#fefefe]"
       >
-        <span className="absolute left-[7px] top-1/2 flex -translate-y-1/2 items-center justify-center rounded-[36px] bg-[rgba(247,246,242,0.4)] px-3 py-1">
+        <span className="absolute left-[7px] top-1/2 flex -translate-y-1/2 items-center justify-center rounded-[36px] bg-[rgba(247,246,242,0.4)] px-3 py-1 [.crcle-phone--light_&]:bg-[#030426]">
           <img alt="" src={locusPlusIcon} className="size-4 object-contain" draggable={false} />
         </span>
-        <span className="w-full text-center text-[13px] leading-[1.4] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
+        <span className="w-full text-center text-[13px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030422]" style={{ fontFamily: FONT }}>
           Add widget
         </span>
       </button>
@@ -865,17 +879,19 @@ function ProfileMainView({
 function DatingWidget({
   option,
   onOpen,
+  shareStatus,
+  onToggleShare,
 }: {
   option: (typeof RELATIONSHIP_OPTIONS)[number];
   onOpen: () => void;
+  shareStatus: boolean;
+  onToggleShare: () => void;
 }) {
-  const isLinkCta = option.ctaIcon === "link";
-
   return (
     <button
       type="button"
       onClick={onOpen}
-      className="flex w-full min-w-0 flex-col gap-2 rounded-[20px] p-2 text-left"
+      className="flex h-full w-full min-w-0 flex-col gap-2 rounded-[20px] p-2 text-left"
       style={{ backgroundColor: option.cardBg }}
     >
       <div className="flex items-center gap-1 pl-0.5 pt-0.5">
@@ -912,20 +928,22 @@ function DatingWidget({
       </div>
 
       <div
-        className={`flex w-fit items-center gap-2.5 rounded-[24px] bg-[#030426] ${
-          isLinkCta ? "py-1 pl-2 pr-1" : "py-0.5 pl-2 pr-2.5"
-        }`}
+        className="flex w-full items-center justify-between rounded-[24px] border border-black py-1 pl-2 pr-1.5 [.crcle-phone--light_&]:border-[rgba(204,0,0,0.3)] [.crcle-phone--light_&]:bg-[rgba(204,0,0,0.2)]"
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleShare();
+        }}
       >
-        <span className="text-[13px] leading-[1.4] text-[#fefefe]" style={{ fontFamily: FONT }}>
-          {option.ctaLabel}
+        <span className="text-[11px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
+          Share status
         </span>
-        {isLinkCta ? (
-          <span className="flex items-center rounded-[60px] bg-[rgba(247,246,242,0.4)] p-0.5">
-            <img alt="" src={datingLinkIcon} className="size-3 object-contain" draggable={false} />
-          </span>
-        ) : (
-          <img alt="" src={datingSendIcon} className="size-3 object-contain" draggable={false} />
-        )}
+        <span
+          className={`flex w-6 items-center rounded-[24px] p-0.5 ${
+            shareStatus ? "justify-end bg-[#030426]" : "justify-start bg-[rgba(3,4,38,0.25)]"
+          }`}
+        >
+          <span className="size-2 rounded bg-[#fdfcfb]" />
+        </span>
       </div>
     </button>
   );
@@ -951,7 +969,7 @@ function EmptyWidgetCard({
     <button
       type="button"
       onClick={onClick}
-      className={`relative flex h-full min-h-0 w-full min-w-0 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[rgba(177,177,188,0.2)] bg-transparent text-left transition hover:bg-white/[0.02] ${
+      className={`relative flex h-full min-h-0 w-full min-w-0 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[rgba(177,177,188,0.2)] bg-transparent text-left transition hover:bg-white/[0.02] [.crcle-phone--light_&]:border-[rgba(3,4,38,0.18)] [.crcle-phone--light_&]:hover:bg-black/[0.03] ${
         padY === "comfortable" ? "px-3 py-4" : "p-3"
       }`}
     >
@@ -961,7 +979,7 @@ function EmptyWidgetCard({
             <img
               alt=""
               src={icon}
-              className="absolute inset-0 size-full max-w-none object-contain"
+              className="absolute inset-0 size-full max-w-none object-contain [.crcle-phone--light_&]:brightness-0"
               draggable={false}
             />
           </span>
@@ -969,14 +987,14 @@ function EmptyWidgetCard({
             <img
               alt=""
               src={emptyPlusIcon}
-              className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
+              className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert [.crcle-phone--light_&]:invert-0"
               draggable={false}
             />
           </span>
         </div>
 
         <div className="flex w-full flex-col items-start gap-2 leading-[1.4]">
-          <div className="flex w-full flex-col items-start text-[#f7f6f2]">
+          <div className="flex w-full flex-col items-start text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]">
             <p
               className="w-full text-[16px] font-medium leading-[1.4]"
               style={{ fontFamily: FONT }}
@@ -993,7 +1011,7 @@ function EmptyWidgetCard({
             ) : null}
           </div>
           <p
-            className="w-full text-[11px] font-normal leading-[1.4] text-[rgba(247,246,242,0.5)]"
+            className="w-full text-[11px] font-normal leading-[1.4] text-[rgba(247,246,242,0.5)] [.crcle-phone--light_&]:text-[rgba(3,4,38,0.5)]"
             style={{ fontFamily: FONT }}
           >
             {tip}
@@ -1976,14 +1994,14 @@ function SheetShell({
 
 function StatusBar() {
   return (
-    <div className="relative z-30 mx-auto flex h-[62px] w-[84%] shrink-0 items-end justify-between px-2 pb-[10px] text-[#f7f6f2]">
+    <div className="relative z-30 mx-auto flex h-[62px] w-[84%] shrink-0 items-end justify-between px-2 pb-[10px] text-[#f7f6f2] [.crcle-phone--light_&]:text-black">
       <span
         className="text-[17px] font-semibold leading-[22px]"
         style={{ fontFamily: "SF Pro, system-ui, -apple-system, sans-serif" }}
       >
         9:41
       </span>
-      <div className="flex items-center gap-[7px] pb-0.5">
+      <div className="crcle-theme-icon flex items-center gap-[7px] pb-0.5">
         <IconImg src={cellularIcon} className="h-[12.226px] w-[19.2px]" />
         <IconImg src={wifiIcon} className="h-[12.328px] w-[17.142px]" />
         <IconImg src={batteryIcon} className="h-[13px] w-[27.328px]" />
