@@ -138,12 +138,12 @@ export function CrcleInTheAreaInbox({
         />
       </div>
 
-      <div className="crcle-area-inbox-glass flex flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] bg-[rgba(247,246,242,0.2)] px-[13px] pb-3 pt-4 backdrop-blur-[15px] [-webkit-backdrop-filter:blur(15px)]">
+      <div className="crcle-area-inbox-glass flex flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] px-[13px] pb-3 pt-4">
         <div
           aria-hidden
-          className="dock-glass-splay pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/12 via-transparent to-transparent"
+          className="dock-glass-splay pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/20 via-white/[0.06] to-transparent"
         />
-        <div className="dock-glass-lens z-0 opacity-25" aria-hidden />
+        <div className="dock-glass-lens z-0 opacity-30" aria-hidden />
         <button
           type="button"
           onClick={() => (expanded ? onCollapse() : onExpand())}
