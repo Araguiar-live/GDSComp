@@ -992,16 +992,68 @@
 }
 
 /* In The Area notifications drawer — Figma 1142:34943 (dark) / 1142:33506 (light).
-   Glass radius 15. Backdrop-filter must live on this node (not a child plate).
-   A transform on an ancestor would only blur an empty stacking context. */
+   Same frost-splay stack as .dock-glass (specular wash + prismatic rim + lens).
+   Backdrop-filter lives on this node. Blur is denser than Figma’s 15px Glass so
+   hub chrome and chat rows behind the sheet are not readable. */
 .crcle-area-inbox-glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   background-image: linear-gradient(
     182deg,
     rgba(255, 255, 255, 0.4) 26%,
     rgba(2, 3, 29, 0.04) 98%
   );
-  backdrop-filter: blur(15px) saturate(160%);
-  -webkit-backdrop-filter: blur(15px) saturate(160%);
+  backdrop-filter: blur(48px) saturate(180%);
+  -webkit-backdrop-filter: blur(48px) saturate(180%);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.crcle-area-inbox-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    transparent 42%
+  );
+  opacity: 0.4;
+}
+
+.crcle-area-inbox-glass::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 0.5px;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.45;
+}
+
+.crcle-area-inbox-glass > *:not(.dock-glass-lens):not(.dock-glass-splay) {
+  position: relative;
+  z-index: 1;
 }
 
 .crcle-tune-frost {

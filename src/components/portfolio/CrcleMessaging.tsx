@@ -439,7 +439,12 @@ export function CrcleMessaging({
               className="relative flex h-full min-h-0 flex-col"
             >
               {/* Header stack — status → Messages row (never overlapped) */}
-              <div className="relative z-30 shrink-0">
+              <div
+                className={`relative z-30 shrink-0 ${
+                  areaInbox !== "off" ? "pointer-events-none select-none opacity-0" : ""
+                }`}
+                aria-hidden={areaInbox !== "off"}
+              >
                 <StatusBar />
                 <div className="mt-[5px] flex justify-center pb-[12px]">
                   <IconImg src={crcleLogo} className="crcle-theme-icon h-[13px] w-[38px]" />
@@ -461,6 +466,7 @@ export function CrcleMessaging({
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, ease: EASE }}
+                  transformTemplate={() => ""}
                   className="absolute inset-x-3 top-0 bottom-[100px] overflow-hidden"
                 >
                   {/* Chat list under overlay — fixed offset for Closed header (Figma ~95px) */}
