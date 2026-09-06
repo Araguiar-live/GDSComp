@@ -40,8 +40,13 @@ import {
   SignalInterceptModal,
   type UserProfile,
 } from "@/components/portfolio/SignalInterceptModal";
+import { CrcleInTheAreaInbox } from "@/components/portfolio/CrcleInTheAreaInbox";
 import { CrcleMoodSwitch } from "@/components/portfolio/CrcleMoodSwitch";
-import { consumeMoodSwitchOnMessaging, subscribeCrcleBroadcast } from "@/components/portfolio/crcleBroadcast";
+import {
+  consumeAreaInboxOnMessaging,
+  consumeMoodSwitchOnMessaging,
+  subscribeCrcleBroadcast,
+} from "@/components/portfolio/crcleBroadcast";
 import {
   SignalCard,
   TheLocusDrawer,
@@ -216,9 +221,23 @@ export function CrcleMessaging({
   const [locusOpen, setLocusOpen] = useState(false);
   const [signalCard, setSignalCard] = useState<SignalCardModel | null>(null);
   const [moodOpen, setMoodOpen] = useState(false);
+  const [areaInbox, setAreaInbox] = useState<"off" | "screen" | "drawer">("off");
+
+  const openAreaInbox = useCallback(() => {
+    setMoodOpen(false);
+    setMenuOpen(false);
+    setOnboardingOpen(false);
+    setPhase("inbox");
+    setNotificationsOpen(false);
+    setAreaInbox("screen");
+  }, []);
 
   useEffect(() => {
     const tryOpen = () => {
+      if (consumeAreaInboxOnMessaging()) {
+        openAreaInbox();
+        return;
+      }
       if (!consumeMoodSwitchOnMessaging()) return;
       setOnboardingOpen(false);
       setPhase("inbox");
@@ -226,7 +245,13 @@ export function CrcleMessaging({
     };
     tryOpen();
     return subscribeCrcleBroadcast(tryOpen);
-  }, []);
+  }, [openAreaInbox]);
+
+  useEffect(() => {
+    if (areaInbox !== "screen") return;
+    const id = window.setTimeout(() => setAreaInbox("drawer"), 420);
+    return () => window.clearTimeout(id);
+  }, [areaInbox]);
 
   const openInbox = useCallback(() => {
     setPhase("inbox");
@@ -443,17 +468,34 @@ export function CrcleMessaging({
                     />
                   </div>
 
-                  <NotificationCenter
-                    expanded={notificationsOpen}
-                    onExpandedChange={setNotificationsOpen}
-                    tab={tab}
-                    onTabChange={setTab}
-                    profiles={tab === "sent" ? SENT_PROFILES : CONNECTION_PROFILES}
-                    onViewSignal={openSignal}
-                    onViewDailyDrop={goRadar}
-                  />
+                  {areaInbox === "off" ? (
+                    <NotificationCenter
+                      expanded={notificationsOpen}
+                      onExpandedChange={setNotificationsOpen}
+                      tab={tab}
+                      onTabChange={setTab}
+                      profiles={tab === "sent" ? SENT_PROFILES : CONNECTION_PROFILES}
+                      onViewSignal={openSignal}
+                      onViewDailyDrop={goRadar}
+                    />
+                  ) : null}
                 </motion.div>
               </div>
+
+              <AnimatePresence>
+                {areaInbox !== "off" ? (
+                  <CrcleInTheAreaInbox
+                    phase={areaInbox === "drawer" ? "drawer" : "screen"}
+                    onExpand={() => setAreaInbox("drawer")}
+                    onCollapse={() => setAreaInbox("screen")}
+                    onConnect={() => {
+                      setAreaInbox("off");
+                      openSignal(CONNECTION_PROFILES[1]);
+                    }}
+                    onMarkRead={() => setAreaInbox("off")}
+                  />
+                ) : null}
+              </AnimatePresence>
 
               {!onboardingOpen ? (
                 <CrclePrimaryDock
@@ -462,6 +504,7 @@ export function CrcleMessaging({
                   onMessages={openInbox}
                   onRadar={goRadar}
                   onSignalHome={goHome}
+                  onAreaRadar={openAreaInbox}
                 />
               ) : null}
             </motion.div>

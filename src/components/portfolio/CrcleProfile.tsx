@@ -55,6 +55,7 @@ import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import { CrcleMoreButton, CrclePrimaryDock } from "@/components/portfolio/CrcleChrome";
 import {
+  requestAreaInboxOnMessaging,
   requestMoodSwitchOnMessaging,
   setCrcleBroadcast,
   useCrcleBroadcast,
@@ -244,6 +245,10 @@ export function CrcleProfile({
               onMessages={onGoToMessages}
               onRadar={onGoToRadar}
               onSignalHome={onGoToSignalHome}
+              onAreaRadar={() => {
+                requestAreaInboxOnMessaging();
+                onGoToMessages?.();
+              }}
             />
           </div>
 

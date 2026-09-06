@@ -9,6 +9,7 @@ export type BroadcastState = "open_day" | "night_owl" | "collab" | "in_the_area"
 let broadcastState: BroadcastState = "open_day";
 let incognitoState = false;
 let pendingMoodSwitch = false;
+let pendingAreaInbox = false;
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -44,6 +45,18 @@ export function requestMoodSwitchOnMessaging() {
 export function consumeMoodSwitchOnMessaging() {
   const pending = pendingMoodSwitch;
   pendingMoodSwitch = false;
+  return pending;
+}
+
+/** Dock radar+pin control: jump to Messaging Hub with In The Area inbox. */
+export function requestAreaInboxOnMessaging() {
+  pendingAreaInbox = true;
+  emit();
+}
+
+export function consumeAreaInboxOnMessaging() {
+  const pending = pendingAreaInbox;
+  pendingAreaInbox = false;
   return pending;
 }
 

@@ -29,6 +29,7 @@ export function CrclePrimaryDock({
   onMessages,
   onRadar,
   onSignalHome,
+  onAreaRadar,
 }: {
   active: CrcleDockTab;
   /** When set, controls pinned-open state from the parent */
@@ -40,6 +41,7 @@ export function CrclePrimaryDock({
   onMessages?: () => void;
   onRadar?: () => void;
   onSignalHome?: () => void;
+  onAreaRadar?: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
   const [pinnedOpen, setPinnedOpen] = useState(false);
@@ -83,12 +85,12 @@ export function CrclePrimaryDock({
           <motion.button
             key="area-radar"
             type="button"
-            aria-label="In The Area — open radar"
+            aria-label="In The Area notifications"
             initial={{ opacity: 0, scale: 0.86, x: 10 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             exit={{ opacity: 0, scale: 0.9, x: 8 }}
             transition={{ duration: 0.22, ease: EASE }}
-            onClick={onRadar}
+            onClick={onAreaRadar}
             className="pointer-events-auto absolute bottom-0 right-full mr-1 flex items-start overflow-visible"
           >
             <span className="relative mr-[-12px] flex w-11 shrink-0 items-center justify-center rounded-[46px] bg-[rgba(247,246,242,0.4)] p-2.5">

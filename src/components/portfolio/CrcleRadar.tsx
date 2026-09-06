@@ -48,7 +48,7 @@ import unlockIcon from "@/assets/crcle/unlock.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import { CrclePrimaryDock } from "@/components/portfolio/CrcleChrome";
-import { useCrcleBroadcast } from "@/components/portfolio/crcleBroadcast";
+import { requestAreaInboxOnMessaging, useCrcleBroadcast } from "@/components/portfolio/crcleBroadcast";
 
 /**
  * CRCLE Radar — Figma 839:224363 + SwipeFeature 839:224515.
@@ -628,6 +628,10 @@ export function CrcleRadar({
                 onMessages={goToMessages}
                 onRadar={() => {}}
                 onSignalHome={onGoToSignalHome}
+                onAreaRadar={() => {
+                  requestAreaInboxOnMessaging();
+                  goToMessages();
+                }}
               />
               {isNoc ? <div className="size-9 shrink-0" aria-hidden /> : null}
             </div>

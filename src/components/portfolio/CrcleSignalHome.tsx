@@ -32,6 +32,7 @@ import {
   CrcleMoreButton,
   CrclePrimaryDock,
 } from "@/components/portfolio/CrcleChrome";
+import { requestAreaInboxOnMessaging } from "@/components/portfolio/crcleBroadcast";
 import { SignalTuneDrawer } from "@/components/portfolio/SignalTuneDrawer";
 
 /**
@@ -389,6 +390,10 @@ export function CrcleSignalHome({
               onMessages={onGoToMessages}
               onRadar={onGoToRadar}
               onSignalHome={() => {}}
+              onAreaRadar={() => {
+                requestAreaInboxOnMessaging();
+                onGoToMessages?.();
+              }}
             />
           ) : null}
 
