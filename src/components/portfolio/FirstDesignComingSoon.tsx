@@ -92,14 +92,14 @@ function FirstDesignMark({ className }: { className: string }) {
 
 function StatusBar() {
   return (
-    <div className="relative z-30 mx-auto flex h-[62px] w-[84%] shrink-0 items-end justify-between px-2 pb-[10px] text-[#f7f6f2]">
+    <div className="relative z-30 mx-auto flex h-[62px] w-[84%] shrink-0 items-end justify-between px-2 pb-[10px] text-white">
       <span
-        className="text-[17px] font-semibold leading-[22px]"
+        className="text-[17px] font-semibold leading-[22px] text-white"
         style={{ fontFamily: "SF Pro, system-ui, -apple-system, sans-serif" }}
       >
         9:41
       </span>
-      <div className="flex items-center gap-[7px] pb-0.5">
+      <div className="flex items-center gap-[7px] pb-0.5 text-white">
         <StatusIcon src={cellularIcon} className="h-[12.226px] w-[19.2px]" />
         <StatusIcon src={wifiIcon} className="h-[12.328px] w-[17.142px]" />
         <StatusIcon src={batteryIcon} className="h-[13px] w-[27.328px]" />
@@ -111,7 +111,12 @@ function StatusBar() {
 function StatusIcon({ src, className }: { src: string; className: string }) {
   return (
     <div className={`relative shrink-0 overflow-hidden ${className}`}>
-      <img alt="" src={src} className="absolute inset-0 size-full max-w-none object-contain invert" />
+      <img
+        alt=""
+        src={src}
+        className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
+        draggable={false}
+      />
     </div>
   );
 }
