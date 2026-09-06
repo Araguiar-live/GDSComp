@@ -804,78 +804,60 @@
   opacity: 0.85;
 }
 
-/* Profile Signal Live + mood chips — frosted glass + green gradient rim */
+/* Profile Signal Live + mood chips — Figma 1005:49875 subtle glass + green tint */
 .crcle-glass-btn--signal {
   background: linear-gradient(
-    165deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.03) 42%,
-    rgba(15, 201, 80, 0.1) 100%
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(15, 201, 80, 0.12) 100%
   );
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(190%);
+  -webkit-backdrop-filter: blur(18px) saturate(190%);
   border: 1px solid rgba(15, 201, 80, 0.2);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.22) inset,
-    0 -0.5px 0 rgba(255, 255, 255, 0.08) inset,
-    0 8px 20px rgba(0, 0, 0, 0.16);
+    0 1px 0 rgba(255, 255, 255, 0.42) inset,
+    0 -0.5px 0 rgba(255, 255, 255, 0.1) inset,
+    0 8px 20px rgba(0, 0, 0, 0.18),
+    -3px 0 12px rgba(255, 120, 160, 0.08),
+    3px 0 12px rgba(90, 170, 255, 0.1);
 }
 
 .crcle-glass-btn--signal::before {
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.28) 0%,
-    rgba(255, 255, 255, 0.08) 38%,
+    rgba(255, 255, 255, 0.48) 0%,
+    rgba(255, 255, 255, 0.1) 36%,
     transparent 58%
   );
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 .crcle-glass-btn--signal::after {
   background: linear-gradient(
     115deg,
-    rgba(15, 201, 80, 0.6) 0%,
+    rgba(15, 201, 80, 0.35) 0%,
     rgba(255, 255, 255, 0.18) 38%,
-    rgba(15, 201, 80, 0.48) 72%,
-    rgba(120, 255, 170, 0.35) 100%
+    rgba(15, 201, 80, 0.28) 72%,
+    rgba(120, 255, 170, 0.2) 100%
   );
-  opacity: 0.82;
+  opacity: 0.55;
 }
 
 .crcle-glass-btn--signal-accent {
-  border-color: rgba(15, 201, 80, 0.85);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.22) inset,
-    0 -0.5px 0 rgba(255, 255, 255, 0.08) inset,
-    0 8px 20px rgba(0, 0, 0, 0.16),
-    0 0 0 0.5px rgba(15, 201, 80, 0.55),
-    0 0 12px rgba(15, 201, 80, 0.42),
-    0 0 24px rgba(15, 201, 80, 0.2);
-}
-
-.crcle-glass-btn--signal-accent::after {
-  opacity: 1;
+  border-color: #0fc950;
 }
 
 .crcle-phone--light .crcle-glass-btn--signal {
   background: linear-gradient(
-    165deg,
-    rgba(253, 252, 251, 0.72) 0%,
-    rgba(253, 252, 251, 0.38) 45%,
-    rgba(15, 201, 80, 0.08) 100%
+    90deg,
+    rgba(253, 252, 251, 0.55) 0%,
+    rgba(15, 201, 80, 0.1) 100%
   );
   border-color: rgba(15, 201, 80, 0.35);
 }
 
 .crcle-phone--light .crcle-glass-btn--signal-accent {
   border-color: rgba(15, 201, 80, 0.75);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.42) inset,
-    0 -0.5px 0 rgba(255, 255, 255, 0.1) inset,
-    0 8px 20px rgba(0, 0, 0, 0.12),
-    0 0 0 0.5px rgba(15, 201, 80, 0.45),
-    0 0 10px rgba(15, 201, 80, 0.32),
-    0 0 20px rgba(15, 201, 80, 0.16);
 }
 
 /* The Locus — Figma 781:207205 / Signal Panel Dark #02031d66
