@@ -77,16 +77,12 @@ export function AreaNearbyNotificationModal({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.98 }}
         transition={SPRING}
-        className="absolute inset-x-2 bottom-[76px] z-[1] flex justify-center"
+        className="absolute inset-x-2 bottom-2 z-[1] flex justify-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="dock-glass relative flex w-full max-w-[360px] flex-col items-center gap-4 overflow-hidden rounded-[52px] p-6 shadow-2xl">
-          <div
-            aria-hidden
-            data-glass-deco
-            className="pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/12 via-transparent to-transparent"
-          />
-          <div className="dock-glass-lens z-0 opacity-25" aria-hidden />
+        <div className="crcle-nearby-modal-glass relative flex w-full max-w-[360px] flex-col items-center gap-4 overflow-hidden rounded-[52px] p-6 shadow-2xl">
+          <div aria-hidden className="crcle-nearby-modal-glass-plate rounded-[inherit]" />
+          <div aria-hidden className="crcle-nearby-modal-glass-lens rounded-[inherit]" />
 
         <div className="relative z-[1] flex w-full flex-col items-center gap-4">
         <div className="flex w-full flex-col items-center gap-6">
