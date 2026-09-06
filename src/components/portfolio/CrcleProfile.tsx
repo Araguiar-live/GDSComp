@@ -251,7 +251,18 @@ export function CrcleProfile({
         />
       </motion.button>
 
-      <CrclePhoneFrame light={isLightMode}>
+      <CrclePhoneFrame
+        light={isLightMode}
+        overlay={
+          overlay === "locationInfo" ? (
+            <LocationInfoSheet
+              onClose={() => setOverlay(null)}
+              backdropUrl={profile.user.avatarUrl}
+              isLight={isLightMode}
+            />
+          ) : null
+        }
+      >
         <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
           <div className="relative min-h-0 flex-1 overflow-hidden">
             {/* Absolute scroll so the dock can sample this layer for backdrop-filter */}
@@ -301,11 +312,6 @@ export function CrcleProfile({
                 onGoToMessages?.();
               }}
             />
-
-            {/* Same layer as scroll + dock so backdrop-filter can sample profile content. */}
-            {overlay === "locationInfo" ? (
-              <LocationInfoSheet onClose={() => setOverlay(null)} />
-            ) : null}
           </div>
 
           <AnimatePresence>
@@ -1582,10 +1588,19 @@ function WorkEditSheet({
 }
 
 /** Figma 1007:50201 — Location privacy glass drawer (info on map widget). */
-function LocationInfoSheet({ onClose }: { onClose: () => void }) {
+function LocationInfoSheet({
+  onClose,
+  backdropUrl,
+  isLight,
+}: {
+  onClose: () => void;
+  backdropUrl: string;
+  isLight: boolean;
+}) {
   return (
     <div
-      className="absolute inset-0 z-40 flex flex-col justify-start overflow-hidden rounded-[53px]"
+      className="pointer-events-auto absolute inset-0 z-[60] flex flex-col justify-start overflow-hidden rounded-[56px]"
+      style={{ clipPath: "inset(0 round 56px)" }}
       role="dialog"
       aria-modal="true"
       aria-label="Location privacy"
@@ -1593,12 +1608,28 @@ function LocationInfoSheet({ onClose }: { onClose: () => void }) {
       <button
         type="button"
         aria-label="Dismiss location privacy information"
-        className="absolute inset-0 bg-black/20"
+        className={`absolute inset-0 backdrop-blur-[10px] [-webkit-backdrop-filter:blur(10px)] ${
+          isLight ? "bg-[rgba(2,3,29,0.18)]" : "bg-black/25"
+        }`}
         onClick={onClose}
       />
 
       <div className="crcle-location-info-sheet-enter relative z-[1] w-full">
         <div className="crcle-location-info-sheet flex w-full flex-col items-center gap-6 overflow-hidden rounded-bl-[24px] rounded-br-[24px] rounded-tl-[1px] rounded-tr-[1px] px-4 py-6">
+          <div aria-hidden className="crcle-location-info-sheet-backdrop rounded-[inherit]">
+            <img
+              alt=""
+              src={backdropUrl}
+              className="absolute left-1/2 top-0 h-[160%] w-[160%] max-w-none -translate-x-1/2 -translate-y-[18%] scale-110 object-cover object-[center_20%]"
+              draggable={false}
+            />
+            <div
+              className={`absolute inset-0 ${
+                isLight ? "bg-[rgba(247,246,242,0.52)]" : "bg-[rgba(1,2,17,0.45)]"
+              }`}
+            />
+          </div>
+          <div aria-hidden className="crcle-location-info-sheet-plate rounded-[inherit]" />
           <div aria-hidden className="crcle-location-info-sheet-frost rounded-[inherit]" />
           <div aria-hidden className="crcle-location-info-sheet-lens rounded-[inherit]" />
           <div aria-hidden className="crcle-location-info-sheet-dispersion rounded-[inherit]" />

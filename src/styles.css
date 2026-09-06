@@ -1373,13 +1373,53 @@
 .crcle-location-info-sheet {
   position: relative;
   overflow: hidden;
-  background: rgba(247, 246, 242, 0.5);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.22),
     0 1px 0 rgba(255, 255, 255, 0.35) inset;
+}
+
+/* Blurred portrait wash when sibling backdrop-filter cannot sample the screen clip. */
+.crcle-location-info-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.crcle-location-info-sheet-backdrop > img {
+  opacity: 0.55;
+  filter: blur(40px) saturate(0.88);
+}
+
+.crcle-location-info-sheet-plate {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    182deg,
+    rgba(255, 255, 255, 0.55) 18%,
+    rgba(247, 246, 242, 0.38) 62%,
+    rgba(255, 255, 255, 0.28) 100%
+  );
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+.crcle-phone--light .crcle-location-info-sheet-plate {
+  background: linear-gradient(
+    182deg,
+    rgba(255, 255, 255, 0.72) 18%,
+    rgba(247, 246, 242, 0.55) 62%,
+    rgba(255, 255, 255, 0.42) 100%
+  );
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
 }
 
 .crcle-location-info-sheet-frost {
@@ -1445,7 +1485,10 @@
   opacity: 0.55;
 }
 
-.crcle-location-info-sheet > *:not(.crcle-location-info-sheet-frost):not(.crcle-location-info-sheet-lens):not(.crcle-location-info-sheet-dispersion) {
+.crcle-location-info-sheet
+  > *:not(.crcle-location-info-sheet-backdrop):not(.crcle-location-info-sheet-plate):not(
+    .crcle-location-info-sheet-frost
+  ):not(.crcle-location-info-sheet-lens):not(.crcle-location-info-sheet-dispersion) {
   position: relative;
   z-index: 1;
 }
