@@ -1598,7 +1598,7 @@ function LocationInfoSheet({ onClose }: { onClose: () => void }) {
       <button
         type="button"
         aria-label="Dismiss location privacy information"
-        className="absolute inset-0 overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.12)] backdrop-blur-[8px] [-webkit-backdrop-filter:blur(8px)]"
+        className="absolute inset-0 overflow-hidden rounded-[53px] bg-black/20"
         onClick={onClose}
       />
 
@@ -1607,9 +1607,14 @@ function LocationInfoSheet({ onClose }: { onClose: () => void }) {
         animate={{ y: 0 }}
         exit={{ y: -36 }}
         transition={{ duration: 0.32, ease: EASE }}
-        className="crcle-location-info-sheet relative z-[1] flex w-full flex-col items-center gap-6 overflow-hidden rounded-bl-[24px] rounded-br-[24px] rounded-tl-[1px] rounded-tr-[1px] border-x border-b border-[rgba(247,246,242,0.6)] px-4 py-6"
+        className="dock-glass crcle-location-info-sheet relative z-[1] flex w-full flex-col items-center gap-6 overflow-hidden rounded-bl-[24px] rounded-br-[24px] rounded-tl-[1px] rounded-tr-[1px] border border-white/15 bg-white/5 px-4 py-6 shadow-2xl backdrop-blur-sm"
       >
-        <div aria-hidden className="crcle-location-info-sheet-plate rounded-[inherit]" />
+        <div
+          aria-hidden
+          data-glass-deco
+          className="pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/12 via-transparent to-transparent"
+        />
+        <div className="dock-glass-lens z-0 opacity-25" aria-hidden />
 
         <img
           alt=""
