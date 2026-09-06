@@ -81,7 +81,7 @@ const PROJECTS: Project[] = [
         challenge:
           "Build intimacy at small scale without borrowing patterns from mass messengers.",
         approach:
-          "Prioritize readable threads, soft glass controls, and a dock that feels like a private tool.",
+          "Prioritize readable threads, the Sent/Received switch, and a dock that feels like a private tool.",
         outcome:
           "An interactive hub that demonstrates the product’s rhythm end-to-end.",
         customBody: ({ goToTab }) => (
@@ -101,9 +101,9 @@ const PROJECTS: Project[] = [
         challenge:
           "Pack education, work, dating, and location into one glance without feeling like a form dump.",
         approach:
-          "Lead with portrait + strength, then a 2×2 bento. Mood Switch and edit sheets keep depth off the main surface.",
+          "Lead with portrait + strength, then a 2×2 bento. Edit sheets keep depth off the main surface.",
         outcome:
-          "An interactive profile flow: Signal Live → Mood Switch, bento taps → edit sheets, social chips → links.",
+          "An interactive profile flow: Signal Live jumps to Messaging Hub Mood Switch, bento taps → edit sheets, social chips → links.",
         customBody: ({ goToTab }) => (
           <CrcleProfile
             onGoToSignalHome={() => goToTab("Create Workspace\u00a0")}

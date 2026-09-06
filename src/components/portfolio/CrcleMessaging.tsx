@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Sun } from "lucide-react";
-import { useCallback, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import avatarImg from "@/assets/crcle/avatar.png";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
@@ -40,6 +40,8 @@ import {
   SignalInterceptModal,
   type UserProfile,
 } from "@/components/portfolio/SignalInterceptModal";
+import { CrcleMoodSwitch } from "@/components/portfolio/CrcleMoodSwitch";
+import { consumeMoodSwitchOnMessaging } from "@/components/portfolio/crcleBroadcast";
 import {
   SignalCard,
   TheLocusDrawer,
@@ -86,6 +88,22 @@ const CONNECTION_PROFILES: UserProfile[] = [
     matchType: "Signal Match",
     matchBio: "Looking for high romantic connections",
     isVerified: true,
+  },
+];
+
+const SENT_PROFILES: UserProfile[] = [
+  {
+    id: "sent-jordan",
+    name: "Jordan Ellis",
+    username: "@JordanEllis",
+    relationshipStatus: "Open",
+    orientation: "Queer",
+    distance: "1.1km",
+    age: 27,
+    photoUrl: avatarImg,
+    matchType: "Sent Request",
+    matchBio: "Waiting on a reply",
+    isVerified: false,
   },
 ];
 
@@ -197,6 +215,14 @@ export function CrcleMessaging({
   const [isLightMode, setIsLightMode] = useState(false);
   const [locusOpen, setLocusOpen] = useState(false);
   const [signalCard, setSignalCard] = useState<SignalCardModel | null>(null);
+  const [moodOpen, setMoodOpen] = useState(false);
+
+  useEffect(() => {
+    if (!consumeMoodSwitchOnMessaging()) return;
+    setOnboardingOpen(false);
+    setPhase("inbox");
+    setMoodOpen(true);
+  }, []);
 
   const openInbox = useCallback(() => {
     setPhase("inbox");
@@ -418,7 +444,7 @@ export function CrcleMessaging({
                     onExpandedChange={setNotificationsOpen}
                     tab={tab}
                     onTabChange={setTab}
-                    profiles={CONNECTION_PROFILES}
+                    profiles={tab === "sent" ? SENT_PROFILES : CONNECTION_PROFILES}
                     onViewSignal={openSignal}
                     onViewDailyDrop={goRadar}
                   />
@@ -440,8 +466,20 @@ export function CrcleMessaging({
 
         <AnimatePresence>
           {menuOpen && (
-            <ContextMenu onClose={() => setMenuOpen(false)} top={phase === "chat" ? 100 : 132} />
+            <ContextMenu
+              onClose={() => setMenuOpen(false)}
+              onMoodSwitch={() => {
+                setMenuOpen(false);
+                setOnboardingOpen(false);
+                setMoodOpen(true);
+              }}
+              top={phase === "chat" ? 100 : 132}
+            />
           )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {moodOpen ? <CrcleMoodSwitch onClose={() => setMoodOpen(false)} /> : null}
         </AnimatePresence>
 
         <AnimatePresence>
@@ -895,7 +933,7 @@ function NotificationCenter({
           style={{ pointerEvents: expanded ? "auto" : "none" }}
         >
           <div className="relative flex w-full flex-col items-start gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[var(--crcle-panel-border)] bg-[var(--crcle-panel)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)] transition-all duration-300 hover:bg-[rgba(247,246,242,0.1)] hover:backdrop-blur-[14px]">
-            <DailyDropBanner onView={onViewDailyDrop} />
+            {tab === "received" ? <DailyDropBanner onView={onViewDailyDrop} /> : null}
             <div className="flex items-start gap-4">
               {profiles.map((profile) => (
                 <ConnectionAvatar
@@ -963,22 +1001,30 @@ function SentReceivedToggle({
   onChange: (tab: "sent" | "received") => void;
 }) {
   return (
-    <div className="crcle-glass-btn flex w-[178px] items-center gap-1 rounded-[24px] bg-transparent p-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)] backdrop-blur-[8px]">
-      {(["sent", "received"] as const).map((key) => (
-        <button
-          key={key}
-          type="button"
-          onClick={() => onChange(key)}
-          className={`relative z-[1] flex flex-1 items-center justify-center px-2.5 py-1 text-[13px] capitalize transition-colors duration-300 ${
-            tab === key
-              ? "rounded-[20px] bg-[rgba(2,3,29,0.2)] text-white"
-              : "text-[var(--crcle-toggle-idle)]"
-          }`}
-          style={{ fontFamily: FONT }}
-        >
-          {key}
-        </button>
-      ))}
+    <div
+      role="tablist"
+      aria-label="Notification direction"
+      className="flex w-[178px] items-center gap-1 rounded-[24px] bg-[rgba(255,255,255,0.05)] p-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)]"
+    >
+      {(["sent", "received"] as const).map((key) => {
+        const active = tab === key;
+        const label = key === "sent" ? "Sent" : "Received";
+        return (
+          <button
+            key={key}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onChange(key)}
+            className={`flex flex-1 items-center justify-center whitespace-nowrap rounded-[20px] px-2.5 py-1 text-[13px] leading-[1.4] transition-colors duration-300 ${
+              active ? "bg-[rgba(2,3,29,0.2)] text-white" : "bg-transparent text-[#f7f6f2]"
+            }`}
+            style={{ fontFamily: FONT }}
+          >
+            {label}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -1047,11 +1093,20 @@ function ActiveChatList({
 
 /* ——— State 3: Context menu ——— */
 
-function ContextMenu({ onClose, top }: { onClose: () => void; top: number }) {
-  const items: { label: string; danger?: boolean }[] = [
+function ContextMenu({
+  onClose,
+  onMoodSwitch,
+  top,
+}: {
+  onClose: () => void;
+  onMoodSwitch: () => void;
+  top: number;
+}) {
+  const items: { label: string; danger?: boolean; action?: () => void }[] = [
     { label: "Report User", danger: true },
     { label: "Block User", danger: true },
     { label: "Edit profile" },
+    { label: "Mood Switch", action: onMoodSwitch },
     { label: "Verification" },
     { label: "Settings" },
     { label: "User Sharecode" },
@@ -1081,6 +1136,10 @@ function ContextMenu({ onClose, top }: { onClose: () => void; top: number }) {
             {i === 2 || i === 4 ? <div className="mb-2 h-px bg-[rgba(247,246,242,0.15)]" /> : null}
             <button
               type="button"
+              onClick={() => {
+                if (item.action) item.action();
+                else onClose();
+              }}
               className={`w-full text-left text-[11px] font-medium ${
                 item.danger ? "text-[#ff6b6b]" : "text-[#f7f6f2]"
               }`}

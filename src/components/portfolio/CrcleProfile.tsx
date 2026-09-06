@@ -29,13 +29,7 @@ import locationMapImg from "@/assets/crcle/profile/location-map.png";
 import lockFilledIcon from "@/assets/crcle/profile/lock-filled.svg";
 import loughboroughCrest from "@/assets/crcle/profile/loughborough-crest.png";
 import mapPinPreciseIcon from "@/assets/crcle/profile/map-pin-precise.svg";
-import profileLaptopIcon from "@/assets/crcle/profile/laptop.svg";
 import profileMaskGreenIcon from "@/assets/crcle/profile/mask-green.svg";
-import profileMaskIcon from "@/assets/crcle/profile/mask.svg";
-import masksTheaterIcon from "@/assets/crcle/profile/masks-theater.svg";
-import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
-import profilePinIcon from "@/assets/crcle/profile/pin.svg";
-import profilePlaneIcon from "@/assets/crcle/profile/plane.svg";
 import raindropBadgeIcon from "@/assets/crcle/profile/raindrop-badge.svg";
 import relComplicatedIcon from "@/assets/crcle/profile/rel-complicated.svg";
 import relFriendsIcon from "@/assets/crcle/profile/rel-friends.svg";
@@ -61,7 +55,9 @@ import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import { CrcleMoreButton, CrclePrimaryDock } from "@/components/portfolio/CrcleChrome";
 import {
+  requestMoodSwitchOnMessaging,
   useCrcleBroadcast,
+  useCrcleIncognito,
   type BroadcastState,
 } from "@/components/portfolio/crcleBroadcast";
 
@@ -152,43 +148,7 @@ export type ProfileState = {
   };
 };
 
-type Overlay = null | "mood" | "education" | "work" | "relationship" | "location" | "socials";
-
-const MOODS: {
-  id: BroadcastState;
-  label: string;
-  icon: string;
-  description: string;
-}[] = [
-  {
-    id: "open_day",
-    label: "Open Day",
-    icon: profilePlaneIcon,
-    description:
-      "Open to spontaneous hangouts, flexible plans, and real-time invites throughout the day.",
-  },
-  {
-    id: "night_owl",
-    label: "Night Owl",
-    icon: profileMoonCloudIcon,
-    description:
-      "Active during late hours; down for evening events, night calls, or late-night sessions.",
-  },
-  {
-    id: "collab",
-    label: "Collab",
-    icon: profileLaptopIcon,
-    description:
-      "Focused on co-working, side projects, brain-dumping ideas, or working together in real time.",
-  },
-  {
-    id: "in_the_area",
-    label: "In The Area",
-    icon: profilePinIcon,
-    description:
-      "Nearby and available to meet up locally for a quick coffee, chat, or walk right now.",
-  },
-];
+type Overlay = null | "education" | "work" | "relationship" | "location" | "socials";
 
 const INITIAL: ProfileState = {
   user: {
@@ -234,10 +194,11 @@ export function CrcleProfile({
   onGoToMessages?: () => void;
   onGoToRadar?: () => void;
 } = {}) {
-  const [broadcastMood, setBroadcastMood] = useCrcleBroadcast();
+  const [broadcastMood] = useCrcleBroadcast();
+  const [isIncognito] = useCrcleIncognito();
   const [profile, setProfile] = useState<ProfileState>(() => ({
     ...INITIAL,
-    broadcast: { ...INITIAL.broadcast, activeState: broadcastMood },
+    broadcast: { ...INITIAL.broadcast, activeState: broadcastMood, isIncognito },
   }));
   const [overlay, setOverlay] = useState<Overlay>(null);
 
@@ -253,7 +214,10 @@ export function CrcleProfile({
               <ProfileMainView
                 profile={profile}
                 socialCount={socialCount}
-                onOpenMood={() => setOverlay("mood")}
+                onOpenMood={() => {
+                  requestMoodSwitchOnMessaging();
+                  onGoToMessages?.();
+                }}
                 onOpenEducation={() => setOverlay("education")}
                 onOpenWork={() => setOverlay("work")}
                 onOpenRelationship={() => setOverlay("relationship")}
@@ -282,28 +246,6 @@ export function CrcleProfile({
           </div>
 
           <AnimatePresence>
-            {overlay === "mood" ? (
-              <MoodSwitcherModal
-                isIncognito={profile.broadcast.isIncognito}
-                activeState={profile.broadcast.activeState}
-                onToggleIncognito={() =>
-                  setProfile((p) => ({
-                    ...p,
-                    broadcast: { ...p.broadcast, isIncognito: !p.broadcast.isIncognito },
-                  }))
-                }
-                onSelectMood={(id) => {
-                  if (profile.broadcast.isIncognito) return;
-                  setBroadcastMood(id);
-                  setProfile((p) => ({
-                    ...p,
-                    broadcast: { ...p.broadcast, activeState: id },
-                  }));
-                }}
-                onClose={() => setOverlay(null)}
-              />
-            ) : null}
-
             {overlay === "education" ? (
               <EducationHistorySheet
                 education={profile.widgets.education}
@@ -400,7 +342,7 @@ function ProfileMainView({
   onOpenSocials: () => void;
 }) {
   const { user, widgets } = profile;
-  const isIncognito = profile.broadcast.isIncognito;
+  const [isIncognito] = useCrcleIncognito();
   const [locationEnabled, setLocationEnabled] = useState(false);
   const lookingForWork = widgets.work?.location?.toLowerCase().includes("looking") ?? false;
   const relationshipMeta =
@@ -908,239 +850,6 @@ function ProfileMainView({
         </span>
       </button>
     </div>
-  );
-}
-
-/* ——— Mood Switcher (Figma 853:225874 / 949:29968 — full-screen floating dock) ——— */
-
-function MoodSwitcherModal({
-  isIncognito,
-  activeState,
-  onToggleIncognito,
-  onSelectMood,
-  onClose,
-}: {
-  isIncognito: boolean;
-  activeState: BroadcastState;
-  onToggleIncognito: () => void;
-  onSelectMood: (id: BroadcastState) => void;
-  onClose: () => void;
-}) {
-  const [hoveredMood, setHoveredMood] = useState<BroadcastState | null>(null);
-  const activeMood = MOODS.find((m) => m.id === activeState) ?? MOODS[0];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.28, ease: EASE }}
-      className="absolute inset-0 z-40 flex flex-col overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.6)] backdrop-blur-[8px]"
-      role="dialog"
-      aria-label="Mood Switch"
-      style={{ clipPath: "inset(0 round 53px)" }}
-      onClick={onClose}
-    >
-      <div
-        className="relative flex min-h-0 flex-1 flex-col px-[26px] pb-8 pt-[38px]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          type="button"
-          aria-label="Close"
-          onClick={onClose}
-          className="absolute right-5 top-5 z-10 flex size-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition hover:bg-white/15"
-        >
-          <img alt="" src={locusCloseIcon} className="size-[14px] object-contain opacity-70" draggable={false} />
-        </button>
-
-        {/* Title + Incognito */}
-        <div className="mt-6 flex flex-col items-center gap-[42px]">
-          <div className="mt-4 flex flex-col items-center gap-2">
-            <IconImg src={masksTheaterIcon} className="size-5" />
-            <p
-              className="text-center text-[19px] font-normal leading-[1.4] text-[#f7f6f2]"
-              style={{ fontFamily: FONT }}
-            >
-              Mood Switch
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={onToggleIncognito}
-            className="flex items-center gap-2 rounded-[24px] bg-[rgba(255,255,255,0.2)] px-3 py-1.5 backdrop-blur-[6px] transition hover:bg-[rgba(255,255,255,0.26)]"
-          >
-            <IconImg src={profileMaskIcon} className="size-6" />
-            <span className="text-[11px] leading-[1.4] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
-              Incognito Mode
-            </span>
-            <span
-              className={`relative flex h-4 w-8 items-center rounded-full p-0.5 transition ${
-                isIncognito ? "bg-[#0fc950]" : "bg-white/25"
-              }`}
-            >
-              <motion.span
-                layout
-                transition={{ type: "spring", stiffness: 520, damping: 32 }}
-                className={`size-3 rounded-full bg-[#fefefe] ${isIncognito ? "ml-auto" : ""}`}
-              />
-            </span>
-          </button>
-        </div>
-
-        {/* Center hero — active mood */}
-        <div
-          className={`relative mt-8 flex min-h-0 flex-1 flex-col items-center justify-center transition ${
-            isIncognito ? "pointer-events-none opacity-35" : "opacity-100"
-          }`}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeMood.id}
-              initial={{ opacity: 0, y: 94, scale: 0.92 }}
-              animate={{ opacity: 1, y: 80, scale: 1 }}
-              exit={{ opacity: 0, y: 70, scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 380, damping: 28 }}
-              className="flex w-full max-w-[300px] flex-col items-center gap-4 text-center"
-            >
-              <IconImg src={activeMood.icon} className="size-6" />
-              <motion.p
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.28, ease: EASE, delay: 0.04 }}
-                className="text-[16px] font-normal leading-[1.4] text-[rgba(247,246,242,0.6)]"
-                style={{ fontFamily: FONT }}
-              >
-                {activeMood.description}
-              </motion.p>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Right floating mood dock — Figma 949:29977 */}
-        <div
-          className={`pointer-events-none absolute right-3 top-[282px] z-[2] flex items-center gap-[11px] transition ${
-            isIncognito ? "opacity-30" : "opacity-100"
-          }`}
-        >
-          <div
-            className="flex h-[170px] flex-col justify-between text-right text-[13px] font-medium leading-[1.4] text-white"
-            style={{ fontFamily: FONT }}
-          >
-            {MOODS.map((m) => {
-              const show = activeState === m.id || hoveredMood === m.id;
-              return (
-                <span
-                  key={m.id}
-                  className={`transition-opacity duration-200 ${show ? "opacity-100" : "opacity-0"}`}
-                  aria-hidden={!show}
-                >
-                  {m.label}
-                </span>
-              );
-            })}
-          </div>
-
-          <div className="pointer-events-auto flex flex-col gap-[11px] rounded-[36px] bg-[rgba(255,255,255,0.1)] p-2 backdrop-blur-[12px]">
-            {MOODS.map((m) => {
-              const active = activeState === m.id;
-              const rimId = `mood-dock-rim-${m.id}`;
-              return (
-                <motion.button
-                  key={m.id}
-                  type="button"
-                  aria-label={m.label}
-                  aria-pressed={active}
-                  disabled={isIncognito}
-                  onClick={() => onSelectMood(m.id)}
-                  onMouseEnter={() => setHoveredMood(m.id)}
-                  onMouseLeave={() => setHoveredMood(null)}
-                  whileTap={{ scale: 0.88 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 28 }}
-                  className={`crcle-intent-chip relative flex size-11 items-center justify-center rounded-[24px] p-1 opacity-40 disabled:cursor-not-allowed ${
-                    active ? "is-lit" : ""
-                  }`}
-                >
-                  {/* Glass crescent rim — same as Signal intent chips */}
-                  <svg
-                    aria-hidden
-                    viewBox="0 0 44 44"
-                    className="pointer-events-none absolute inset-0 z-0 size-full"
-                  >
-                    <defs>
-                      <linearGradient
-                        id={rimId}
-                        x1="5"
-                        y1="2"
-                        x2="39"
-                        y2="42"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        {active ? (
-                          <>
-                            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-                            <stop offset="70%" stopColor="#ffffff" stopOpacity="0.12" />
-                            <stop offset="100%" stopColor="#ffffff" stopOpacity="0.06" />
-                          </>
-                        ) : (
-                          <>
-                            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-                            <stop offset="28%" stopColor="#ffffff" stopOpacity="0.4" />
-                            <stop offset="55%" stopColor="#ffffff" stopOpacity="0.1" />
-                            <stop offset="100%" stopColor="#ffffff" stopOpacity="0.18" />
-                          </>
-                        )}
-                      </linearGradient>
-                    </defs>
-                    <circle
-                      cx="22"
-                      cy="22"
-                      r="20.75"
-                      fill="none"
-                      stroke={`url(#${rimId})`}
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-
-                  {active ? (
-                    <motion.span
-                      layoutId="mood-dock-active"
-                      className="absolute inset-[3px] z-[1] rounded-[20px] bg-[#f7f6f2]"
-                      transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                    />
-                  ) : null}
-                  <span
-                    className={`crcle-intent-chip__icon relative z-[2] ${
-                      active ? "opacity-100" : "opacity-90"
-                    }`}
-                  >
-                    <img
-                      alt=""
-                      src={m.icon}
-                      className={`size-6 max-w-none object-contain ${active ? "brightness-0" : ""}`}
-                      draggable={false}
-                    />
-                  </span>
-                </motion.button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Brand footer */}
-        <div className="mt-auto flex flex-col items-center gap-[5px] pt-6">
-          <IconImg src={crcleLogo} className="h-[17px] w-[49px]" />
-          <p
-            className="text-center text-[12px] leading-[1.1] tracking-[-0.2px] text-[rgba(247,246,242,0.4)]"
-            style={{ fontFamily: FONT }}
-          >
-            Verified Social
-          </p>
-        </div>
-      </div>
-    </motion.div>
   );
 }
 
