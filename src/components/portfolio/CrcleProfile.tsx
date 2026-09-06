@@ -255,7 +255,7 @@ export function CrcleProfile({
         <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
           <div className="relative min-h-0 flex-1 overflow-hidden">
             {/* Absolute scroll so the dock can sample this layer for backdrop-filter */}
-            <div className="absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-contain px-3 pb-[7.25rem] pt-[94px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="absolute inset-2 overflow-x-hidden overflow-y-auto overscroll-contain pb-20 pt-[86px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <ProfileMainView
                 profile={profile}
                 socialCount={socialCount}
@@ -287,7 +287,7 @@ export function CrcleProfile({
             {/* Bottom fade — clip scroll content at the dock / home-indicator edge */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[7.5rem] bg-gradient-to-t from-[#010211] from-45% via-[#010211]/92 to-transparent transition-colors duration-300 [.crcle-phone--light_&]:from-[var(--crcle-bg)] [.crcle-phone--light_&]:via-[var(--crcle-bg)]/92"
+              className="pointer-events-none absolute inset-x-2 bottom-2 z-20 h-[6rem] bg-gradient-to-t from-[#010211] from-45% via-[#010211]/92 to-transparent transition-colors duration-300 [.crcle-phone--light_&]:from-[var(--crcle-bg)] [.crcle-phone--light_&]:via-[var(--crcle-bg)]/92"
             />
 
             <CrclePrimaryDock
