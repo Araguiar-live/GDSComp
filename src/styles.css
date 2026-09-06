@@ -1056,6 +1056,70 @@
   z-index: 1;
 }
 
+/* Nearby card Single/Hetero bar — Figma 1142:34972 Glass
+   radius 7, refraction 80, depth 100, light 340° / 80%, dispersion 26.
+   Keep frost light; push saturate + chromatic rim so the photo refracts. */
+.crcle-area-card-glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: rgba(247, 246, 242, 0.2);
+  backdrop-filter: blur(7px) saturate(200%) contrast(1.14) brightness(1.08);
+  -webkit-backdrop-filter: blur(7px) saturate(200%) contrast(1.14) brightness(1.08);
+  box-shadow:
+    inset 2px 3px 0 rgba(255, 255, 255, 0.52),
+    inset -1px -2px 0 rgba(255, 255, 255, 0.1),
+    -3px 0 10px rgba(255, 130, 170, 0.22),
+    3px 0 10px rgba(90, 180, 255, 0.28);
+}
+
+.crcle-area-card-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(255, 255, 255, 0.14) 28%,
+    transparent 55%
+  );
+  opacity: 0.8;
+}
+
+.crcle-area-card-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 1px;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 170, 200, 0.5) 0%,
+    rgba(255, 255, 255, 0.35) 32%,
+    rgba(140, 210, 255, 0.45) 68%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.7;
+}
+
+.crcle-area-card-glass > * {
+  position: relative;
+  z-index: 1;
+}
+
 .crcle-tune-frost {
   position: absolute;
   inset: 0;

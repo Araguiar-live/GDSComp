@@ -172,7 +172,7 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
             </span>
           </span>
         </div>
-        <div className="relative z-[1] flex w-full flex-col items-center gap-2 rounded-[20px] bg-[rgba(247,246,242,0.2)] p-3 backdrop-blur-[15px] [-webkit-backdrop-filter:blur(15px)]">
+        <div className="crcle-area-card-glass relative z-[1] flex w-full flex-col items-center gap-2 rounded-[20px] p-3">
           <div className="flex w-full items-start justify-between">
             <span className="relative size-3.5 overflow-hidden">
               <img alt="" src={heartIcon} className="absolute inset-0 size-full object-contain" />
