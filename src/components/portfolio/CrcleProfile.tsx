@@ -1595,6 +1595,62 @@ function LocationInfoSheet({ onClose }: { onClose: () => void }) {
       aria-label="Location privacy"
       style={{ clipPath: "inset(0 round 53px)" }}
     >
+      <svg
+        aria-hidden
+        width="0"
+        height="0"
+        className="pointer-events-none absolute h-0 w-0 overflow-visible"
+      >
+        <filter
+          id="crcle-location-info-glass"
+          x="-20%"
+          y="-20%"
+          width="140%"
+          height="140%"
+          colorInterpolationFilters="sRGB"
+        >
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.014 0.022"
+            numOctaves="2"
+            seed="6"
+            result="noise"
+          />
+          <feGaussianBlur in="noise" stdDeviation="8" result="lensMap" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="lensMap"
+            scale="14"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="refract"
+          />
+          <feOffset in="refract" dx="-1.8" dy="0" result="rOff" />
+          <feColorMatrix
+            in="rOff"
+            type="matrix"
+            values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
+            result="red"
+          />
+          <feOffset in="refract" dx="0" dy="0.3" result="gOff" />
+          <feColorMatrix
+            in="gOff"
+            type="matrix"
+            values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
+            result="green"
+          />
+          <feOffset in="refract" dx="1.8" dy="0" result="bOff" />
+          <feColorMatrix
+            in="bOff"
+            type="matrix"
+            values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
+            result="blue"
+          />
+          <feBlend in="red" in2="green" mode="screen" result="rg" />
+          <feBlend in="rg" in2="blue" mode="screen" />
+        </filter>
+      </svg>
+
       <button
         type="button"
         aria-label="Dismiss location privacy information"
@@ -1607,14 +1663,11 @@ function LocationInfoSheet({ onClose }: { onClose: () => void }) {
         animate={{ y: 0 }}
         exit={{ y: -36 }}
         transition={{ duration: 0.32, ease: EASE }}
-        className="dock-glass crcle-location-info-sheet relative z-[1] flex w-full flex-col items-center gap-6 overflow-hidden rounded-bl-[24px] rounded-br-[24px] rounded-tl-[1px] rounded-tr-[1px] border border-white/15 bg-white/5 px-4 py-6 shadow-2xl backdrop-blur-sm"
+        className="crcle-location-info-sheet relative z-[1] flex w-full flex-col items-center gap-6 overflow-hidden rounded-bl-[24px] rounded-br-[24px] rounded-tl-[1px] rounded-tr-[1px] px-4 py-6"
       >
-        <div
-          aria-hidden
-          data-glass-deco
-          className="pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/12 via-transparent to-transparent"
-        />
-        <div className="dock-glass-lens z-0 opacity-25" aria-hidden />
+        <div aria-hidden className="crcle-location-info-sheet-frost rounded-[inherit]" />
+        <div aria-hidden className="crcle-location-info-sheet-lens rounded-[inherit]" />
+        <div aria-hidden className="crcle-location-info-sheet-dispersion rounded-[inherit]" />
 
         <img
           alt=""
