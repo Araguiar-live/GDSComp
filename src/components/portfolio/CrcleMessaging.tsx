@@ -516,21 +516,21 @@ export function CrcleMessaging({
                       onViewDailyDrop={goRadar}
                     />
                   ) : null}
+
+                  {areaInbox !== "off" ? (
+                    <CrcleInTheAreaInbox
+                      phase={areaInbox === "drawer" ? "drawer" : "screen"}
+                      onExpand={() => setAreaInbox("drawer")}
+                      onCollapse={() => setAreaInbox("screen")}
+                      onConnect={() => {
+                        setAreaInbox("off");
+                        openSignal(CONNECTION_PROFILES[1]);
+                      }}
+                      onMarkRead={() => setAreaInbox("off")}
+                    />
+                  ) : null}
                 </motion.div>
               </div>
-
-              {areaInbox !== "off" ? (
-                <CrcleInTheAreaInbox
-                  phase={areaInbox === "drawer" ? "drawer" : "screen"}
-                  onExpand={() => setAreaInbox("drawer")}
-                  onCollapse={() => setAreaInbox("screen")}
-                  onConnect={() => {
-                    setAreaInbox("off");
-                    openSignal(CONNECTION_PROFILES[1]);
-                  }}
-                  onMarkRead={() => setAreaInbox("off")}
-                />
-              ) : null}
 
               {!onboardingOpen ? (
                 <CrclePrimaryDock
