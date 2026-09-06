@@ -951,15 +951,15 @@ function SignalStrengthIcon({
   };
 
   return (
-    <div className={`flex shrink-0 items-center gap-[3.2px] ${className}`} aria-hidden>
+    <div className={`flex shrink-0 items-end gap-[4.903px] ${className}`} aria-hidden>
       <span
-        className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${barClass(0)}`}
+        className={`h-[18.387px] w-[9.194px] rounded-[7.986px] transition-colors duration-300 ${barClass(0)}`}
       />
       <span
-        className={`h-5 w-[6.4px] rounded-[5px] transition-colors duration-300 ${barClass(1)}`}
+        className={`h-[30.645px] w-[9.806px] rounded-[7.986px] transition-colors duration-300 ${barClass(1)}`}
       />
       <span
-        className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${barClass(2)}`}
+        className={`h-[18.387px] w-[9.194px] rounded-[7.986px] transition-colors duration-300 ${barClass(2)}`}
       />
     </div>
   );
@@ -980,10 +980,10 @@ function SignalBars({
 
   return (
     <div
-      className={`relative flex h-[30.6px] items-center justify-center ${allLit ? "crcle-signal-bars-glow" : ""}`}
+      className={`relative flex h-[30.645px] items-center justify-center ${allLit ? "crcle-signal-bars-glow" : ""}`}
       aria-hidden
     >
-      <div className={`flex items-end gap-[3.2px] ${allLit ? "relative z-[1]" : ""}`}>
+      <div className={`flex items-end gap-[4.903px] ${allLit ? "relative z-[1]" : ""}`}>
         {SIGNAL_BAR_WIDTHS.map((width, i) => {
           const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
           const { heights, times, duration } = buildSignalKeyframes(i, frames);
@@ -997,13 +997,12 @@ function SignalBars({
               : isLight
                 ? "bg-black/20"
                 : "bg-[rgba(247,246,242,0.3)]";
-          const scaledWidth = width * SIGNAL_FOOTER_SCALE;
-          const baseHeight = SIGNAL_BAR_HEIGHTS[i] * SIGNAL_FOOTER_SCALE;
+          const baseHeight = SIGNAL_BAR_HEIGHTS[i];
           return (
             <motion.span
               key={`${tone}-${activeBars}-${isLight}-${glow}-${i}`}
-              className={`block shrink-0 rounded-[5px] ${barClass}`}
-              style={{ width: scaledWidth }}
+              className={`block shrink-0 rounded-[7.986px] ${barClass}`}
+              style={{ width }}
               initial={{ height: allLit ? baseHeight : heights[0] }}
               animate={{ height: heights }}
               transition={{
@@ -1020,24 +1019,23 @@ function SignalBars({
   );
 }
 
-/** Figma Frame 2147225187 — Default → Variant7 height cycle (middle stays full). */
+/** Figma 257:67792 / Frame 2147225187 — Default → Variant7 height cycle (middle stays full). */
 const SIGNAL_FRAMES: readonly [number, number, number][] = [
-  [18.4, 30.6, 18.4],
-  [14, 30.6, 18.4],
-  [18.4, 30.6, 14],
-  [15, 30.6, 18.4],
-  [18.4, 30.6, 12],
-  [14, 30.6, 15],
-  [14, 30.6, 15],
+  [18.387, 30.645, 18.387],
+  [14, 30.645, 18.387],
+  [18.387, 30.645, 14],
+  [15, 30.645, 18.387],
+  [18.387, 30.645, 12],
+  [14, 30.645, 15],
+  [14, 30.645, 15],
 ];
-const SIGNAL_BAR_WIDTHS = [6, 6.4, 6] as const;
-const SIGNAL_BAR_HEIGHTS = [12, 20, 12] as const;
-const SIGNAL_FOOTER_SCALE = 1.55;
+const SIGNAL_BAR_WIDTHS = [9.194, 9.806, 9.194] as const;
+const SIGNAL_BAR_HEIGHTS = [18.387, 30.645, 18.387] as const;
 const SIGNAL_GLOW_FRAMES: readonly [number, number, number][] = [
-  [18.4, 30.6, 18.4],
-  [16, 30.6, 17],
-  [18.4, 28, 18.4],
-  [17, 30.6, 18.4],
+  [18.387, 30.645, 18.387],
+  [16, 30.645, 17],
+  [18.387, 28, 18.387],
+  [17, 30.645, 18.387],
 ];
 const SIGNAL_HOLD_S = 0.2;
 const SIGNAL_MOVE_S = 0.55;
