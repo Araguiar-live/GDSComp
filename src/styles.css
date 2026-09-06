@@ -1147,11 +1147,39 @@
   -webkit-backdrop-filter: blur(18px) saturate(160%);
 }
 
-/* Profile KYC drawer body — Figma 257:83150 Glass (radius 40). */
-.crcle-verify-sheet-body {
+/* Profile KYC drawer — Figma 257:83140 / 257:83150 Glass (radius 40, blur 40).
+   Backdrop-filter on the panel root so profile frames beneath are illegible. */
+.crcle-verify-sheet {
   position: relative;
   overflow: hidden;
-  background: rgba(247, 246, 242, 0.8);
+  background: rgba(247, 246, 242, 0.82);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+}
+
+.crcle-verify-sheet-frost {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(247, 246, 242, 0.48);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+}
+
+.crcle-verify-sheet-header {
+  position: relative;
+  z-index: 1;
+  background: rgba(247, 246, 242, 0.92);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+.crcle-verify-sheet-body {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  background: rgba(247, 246, 242, 0.94);
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
 }

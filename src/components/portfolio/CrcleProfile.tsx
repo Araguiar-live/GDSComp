@@ -1556,13 +1556,15 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
       <button
         type="button"
         aria-label="Dismiss verification"
-        className="absolute inset-0 bg-[rgba(2,3,29,0.12)]"
+        className="absolute inset-0 overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.18)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]"
         onClick={onClose}
       />
 
-      <div className="relative z-[1] flex h-[386px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]">
+      <div className="crcle-verify-sheet relative z-[1] flex h-[386px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]">
+        <div className="crcle-verify-sheet-frost rounded-[inherit]" aria-hidden />
+
         {/* Header — Figma 257:83141 */}
-        <div className="relative flex h-[52px] shrink-0 items-center gap-[25px] border border-[rgba(2,3,29,0.1)] border-b-0 bg-[#f7f6f2] px-3 pb-3 pt-4">
+        <div className="crcle-verify-sheet-header relative flex h-[52px] shrink-0 items-center gap-[25px] border border-[rgba(2,3,29,0.1)] border-b-0 px-3 pb-3 pt-4">
           <img
             alt=""
             src={verifyHandleIcon}
