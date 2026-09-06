@@ -143,7 +143,7 @@ export function CrcleMoodSwitch({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.98 }}
               transition={{ type: "spring", stiffness: 380, damping: 28 }}
-              className="mt-[134px] flex w-full max-w-[280px] flex-col items-center gap-4 text-center"
+              className="mt-[290px] flex w-full max-w-[280px] flex-col items-center gap-4 text-center"
             >
               <IconImg src={activeMood.icon} className="size-6" />
               <p
