@@ -281,7 +281,7 @@ function Index() {
           />
         </button>
         <a
-          href="mailto:hello@example.com"
+          href="mailto:A.rafaela.aguiar@outlook.com"
           className="flex h-9 cursor-pointer items-center justify-center rounded-[12px] bg-[#E9582C] px-5 text-xs font-semibold tracking-tight text-zinc-950 transition-all duration-200 hover:scale-[1.02] hover:opacity-95 active:scale-[0.98]"
         >
           Contact Me
