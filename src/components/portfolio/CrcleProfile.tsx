@@ -29,7 +29,10 @@ import locationMapImg from "@/assets/crcle/profile/location-map.png";
 import lockFilledIcon from "@/assets/crcle/profile/lock-filled.svg";
 import loughboroughCrest from "@/assets/crcle/profile/loughborough-crest.png";
 import mapPinPreciseIcon from "@/assets/crcle/profile/map-pin-precise.svg";
+import profileLaptopIcon from "@/assets/crcle/profile/laptop.svg";
 import profileMaskGreenIcon from "@/assets/crcle/profile/mask-green.svg";
+import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
+import profilePinIcon from "@/assets/crcle/profile/pin.svg";
 import raindropBadgeIcon from "@/assets/crcle/profile/raindrop-badge.svg";
 import relComplicatedIcon from "@/assets/crcle/profile/rel-complicated.svg";
 import relFriendsIcon from "@/assets/crcle/profile/rel-friends.svg";
@@ -402,7 +405,17 @@ function ProfileMainView({
   onOpenVerify: () => void;
 }) {
   const { user, widgets } = profile;
+  const [broadcastMood] = useCrcleBroadcast();
   const [isIncognito] = useCrcleIncognito();
+  const moodChipIcon =
+    broadcastMood === "in_the_area"
+      ? profilePinIcon
+      : broadcastMood === "night_owl"
+        ? profileMoonCloudIcon
+        : broadcastMood === "collab"
+          ? profileLaptopIcon
+          : profileMaskGreenIcon;
+  const signalLiveLabel = broadcastMood === "in_the_area" ? "In The Area" : "Signal Live";
   const [locationEnabled, setLocationEnabled] = useState(true);
   const [lookingForWork, setLookingForWork] = useState(false);
   const [shareStatus, setShareStatus] = useState(true);
@@ -451,14 +464,14 @@ function ProfileMainView({
       </div>
 
       {/* Signal Live + mood — Figma 851:225665 / glass chrome like CrcleMoreButton */}
-      <div className="flex items-start justify-center gap-2 px-0.5">
+      <div className="flex w-full min-w-0 items-start justify-center gap-2 px-0.5">
         <button
           type="button"
           onClick={onOpenMood}
-          className="crcle-glass-btn crcle-glass-btn--signal relative flex items-center gap-1 self-stretch overflow-hidden rounded-[24px] px-4 py-2 backdrop-blur-[12px] transition hover:brightness-110"
+          className="crcle-glass-btn crcle-glass-btn--signal crcle-glass-btn--signal-accent relative flex min-w-0 flex-1 items-center justify-center gap-1 self-stretch overflow-hidden rounded-[24px] px-3 py-2 backdrop-blur-[12px] transition hover:brightness-110 sm:px-4"
         >
           <div className="dock-glass-lens opacity-40" aria-hidden />
-          <span className="relative z-[1] flex size-2 items-center justify-center">
+          <span className="relative z-[1] flex size-2 shrink-0 items-center justify-center">
             <span
               aria-hidden
               className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/70"
@@ -466,19 +479,20 @@ function ProfileMainView({
             <span className="relative size-1 rounded-full bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.85)]" />
           </span>
           <span
-            className="relative z-[1] text-[11px] leading-[1.4] text-[#22c55e]"
+            className="relative z-[1] truncate text-[11px] leading-[1.4] text-[#22c55e]"
             style={{ fontFamily: FONT }}
           >
-            Signal Live
+            {signalLiveLabel}
           </span>
         </button>
         <button
           type="button"
           onClick={onOpenMood}
-          className="crcle-glass-btn crcle-glass-btn--signal crcle-glass-btn--signal-accent relative flex items-center justify-center gap-0.5 self-stretch overflow-hidden rounded-[64px] py-1 pl-2 pr-1 backdrop-blur-[12px] transition hover:brightness-110"
+          aria-label="Change mood"
+          className="crcle-glass-btn crcle-glass-btn--signal crcle-glass-btn--signal-accent relative flex shrink-0 items-center justify-center gap-0.5 self-stretch overflow-hidden rounded-[64px] py-1 pl-2 pr-1 backdrop-blur-[12px] transition hover:brightness-110"
         >
           <div className="dock-glass-lens opacity-40" aria-hidden />
-          <IconImg src={profileMaskGreenIcon} className="relative z-[1] size-6" />
+          <IconImg src={moodChipIcon} className="relative z-[1] size-6" />
           <ChevronDown
             className="relative z-[1] size-6 text-[rgba(247,246,242,0.4)] [.crcle-phone--light_&]:text-[rgba(2,3,29,0.4)]"
             strokeWidth={1.5}

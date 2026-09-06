@@ -844,6 +844,17 @@
 
 .crcle-glass-btn--signal-accent {
   border-color: rgba(15, 201, 80, 0.85);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 -0.5px 0 rgba(255, 255, 255, 0.08) inset,
+    0 8px 20px rgba(0, 0, 0, 0.16),
+    0 0 0 0.5px rgba(15, 201, 80, 0.55),
+    0 0 12px rgba(15, 201, 80, 0.42),
+    0 0 24px rgba(15, 201, 80, 0.2);
+}
+
+.crcle-glass-btn--signal-accent::after {
+  opacity: 1;
 }
 
 .crcle-phone--light .crcle-glass-btn--signal {
@@ -858,6 +869,13 @@
 
 .crcle-phone--light .crcle-glass-btn--signal-accent {
   border-color: rgba(15, 201, 80, 0.75);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.42) inset,
+    0 -0.5px 0 rgba(255, 255, 255, 0.1) inset,
+    0 8px 20px rgba(0, 0, 0, 0.12),
+    0 0 0 0.5px rgba(15, 201, 80, 0.45),
+    0 0 10px rgba(15, 201, 80, 0.32),
+    0 0 20px rgba(15, 201, 80, 0.16);
 }
 
 /* The Locus — Figma 781:207205 / Signal Panel Dark #02031d66
