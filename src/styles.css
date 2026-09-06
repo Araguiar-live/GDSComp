@@ -1101,16 +1101,17 @@
 }
 
 /* In The Area notifications drawer — Figma 1142:34943 Glass (radius 15).
-   Vertical opacity: frost at top (white 40%), nearly clear at bottom (dark 4%).
-   Blur stack matches .dock-glass so the hub reads like the primary dock pill.
-   No isolation / no opacity-animated ancestor: those flatten the backdrop. */
+   Vertical opacity: frost at top (white 40%), dock-like frost at bottom (~5% white)
+   so backdrop-filter stays visible through the fade (dark 4% alone reads as no blur).
+   Blur stack matches .dock-glass. No isolation on opacity-animated ancestors. */
 .crcle-area-inbox-glass {
   position: relative;
   overflow: hidden;
   background: linear-gradient(
     182deg,
     rgba(255, 255, 255, 0.4) 25.54%,
-    rgba(2, 3, 29, 0.04) 98.49%
+    rgba(255, 255, 255, 0.1) 62%,
+    rgba(255, 255, 255, 0.05) 98.49%
   );
   backdrop-filter: blur(6px) saturate(120%);
   -webkit-backdrop-filter: blur(6px) saturate(120%);
@@ -1123,7 +1124,8 @@
   background: linear-gradient(
     182deg,
     rgba(253, 252, 251, 0.52) 25%,
-    rgba(247, 246, 242, 0.05) 98%
+    rgba(253, 252, 251, 0.12) 62%,
+    rgba(247, 246, 242, 0.06) 98%
   );
 }
 
@@ -1137,10 +1139,32 @@
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.04) 38%,
-    transparent 72%
+    rgba(255, 255, 255, 0.06) 48%,
+    rgba(255, 255, 255, 0.04) 100%
   );
   opacity: 0.85;
+}
+
+.crcle-area-inbox-bottom-frost {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 28%,
+    rgba(255, 255, 255, 0.07) 100%
+  );
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.65) 42%, #000 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.65) 42%, #000 100%);
+}
+
+.crcle-phone--light .crcle-area-inbox-bottom-frost {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(253, 252, 251, 0.06) 28%,
+    rgba(247, 246, 242, 0.1) 100%
+  );
 }
 
 .crcle-area-inbox-glass::after {
@@ -1168,7 +1192,7 @@
   opacity: 0.45;
 }
 
-.crcle-area-inbox-glass > *:not(.dock-glass-lens):not(.dock-glass-splay) {
+.crcle-area-inbox-glass > *:not(.dock-glass-lens):not(.dock-glass-splay):not(.crcle-area-inbox-bottom-frost) {
   position: relative;
   z-index: 1;
 }
