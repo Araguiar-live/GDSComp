@@ -847,6 +847,12 @@
   border-color: #0fc950;
 }
 
+/* Profile mood chip — green tint, compact icon */
+.crcle-mood-chip-icon img {
+  filter: brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(1352%) hue-rotate(87deg)
+    brightness(95%) contrast(89%);
+}
+
 .crcle-phone--light .crcle-glass-btn--signal {
   background: linear-gradient(
     90deg,

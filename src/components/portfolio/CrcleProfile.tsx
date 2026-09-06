@@ -501,7 +501,7 @@ function ProfileMainView({
           className="crcle-glass-btn crcle-glass-btn--signal relative flex shrink-0 items-center justify-center gap-1 overflow-hidden rounded-[64px] py-1 pl-2 pr-1 backdrop-blur-[12px] transition hover:brightness-110"
         >
           <div className="dock-glass-lens opacity-40" aria-hidden />
-          <IconImg src={moodChipIcon} className="relative z-[1] size-6" />
+          <IconImg src={moodChipIcon} className="crcle-mood-chip-icon relative z-[1] size-4" />
           <ChevronDown
             className="relative z-[1] size-6 text-[rgba(247,246,242,0.4)] [.crcle-phone--light_&]:text-[rgba(2,3,29,0.4)]"
             strokeWidth={1.5}
