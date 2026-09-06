@@ -137,7 +137,15 @@ export function CrcleInTheAreaInbox({
         />
       </div>
 
-      <div className="crcle-panel-dropdown crcle-area-inbox-glass flex flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[var(--crcle-panel-border)] border-t-0 px-[9px] pb-[11px] pt-[10px]">
+      <div className="crcle-panel-dropdown crcle-area-inbox-glass relative flex flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[var(--crcle-panel-border)] border-t-0 px-[9px] pb-[11px] pt-[10px]">
+        <div
+          aria-hidden
+          className="crcle-area-inbox-backdrop rounded-[inherit]"
+        />
+        <div
+          aria-hidden
+          className="crcle-area-inbox-bottom-frost rounded-b-[inherit]"
+        />
         <button
           type="button"
           onClick={() => (expanded ? onCollapse() : onExpand())}
