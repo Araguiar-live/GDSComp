@@ -708,6 +708,14 @@
   }
 }
 
+/* Signal activation complete sheet — Figma 257:67520 */
+.crcle-signal-complete-sheet {
+  background: rgba(2, 2, 23, 0.3);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+  box-shadow: 0 -12px 40px rgba(2, 3, 29, 0.18);
+}
+
 /* Lighter fill — Pulse / chrome that sits on dark photo */
 .crcle-intent-chip--soft {
   background: rgba(247, 246, 242, 0.14);

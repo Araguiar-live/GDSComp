@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Sun } from "lucide-react";
 import { useCallback, useState, type ReactNode } from "react";
+import handleIcon from "@/assets/crcle/area/handle.svg";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
@@ -62,6 +63,7 @@ export function CrcleSignalHome({
   const [locationDone, setLocationDone] = useState(false);
   const [intentOpen, setIntentOpen] = useState(false);
   const [intentDone, setIntentDone] = useState(false);
+  const [signalActivated, setSignalActivated] = useState(false);
   const [signalStrength, setSignalStrength] = useState(10);
   /* Figma 322:118233 — Signal Features overlay on light Daily 3 */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
@@ -125,6 +127,15 @@ export function CrcleSignalHome({
               />
             ) : null}
           </AnimatePresence>
+          <AnimatePresence>
+            {signalActivated ? (
+              <SignalCompleteSheet
+                onGoToRecommendations={() => onGoToRadar?.()}
+                onGoToProfile={() => onGoToProfile?.()}
+                onClose={() => setSignalActivated(false)}
+              />
+            ) : null}
+          </AnimatePresence>
           <StatusBar />
           <div className="mt-[5px] flex shrink-0 justify-center pb-[12px]">
             <IconImg src={crcleLogo} className="crcle-theme-icon h-[13px] w-[38px]" />
@@ -138,6 +149,7 @@ export function CrcleSignalHome({
                   setSignalStrength(10);
                   setLocationDone(false);
                   setIntentDone(false);
+                  setSignalActivated(false);
                   setLocationOpen(false);
                   setIntentOpen(false);
                   setTuneOpen(false);
@@ -180,63 +192,95 @@ export function CrcleSignalHome({
                   : undefined
               }
             >
-              <AnimatePresence>
+              <AnimatePresence mode="wait">
                 {screen === "photo" ? (
                   <motion.div
-                    key="signal-strength"
+                    key={signalActivated ? "activating" : "signal-strength"}
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.28, ease: EASE }}
-                    className="absolute inset-x-0 top-0 z-30 flex items-center justify-between rounded-[28px] bg-[rgba(247,246,242,0.2)] p-2 backdrop-blur-[12px]"
+                    className={`absolute inset-x-0 top-0 z-30 flex rounded-[28px] bg-[rgba(247,246,242,0.2)] p-2 backdrop-blur-[12px] ${
+                      signalActivated ? "justify-center" : "items-center justify-between"
+                    }`}
                   >
-                    <div className="flex min-w-0 flex-1 items-center gap-3">
-                      <div className="flex shrink-0 items-center gap-[3.2px]" aria-hidden>
+                    {signalActivated ? (
+                      <div className="flex items-center gap-1 rounded-xl bg-[rgba(255,255,255,0.1)] px-3 py-1">
+                        <span className="relative flex size-2 items-center justify-center">
+                          <span
+                            aria-hidden
+                            className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/70"
+                          />
+                          <span className="relative size-1 rounded-full bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.85)]" />
+                        </span>
                         <span
-                          className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${
-                            activeBars >= 1 ? "bg-[#22c55e]" : "bg-[#020426]"
-                          }`}
-                        />
-                        <span
-                          className={`h-5 w-[6.4px] rounded-[5px] transition-colors duration-300 ${
-                            activeBars >= 2 ? "bg-[#22c55e]" : "bg-[#020426]"
-                          }`}
-                        />
-                        <span
-                          className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${
-                            activeBars >= 3
-                              ? "bg-[#22c55e]"
-                              : activeBars >= 2
-                                ? "bg-[rgba(2,4,38,0.2)]"
-                                : "bg-[#020426]"
-                          }`}
-                        />
+                          className="text-[11px] leading-[1.4] text-[#22c55e]"
+                          style={{ fontFamily: FONT }}
+                        >
+                          Activating...
+                        </span>
                       </div>
-                      <div className="min-w-0 flex-1 leading-[1.2] text-[#030426]">
-                        <p className="text-[14px] font-medium" style={{ fontFamily: FONT }}>
-                          Signal Strength: {signalStrength}%
-                        </p>
-                        <p className="text-[12px] font-normal" style={{ fontFamily: FONT }}>
-                          {activeBars >= 3
-                            ? "Signal fully calibrated."
-                            : activeBars >= 2
-                              ? "Add 1 more detail to hit 100%."
-                              : "Add 3 more details to hit 100%."}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setTuneOpen(true)}
-                      className="flex h-9 shrink-0 items-center justify-center rounded-[36px] bg-[#030426] px-4 py-2"
-                    >
-                      <span
-                        className="text-[13px] leading-[1.4] text-[#fefefe]"
-                        style={{ fontFamily: FONT }}
-                      >
-                        {tuned ? "Edit" : "Complete"}
-                      </span>
-                    </button>
+                    ) : (
+                      <>
+                        <div className="flex min-w-0 flex-1 items-center gap-3">
+                          <div className="flex shrink-0 items-center gap-[3.2px]" aria-hidden>
+                            <span
+                              className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${
+                                activeBars >= 1 ? "bg-[#22c55e]" : "bg-[#020426]"
+                              }`}
+                            />
+                            <span
+                              className={`h-5 w-[6.4px] rounded-[5px] transition-colors duration-300 ${
+                                activeBars >= 2 ? "bg-[#22c55e]" : "bg-[#020426]"
+                              }`}
+                            />
+                            <span
+                              className={`h-3 w-[6px] rounded-[5px] transition-colors duration-300 ${
+                                activeBars >= 3
+                                  ? "bg-[#22c55e]"
+                                  : activeBars >= 2
+                                    ? "bg-[rgba(2,4,38,0.2)]"
+                                    : "bg-[#020426]"
+                              }`}
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1 leading-[1.2] text-[#030426]">
+                            <p className="text-[14px] font-medium" style={{ fontFamily: FONT }}>
+                              Signal Strength: {signalStrength}%
+                            </p>
+                            <p className="text-[12px] font-normal" style={{ fontFamily: FONT }}>
+                              {signalLive ? (
+                                <span className="inline-flex flex-wrap items-center gap-1">
+                                  <span>You can now calibrate your signal. Press</span>
+                                  <IconImg src={pulseIcon} className="inline-block size-[15px]" />
+                                  <span>to calibrate.</span>
+                                </span>
+                              ) : activeBars >= 3 ? (
+                                "Signal fully calibrated."
+                              ) : activeBars >= 2 ? (
+                                "Add 1 more detail to hit 100%."
+                              ) : (
+                                "Add 3 more details to hit 100%."
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        {!signalLive ? (
+                          <button
+                            type="button"
+                            onClick={() => setTuneOpen(true)}
+                            className="flex h-9 shrink-0 items-center justify-center rounded-[36px] bg-[#030426] px-4 py-2"
+                          >
+                            <span
+                              className="text-[13px] leading-[1.4] text-[#fefefe]"
+                              style={{ fontFamily: FONT }}
+                            >
+                              {tuned ? "Edit" : "Complete"}
+                            </span>
+                          </button>
+                        ) : null}
+                      </>
+                    )}
                   </motion.div>
                 ) : null}
               </AnimatePresence>
@@ -391,6 +435,9 @@ export function CrcleSignalHome({
                         soft
                         lit={signalLive}
                         greenLit={signalLive}
+                        onClick={() => {
+                          if (signalLive) setSignalActivated(true);
+                        }}
                       >
                         <IconImg src={pulseIcon} className="size-6" />
                       </OverlayToolButton>
@@ -1003,6 +1050,89 @@ function SignalBars({
         })}
       </div>
     </div>
+  );
+}
+
+/** Figma 257:67520 — signal activated confirmation sheet. */
+function SignalCompleteSheet({
+  onGoToRecommendations,
+  onGoToProfile,
+  onClose,
+}: {
+  onGoToRecommendations: () => void;
+  onGoToProfile: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.24, ease: EASE }}
+      className="absolute inset-0 z-[60] flex flex-col justify-end overflow-hidden rounded-[53px]"
+      style={{ clipPath: "inset(0 round 53px)" }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="signal-complete-title"
+    >
+      <button
+        type="button"
+        aria-label="Dismiss"
+        className="absolute inset-0 bg-[rgba(2,3,29,0.18)] backdrop-blur-[8px] [-webkit-backdrop-filter:blur(8px)]"
+        onClick={onClose}
+      />
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ duration: 0.34, ease: EASE }}
+        className="crcle-signal-complete-sheet relative z-[1] mx-3 mb-3 overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
+      >
+        <div className="px-4 pb-[9px] pt-9">
+          <div className="flex flex-col gap-2">
+            <p
+              id="signal-complete-title"
+              className="text-center text-[16px] font-medium leading-[1.4] text-[#f7f6f2]"
+              style={{ fontFamily: FONT }}
+            >
+              You&apos;re all set
+            </p>
+            <p
+              className="text-center text-[13px] leading-[1.4] text-[#f7f6f2]"
+              style={{ fontFamily: FONT }}
+            >
+              Your profile is locked in for the next drop. Sit tight, your new matches will appear
+              when the timer runs out.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col items-center gap-4 border-t border-[rgba(2,3,29,0.05)] p-3">
+          <div className="flex w-full flex-col gap-3">
+            <button
+              type="button"
+              onClick={onGoToRecommendations}
+              className="flex w-full items-center justify-center rounded-full bg-[#020217] px-3 py-2"
+            >
+              <span
+                className="text-center text-[15px] leading-[21px] text-[#f7f6f2]"
+                style={{ fontFamily: FONT }}
+              >
+                Go to recommendations
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={onGoToProfile}
+              className="w-full text-center text-[11px] leading-[1.4] text-[rgba(247,246,242,0.6)]"
+              style={{ fontFamily: FONT }}
+            >
+              Go back to profile
+            </button>
+          </div>
+          <img alt="" src={handleIcon} className="h-[3px] w-[66px] max-w-none object-contain opacity-70" draggable={false} />
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
