@@ -15,6 +15,44 @@
   animation: marquee 40s linear infinite;
 }
 
+/* First Design coming-soon — background ghost frames breathe as loading cards */
+@keyframes fd-ghost-pulse-a {
+  0%,
+  100% {
+    opacity: 0.16;
+  }
+  50% {
+    opacity: 0.58;
+  }
+}
+
+@keyframes fd-ghost-pulse-b {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.14;
+  }
+}
+
+.fd-ghost-pulse-a {
+  animation: fd-ghost-pulse-a 2.8s ease-in-out infinite;
+}
+
+.fd-ghost-pulse-b {
+  animation: fd-ghost-pulse-b 3.2s ease-in-out infinite;
+  animation-delay: -1.1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fd-ghost-pulse-a,
+  .fd-ghost-pulse-b {
+    animation: none;
+    opacity: 0.32;
+  }
+}
+
 /* Portfolio page base fill — structural cells live in SiteWireframe (DOM). */
 .portfolio-hero-grid {
   background-color: #f3f4f6;

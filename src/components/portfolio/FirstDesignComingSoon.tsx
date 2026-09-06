@@ -21,17 +21,10 @@ export function FirstDesignComingSoon() {
 
           <div className="relative flex min-h-0 flex-1 flex-col items-center justify-center px-8 pb-16">
             <div className="relative h-[280px] w-[220px]">
-              <GhostFrame
-                className="absolute left-1/2 top-4 h-[220px] w-[168px] -translate-x-[72%] -rotate-[8deg]"
-                opacity={0.28}
-              />
-              <GhostFrame
-                className="absolute left-1/2 top-4 h-[220px] w-[168px] -translate-x-[18%] rotate-[9deg]"
-                opacity={0.4}
-              />
+              <GhostFrame className="fd-ghost-pulse-a absolute left-1/2 top-4 h-[220px] w-[168px] -translate-x-[72%] -rotate-[8deg]" />
+              <GhostFrame className="fd-ghost-pulse-b absolute left-1/2 top-4 h-[220px] w-[168px] -translate-x-[18%] rotate-[9deg]" />
               <GhostFrame
                 className="absolute left-1/2 top-0 h-[240px] w-[188px] -translate-x-1/2"
-                opacity={1}
                 featured
               />
             </div>
@@ -63,17 +56,14 @@ export function FirstDesignComingSoon() {
 
 function GhostFrame({
   className,
-  opacity,
   featured = false,
 }: {
   className?: string;
-  opacity: number;
   featured?: boolean;
 }) {
   return (
     <div
       className={`flex flex-col items-center justify-center overflow-hidden rounded-[28px] border border-white/12 bg-[#292e38]/80 shadow-[0_18px_40px_rgba(0,0,0,0.35)] ${className ?? ""}`}
-      style={{ opacity }}
     >
       <FirstDesignMark className={featured ? "h-[72px] w-[76px]" : "h-[44px] w-[47px]"} />
       {featured ? (
