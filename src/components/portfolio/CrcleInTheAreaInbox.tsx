@@ -40,6 +40,61 @@ export function CrcleInTheAreaInbox({
       role="dialog"
       aria-label="In The Area"
     >
+      <svg
+        aria-hidden
+        width="0"
+        height="0"
+        className="pointer-events-none absolute h-0 w-0 overflow-visible"
+      >
+        <filter
+          id="crcle-nearby-glass"
+          x="-20%"
+          y="-20%"
+          width="140%"
+          height="140%"
+          colorInterpolationFilters="sRGB"
+        >
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.012 0.02"
+            numOctaves="2"
+            seed="4"
+            result="noise"
+          />
+          <feGaussianBlur in="noise" stdDeviation="10" result="lensMap" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="lensMap"
+            scale="28"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="refract"
+          />
+          <feOffset in="refract" dx="-2.6" dy="0" result="rOff" />
+          <feColorMatrix
+            in="rOff"
+            type="matrix"
+            values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
+            result="red"
+          />
+          <feOffset in="refract" dx="0" dy="0.4" result="gOff" />
+          <feColorMatrix
+            in="gOff"
+            type="matrix"
+            values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
+            result="green"
+          />
+          <feOffset in="refract" dx="2.6" dy="0" result="bOff" />
+          <feColorMatrix
+            in="bOff"
+            type="matrix"
+            values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
+            result="blue"
+          />
+          <feBlend in="red" in2="green" mode="screen" result="rg" />
+          <feBlend in="rg" in2="blue" mode="screen" />
+        </filter>
+      </svg>
       <div className="flex flex-col items-center bg-[#02031d] [.crcle-phone--light_&]:bg-[#fdfcfb]">
         <div className="mx-auto flex h-[62px] w-[84%] items-end justify-between px-2 pb-[10px] text-[#f7f6f2] [.crcle-phone--light_&]:text-black">
           <span
@@ -168,6 +223,9 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
           </span>
         </div>
         <div className="crcle-area-card-glass relative z-[1] flex w-full flex-col items-center gap-2 rounded-[20px] p-3">
+          <span className="crcle-area-card-lens" aria-hidden>
+            <img alt="" src={emmaPortrait} draggable={false} />
+          </span>
           <div className="flex w-full items-start justify-between">
             <span className="relative size-3.5 overflow-hidden">
               <img alt="" src={heartIcon} className="absolute inset-0 size-full object-contain" />
