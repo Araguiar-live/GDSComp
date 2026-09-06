@@ -1257,17 +1257,31 @@
 }
 
 /* Profile — Location privacy info drawer (Figma 1007:50201) */
-.crcle-location-info-sheet.dock-glass {
-  background: rgba(247, 246, 242, 0.5);
-  backdrop-filter: blur(6px) saturate(120%);
-  -webkit-backdrop-filter: blur(6px) saturate(120%);
+.crcle-location-info-sheet {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
   border-top: none;
-  box-shadow:
-    0 -12px 32px rgba(0, 0, 0, 0.14),
-    0 1px 0 rgba(255, 255, 255, 0.35) inset;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
 }
 
-.crcle-location-info-sheet > *:not(.dock-glass-lens):not([data-glass-deco]) {
+.crcle-location-info-sheet-plate {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(247, 246, 242, 0.45) 100%
+  );
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) inset;
+}
+
+.crcle-location-info-sheet > *:not(.crcle-location-info-sheet-plate) {
   position: relative;
   z-index: 1;
 }

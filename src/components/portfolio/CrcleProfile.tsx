@@ -1589,7 +1589,7 @@ function LocationInfoSheet({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 z-40 flex flex-col justify-end overflow-hidden rounded-[53px]"
+      className="absolute inset-0 z-40 flex flex-col justify-start overflow-hidden rounded-[53px]"
       role="dialog"
       aria-modal="true"
       aria-label="Location privacy"
@@ -1598,23 +1598,18 @@ function LocationInfoSheet({ onClose }: { onClose: () => void }) {
       <button
         type="button"
         aria-label="Dismiss location privacy information"
-        className="absolute inset-0 overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.18)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]"
+        className="absolute inset-0 overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.12)] backdrop-blur-[8px] [-webkit-backdrop-filter:blur(8px)]"
         onClick={onClose}
       />
 
       <motion.div
-        initial={{ y: 48 }}
+        initial={{ y: -48 }}
         animate={{ y: 0 }}
-        exit={{ y: 36 }}
+        exit={{ y: -36 }}
         transition={{ duration: 0.32, ease: EASE }}
-        className="dock-glass crcle-location-info-sheet relative z-[1] flex w-full flex-col items-center gap-6 overflow-hidden rounded-bl-[24px] rounded-br-[24px] rounded-tl-[1px] rounded-tr-[1px] border-x border-b border-[rgba(247,246,242,0.6)] px-4 py-6"
+        className="crcle-location-info-sheet relative z-[1] flex w-full flex-col items-center gap-6 overflow-hidden rounded-bl-[24px] rounded-br-[24px] rounded-tl-[1px] rounded-tr-[1px] border-x border-b border-[rgba(247,246,242,0.6)] px-4 py-6"
       >
-        <div
-          aria-hidden
-          data-glass-deco
-          className="pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-gradient-to-b from-white/12 via-transparent to-transparent"
-        />
-        <div className="dock-glass-lens z-0 opacity-25" aria-hidden />
+        <div aria-hidden className="crcle-location-info-sheet-plate rounded-[inherit]" />
 
         <img
           alt=""
