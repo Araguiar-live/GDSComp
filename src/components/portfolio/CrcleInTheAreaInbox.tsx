@@ -36,10 +36,11 @@ export function CrcleInTheAreaInbox({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -18 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.32, ease: EASE }}
+      transformTemplate={() => ""}
       className="pointer-events-auto absolute inset-x-0 top-0 z-[35] flex flex-col"
       role="dialog"
       aria-label="In The Area"
@@ -61,13 +62,7 @@ export function CrcleInTheAreaInbox({
         <IconBox src={crcleLogo} className="mb-[12px] h-[9px] w-[26px]" />
       </div>
 
-      <div
-        className="flex flex-col items-center gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] px-[13px] pb-3 pt-4"
-        style={{
-          backgroundImage:
-            "linear-gradient(182deg, rgba(255,255,255,0.4) 26%, rgba(2,3,29,0.04) 98%)",
-        }}
-      >
+      <div className="crcle-area-inbox-glass flex flex-col items-center gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] px-[13px] pb-3 pt-4">
         <button
           type="button"
           onClick={() => (expanded ? onCollapse() : onExpand())}
@@ -169,7 +164,7 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
             </span>
           </span>
         </div>
-        <div className="relative z-[1] flex w-full flex-col items-center gap-2 rounded-[20px] bg-[rgba(247,246,242,0.2)] p-3">
+        <div className="relative z-[1] flex w-full flex-col items-center gap-2 rounded-[20px] bg-[rgba(247,246,242,0.2)] p-3 backdrop-blur-[15px] [-webkit-backdrop-filter:blur(15px)]">
           <div className="flex w-full items-start justify-between">
             <span className="relative size-3.5 overflow-hidden">
               <img alt="" src={heartIcon} className="absolute inset-0 size-full object-contain" />
