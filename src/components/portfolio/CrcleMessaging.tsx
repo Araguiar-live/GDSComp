@@ -40,10 +40,12 @@ import {
   SignalInterceptModal,
   type UserProfile,
 } from "@/components/portfolio/SignalInterceptModal";
+import { AreaNearbyNotificationModal } from "@/components/portfolio/AreaNearbyNotificationModal";
 import { CrcleInTheAreaInbox } from "@/components/portfolio/CrcleInTheAreaInbox";
 import { CrcleMoodSwitch } from "@/components/portfolio/CrcleMoodSwitch";
 import {
   consumeAreaInboxOnMessaging,
+  consumeAreaNearbyNotification,
   consumeMoodSwitchOnMessaging,
   setCrcleAreaInboxOpen,
   subscribeCrcleBroadcast,
@@ -222,6 +224,7 @@ export function CrcleMessaging({
   const [locusOpen, setLocusOpen] = useState(false);
   const [signalCard, setSignalCard] = useState<SignalCardModel | null>(null);
   const [moodOpen, setMoodOpen] = useState(false);
+  const [areaNotificationOpen, setAreaNotificationOpen] = useState(false);
   const [areaInbox, setAreaInboxState] = useState<"off" | "screen" | "drawer">("off");
 
   const setAreaInbox = useCallback((next: "off" | "screen" | "drawer") => {
@@ -246,6 +249,14 @@ export function CrcleMessaging({
     const tryOpen = () => {
       if (consumeAreaInboxOnMessaging()) {
         openAreaInbox();
+        return;
+      }
+      if (consumeAreaNearbyNotification()) {
+        setOnboardingOpen(false);
+        setPhase("inbox");
+        setMoodOpen(false);
+        setMenuOpen(false);
+        setAreaNotificationOpen(true);
         return;
       }
       if (!consumeMoodSwitchOnMessaging()) return;
@@ -552,6 +563,18 @@ export function CrcleMessaging({
         <AnimatePresence>
           {moodOpen ? (
             <CrcleMoodSwitch onClose={() => setMoodOpen(false)} />
+          ) : null}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {areaNotificationOpen ? (
+            <AreaNearbyNotificationModal
+              onDismiss={() => setAreaNotificationOpen(false)}
+              onConnect={() => {
+                setAreaNotificationOpen(false);
+                openAreaInbox();
+              }}
+            />
           ) : null}
         </AnimatePresence>
 

@@ -9,6 +9,7 @@ import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
 import profilePinIcon from "@/assets/crcle/profile/pin.svg";
 import profilePlaneIcon from "@/assets/crcle/profile/plane.svg";
 import {
+  requestAreaNearbyNotification,
   type BroadcastState,
   useCrcleBroadcast,
   useCrcleIncognito,
@@ -194,6 +195,7 @@ export function CrcleMoodSwitch({
                     if (isIncognito) return;
                     setActiveState(m.id);
                     if (m.id === "in_the_area") {
+                      requestAreaNearbyNotification();
                       window.setTimeout(onClose, 280);
                     }
                   }}

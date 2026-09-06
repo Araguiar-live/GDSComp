@@ -10,6 +10,7 @@ let broadcastState: BroadcastState = "open_day";
 let incognitoState = false;
 let pendingMoodSwitch = false;
 let pendingAreaInbox = false;
+let pendingAreaNotification = false;
 let areaInboxOpen = false;
 let verifyOpen = false;
 const listeners = new Set<() => void>();
@@ -59,6 +60,18 @@ export function requestAreaInboxOnMessaging() {
 export function consumeAreaInboxOnMessaging() {
   const pending = pendingAreaInbox;
   pendingAreaInbox = false;
+  return pending;
+}
+
+/** Mood Switch → In The Area: show nearby notification sheet on Messaging Hub. */
+export function requestAreaNearbyNotification() {
+  pendingAreaNotification = true;
+  emit();
+}
+
+export function consumeAreaNearbyNotification() {
+  const pending = pendingAreaNotification;
+  pendingAreaNotification = false;
   return pending;
 }
 
