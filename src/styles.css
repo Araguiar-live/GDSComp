@@ -19,20 +19,20 @@
 @keyframes fd-ghost-pulse-a {
   0%,
   100% {
-    opacity: 0.16;
+    opacity: 0.22;
   }
   50% {
-    opacity: 0.58;
+    opacity: 0.82;
   }
 }
 
 @keyframes fd-ghost-pulse-b {
   0%,
   100% {
-    opacity: 0.5;
+    opacity: 0.72;
   }
   50% {
-    opacity: 0.14;
+    opacity: 0.18;
   }
 }
 

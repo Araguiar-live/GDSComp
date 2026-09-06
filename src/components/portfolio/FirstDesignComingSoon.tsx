@@ -63,7 +63,11 @@ function GhostFrame({
 }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center overflow-hidden rounded-[28px] border border-white/12 bg-[#292e38]/80 shadow-[0_18px_40px_rgba(0,0,0,0.35)] ${className ?? ""}`}
+      className={`flex flex-col items-center justify-center overflow-hidden rounded-[28px] shadow-[0_18px_40px_rgba(0,0,0,0.35)] ${
+        featured
+          ? "border border-white/12 bg-[#292e38]/80"
+          : "fd-ghost-frame border border-white/20 bg-[#434b5c]/75"
+      } ${className ?? ""}`}
     >
       <FirstDesignMark className={featured ? "h-[72px] w-[76px]" : "h-[44px] w-[47px]"} />
       {featured ? (
