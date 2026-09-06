@@ -1219,10 +1219,19 @@
   background: var(--crcle-panel);
 }
 
-/* In The Area drawer — Figma 1142:34943 Glass over chat (no isolation — samples backdrop) */
+/* In The Area drawer — Figma 1142:34943 frost plate blurs chat beneath entire panel */
 .crcle-area-inbox-glass {
   position: relative;
   overflow: hidden;
+  background: transparent;
+}
+
+.crcle-area-inbox-glass-plate {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
   background: linear-gradient(
     182.32deg,
     rgba(255, 255, 255, 0.4) 25.54%,
@@ -1232,7 +1241,7 @@
   -webkit-backdrop-filter: blur(24px) saturate(140%);
 }
 
-.crcle-phone--light .crcle-area-inbox-glass {
+.crcle-phone--light .crcle-area-inbox-glass-plate {
   background: linear-gradient(
     182.32deg,
     rgba(255, 255, 255, 0.72) 25.54%,
@@ -1242,7 +1251,7 @@
   -webkit-backdrop-filter: blur(24px) saturate(160%);
 }
 
-.crcle-area-inbox-glass > * {
+.crcle-area-inbox-glass > *:not(.crcle-area-inbox-glass-plate) {
   position: relative;
   z-index: 1;
 }

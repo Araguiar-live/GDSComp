@@ -460,6 +460,16 @@ export function CrcleMessaging({
               transformTemplate={() => ""}
               className="relative flex h-full min-h-0 flex-col"
             >
+              {/* Active Chats under In The Area — flat z-stack so blur samples rows at panel top */}
+              {areaInbox !== "off" ? (
+                <div className="absolute inset-x-3 top-0 bottom-[100px] z-[1] overflow-y-auto overflow-x-hidden pb-6 pt-[88px]">
+                  <ActiveChatList
+                    conversations={MOCK_CONVERSATIONS}
+                    onSelectConversation={openConversation}
+                  />
+                </div>
+              ) : null}
+
               {/* Header stack — status → Messages row (never overlapped) */}
               <div
                 className={`relative z-30 shrink-0 ${
@@ -480,32 +490,25 @@ export function CrcleMessaging({
 
               {/* Content below header */}
               <div
-                className={`relative min-h-0 flex-1 ${
-                  areaInbox !== "off" ? "z-[34]" : "z-10"
-                }`}
+                className={`relative min-h-0 flex-1 ${areaInbox !== "off" ? "" : "z-10"}`}
                 onClick={() => menuOpen && setMenuOpen(false)}
               >
-                <motion.div
-                  key="inbox"
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, ease: EASE }}
-                  transformTemplate={() => ""}
-                  className="absolute inset-x-3 top-0 bottom-[100px] overflow-hidden"
-                >
-                  {/* Chat list — scrolls beneath In The Area overlay (Figma 1142:34833) */}
-                  <div
-                    className={`absolute inset-0 z-0 overflow-y-auto overflow-x-hidden pb-6 ${
-                      areaInbox !== "off" ? "pt-[136px]" : "pt-[155px]"
-                    }`}
+                {areaInbox === "off" ? (
+                  <motion.div
+                    key="inbox"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, ease: EASE }}
+                    transformTemplate={() => ""}
+                    className="absolute inset-x-3 top-0 bottom-[100px] overflow-hidden"
                   >
-                    <ActiveChatList
-                      conversations={MOCK_CONVERSATIONS}
-                      onSelectConversation={openConversation}
-                    />
-                  </div>
+                    <div className="absolute inset-0 z-0 overflow-y-auto overflow-x-hidden pb-6 pt-[155px]">
+                      <ActiveChatList
+                        conversations={MOCK_CONVERSATIONS}
+                        onSelectConversation={openConversation}
+                      />
+                    </div>
 
-                  {areaInbox === "off" ? (
                     <NotificationCenter
                       expanded={notificationsOpen}
                       onExpandedChange={setNotificationsOpen}
@@ -515,8 +518,8 @@ export function CrcleMessaging({
                       onViewSignal={openSignal}
                       onViewDailyDrop={goRadar}
                     />
-                  ) : null}
-                </motion.div>
+                  </motion.div>
+                ) : null}
               </div>
 
               {/* In The Area — sibling of chat stack so backdrop-filter samples chat (Figma 1290:39417) */}

@@ -118,26 +118,29 @@ export function CrcleInTheAreaInbox({
         </filter>
       </svg>
       <div className="flex w-full flex-col items-center bg-[#02031d] [.crcle-phone--light_&]:bg-[#fdfcfb]">
-        <div className="mx-auto flex h-[62px] w-[84%] items-end justify-between px-2 pb-[10px] text-[#f7f6f2] [.crcle-phone--light_&]:text-black">
-          <span
-            className="text-[17px] font-semibold leading-[22px]"
-            style={{ fontFamily: "SF Pro, system-ui, -apple-system, sans-serif" }}
-          >
-            9:41
-          </span>
-          <div className="crcle-theme-icon flex items-center gap-[7px] pb-0.5">
-            <IconBox src={cellularIcon} className="h-[12.226px] w-[19.2px]" />
-            <IconBox src={wifiIcon} className="h-[12.328px] w-[17.142px]" />
-            <IconBox src={batteryIcon} className="h-[13px] w-[27.328px]" />
+        <div className="flex w-full flex-col items-center gap-4 px-4 pb-[19px] pt-[21px]">
+          <div className="flex w-full items-center justify-between text-[#f7f6f2] [.crcle-phone--light_&]:text-black">
+            <span
+              className="flex-1 px-2 pt-0.5 text-[17px] font-semibold leading-[22px]"
+              style={{ fontFamily: "SF Pro, system-ui, -apple-system, sans-serif" }}
+            >
+              9:41
+            </span>
+            <div className="crcle-theme-icon flex flex-1 items-center justify-end gap-[7px] pr-2 pt-px">
+              <IconBox src={cellularIcon} className="h-[12.226px] w-[19.2px]" />
+              <IconBox src={wifiIcon} className="h-[12.328px] w-[17.142px]" />
+              <IconBox src={batteryIcon} className="h-[13px] w-[27.328px]" />
+            </div>
           </div>
+          <IconBox
+            src={crcleLogo}
+            className="crcle-theme-icon h-[9px] w-[26px] [.crcle-phone--light_&]:opacity-40"
+          />
         </div>
-        <IconBox
-          src={crcleLogo}
-          className="crcle-theme-icon mb-[12px] h-[9px] w-[26px] [.crcle-phone--light_&]:opacity-40"
-        />
       </div>
 
       <div className="crcle-area-inbox-glass relative flex w-full flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] px-[13px] pb-[12px] pt-[16px] shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
+        <div aria-hidden className="crcle-area-inbox-glass-plate rounded-[inherit]" />
         <button
           type="button"
           onClick={() => (expanded ? onCollapse() : onExpand())}
