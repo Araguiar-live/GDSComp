@@ -20,6 +20,7 @@ import { CrcleSignalHome } from "@/components/portfolio/CrcleSignalHome";
 import { FirstDesignComingSoon } from "@/components/portfolio/FirstDesignComingSoon";
 import { StoneSkipRipple } from "@/components/portfolio/StoneSkipRipple";
 
+import { WireframeStage } from "@/components/portfolio/SiteWireframe";
 export const Route = createFileRoute("/")({
   component: Index,
 });

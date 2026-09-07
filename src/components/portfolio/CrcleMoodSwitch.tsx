@@ -100,29 +100,7 @@ export function CrcleMoodSwitch({
 
         <div className="mt-6 flex flex-col items-center gap-[42px]">
           <div className="mt-4 flex flex-col items-center gap-2">
-            <AnimatePresence mode="wait">
-              {isIncognito ? (
-                <motion.div
-                  key="incognito-header-icon"
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.92 }}
-                  transition={{ duration: 0.2, ease: EASE }}
-                >
-                  <IconImg src={dominoMaskOutlineIcon} className="size-5" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="mood-header-icon"
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.92 }}
-                  transition={{ duration: 0.2, ease: EASE }}
-                >
-                  <IconImg src={masksTheaterIcon} className="size-5" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <IconImg src={masksTheaterIcon} className="size-5" />
             <p
               className="text-center text-[19px] font-normal leading-[1.4] text-[#f7f6f2]"
               style={{ fontFamily: FONT }}
