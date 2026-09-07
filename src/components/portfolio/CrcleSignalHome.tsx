@@ -72,7 +72,7 @@ export function CrcleSignalHome({
   const [signalStrength, setSignalStrength] = useState(10);
   /* Figma 322:118233 — Signal Features overlay on light Daily 3 */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
-  /* Light default matches Signal Onboarding - Light; sun flips to dark Daily 3 */
+  /* Dark default on open; sun/moon toggle switches to light Daily 3 */
   const [isLightMode, setIsLightMode] = useState(false);
   /** Fine-tune drawer completed */
   const tuned = signalStrength >= 90;
