@@ -494,87 +494,55 @@ export function SignalCard({
   onRaincheck: () => void;
   onCounterPropose: () => void;
 }) {
-  const [showActions, setShowActions] = useState(false);
   const [counterText, setCounterText] = useState("Try tomorrow instead?");
   const activity = ACTIVITIES.find((a) => a.id === signal.activityId) ?? ACTIVITIES[1];
   const timeGlyph = TIME_GLYPH[signal.timeOfDay];
   const prompt = `Up for ${signal.activityLabel} ${signal.when.toLowerCase()}?`;
 
   return (
-    <div
-      className="relative flex w-full max-w-[284px] flex-col items-start gap-1 self-start"
-      onMouseEnter={() => signal.status === "pending" && setShowActions(true)}
-      onMouseLeave={() => setShowActions(false)}
-    >
-      <AnimatePresence initial={false}>
-        {showActions && signal.status === "pending" ? (
-          <motion.div
-            initial={{ opacity: 0, y: 4, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: 2, height: 0 }}
-            transition={{ duration: 0.18 }}
-            className="overflow-hidden"
+    <div className="relative flex w-full max-w-[284px] flex-col items-start gap-2 self-start">
+      {signal.status === "pending" ? (
+        <div className="crcle-signal-response-pill flex h-[58px] w-full items-center gap-3 rounded-[56px] p-3">
+          <button
+            type="button"
+            aria-label="I'm down"
+            onClick={onAccept}
+            className="relative flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+            title="I'm down"
           >
-            <div className="dock-glass relative flex h-14 items-center gap-3 overflow-hidden rounded-[56px] border border-white/15 bg-white/5 p-3 shadow-2xl backdrop-blur-sm">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 z-0 rounded-[56px] bg-gradient-to-b from-white/12 via-transparent to-transparent"
+            <span className="absolute inset-[1.75%_9.57%_0_12.5%]">
+              <img
+                alt=""
+                src={locusThumbsUpIcon}
+                className="absolute inset-0 size-full max-w-none"
+                draggable={false}
               />
-              <div className="dock-glass-lens z-0 opacity-25" aria-hidden />
-              {/* Figma 984:85497 — thumbs-up + rain */}
-              <button
-                type="button"
-                aria-label="I'm down"
-                onClick={onAccept}
-                className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
-                title="I'm down"
-              >
-                <span className="absolute inset-[1.75%_9.57%_0_12.5%]">
-                  <img
-                    alt=""
-                    src={locusThumbsUpIcon}
-                    className="absolute inset-0 size-full max-w-none"
-                    draggable={false}
-                  />
-                </span>
-              </button>
-              <button
-                type="button"
-                aria-label="Raincheck"
-                onClick={onRaincheck}
-                className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
-                title="Raincheck"
-              >
-                <span className="absolute inset-[16.65%_12.5%_12.5%_12.5%]">
-                  <img
-                    alt=""
-                    src={locusRainFillIcon}
-                    className="absolute inset-0 size-full max-w-none"
-                    draggable={false}
-                  />
-                </span>
-              </button>
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+            </span>
+          </button>
+          <button
+            type="button"
+            aria-label="Raincheck"
+            onClick={onRaincheck}
+            className="relative flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+            title="Raincheck"
+          >
+            <span className="absolute inset-[16.65%_12.5%_12.5%_12.5%]">
+              <img
+                alt=""
+                src={locusRainFillIcon}
+                className="absolute inset-0 size-full max-w-none"
+                draggable={false}
+              />
+            </span>
+          </button>
+        </div>
+      ) : null}
 
-      {/* Figma 769:205972 — signal panel */}
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() => signal.status === "pending" && setShowActions((v) => !v)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            if (signal.status === "pending") setShowActions((v) => !v);
-          }
-        }}
-        className="crcle-signal-card flex w-full cursor-pointer flex-col gap-6 rounded-tl-[36px] rounded-tr-[36px] rounded-br-[36px] rounded-bl-[4px] p-4 text-left transition"
-      >
+      {/* Figma 769:205972 dark · 769:205341 light */}
+      <div className="crcle-signal-card flex w-full flex-col gap-6 rounded-tl-[36px] rounded-tr-[36px] rounded-br-[36px] rounded-bl-[4px] p-4 text-left">
         <div className="flex w-full items-start justify-between">
-          <span className="relative block size-6 shrink-0">{activity.icon}</span>
-          <span className="relative block size-6 shrink-0">
+          <span className="crcle-signal-card-icon relative block size-6 shrink-0">{activity.icon}</span>
+          <span className="crcle-signal-card-crosshair relative block size-6 shrink-0">
             <span className="absolute inset-[12.5%]">
               <img
                 alt=""
@@ -588,35 +556,33 @@ export function SignalCard({
 
         <div className="flex w-full flex-col gap-3">
           <p
-            className="w-full text-[16px] font-semibold leading-[1.4] text-[#f7f6f2]"
+            className="crcle-signal-card-prompt w-full text-[16px] font-semibold leading-[1.4]"
             style={{ fontFamily: FONT }}
           >
             {prompt}
           </p>
 
-          <div className="flex w-full -translate-y-[10px] items-center justify-center gap-2">
-            <span className="crcle-glass-btn relative flex size-[44px] shrink-0 items-center justify-center overflow-hidden rounded-[24px]">
+          <div className="flex w-full items-start gap-2">
+            <span className="crcle-signal-card-time flex shrink-0 items-center p-2.5">
               <img
                 alt=""
                 src={timeGlyph.icon}
-                className={`relative z-[1] size-6 max-w-none object-contain ${
-                  signal.timeOfDay === "evening"
-                    ? "-translate-x-0.5 -translate-y-px"
-                    : ""
+                className={`size-6 max-w-none object-contain ${
+                  signal.timeOfDay === "evening" ? "-translate-x-0.5 -translate-y-px" : ""
                 }`}
                 draggable={false}
               />
             </span>
 
-            <div className="crcle-glass-btn flex h-[50px] min-w-0 flex-1 items-center gap-1.5 overflow-hidden rounded-[24px] py-1 pl-3 pr-1">
+            <div className="crcle-signal-card-venue flex min-w-0 flex-1 items-center gap-1.5 py-1 pl-3 pr-1">
               <img
                 alt=""
                 src={locusPinRedIcon}
-                className="relative z-[1] size-4 shrink-0 object-contain"
+                className="size-4 shrink-0 object-contain"
                 draggable={false}
               />
               <span
-                className="relative z-[1] min-w-0 flex-1 truncate text-[13px] leading-[1.4] text-[rgba(247,246,242,0.85)]"
+                className="crcle-signal-card-venue-text min-w-0 flex-1 truncate text-[13px] leading-[1.4]"
                 style={{ fontFamily: FONT }}
               >
                 {signal.location}
@@ -624,20 +590,14 @@ export function SignalCard({
               <button
                 type="button"
                 aria-label="Respond to signal"
-                aria-expanded={showActions}
                 disabled={signal.status !== "pending"}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (signal.status === "pending") setShowActions((v) => !v);
+                  if (signal.status === "pending") onAccept();
                 }}
-                className="crcle-glass-btn relative z-[1] flex size-[42px] shrink-0 items-center justify-center overflow-hidden rounded-[24px] transition hover:brightness-110 disabled:opacity-50"
+                className="crcle-signal-card-plus flex shrink-0 items-center p-2.5 disabled:opacity-50"
               >
-                <img
-                  alt=""
-                  src={locusPlusIcon}
-                  className="relative z-[1] size-5 max-w-none"
-                  draggable={false}
-                />
+                <img alt="" src={locusPlusIcon} className="size-5 max-w-none" draggable={false} />
               </button>
             </div>
           </div>

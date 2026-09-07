@@ -1039,74 +1039,88 @@
   content: none;
 }
 
-/* Signal card — Figma 769:205972 liquid glass panel */
+/* Signal response pill — Figma 769:205338 */
+.crcle-signal-response-pill {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.crcle-phone--light .crcle-signal-response-pill {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+/* Signal card — Figma 769:205972 dark · 769:205341 light */
 .crcle-signal-card {
   position: relative;
-  isolation: isolate;
   overflow: hidden;
   background: rgba(2, 3, 29, 0.4);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 0.5px solid rgba(247, 246, 242, 0.18);
-  box-shadow:
-    0 1.5px 0 rgba(255, 255, 255, 0.28) inset,
-    0 -0.5px 0 rgba(255, 255, 255, 0.06) inset,
-    inset 10px 0 20px -14px rgba(255, 140, 180, 0.16),
-    inset -10px 0 20px -14px rgba(100, 180, 255, 0.18),
-    0 12px 32px rgba(0, 0, 0, 0.28),
-    -4px 0 16px rgba(255, 120, 160, 0.08),
-    4px 0 16px rgba(90, 170, 255, 0.1);
 }
 
-.crcle-signal-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.28) 0%,
-    rgba(255, 255, 255, 0.06) 18%,
-    transparent 42%
-  );
-  opacity: 0.7;
-  mix-blend-mode: soft-light;
+.crcle-signal-card-prompt {
+  color: #f7f6f2;
 }
 
-.crcle-signal-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  padding: 1px;
-  background: linear-gradient(
-    125deg,
-    rgba(255, 180, 210, 0.55) 0%,
-    rgba(255, 255, 255, 0.28) 40%,
-    rgba(150, 210, 255, 0.5) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0.75;
+.crcle-signal-card-icon img,
+.crcle-signal-card-crosshair img {
+  filter: brightness(0) invert(1);
 }
 
-.crcle-signal-card > * {
-  position: relative;
-  z-index: 1;
+.crcle-signal-card-time {
+  border-radius: 24px;
+}
+
+.crcle-signal-card-venue {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(247, 246, 242, 0.1);
+}
+
+.crcle-signal-card-venue-text {
+  color: rgba(247, 246, 242, 0.7);
+}
+
+.crcle-signal-card-plus {
+  border-radius: 24px;
+}
+
+.crcle-phone--light .crcle-signal-card {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.crcle-phone--light .crcle-signal-card-prompt {
+  color: #02031d;
+}
+
+.crcle-phone--light .crcle-signal-card-icon img {
+  filter: brightness(0);
+}
+
+.crcle-phone--light .crcle-signal-card-crosshair img {
+  filter: none;
+}
+
+.crcle-phone--light .crcle-signal-card-time,
+.crcle-phone--light .crcle-signal-card-plus {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.crcle-phone--light .crcle-signal-card-venue {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.crcle-phone--light .crcle-signal-card-venue-text {
+  color: #02031d;
 }
 
 .crcle-signal-card:hover {
-  background: rgba(2, 3, 29, 0.52);
+  background: rgba(2, 3, 29, 0.48);
+}
+
+.crcle-phone--light .crcle-signal-card:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Radar portrait card — soft gradient rim that blends into dark chrome */
