@@ -970,6 +970,79 @@
     2px 0 10px rgba(15, 201, 80, 0.1);
 }
 
+/* Profile Signal Live pills — soft glass + subtle moving green rim light */
+@keyframes crcle-signal-rim-sweep {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.crcle-glass-btn--signal-live {
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.24) 0%,
+    rgba(15, 201, 80, 0.05) 46%,
+    rgba(253, 252, 251, 0.08) 100%
+  );
+  border: 1px solid rgba(15, 201, 80, 0.16);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.32) inset,
+    0 -0.5px 0 rgba(15, 201, 80, 0.06) inset,
+    0 6px 16px rgba(0, 0, 0, 0.14);
+}
+
+.crcle-glass-btn--signal-live::before {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.38) 0%,
+    rgba(200, 255, 220, 0.06) 38%,
+    transparent 62%
+  );
+  opacity: 0.75;
+}
+
+.crcle-glass-btn--signal-live::after {
+  background: linear-gradient(
+    105deg,
+    rgba(15, 201, 80, 0.05) 0%,
+    rgba(15, 201, 80, 0.22) 22%,
+    rgba(200, 255, 220, 0.18) 50%,
+    rgba(15, 201, 80, 0.22) 78%,
+    rgba(15, 201, 80, 0.05) 100%
+  );
+  background-size: 220% 100%;
+  animation: crcle-signal-rim-sweep 5.5s ease-in-out infinite;
+  opacity: 0.42;
+}
+
+.crcle-phone--light .crcle-glass-btn--signal-live {
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.72) 0%,
+    rgba(15, 201, 80, 0.06) 48%,
+    rgba(247, 246, 242, 0.45) 100%
+  );
+  border-color: rgba(15, 201, 80, 0.14);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 4px 10px rgba(2, 3, 29, 0.06);
+}
+
+.crcle-phone--light .crcle-glass-btn--signal-live::after {
+  opacity: 0.36;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crcle-glass-btn--signal-live::after {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
 /* The Locus — Figma 781:207205 / Signal Panel Dark #02031d66
  * Dense frost so chat under the sheet is blurred, not readable. */
 .crcle-locus-sheet {

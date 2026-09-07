@@ -484,7 +484,7 @@ function ProfileMainView({
         <button
           type="button"
           onClick={onOpenMood}
-          className="crcle-glass-btn crcle-glass-btn--success relative flex shrink-0 items-center gap-1 overflow-hidden rounded-[24px] px-4 py-2 backdrop-blur-[12px] transition hover:brightness-110"
+          className="crcle-glass-btn crcle-glass-btn--signal-live relative flex shrink-0 items-center gap-1 overflow-hidden rounded-[24px] px-4 py-2 backdrop-blur-[12px] transition hover:brightness-110"
         >
           <div className="dock-glass-lens opacity-40" aria-hidden />
           <span className="relative z-[1] size-2 shrink-0 rounded-full bg-[#22c55e]" aria-hidden />
@@ -499,7 +499,7 @@ function ProfileMainView({
           type="button"
           onClick={onOpenMood}
           aria-label="Change mood"
-          className="crcle-glass-btn crcle-glass-btn--success relative flex shrink-0 items-center justify-center gap-0.5 overflow-hidden rounded-[24px] py-1 pl-2 pr-1 backdrop-blur-[12px] transition hover:brightness-110"
+          className="crcle-glass-btn crcle-glass-btn--signal-live relative flex shrink-0 items-center justify-center gap-0.5 overflow-hidden rounded-[24px] py-1 pl-2 pr-1 backdrop-blur-[12px] transition hover:brightness-110"
         >
           <div className="dock-glass-lens opacity-40" aria-hidden />
           <IconImg src={moodChipIcon} className="crcle-profile-mood-icon relative z-[1] size-6 shrink-0" />
