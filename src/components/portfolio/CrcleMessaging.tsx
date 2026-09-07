@@ -293,6 +293,20 @@ export function CrcleMessaging({
     setAreaNotificationOpen(true);
   }, [clearAreaNotificationTimer]);
 
+  const setAreaInbox = useCallback((next: "off" | "screen" | "drawer") => {
+    setAreaInboxState(next);
+    setCrcleAreaInboxOpen(next !== "off");
+  }, []);
+
+  const openAreaInbox = useCallback(() => {
+    setMoodOpen(false);
+    setMenuOpen(false);
+    setOnboardingOpen(false);
+    setPhase("inbox");
+    setNotificationsOpen(false);
+    setAreaInbox("screen");
+  }, [setAreaInbox]);
+
   const handleAreaRadar = useCallback(() => {
     if (areaNotificationOpen) return;
     if (areaNotificationTimerRef.current != null || getAreaNearbyBadgeActive()) {
@@ -301,11 +315,6 @@ export function CrcleMessaging({
     }
     openAreaInbox();
   }, [areaNotificationOpen, openAreaInbox, openAreaNearbyNotification]);
-
-  const setAreaInbox = useCallback((next: "off" | "screen" | "drawer") => {
-    setAreaInboxState(next);
-    setCrcleAreaInboxOpen(next !== "off");
-  }, []);
 
   useEffect(() => {
     return () => setCrcleAreaInboxOpen(false);
@@ -341,15 +350,6 @@ export function CrcleMessaging({
   useEffect(() => {
     return () => clearSignalInviteTimer();
   }, [clearSignalInviteTimer]);
-
-  const openAreaInbox = useCallback(() => {
-    setMoodOpen(false);
-    setMenuOpen(false);
-    setOnboardingOpen(false);
-    setPhase("inbox");
-    setNotificationsOpen(false);
-    setAreaInbox("screen");
-  }, [setAreaInbox]);
 
   useEffect(() => {
     const tryOpen = () => {
