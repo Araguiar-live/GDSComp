@@ -1016,7 +1016,7 @@ function DatingWidget({
       </div>
 
       <div
-        className="flex w-full items-center justify-between rounded-[24px] border border-black py-1 pl-2 pr-1.5 [.crcle-phone--light_&]:border-[rgba(204,0,0,0.3)] [.crcle-phone--light_&]:bg-[rgba(204,0,0,0.2)]"
+        className="flex w-full items-center justify-between rounded-[24px] border border-[rgba(204,0,0,0.3)] bg-[rgba(204,0,0,0.2)] py-1 pl-2 pr-1.5"
         onClick={(e) => {
           e.stopPropagation();
           onToggleShare();
