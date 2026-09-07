@@ -262,6 +262,20 @@ export function CrcleProfile({
             />
           ) : null
         }
+        bottomChrome={
+          <CrclePrimaryDock
+            embedded
+            active="profile"
+            onProfile={() => {}}
+            onMessages={onGoToMessages}
+            onRadar={onGoToRadar}
+            onSignalHome={onGoToSignalHome}
+            onAreaRadar={() => {
+              requestAreaInboxOnMessaging();
+              onGoToMessages?.();
+            }}
+          />
+        }
       >
         <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
           <div className="relative min-h-0 flex-1 overflow-hidden">
@@ -301,17 +315,6 @@ export function CrcleProfile({
               className="pointer-events-none absolute inset-x-2 bottom-2 z-20 h-[6rem] bg-gradient-to-t from-[#010211] from-45% via-[#010211]/92 to-transparent transition-colors duration-300 [.crcle-phone--light_&]:from-[var(--crcle-bg)] [.crcle-phone--light_&]:via-[var(--crcle-bg)]/92"
             />
 
-            <CrclePrimaryDock
-              active="profile"
-              onProfile={() => {}}
-              onMessages={onGoToMessages}
-              onRadar={onGoToRadar}
-              onSignalHome={onGoToSignalHome}
-              onAreaRadar={() => {
-                requestAreaInboxOnMessaging();
-                onGoToMessages?.();
-              }}
-            />
           </div>
 
           <AnimatePresence>

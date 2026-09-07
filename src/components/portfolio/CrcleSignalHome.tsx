@@ -99,7 +99,25 @@ export function CrcleSignalHome({
         />
       </motion.button>
 
-      <CrclePhoneFrame light={isLightMode}>
+      <CrclePhoneFrame
+        light={isLightMode}
+        bottomChrome={
+          !onboardingOpen ? (
+            <CrclePrimaryDock
+              embedded
+              active="signal"
+              onProfile={onGoToProfile}
+              onMessages={onGoToMessages}
+              onRadar={onGoToRadar}
+              onSignalHome={() => {}}
+              onAreaRadar={() => {
+                requestAreaInboxOnMessaging();
+                onGoToMessages?.();
+              }}
+            />
+          ) : null
+        }
+      >
         <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
           <SignalTuneDrawer
             open={tuneOpen}
@@ -430,20 +448,6 @@ export function CrcleSignalHome({
               glow={signalLive}
             />
           </div>
-
-          {!onboardingOpen ? (
-            <CrclePrimaryDock
-              active="signal"
-              onProfile={onGoToProfile}
-              onMessages={onGoToMessages}
-              onRadar={onGoToRadar}
-              onSignalHome={() => {}}
-              onAreaRadar={() => {
-                requestAreaInboxOnMessaging();
-                onGoToMessages?.();
-              }}
-            />
-          ) : null}
 
           <AnimatePresence>
             {onboardingOpen ? (

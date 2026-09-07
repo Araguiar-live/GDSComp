@@ -6,12 +6,15 @@ import type { ReactNode } from "react";
 export function CrclePhoneFrame({
   children,
   overlay,
+  bottomChrome,
   light = false,
   className = "",
 }: {
   children: ReactNode;
   /** Full-device overlays (modals/scrims) — sits above the screen, covers the wireframe. */
   overlay?: ReactNode;
+  /** Primary dock — mounted on the overlay layer so backdrop-filter samples screen content. */
+  bottomChrome?: ReactNode;
   light?: boolean;
   className?: string;
 }) {
@@ -79,13 +82,18 @@ export function CrclePhoneFrame({
             />
           </div>
 
-          {/* Full-wireframe overlays (above screen + bezel); inert until a modal mounts */}
-          {overlay ? (
+          {/* Full-wireframe overlays (above screen + bezel); inert until chrome mounts */}
+          {overlay || bottomChrome ? (
             <div
-              className="pointer-events-none absolute inset-0 z-[60] overflow-hidden rounded-[56px]"
+              className="pointer-events-none absolute inset-0 z-[60] overflow-visible rounded-[56px]"
               style={{ clipPath: "inset(0 round 56px)" }}
             >
               {overlay}
+              {bottomChrome ? (
+                <div className="pointer-events-none absolute bottom-5 left-0 right-0 z-[20] flex justify-center overflow-visible">
+                  {bottomChrome}
+                </div>
+              ) : null}
             </div>
           ) : null}
         </div>

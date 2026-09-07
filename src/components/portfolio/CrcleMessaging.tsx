@@ -412,6 +412,19 @@ export function CrcleMessaging({
             </AnimatePresence>
           </>
         }
+        bottomChrome={
+          !onboardingOpen ? (
+            <CrclePrimaryDock
+              embedded
+              active="messages"
+              onProfile={goProfile}
+              onMessages={openInbox}
+              onRadar={goRadar}
+              onSignalHome={goHome}
+              onAreaRadar={openAreaInbox}
+            />
+          ) : null
+        }
       >
         <AnimatePresence mode="wait">
           {phase === "chat" ? (
@@ -538,16 +551,6 @@ export function CrcleMessaging({
                 ) : null}
               </div>
 
-              {!onboardingOpen ? (
-                <CrclePrimaryDock
-                  active="messages"
-                  onProfile={goProfile}
-                  onMessages={openInbox}
-                  onRadar={goRadar}
-                  onSignalHome={goHome}
-                  onAreaRadar={openAreaInbox}
-                />
-              ) : null}
             </motion.div>
           )}
         </AnimatePresence>
