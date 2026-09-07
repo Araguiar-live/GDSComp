@@ -1072,6 +1072,28 @@
   }
 }
 
+.crcle-signal-live-dot {
+  animation: crcle-signal-live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes crcle-signal-live-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    scale: 0.94;
+  }
+  50% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crcle-signal-live-dot {
+    animation: none;
+  }
+}
+
 .crcle-glass-btn--signal-live {
   background: linear-gradient(
     165deg,

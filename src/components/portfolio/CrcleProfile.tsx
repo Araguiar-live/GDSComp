@@ -28,11 +28,10 @@ import locationPinMarkerIcon from "@/assets/crcle/profile/location-pin-marker.sv
 import locationProximityRingIcon from "@/assets/crcle/profile/location-proximity-ring.svg";
 import lockFilledIcon from "@/assets/crcle/profile/lock-filled.svg";
 import loughboroughCrest from "@/assets/crcle/profile/loughborough-crest.png";
-import profileLaptopIcon from "@/assets/crcle/profile/laptop.svg";
-import profileMaskGreenIcon from "@/assets/crcle/profile/mask-green.svg";
 import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
 import profilePinIcon from "@/assets/crcle/profile/pin.svg";
 import raindropBadgeIcon from "@/assets/crcle/profile/raindrop-badge.svg";
+import signalLiveIndicatorIcon from "@/assets/crcle/profile/signal-live-indicator.svg";
 import relComplicatedIcon from "@/assets/crcle/profile/rel-complicated.svg";
 import relFriendsIcon from "@/assets/crcle/profile/rel-friends.svg";
 import relInfoIcon from "@/assets/crcle/profile/rel-info.svg";
@@ -600,7 +599,10 @@ function ProfileMainView({
           className="crcle-glass-btn crcle-glass-btn--signal-live relative flex shrink-0 items-center gap-1 overflow-hidden rounded-[24px] px-4 py-2 backdrop-blur-[12px] transition hover:brightness-110"
         >
           <div className="dock-glass-lens opacity-40" aria-hidden />
-          <span className="relative z-[1] size-2 shrink-0 rounded-full bg-[#22c55e]" aria-hidden />
+          <IconImg
+            src={signalLiveIndicatorIcon}
+            className="crcle-signal-live-dot relative z-[1] size-2 shrink-0"
+          />
           <span
             className="relative z-[1] whitespace-nowrap text-[11px] leading-[1.4] text-[#22c55e]"
             style={{ fontFamily: FONT }}
