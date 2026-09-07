@@ -666,11 +666,7 @@ function ProfileMainView({
           <div className="flex flex-col gap-4">
             {/* Location + Work */}
             <div className="grid grid-cols-2 items-stretch gap-4">
-              <button
-                type="button"
-                onClick={onOpenLocation}
-                className="relative flex h-[184px] min-w-0 flex-col justify-between overflow-hidden rounded-2xl p-2 text-left"
-              >
+              <div className="relative flex h-[184px] min-w-0 flex-col justify-between overflow-hidden rounded-2xl p-2 text-left">
                 <img
                   alt=""
                   src={locationMapImg}
@@ -678,9 +674,15 @@ function ProfileMainView({
                   draggable={false}
                 />
                 <div className="absolute inset-0 rounded-2xl bg-[rgba(2,4,38,0.1)]" />
+                <button
+                  type="button"
+                  aria-label="Edit location"
+                  onClick={onOpenLocation}
+                  className="absolute inset-0 z-[1] cursor-pointer border-0 bg-transparent p-0"
+                />
                 {showLocationDetails ? (
                   <>
-                    <span className="absolute left-[72px] top-[84px] z-[2] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
+                    <span className="pointer-events-none absolute left-[72px] top-[84px] z-[2] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
                       <span className="size-0.5 rounded-full bg-white" />
                       <span
                         className="text-[11px] leading-[1.4] text-[#fefefe]"
@@ -692,13 +694,13 @@ function ProfileMainView({
                     <img
                       alt=""
                       src={mapPinPreciseIcon}
-                      className="absolute left-[72px] top-[107px] z-[2] size-2.5"
+                      className="pointer-events-none absolute left-[72px] top-[107px] z-[2] size-2.5"
                       draggable={false}
                     />
                   </>
                 ) : null}
                 {frostMap ? (
-                  <div className="absolute inset-0 z-[1] flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[rgba(255,255,255,0.1)] px-[35px] backdrop-blur-[4px]">
+                  <div className="pointer-events-none absolute inset-0 z-[2] flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[rgba(255,255,255,0.1)] px-[35px] backdrop-blur-[4px]">
                     <div className="flex w-[110px] flex-col items-center justify-center gap-[7px]">
                       <span className="relative size-6 shrink-0 overflow-clip">
                         <span className="absolute inset-[8.33%_16.67%]">
@@ -719,7 +721,7 @@ function ProfileMainView({
                     </div>
                   </div>
                 ) : null}
-                <span className="relative z-[2] flex w-full items-center justify-between rounded-[24px] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1 backdrop-blur-[4px]">
+                <span className="relative z-[3] flex w-full items-center justify-between rounded-[24px] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1 backdrop-blur-[4px]">
                   <img alt="" src={locationCurrentIcon} className="size-4 object-contain" draggable={false} />
                   <span className="text-[13px] leading-[1.1] text-[#030426]" style={{ fontFamily: FONT }}>
                     Location
@@ -731,18 +733,18 @@ function ProfileMainView({
                       e.stopPropagation();
                       onOpenLocationInfo();
                     }}
-                    className="flex size-4 shrink-0 items-center justify-center"
+                    className="flex size-6 shrink-0 items-center justify-center rounded-full"
                   >
                     <img alt="" src={bytesizeInfoIcon} className="size-4 object-contain" draggable={false} />
                   </button>
                 </span>
-                <div
-                  className="relative z-[2] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1.5 backdrop-blur-[4px]"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <div className="relative z-[3] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1.5 backdrop-blur-[4px]">
                   <button
                     type="button"
-                    onClick={() => setLocationEnabled((v) => !v)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocationEnabled((v) => !v);
+                    }}
                     className="flex w-full items-center justify-between"
                     aria-pressed={locationEnabled}
                   >
@@ -760,7 +762,7 @@ function ProfileMainView({
                     </span>
                   </button>
                 </div>
-              </button>
+              </div>
 
               {hasWork ? (
                 <button
