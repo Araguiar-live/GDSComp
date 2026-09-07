@@ -63,19 +63,17 @@ interface Props {
 }
 
 /** White project accordion card — mockup / bento treatment TBD. */
-export function ProjectBentoStack({
-  projects,
-  openSlug,
-  onToggle,
-  rowRefs,
-}: {
+export const ProjectBentoStack = forwardRef<HTMLDivElement, {
   projects: Project[];
   openSlug: string | null;
   onToggle: (slug: string) => void;
   rowRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;
-}) {
+}>(function ProjectBentoStack({ projects, openSlug, onToggle, rowRefs }, ref) {
   return (
-    <div className="relative z-10 flex w-full shrink-0 flex-col overflow-hidden rounded-[32px] border border-[#f3f4f6] bg-white/70 shadow-[0px_16px_48px_0px_rgba(0,0,0,0.05)] backdrop-blur-[2px]">
+    <div
+      ref={ref}
+      className="relative z-10 flex w-full shrink-0 flex-col overflow-hidden rounded-[32px] border border-[#f3f4f6] bg-white/70 shadow-[0px_16px_48px_0px_rgba(0,0,0,0.05)] backdrop-blur-[2px]"
+    >
       {projects.map((p) => (
         <ProjectAccordion
           key={p.slug}
@@ -89,7 +87,7 @@ export function ProjectBentoStack({
       ))}
     </div>
   );
-}
+});
 
 export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function ProjectAccordion(
   { project, isOpen, onToggle },
