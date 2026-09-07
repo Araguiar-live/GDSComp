@@ -21,6 +21,8 @@ export const SITE_WIREFRAME_H_EXPANDED = 1522;
 
 const CELL_BAND_W = 1258;
 const CELL_BAND_H = 630;
+/** Hero jenga squares — ~17.5% smaller than full-bleed band */
+const JENGA_BAND_WIDTH = "82.5%";
 const BROWSER_PLATE_W = 1258;
 const BROWSER_PLATE_H = 800;
 
@@ -154,8 +156,8 @@ function TileRow({
 function JengaCellBand() {
   return (
     <div
-      className="relative w-full shrink-0"
-      style={{ aspectRatio: `${CELL_BAND_W} / ${CELL_BAND_H}` }}
+      className="relative mx-auto shrink-0"
+      style={{ width: JENGA_BAND_WIDTH, aspectRatio: `${CELL_BAND_W} / ${CELL_BAND_H}` }}
     >
       <div className="absolute inset-0 flex flex-col gap-[2px]">
         {/* Row 1 — 14 × 1 */}
