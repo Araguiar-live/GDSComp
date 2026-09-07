@@ -831,6 +831,57 @@
     hue-rotate(93deg) brightness(98%) contrast(92%);
 }
 
+/* Footer signal bars — Figma 1330:39422 / 257:63722 */
+.crcle-footer-signal-bars {
+  gap: 4.903px;
+}
+
+.crcle-footer-signal-bar {
+  box-sizing: border-box;
+  border: 1px solid transparent;
+}
+
+.crcle-footer-signal-bar--dim {
+  background: rgba(15, 201, 80, 0.2);
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 rgba(247, 246, 242, 0.14),
+    inset 0 -1px 0 rgba(2, 3, 29, 0.18);
+}
+
+.crcle-footer-signal-bar--lit {
+  background: linear-gradient(180deg, #12e061 0%, #0fc950 52%, #0ab343 100%);
+  border-color: rgba(247, 246, 242, 0.8);
+  box-shadow:
+    0 0 10px rgba(15, 201, 80, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.14);
+}
+
+.crcle-footer-signal-bar--lit-all {
+  background: linear-gradient(180deg, #12e061 0%, #0fc950 52%, #0ab343 100%);
+  border-color: #e7fcee;
+  box-shadow:
+    0 0 12px rgba(15, 201, 80, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.crcle-phone--light .crcle-footer-signal-bar--dim {
+  background: rgba(15, 201, 80, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(2, 3, 29, 0.08);
+}
+
+.crcle-phone--light .crcle-footer-signal-bar--lit,
+.crcle-phone--light .crcle-footer-signal-bar--lit-all {
+  box-shadow:
+    0 0 8px rgba(15, 201, 80, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
 /* Fully tuned signal bars — Figma 257:67366 pulsing halo */
 .crcle-signal-bars-glow {
   width: 54px;

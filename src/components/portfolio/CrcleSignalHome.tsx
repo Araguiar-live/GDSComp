@@ -974,19 +974,19 @@ const OVERLAY_SIGNAL_BAR_HEIGHTS = [12.256, 20.427, 12.256] as const;
 const OVERLAY_SIGNAL_GAP = 2.904;
 const OVERLAY_SIGNAL_RADIUS = 4.73;
 
-function signalBarClass(
+function getFooterBarClass(
   index: number,
   activeBars: number,
   allLit: boolean,
-  centerOnly = false,
-) {
+  centerOnly: boolean,
+): string {
   if (centerOnly) {
-    return index === 1 ? "bg-[#0fc950]" : "bg-[rgba(15,201,80,0.2)]";
+    return index === 1 ? "crcle-footer-signal-bar--lit" : "crcle-footer-signal-bar--dim";
   }
   if (index < activeBars) {
-    return allLit ? "border border-[#e7fcee] bg-[#0fc950]" : "bg-[#0fc950]";
+    return allLit ? "crcle-footer-signal-bar--lit-all" : "crcle-footer-signal-bar--lit";
   }
-  return "bg-[rgba(15,201,80,0.2)]";
+  return "crcle-footer-signal-bar--dim";
 }
 
 function SignalBarsCore({
@@ -1014,7 +1014,9 @@ function SignalBarsCore({
 
   return (
     <div
-      className={`flex shrink-0 items-center ${className}`}
+      className={`flex shrink-0 items-center ${
+        variant === "footer" ? "crcle-footer-signal-bars" : ""
+      } ${className}`}
       style={{ gap }}
       aria-hidden={ariaHidden}
     >
@@ -1025,7 +1027,7 @@ function SignalBarsCore({
             ? i === 1
               ? "bg-[#f7f6f2]"
               : "border border-[#f7f6f2] bg-[#f7f6f2]"
-            : signalBarClass(i, activeBars, allLit, centerOnly);
+            : `crcle-footer-signal-bar ${getFooterBarClass(i, activeBars, allLit, centerOnly)}`;
 
         if (animate && !centerOnly) {
           const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
@@ -1050,7 +1052,7 @@ function SignalBarsCore({
         return (
           <span
             key={i}
-            className={`block shrink-0 transition-colors duration-300 ${barClass}`}
+            className={`block shrink-0 transition-[box-shadow,background-color,border-color] duration-300 ${barClass}`}
             style={{ width, height: baseHeight, borderRadius: radius }}
           />
         );
