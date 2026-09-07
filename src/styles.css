@@ -474,12 +474,97 @@
   mix-blend-mode: soft-light;
 }
 
-/* Phone primary dock — match portfolio Dock.tsx frost inside the wireframe */
-.crcle-primary-dock.dock-glass {
+/* Phone primary dock — layered frost (portfolio Dock.tsx + LocationInfoSheet pattern) */
+.crcle-primary-dock {
+  position: relative;
   isolation: auto;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-.crcle-phone--light .crcle-primary-dock.dock-glass {
+.crcle-primary-dock-glass,
+.crcle-primary-dock-plate,
+.crcle-primary-dock-frost,
+.crcle-primary-dock-lens {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Portfolio .dock-glass — blur samples screen content behind the pill */
+.crcle-primary-dock-glass {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.crcle-primary-dock-plate {
+  background: linear-gradient(
+    182deg,
+    rgba(255, 255, 255, 0.14) 12%,
+    rgba(255, 255, 255, 0.06) 58%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+}
+
+.crcle-primary-dock-frost {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    transparent 42%
+  );
+  opacity: 0.4;
+}
+
+.crcle-primary-dock-frost::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 0.5px;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.45;
+}
+
+.crcle-primary-dock-lens {
+  background: radial-gradient(
+    120% 90% at 50% -20%,
+    rgba(255, 255, 255, 0.35),
+    transparent 55%
+  );
+  mix-blend-mode: soft-light;
+  opacity: 0.25;
+}
+
+.crcle-phone--light .crcle-primary-dock-glass {
   border: 1px solid rgba(255, 255, 255, 0.76);
   background:
     linear-gradient(
@@ -495,9 +580,34 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.76);
 }
 
-.crcle-phone--light .crcle-primary-dock.dock-glass::before,
-.crcle-phone--light .crcle-primary-dock.dock-glass::after {
-  content: none;
+.crcle-phone--light .crcle-primary-dock-plate {
+  background: linear-gradient(
+    182deg,
+    rgba(255, 255, 255, 0.42) 12%,
+    rgba(247, 246, 242, 0.28) 58%,
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  backdrop-filter: blur(40px) saturate(170%);
+  -webkit-backdrop-filter: blur(40px) saturate(170%);
+}
+
+.crcle-phone:not(.crcle-phone--light) .crcle-primary-dock-plate {
+  background: linear-gradient(
+    182deg,
+    rgba(1, 2, 17, 0.42) 12%,
+    rgba(1, 2, 17, 0.28) 58%,
+    rgba(1, 2, 17, 0.18) 100%
+  );
+  backdrop-filter: blur(32px) saturate(140%);
+  -webkit-backdrop-filter: blur(32px) saturate(140%);
+}
+
+.crcle-primary-dock
+  > *:not(.crcle-primary-dock-glass):not(.crcle-primary-dock-plate):not(.crcle-primary-dock-frost):not(
+    .crcle-primary-dock-lens
+  ) {
+  position: relative;
+  z-index: 1;
 }
 
 /* Compact glass control — CRCLE chrome pills (Apple Music–style splay + refraction) */

@@ -82,18 +82,20 @@ export function CrclePhoneFrame({
             />
           </div>
 
-          {/* Full-wireframe overlays (above screen + bezel); inert until chrome mounts */}
-          {overlay || bottomChrome ? (
+          {/* Modals/scrims — clipped to the wireframe curve */}
+          {overlay ? (
             <div
-              className="pointer-events-none absolute inset-0 z-[60] overflow-visible rounded-[56px]"
+              className="pointer-events-none absolute inset-0 z-[60] overflow-hidden rounded-[56px]"
               style={{ clipPath: "inset(0 round 56px)" }}
             >
               {overlay}
-              {bottomChrome ? (
-                <div className="pointer-events-none absolute bottom-5 left-0 right-0 z-[20] flex justify-center overflow-visible">
-                  {bottomChrome}
-                </div>
-              ) : null}
+            </div>
+          ) : null}
+
+          {/* Primary dock — NO clipPath here; clip-path on ancestors breaks backdrop-filter */}
+          {bottomChrome ? (
+            <div className="pointer-events-none absolute bottom-5 left-0 right-0 z-[65] flex justify-center overflow-visible">
+              {bottomChrome}
             </div>
           ) : null}
         </div>

@@ -170,15 +170,14 @@ export function CrclePrimaryDock({
       </AnimatePresence>
 
       <nav
-        className="dock-glass crcle-primary-dock pointer-events-auto relative box-border flex h-[44px] w-[134.4px] shrink-0 items-center gap-4 overflow-hidden rounded-[36px] border border-white/15 bg-white/5 px-4 shadow-2xl backdrop-blur-sm"
+        className="crcle-primary-dock pointer-events-auto relative box-border flex h-[44px] w-[134.4px] shrink-0 items-center gap-4 overflow-hidden rounded-[36px] px-4"
         role="navigation"
         aria-label="Primary"
       >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-0 rounded-[36px] bg-gradient-to-b from-white/12 via-transparent to-transparent"
-        />
-        <div className="dock-glass-lens z-0 opacity-25" aria-hidden />
+        <div aria-hidden className="crcle-primary-dock-glass rounded-[inherit]" />
+        <div aria-hidden className="crcle-primary-dock-plate rounded-[inherit]" />
+        <div aria-hidden className="crcle-primary-dock-frost rounded-[inherit]" />
+        <div aria-hidden className="crcle-primary-dock-lens rounded-[inherit]" />
         <DockIconButton
           label="Profile"
           active={active === "profile"}
