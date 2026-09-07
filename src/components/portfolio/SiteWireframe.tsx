@@ -32,12 +32,12 @@ type Mark = "dot" | "none" | "house" | "modules" | "modules-tall" | "modules-l" 
 const MARK = "bg-[#e5e7eb]";
 const MARK_SOFT = "bg-[#eceff3]";
 
+/** Figma 530:151786 — two horizontal chips */
 function HouseMark({ soft = false }: { soft?: boolean }) {
   const chip = soft ? MARK_SOFT : MARK;
   return (
     <div className="flex w-4 flex-col items-center" aria-hidden>
-      <div className={`mb-[-2px] size-1.5 rounded-[1px] ${chip}`} />
-      <div className="flex gap-1">
+      <div className="flex w-full items-center justify-center gap-1">
         <div className={`size-1.5 rounded-[1px] ${chip}`} />
         <div className={`size-1.5 rounded-[1px] ${chip}`} />
       </div>
