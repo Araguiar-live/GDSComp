@@ -1748,23 +1748,41 @@
   background: #f7f6f2;
 }
 
-/* Signal Panel — matching white frosted sheet above the dock */
+/* Signal Panel — Figma 1010:51255 frosted sheet above the dock */
 .crcle-signal-panel {
   position: relative;
+  isolation: auto;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  background:
-    linear-gradient(
-      165deg,
-      rgba(255, 255, 255, 0.94) 0%,
-      rgba(255, 255, 255, 0.8) 50%,
-      rgba(247, 246, 242, 0.74) 100%
-    );
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.crcle-signal-panel-glass,
+.crcle-signal-panel-plate {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.crcle-signal-panel-glass {
+  border: 1px solid rgba(247, 246, 242, 0.4);
+  background: rgba(253, 252, 251, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.crcle-signal-panel-plate {
+  background: linear-gradient(
+    182deg,
+    rgba(255, 255, 255, 0.22) 12%,
+    rgba(247, 246, 242, 0.12) 58%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
 }
 
 .crcle-signal-panel .crcle-dock-icon {
@@ -1776,10 +1794,10 @@
 }
 
 .crcle-signal-panel__btn {
-  border: 1px solid rgba(2, 3, 29, 0.18);
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(247, 246, 242, 0.6);
+  background: rgba(247, 246, 242, 0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 /* CRCLE bottom nav — frosted glass, no outline (shared dark-mode dock) */

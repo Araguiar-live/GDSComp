@@ -124,9 +124,12 @@ export function CrclePrimaryDock({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.96 }}
             transition={{ duration: 0.22, ease: EASE }}
-            className="crcle-signal-panel pointer-events-auto flex w-full flex-col gap-2 rounded-[24px] p-2"
+            transformTemplate={() => ""}
+            className="crcle-signal-panel pointer-events-auto relative flex w-full flex-col gap-2 overflow-hidden rounded-[24px] p-2"
           >
-            <div className="flex items-center justify-center gap-0.5">
+            <div aria-hidden className="crcle-signal-panel-glass rounded-[inherit]" />
+            <div aria-hidden className="crcle-signal-panel-plate rounded-[inherit]" />
+            <div className="relative z-[1] flex items-center justify-center gap-0.5">
               <div className="flex size-6 items-center justify-center">
                 <SoundWaveIcon size={16} active />
               </div>
@@ -137,7 +140,7 @@ export function CrclePrimaryDock({
                 Signal Panel
               </p>
             </div>
-            <div className="flex items-start justify-between">
+            <div className="relative z-[1] flex items-start justify-between">
               <button
                 type="button"
                 aria-label="Open radar"

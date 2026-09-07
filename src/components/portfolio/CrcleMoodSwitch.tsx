@@ -203,8 +203,8 @@ export function CrcleMoodSwitch({
                   onMouseLeave={() => setHoveredMood(null)}
                   whileTap={{ scale: 0.88 }}
                   transition={{ type: "spring", stiffness: 500, damping: 28 }}
-                  className={`crcle-intent-chip relative flex size-11 items-center justify-center rounded-[24px] p-1 opacity-40 disabled:cursor-not-allowed ${
-                    active ? "is-lit" : ""
+                  className={`crcle-intent-chip relative flex size-11 items-center justify-center rounded-[24px] p-1 disabled:cursor-not-allowed ${
+                    active ? "is-lit opacity-100" : "opacity-40"
                   }`}
                 >
                   <svg
@@ -251,7 +251,7 @@ export function CrcleMoodSwitch({
                   {active ? (
                     <motion.span
                       layoutId="mood-dock-active"
-                      className="absolute inset-[3px] z-[1] rounded-[20px] bg-[#f7f6f2]"
+                      className="absolute inset-[3px] z-[1] rounded-[20px] bg-[rgba(247,246,242,0.8)]"
                       transition={{ type: "spring", stiffness: 420, damping: 32 }}
                     />
                   ) : null}
