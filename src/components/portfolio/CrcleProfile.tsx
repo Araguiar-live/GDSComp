@@ -239,7 +239,7 @@ export function CrcleProfile({
         aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
         aria-pressed={isLightMode}
         onClick={() => setIsLightMode((v) => !v)}
-        className="absolute left-1/2 -top-10 z-30 flex size-8 -translate-x-1/2 items-center justify-center border-0 bg-transparent p-0 shadow-none outline-none ring-0"
+        className="absolute -right-10 top-12 z-30 flex size-8 items-center justify-center border-0 bg-transparent p-0 shadow-none outline-none ring-0"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.92 }}
       >
@@ -678,7 +678,7 @@ function ProfileMainView({
                   type="button"
                   aria-label="Edit location"
                   onClick={onOpenLocation}
-                  className="absolute inset-0 z-[1] cursor-pointer border-0 bg-transparent p-0"
+                  className="absolute inset-x-0 top-0 bottom-[84px] z-[1] cursor-pointer border-0 bg-transparent p-0"
                 />
                 {showLocationDetails ? (
                   <>
@@ -721,7 +721,7 @@ function ProfileMainView({
                     </div>
                   </div>
                 ) : null}
-                <span className="relative z-[3] flex w-full items-center justify-between rounded-[24px] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1 backdrop-blur-[4px]">
+                <span className="pointer-events-auto relative z-[4] flex w-full items-center justify-between rounded-[24px] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1 backdrop-blur-[4px]">
                   <img alt="" src={locationCurrentIcon} className="size-4 object-contain" draggable={false} />
                   <span className="text-[13px] leading-[1.1] text-[#030426]" style={{ fontFamily: FONT }}>
                     Location
@@ -729,22 +729,16 @@ function ProfileMainView({
                   <button
                     type="button"
                     aria-label="Location privacy information"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onOpenLocationInfo();
-                    }}
-                    className="flex size-6 shrink-0 items-center justify-center rounded-full"
+                    onClick={onOpenLocationInfo}
+                    className="relative z-[1] flex size-6 shrink-0 items-center justify-center rounded-full"
                   >
                     <img alt="" src={bytesizeInfoIcon} className="size-4 object-contain" draggable={false} />
                   </button>
                 </span>
-                <div className="relative z-[3] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1.5 backdrop-blur-[4px]">
+                <div className="pointer-events-auto relative z-[4] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1.5 backdrop-blur-[4px]">
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLocationEnabled((v) => !v);
-                    }}
+                    onClick={() => setLocationEnabled((v) => !v)}
                     className="flex w-full items-center justify-between"
                     aria-pressed={locationEnabled}
                   >
