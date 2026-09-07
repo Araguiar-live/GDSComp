@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { forwardRef, useState, type MutableRefObject } from "react";
+import { forwardRef, useEffect, useRef, useState, type MutableRefObject } from "react";
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
 import {
   useCrcleAreaInboxOpen,
@@ -15,6 +15,12 @@ type Tab = ProjectTab;
 /** Shared open-panel body height — tabs + Figma 402×874 phone + padding */
 const EXPANDED_BODY_H = 1060;
 
+function resolveDefaultTab(project: Project, tabs: Tab[]): Tab {
+  if (project.defaultTab && tabs.includes(project.defaultTab)) return project.defaultTab;
+  if (project.tabs?.[0]) return project.tabs[0];
+  return tabs.includes("Template Library") ? "Template Library" : tabs[0];
+}
+
 export interface Project {
   id: string; // e.g. "01"
   slug: string; // e.g. "crcle" — used by the dock to target this row
@@ -23,6 +29,8 @@ export interface Project {
   year: string;
   /** Override the default four case-study steps. */
   tabs?: readonly string[];
+  /** Which tab is selected when the accordion opens (defaults to Template Library if present). */
+  defaultTab?: string;
   // Per-tab content slots. Each returns whatever prototype/text you want to drop in later.
   content?: Partial<Record<string, ProjectTabContent>>;
 }
@@ -94,11 +102,17 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
   ref,
 ) {
   const tabs = project.tabs?.length ? [...project.tabs] : [...DEFAULT_TABS];
-  const [activeTab, setActiveTab] = useState<Tab>(
-    project.tabs?.[0] ?? (tabs.includes("Template Library") ? "Template Library" : tabs[0]),
-  );
+  const [activeTab, setActiveTab] = useState<Tab>(() => resolveDefaultTab(project, tabs));
   const tabContent = project.content?.[activeTab] ?? {};
   const tabIndex = Math.max(0, tabs.indexOf(activeTab));
+  const wasOpenRef = useRef(isOpen);
+
+  useEffect(() => {
+    if (isOpen && !wasOpenRef.current) {
+      setActiveTab(resolveDefaultTab(project, tabs));
+    }
+    wasOpenRef.current = isOpen;
+  }, [isOpen, project, tabs]);
 
   return (
     <div ref={ref} className="border-b border-[#d1d5db] last:border-b-0">

@@ -19,7 +19,6 @@ import { CrcleRadar } from "@/components/portfolio/CrcleRadar";
 import { CrcleSignalHome } from "@/components/portfolio/CrcleSignalHome";
 import { FirstDesignComingSoon } from "@/components/portfolio/FirstDesignComingSoon";
 import { StoneSkipRipple } from "@/components/portfolio/StoneSkipRipple";
-
 import { WireframeStage } from "@/components/portfolio/SiteWireframe";
 export const Route = createFileRoute("/")({
   component: Index,
@@ -33,6 +32,7 @@ const PROJECTS: Project[] = [
     title: "CRCLE",
     role: "Lead Product Designer/Owner",
     year: "2025",
+    defaultTab: "Create Workspace\u00a0",
     content: {
       "Create Workspace\u00a0": {
         tabLabel: "Signal Home",
