@@ -43,12 +43,17 @@ type AreaPhase = "screen" | "drawer";
 /** Figma 1142:34808 / 1142:34923 (dark) → 1142:33486 (light). */
 export function CrcleInTheAreaInbox({
   phase,
+  isLight,
+  backdropUrl,
   onExpand,
   onCollapse,
   onConnect,
   onMarkRead,
 }: {
   phase: AreaPhase;
+  isLight: boolean;
+  /** Frost wash when sibling backdrop-filter cannot sample the clipped screen. */
+  backdropUrl: string;
   onExpand: () => void;
   onCollapse: () => void;
   onConnect: () => void;
@@ -58,7 +63,8 @@ export function CrcleInTheAreaInbox({
 
   return (
     <div
-      className="pointer-events-auto absolute inset-x-0 top-0 bottom-[100px] z-[35] flex flex-col"
+      className="pointer-events-auto absolute inset-x-0 top-0 bottom-[100px] z-[60] flex flex-col overflow-hidden rounded-[56px]"
+      style={{ clipPath: "inset(0 round 56px)" }}
       role="dialog"
       aria-label="In The Area"
     >
@@ -117,7 +123,11 @@ export function CrcleInTheAreaInbox({
           <feBlend in="rg" in2="blue" mode="screen" />
         </filter>
       </svg>
-      <div className="flex w-full flex-col items-center bg-[#02031d] [.crcle-phone--light_&]:bg-[#fdfcfb]">
+      <div
+        className={`flex w-full flex-col items-center ${
+          isLight ? "bg-[#fdfcfb]" : "bg-[#02031d]"
+        }`}
+      >
         <div className="flex w-full flex-col items-center gap-4 px-4 pb-[19px] pt-[21px]">
           <div className="flex w-full items-center justify-between text-[#f7f6f2] [.crcle-phone--light_&]:text-black">
             <span
@@ -140,6 +150,19 @@ export function CrcleInTheAreaInbox({
       </div>
 
       <div className="crcle-area-inbox-glass relative flex w-full flex-col items-center gap-4 overflow-hidden rounded-bl-[28px] rounded-br-[28px] border-x border-[rgba(0,0,0,0.25)] px-[13px] pb-[12px] pt-[16px] shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
+        <div aria-hidden className="crcle-area-inbox-glass-backdrop rounded-[inherit]">
+          <img
+            alt=""
+            src={backdropUrl}
+            className="absolute left-1/2 top-0 h-[180%] w-[180%] max-w-none -translate-x-1/2 -translate-y-[12%] scale-110 object-cover object-[center_15%]"
+            draggable={false}
+          />
+          <div
+            className={`absolute inset-0 ${
+              isLight ? "bg-[rgba(247,246,242,0.42)]" : "bg-[rgba(2,3,29,0.38)]"
+            }`}
+          />
+        </div>
         <div aria-hidden className="crcle-area-inbox-glass-plate rounded-[inherit]" />
         <div aria-hidden className="crcle-area-inbox-glass-lens rounded-[inherit]" />
         <div aria-hidden className="crcle-area-inbox-glass-dispersion rounded-[inherit]" />
@@ -167,9 +190,9 @@ export function CrcleInTheAreaInbox({
           {expanded ? (
             <motion.div
               key="drawer"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
+              initial={{ height: 0 }}
+              animate={{ height: "auto" }}
+              exit={{ height: 0 }}
               transition={{ duration: 0.32, ease: EASE }}
               className="w-full overflow-hidden"
             >
@@ -187,15 +210,9 @@ export function CrcleInTheAreaInbox({
               </div>
             </motion.div>
           ) : (
-            <motion.div
-              key="peek"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="w-full"
-            >
+            <div key="peek" className="w-full">
               <CompactNearbyRow onConnect={onConnect} />
-            </motion.div>
+            </div>
           )}
         </AnimatePresence>
 

@@ -1229,6 +1229,20 @@
     0 1px 0 rgba(255, 255, 255, 0.14) inset;
 }
 
+.crcle-area-inbox-glass-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.crcle-area-inbox-glass-backdrop > img {
+  opacity: 0.5;
+  filter: blur(36px) saturate(0.9);
+}
+
 .crcle-area-inbox-glass-plate {
   position: absolute;
   inset: 0;
@@ -1237,12 +1251,11 @@
   pointer-events: none;
   background: linear-gradient(
     182.32deg,
-    rgba(255, 255, 255, 0.4) 25.54%,
-    rgba(2, 3, 29, 0.04) 98.49%
+    rgba(255, 255, 255, 0.32) 25.54%,
+    rgba(2, 3, 29, 0.14) 98.49%
   );
   backdrop-filter: blur(24px) saturate(150%);
   -webkit-backdrop-filter: blur(24px) saturate(150%);
-  filter: url("#crcle-nearby-glass");
 }
 
 .crcle-area-inbox-glass-plate::before {
@@ -1258,8 +1271,8 @@
 .crcle-phone--light .crcle-area-inbox-glass-plate {
   background: linear-gradient(
     182.32deg,
-    rgba(255, 255, 255, 0.72) 25.54%,
-    rgba(255, 255, 255, 0.35) 98.49%
+    rgba(255, 255, 255, 0.58) 25.54%,
+    rgba(255, 255, 255, 0.28) 98.49%
   );
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
@@ -1304,7 +1317,10 @@
   opacity: 0.5;
 }
 
-.crcle-area-inbox-glass > *:not(.crcle-area-inbox-glass-plate):not(.crcle-area-inbox-glass-lens):not(.crcle-area-inbox-glass-dispersion) {
+.crcle-area-inbox-glass
+  > *:not(.crcle-area-inbox-glass-backdrop):not(.crcle-area-inbox-glass-plate):not(
+    .crcle-area-inbox-glass-lens
+  ):not(.crcle-area-inbox-glass-dispersion) {
   position: relative;
   z-index: 1;
 }

@@ -384,17 +384,33 @@ export function CrcleMessaging({
       <CrclePhoneFrame
         light={isLightMode}
         overlay={
-          <AnimatePresence>
-            {activeMatch ? (
-              <SignalInterceptModal
-                key={activeMatch.id}
-                user={activeMatch}
+          <>
+            {areaInbox !== "off" ? (
+              <CrcleInTheAreaInbox
+                phase={areaInbox === "drawer" ? "drawer" : "screen"}
                 isLight={isLightMode}
-                onDecline={declineSignal}
-                onAccept={acceptSignal}
+                backdropUrl={avatarImg}
+                onExpand={() => setAreaInbox("drawer")}
+                onCollapse={() => setAreaInbox("screen")}
+                onConnect={() => {
+                  setAreaInbox("off");
+                  openSignal(CONNECTION_PROFILES[1]);
+                }}
+                onMarkRead={() => setAreaInbox("off")}
               />
             ) : null}
-          </AnimatePresence>
+            <AnimatePresence>
+              {activeMatch ? (
+                <SignalInterceptModal
+                  key={activeMatch.id}
+                  user={activeMatch}
+                  isLight={isLightMode}
+                  onDecline={declineSignal}
+                  onAccept={acceptSignal}
+                />
+              ) : null}
+            </AnimatePresence>
+          </>
         }
       >
         <AnimatePresence mode="wait">
@@ -521,20 +537,6 @@ export function CrcleMessaging({
                   </motion.div>
                 ) : null}
               </div>
-
-              {/* In The Area — sibling of chat stack so backdrop-filter samples chat (Figma 1290:39417) */}
-              {areaInbox !== "off" ? (
-                <CrcleInTheAreaInbox
-                  phase={areaInbox === "drawer" ? "drawer" : "screen"}
-                  onExpand={() => setAreaInbox("drawer")}
-                  onCollapse={() => setAreaInbox("screen")}
-                  onConnect={() => {
-                    setAreaInbox("off");
-                    openSignal(CONNECTION_PROFILES[1]);
-                  }}
-                  onMarkRead={() => setAreaInbox("off")}
-                />
-              ) : null}
 
               {!onboardingOpen ? (
                 <CrclePrimaryDock
