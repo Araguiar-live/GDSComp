@@ -81,12 +81,9 @@ export function CrclePhoneFrame({
             />
           </div>
 
-          {/* Modals/scrims — clipped to the wireframe curve */}
+          {/* Modals/scrims — rounded clip only; clip-path breaks backdrop-filter */}
           {overlay ? (
-            <div
-              className="pointer-events-none absolute inset-0 z-[60] overflow-hidden rounded-[56px]"
-              style={{ clipPath: "inset(0 round 56px)" }}
-            >
+            <div className="pointer-events-none absolute inset-0 z-[60] overflow-hidden rounded-[56px]">
               {overlay}
             </div>
           ) : null}
