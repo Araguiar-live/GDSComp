@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "framer-motion";
-import type { ReactNode } from "react";
 import { useState } from "react";
 import areaPinIcon from "@/assets/crcle/mood/area-pin.svg";
 import radarTwoIcon from "@/assets/crcle/mood/radar-two.svg";
