@@ -707,7 +707,7 @@ export function CrcleMessaging({
                 setAreaNearbyBadgeActive(false);
                 areaNotificationScheduledRef.current = false;
               }}
-              onConnect={() => {
+              onComplete={() => {
                 setAreaNotificationOpen(false);
                 setAreaNearbyBadgeActive(false);
                 areaNotificationScheduledRef.current = false;
