@@ -9,6 +9,7 @@ import cellularIcon from "@/assets/crcle/cellular.svg";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
 import dragHandleModal from "@/assets/crcle/drag-handle-modal.svg";
 import fireInnerIcon from "@/assets/crcle/fire-inner.svg";
+import jordanEllisPortrait from "@/assets/crcle/jordan-ellis-portrait.png";
 import linkIcon from "@/assets/crcle/link.svg";
 import linkInnerIcon from "@/assets/crcle/link-inner.svg";
 import locusCloseIcon from "@/assets/crcle/locus/close-x.svg";
@@ -38,6 +39,7 @@ import nocDotIcon from "@/assets/crcle/radar/noc-dot.svg";
 import nocMoonIcon from "@/assets/crcle/radar/noc-moon.svg";
 import nocTimerIcon from "@/assets/crcle/radar/noc-timer.svg";
 import serenaPortrait from "@/assets/crcle/serena-portrait.png";
+import sarahChenPortrait from "@/assets/crcle/sarah-chen-portrait.png";
 import shareIcon from "@/assets/crcle/share.svg";
 import shareInnerIcon from "@/assets/crcle/share-inner.svg";
 import brainIcon from "@/assets/crcle/signal/brain.svg";
@@ -72,6 +74,9 @@ const CHIP_GAP = 8;
 const SUCCESS = "#0eb247";
 const PUSH_LOAD_MS = 1400;
 const PUSH_SUCCESS_HOLD_MS = 1100;
+/** Daily recommendation cap — Figma 257:85518 */
+const DAILY_RECOMMENDATION_LIMIT = 3;
+const NEXT_DROP_SECONDS = 4 * 3600 + 2 * 60 + 46;
 
 type PushPhase = "idle" | "loading" | "success" | "modal";
 
@@ -155,6 +160,30 @@ const USERS: RecommendedUser[] = [
     role: "Product Designer@Circle",
     roleTag: "OTP",
   },
+  {
+    id: "jordan",
+    name: "Jordan Ellis",
+    handle: "@JordanEllis",
+    avatarUrl: jordanEllisPortrait,
+    distance: "1.1km",
+    age: 27,
+    relationshipStatus: "Open",
+    orientation: "Queer",
+    role: "Design Lead@Studio",
+    roleTag: "Purpose",
+  },
+  {
+    id: "sarah",
+    name: "Sarah Chen",
+    handle: "@SarahChen",
+    avatarUrl: sarahChenPortrait,
+    distance: "3.2km",
+    age: 26,
+    relationshipStatus: "Single",
+    orientation: "Bi",
+    role: "UX Researcher@Agency",
+    roleTag: "Soul",
+  },
 ];
 
 const CATEGORY_ICON: Record<RadarCategory, string | "waves"> = {
@@ -178,6 +207,7 @@ export function CrcleRadar({
   const [isLightMode, setIsLightMode] = useState(false);
   /* Figma 322:118007 — Radar onboarding over live Radar */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
+  const [caughtUp, setCaughtUp] = useState(false);
   const [state, setState] = useState<RadarState>({
     recommendedUsers: USERS,
     activeCardIndex: 0,
@@ -226,14 +256,48 @@ export function CrcleRadar({
   const goPrev = useCallback(() => goTo(categoryIndex - 1, -1), [goTo, categoryIndex]);
   const goNext = useCallback(() => goTo(categoryIndex + 1, 1), [goTo, categoryIndex]);
 
+  const goNextRecommendation = useCallback(() => {
+    if (
+      caughtUp ||
+      onboardingOpen ||
+      isPushBusy ||
+      state.isIntentOverlayOpen ||
+      showSignalModal
+    ) {
+      return;
+    }
+
+    setState((s) => {
+      const nextIndex = s.activeCardIndex + 1;
+      if (nextIndex >= DAILY_RECOMMENDATION_LIMIT) {
+        setCaughtUp(true);
+        return s;
+      }
+      return {
+        ...s,
+        activeCardIndex: nextIndex,
+        activeCategory: "signal",
+        isIntentOverlayOpen: false,
+        selectedIntent: null,
+        pushPhase: "idle",
+      };
+    });
+  }, [
+    caughtUp,
+    onboardingOpen,
+    isPushBusy,
+    state.isIntentOverlayOpen,
+    showSignalModal,
+  ]);
+
   const onSwipeDragEnd = (_: unknown, info: PanInfo) => {
-    if (state.isIntentOverlayOpen || isPushBusy) return;
+    if (state.isIntentOverlayOpen || isPushBusy || caughtUp) return;
     if (info.offset.x < -DRAG_THRESHOLD || info.velocity.x < -200) goNext();
     else if (info.offset.x > DRAG_THRESHOLD || info.velocity.x > 200) goPrev();
   };
 
   const openIntent = () => {
-    if (isPushBusy) return;
+    if (isPushBusy || caughtUp) return;
     setState((s) => ({
       ...s,
       isIntentOverlayOpen: true,
@@ -355,7 +419,16 @@ export function CrcleRadar({
               }`}
               style={{ fontFamily: FONT }}
             >
-              Found a signal? Tap + to intercept
+              {caughtUp ? (
+                <span className="inline-flex items-center justify-center gap-2">
+                  <span className="inline-block size-4 -scale-x-100 rotate-180 opacity-80">
+                    <IconImg src={arrowRightIcon} className="size-4" />
+                  </span>
+                  Second Look
+                </span>
+              ) : (
+                "Found a signal? Tap + to intercept"
+              )}
             </p>
           </div>
 
@@ -369,14 +442,31 @@ export function CrcleRadar({
               }`}
             >
               <div className="crcle-portrait-card relative flex h-full w-full flex-col overflow-hidden rounded-[36px]">
-                <img
-                  alt=""
-                  src={user.avatarUrl}
-                  className="absolute inset-0 size-full rounded-[36px] object-cover"
-                  draggable={false}
-                />
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.img
+                    key={caughtUp ? "caught-up" : user.id}
+                    alt=""
+                    src={user.avatarUrl}
+                    initial={{ opacity: 0, x: 28 }}
+                    animate={{ opacity: caughtUp ? 0.35 : 1, x: 0 }}
+                    exit={{ opacity: 0, x: -28 }}
+                    transition={{ duration: 0.32, ease: EASE }}
+                    className="absolute inset-0 size-full rounded-[36px] object-cover"
+                    draggable={false}
+                  />
+                </AnimatePresence>
+                {caughtUp ? (
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 rounded-[36px] bg-[rgba(222,221,218,0.12)] backdrop-blur-[2px]"
+                  />
+                ) : null}
                 <div className="relative z-[1] flex w-full items-center justify-between px-4 pt-4">
-                  <div className="flex items-center gap-2.5 rounded-[64px] bg-[rgba(2,3,29,0.3)] p-2.5 backdrop-blur-[6px]">
+                  <div
+                    className={`flex items-center gap-2.5 rounded-[64px] p-2.5 backdrop-blur-[6px] ${
+                      caughtUp ? "bg-[#010211] opacity-0" : "bg-[rgba(2,3,29,0.3)]"
+                    }`}
+                  >
                     <span
                       className="text-[11px] leading-[1.4] text-white"
                       style={{ fontFamily: FONT }}
@@ -390,19 +480,33 @@ export function CrcleRadar({
                       </span>
                     </span>
                   </div>
-                  <button
-                    type="button"
-                    aria-label="Next"
-                    onClick={goNext}
-                    className="flex h-[35px] shrink-0 items-center justify-center rounded-[36px] bg-[#02031d] px-3 py-1 backdrop-blur-[2px]"
-                  >
-                    <img
-                      alt=""
-                      src={arrowForwardIcon}
-                      className="size-4 object-contain"
-                      draggable={false}
-                    />
-                  </button>
+                  {!caughtUp ? (
+                    <button
+                      type="button"
+                      aria-label="Next recommendation"
+                      onClick={goNextRecommendation}
+                      className="flex h-[35px] shrink-0 items-center justify-center rounded-[36px] bg-[#02031d] px-3 py-1 backdrop-blur-[2px] transition hover:brightness-110"
+                    >
+                      <img
+                        alt=""
+                        src={arrowForwardIcon}
+                        className="size-4 object-contain"
+                        draggable={false}
+                      />
+                    </button>
+                  ) : (
+                    <div
+                      aria-hidden
+                      className="flex h-[35px] w-[42px] shrink-0 items-center justify-center rounded-[36px] bg-[#010211] px-3 py-1 opacity-40 backdrop-blur-[2px]"
+                    >
+                      <img
+                        alt=""
+                        src={arrowForwardIcon}
+                        className="size-4 object-contain"
+                        draggable={false}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {isNoc ? (
@@ -444,6 +548,22 @@ export function CrcleRadar({
                           }))
                         }
                       />
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+
+                {/* Daily limit — Figma 257:85518 */}
+                <AnimatePresence>
+                  {caughtUp ? (
+                    <motion.div
+                      key="caught-up"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.28, ease: EASE }}
+                      className="absolute inset-0 z-40 overflow-hidden rounded-[36px]"
+                    >
+                      <RadarCaughtUpModal onGoToProfile={onGoToProfile} />
                     </motion.div>
                   ) : null}
                 </AnimatePresence>
@@ -493,7 +613,9 @@ export function CrcleRadar({
               </AnimatePresence>
 
               <div
-                className={`relative flex h-[138px] w-full items-end justify-center rounded-[36px] p-4 backdrop-blur-xl ${
+                className={`relative flex h-[138px] w-full items-end justify-center rounded-[36px] p-4 backdrop-blur-xl transition-opacity duration-300 ${
+                  caughtUp ? "pointer-events-none opacity-0" : ""
+                } ${
                   isNoc
                     ? "border border-white/10 bg-black/40"
                     : "border border-[rgba(247,246,242,0.4)] bg-[rgba(2,3,29,0.2)] backdrop-blur-[12px]"
@@ -1312,6 +1434,76 @@ function SignalPushCheck() {
         />
       </svg>
     </motion.div>
+  );
+}
+
+function formatNextDropCountdown(totalSeconds: number) {
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  return `${h}h ${m}m ${s}s`;
+}
+
+/** Figma 257:85518 — daily recommendations exhausted */
+function RadarCaughtUpModal({ onGoToProfile }: { onGoToProfile?: () => void }) {
+  const [remaining, setRemaining] = useState(NEXT_DROP_SECONDS);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setRemaining((value) => (value > 0 ? value - 1 : 0));
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return (
+    <div
+      className="relative flex size-full flex-col items-center justify-center rounded-[36px] bg-[rgba(222,221,218,0.08)] p-4 backdrop-blur-[4px]"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="radar-caught-up-title"
+    >
+      <div className="w-[min(283px,100%)] overflow-hidden rounded-[24px] bg-white shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)]">
+        <div className="flex flex-col gap-5 p-4">
+          <p
+            id="radar-caught-up-title"
+            className="text-center text-[18px] font-normal leading-[25px] text-[#020426]"
+            style={{ fontFamily: FONT }}
+          >
+            You&apos;re all caught up
+          </p>
+          <div className="flex flex-col gap-0.5 text-center">
+            <p
+              className="text-[13px] font-normal leading-[1.4] text-[#02031d]"
+              style={{ fontFamily: FONT }}
+            >
+              The algorithm is curating your next drop.
+            </p>
+            <p
+              className="text-[11px] font-normal leading-[1.4] text-[#b1b1bc]"
+              style={{ fontFamily: FONT }}
+            >
+              Next drop in:
+            </p>
+          </div>
+          <p
+            className="text-center text-[23px] font-normal leading-[1.4] text-[#030426] tabular-nums"
+            style={{ fontFamily: FONT }}
+          >
+            {formatNextDropCountdown(remaining)}
+          </p>
+        </div>
+        <div className="border-t border-[#e6e6e9] p-3">
+          <button
+            type="button"
+            onClick={onGoToProfile}
+            className="flex w-full items-center justify-center rounded-full bg-[#020426] px-3 py-2 text-[15px] font-normal leading-[21px] text-[#f7f6f2] transition hover:brightness-110"
+            style={{ fontFamily: FONT }}
+          >
+            Go back to profile
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
