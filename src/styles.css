@@ -1292,6 +1292,14 @@
   content: none;
 }
 
+/* Signal social links pill — Figma 1378:214083 */
+.crcle-signal-social-links {
+  background: rgba(0, 0, 0, 0.004);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
 /* Signal response pill — Figma 984:85497 / 769:206081 */
 .crcle-signal-response-pill {
   isolation: isolate;
