@@ -265,17 +265,18 @@ export function CrcleProfile({
         bottomChrome={
           overlay ? null : (
             <CrclePrimaryDock
-            embedded
-            active="profile"
-            onProfile={() => {}}
-            onMessages={onGoToMessages}
-            onRadar={onGoToRadar}
-            onSignalHome={onGoToSignalHome}
-            onAreaRadar={() => {
-              requestAreaInboxOnMessaging();
-              onGoToMessages?.();
-            }}
-          />
+              embedded
+              active="profile"
+              onProfile={() => {}}
+              onMessages={onGoToMessages}
+              onRadar={onGoToRadar}
+              onSignalHome={onGoToSignalHome}
+              onAreaRadar={() => {
+                requestAreaInboxOnMessaging();
+                onGoToMessages?.();
+              }}
+            />
+          )
         }
       >
         <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
