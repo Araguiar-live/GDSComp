@@ -17,8 +17,7 @@ const EXPANDED_BODY_H = 1060;
 
 function resolveDefaultTab(project: Project, tabs: Tab[]): Tab {
   if (project.defaultTab && tabs.includes(project.defaultTab)) return project.defaultTab;
-  if (project.tabs?.[0]) return project.tabs[0];
-  return tabs.includes("Template Library") ? "Template Library" : tabs[0];
+  return tabs[0];
 }
 
 export interface Project {
@@ -29,7 +28,7 @@ export interface Project {
   year: string;
   /** Override the default four case-study steps. */
   tabs?: readonly string[];
-  /** Which tab is selected when the accordion opens (defaults to Template Library if present). */
+  /** Which tab is selected when the accordion opens (defaults to the first tab). */
   defaultTab?: string;
   // Per-tab content slots. Each returns whatever prototype/text you want to drop in later.
   content?: Partial<Record<string, ProjectTabContent>>;
