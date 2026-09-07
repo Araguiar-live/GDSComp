@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Sun } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
@@ -65,6 +65,7 @@ import {
   CrcleMoreButtonSpacer,
   CrclePrimaryDock,
   CrcleStickyMoreButton,
+  CrcleThemeToggle,
 } from "@/components/portfolio/CrcleChrome";
 import {
   requestAreaInboxOnMessaging,
@@ -238,22 +239,11 @@ export function CrcleProfile({
 
   return (
     <div className="relative ml-auto w-fit">
-      <motion.button
-        type="button"
-        aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
-        aria-pressed={isLightMode}
-        onClick={() => setIsLightMode((v) => !v)}
-        className="absolute -right-10 top-12 z-30 flex size-8 items-center justify-center border-0 bg-transparent p-0 shadow-none outline-none ring-0"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.92 }}
-      >
-        <Sun
-          strokeWidth={1.5}
-          className={`size-6 transition-colors duration-300 ${
-            isLightMode ? "fill-amber-400 text-amber-400" : "fill-none text-zinc-800"
-          }`}
-        />
-      </motion.button>
+      <CrcleThemeToggle
+        light={isLightMode}
+        onToggle={() => setIsLightMode((v) => !v)}
+        className="absolute -right-12 top-12 z-30"
+      />
 
       <CrclePhoneFrame
         light={isLightMode}

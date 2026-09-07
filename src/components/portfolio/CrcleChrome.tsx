@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { Moon, Sun } from "lucide-react";
 import { useState } from "react";
 import areaPinIcon from "@/assets/crcle/mood/area-pin.svg";
 import radarTwoIcon from "@/assets/crcle/mood/radar-two.svg";
@@ -371,4 +372,52 @@ export function CrcleStickyMoreButton({
 /** Keeps scroll content aligned when the more button is pinned outside the scroller. */
 export function CrcleMoreButtonSpacer() {
   return <span className="h-10 w-12 shrink-0" aria-hidden />;
+}
+
+/** Sun / moon pill toggle for CRCLE phone light mode. */
+export function CrcleThemeToggle({
+  light,
+  onToggle,
+  className = "",
+  disabled = false,
+}: {
+  light: boolean;
+  onToggle: () => void;
+  className?: string;
+  disabled?: boolean;
+}) {
+  return (
+    <motion.button
+      type="button"
+      role="switch"
+      aria-checked={light}
+      aria-label={light ? "Switch to dark mode" : "Switch to light mode"}
+      disabled={disabled}
+      onClick={onToggle}
+      className={`relative flex h-8 w-[52px] shrink-0 items-center rounded-full border border-zinc-200/80 bg-white/75 p-0.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] backdrop-blur-sm disabled:pointer-events-none disabled:opacity-40 ${className}`}
+      whileHover={disabled ? undefined : { scale: 1.05 }}
+      whileTap={disabled ? undefined : { scale: 0.95 }}
+    >
+      <motion.span
+        layout
+        transition={{ type: "spring", stiffness: 520, damping: 32 }}
+        className="absolute inset-y-0.5 w-[calc(50%-2px)] rounded-full bg-zinc-100 shadow-sm"
+        style={{ left: light ? 2 : "calc(50% + 0px)" }}
+      />
+      <span
+        className={`relative z-[1] flex flex-1 items-center justify-center transition-colors duration-300 ${
+          light ? "text-amber-400" : "text-zinc-400"
+        }`}
+      >
+        <Sun className="size-3.5" strokeWidth={2} fill={light ? "currentColor" : "none"} />
+      </span>
+      <span
+        className={`relative z-[1] flex flex-1 items-center justify-center transition-colors duration-300 ${
+          light ? "text-zinc-400" : "text-zinc-800"
+        }`}
+      >
+        <Moon className="size-3.5" strokeWidth={2} fill={light ? "none" : "currentColor"} />
+      </span>
+    </motion.button>
+  );
 }

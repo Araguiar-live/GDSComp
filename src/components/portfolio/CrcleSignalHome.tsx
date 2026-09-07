@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Sun } from "lucide-react";
 import { useCallback, useState, type ReactNode } from "react";
 import handleIcon from "@/assets/crcle/area/handle.svg";
 import batteryIcon from "@/assets/crcle/battery.svg";
@@ -32,6 +31,7 @@ import {
   CrcleBackButton,
   CrcleMoreButton,
   CrclePrimaryDock,
+  CrcleThemeToggle,
 } from "@/components/portfolio/CrcleChrome";
 import { requestAreaInboxOnMessaging } from "@/components/portfolio/crcleBroadcast";
 import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
@@ -84,22 +84,11 @@ export function CrcleSignalHome({
 
   return (
     <div className="relative ml-auto w-fit">
-      <motion.button
-        type="button"
-        aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
-        aria-pressed={isLightMode}
-        onClick={() => setIsLightMode((v) => !v)}
-        className="absolute left-1/2 -top-10 z-30 flex size-8 -translate-x-1/2 items-center justify-center border-0 bg-transparent p-0 shadow-none outline-none ring-0"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.92 }}
-      >
-        <Sun
-          strokeWidth={1.5}
-          className={`size-6 transition-colors duration-300 ${
-            isLightMode ? "fill-amber-400 text-amber-400" : "fill-none text-zinc-800"
-          }`}
-        />
-      </motion.button>
+      <CrcleThemeToggle
+        light={isLightMode}
+        onToggle={() => setIsLightMode((v) => !v)}
+        className="absolute left-1/2 -top-10 z-30 -translate-x-1/2"
+      />
 
       <CrclePhoneFrame
         light={isLightMode}

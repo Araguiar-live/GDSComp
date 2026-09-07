@@ -1,5 +1,4 @@
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
-import { Sun } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import arrowChevronIcon from "@/assets/crcle/arrow-chevron.svg";
 import arrowForwardIcon from "@/assets/crcle/arrow-forward.svg";
@@ -47,7 +46,7 @@ import lightbulbIcon from "@/assets/crcle/signal/lightbulb.svg";
 import unlockIcon from "@/assets/crcle/unlock.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
-import { CrclePrimaryDock } from "@/components/portfolio/CrcleChrome";
+import { CrclePrimaryDock, CrcleThemeToggle } from "@/components/portfolio/CrcleChrome";
 import { requestAreaInboxOnMessaging, useCrcleBroadcast } from "@/components/portfolio/crcleBroadcast";
 
 /**
@@ -282,27 +281,12 @@ export function CrcleRadar({
 
   return (
     <div className="relative ml-auto w-fit">
-      <motion.button
-        type="button"
-        aria-label={light ? "Switch to dark mode" : "Switch to light mode"}
-        aria-pressed={light}
-        onClick={() => {
-          if (isNoc) return;
-          setIsLightMode((v) => !v);
-        }}
-        className={`absolute left-1/2 -top-10 z-30 flex size-8 -translate-x-1/2 items-center justify-center border-0 bg-transparent p-0 shadow-none outline-none ring-0 ${
-          isNoc ? "pointer-events-none opacity-40" : ""
-        }`}
-        whileHover={isNoc ? undefined : { scale: 1.1 }}
-        whileTap={isNoc ? undefined : { scale: 0.92 }}
-      >
-        <Sun
-          strokeWidth={1.5}
-          className={`size-6 transition-colors duration-300 ${
-            light ? "fill-amber-400 text-amber-400" : "fill-none text-zinc-800"
-          }`}
-        />
-      </motion.button>
+      <CrcleThemeToggle
+        light={light}
+        onToggle={() => setIsLightMode((v) => !v)}
+        disabled={isNoc}
+        className="absolute left-1/2 -top-10 z-30 -translate-x-1/2"
+      />
 
       <CrclePhoneFrame light={light}>
         {/* Dark Figma 257:87258 / Light cream — toggled via crcle-phone--light.
