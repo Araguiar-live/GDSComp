@@ -52,6 +52,8 @@ import {
   consumeAreaInboxOnMessaging,
   consumeAreaNearbyNotification,
   consumeMoodSwitchOnMessaging,
+  getCrcleBroadcast,
+  getCrcleIncognito,
   setCrcleAreaInboxOpen,
   subscribeCrcleBroadcast,
 } from "@/components/portfolio/crcleBroadcast";
@@ -243,6 +245,9 @@ export function CrcleMessaging({
   const [areaNotificationOpen, setAreaNotificationOpen] = useState(false);
   const [areaInbox, setAreaInboxState] = useState<"off" | "screen" | "drawer">("off");
   const areaNotificationTimerRef = useRef<number | null>(null);
+  const areaNotificationScheduledRef = useRef(false);
+
+  const NEARBY_NOTIFICATION_DELAY_MS = 2500;
 
   const clearAreaNotificationTimer = useCallback(() => {
     if (areaNotificationTimerRef.current != null) {
@@ -259,17 +264,19 @@ export function CrcleMessaging({
   }, []);
 
   const scheduleAreaNearbyNotification = useCallback(() => {
+    if (areaNotificationScheduledRef.current) return;
+    areaNotificationScheduledRef.current = true;
     clearAreaNotificationTimer();
     setOnboardingOpen(false);
     setPhase("inbox");
     setMoodOpen(false);
     setMenuOpen(false);
     setNotificationsOpen(true);
-    setTab("sent");
+    setTab("received");
     areaNotificationTimerRef.current = window.setTimeout(() => {
       areaNotificationTimerRef.current = null;
       setAreaNotificationOpen(true);
-    }, 5000);
+    }, NEARBY_NOTIFICATION_DELAY_MS);
   }, [clearAreaNotificationTimer]);
 
   const setAreaInbox = useCallback((next: "off" | "screen" | "drawer") => {
@@ -338,7 +345,25 @@ export function CrcleMessaging({
       setMoodOpen(true);
     };
     tryOpen();
-    const unsub = subscribeCrcleBroadcast(tryOpen);
+
+    if (
+      getCrcleBroadcast() === "in_the_area" &&
+      !getCrcleIncognito() &&
+      !areaNotificationScheduledRef.current
+    ) {
+      scheduleAreaNearbyNotification();
+    }
+
+    const unsub = subscribeCrcleBroadcast(() => {
+      tryOpen();
+      if (
+        getCrcleBroadcast() === "in_the_area" &&
+        !getCrcleIncognito() &&
+        !areaNotificationScheduledRef.current
+      ) {
+        scheduleAreaNearbyNotification();
+      }
+    });
     return () => {
       unsub();
       clearAreaNotificationTimer();
