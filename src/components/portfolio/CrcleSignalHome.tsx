@@ -1052,7 +1052,8 @@ function SignalBars({
   glow?: boolean;
 }) {
   const allLit = glow && activeBars >= 3;
-  const shouldAnimate = glow && tone === "live";
+  /** Figma 257:63722 — idle + live footer bars loop through variant heights. */
+  const shouldAnimate = true;
 
   return (
     <div
@@ -1070,14 +1071,14 @@ function SignalBars({
   );
 }
 
-/** Figma 257:67792 / Frame 2147225187 — Default → Variant7 height cycle (middle stays full). */
+/** Figma 257:63722 — Default → Variant7 height cycle (center bar stays full). */
 const SIGNAL_FRAMES: readonly [number, number, number][] = [
   [18.387, 30.645, 18.387],
-  [14, 30.645, 18.387],
-  [18.387, 30.645, 14],
+  [10, 30.645, 18.387],
+  [18.387, 30.645, 11],
   [15, 30.645, 18.387],
-  [18.387, 30.645, 12],
-  [14, 30.645, 15],
+  [18.387, 30.645, 8],
+  [7, 30.645, 15],
   [14, 30.645, 15],
 ];
 const SIGNAL_GLOW_FRAMES: readonly [number, number, number][] = [
