@@ -69,7 +69,7 @@ import {
   crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
 import {
-  requestAreaInboxOnMessaging,
+  requestAreaNearbyNotification,
   requestMoodSwitchOnMessaging,
   setCrcleBroadcast,
   setCrcleVerifyOpen,
@@ -267,7 +267,7 @@ export function CrcleProfile({
               onRadar={onGoToRadar}
               onSignalHome={onGoToSignalHome}
               onAreaRadar={() => {
-                requestAreaInboxOnMessaging();
+                requestAreaNearbyNotification();
                 onGoToMessages?.();
               }}
             />

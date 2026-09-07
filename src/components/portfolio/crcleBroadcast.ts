@@ -11,6 +11,7 @@ let incognitoState = false;
 let pendingMoodSwitch = false;
 let pendingAreaInbox = false;
 let pendingAreaNotification = false;
+let areaNearbyBadgeActive = false;
 let areaInboxOpen = false;
 let verifyOpen = false;
 const listeners = new Set<() => void>();
@@ -73,6 +74,25 @@ export function consumeAreaNearbyNotification() {
   const pending = pendingAreaNotification;
   pendingAreaNotification = false;
   return pending;
+}
+
+/** Green heart badge on the dock radar control while a nearby alert is unread. */
+export function getAreaNearbyBadgeActive(): boolean {
+  return areaNearbyBadgeActive;
+}
+
+export function setAreaNearbyBadgeActive(next: boolean) {
+  if (next === areaNearbyBadgeActive) return;
+  areaNearbyBadgeActive = next;
+  emit();
+}
+
+export function useAreaNearbyBadgeActive(): boolean {
+  return useSyncExternalStore(
+    subscribeCrcleBroadcast,
+    getAreaNearbyBadgeActive,
+    getAreaNearbyBadgeActive,
+  );
 }
 
 /** True while the In The Area overlay is on the Messaging Hub prototype. */

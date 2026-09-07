@@ -34,7 +34,7 @@ import {
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
-import { requestAreaInboxOnMessaging } from "@/components/portfolio/crcleBroadcast";
+import { requestAreaNearbyNotification } from "@/components/portfolio/crcleBroadcast";
 import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
 import { SignalTuneDrawer } from "@/components/portfolio/SignalTuneDrawer";
 
@@ -130,7 +130,7 @@ export function CrcleSignalHome({
               onRadar={onGoToRadar}
               onSignalHome={() => {}}
               onAreaRadar={() => {
-                requestAreaInboxOnMessaging();
+                requestAreaNearbyNotification();
                 onGoToMessages?.();
               }}
             />

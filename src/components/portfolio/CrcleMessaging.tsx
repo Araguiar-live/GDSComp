@@ -52,8 +52,10 @@ import {
   consumeAreaInboxOnMessaging,
   consumeAreaNearbyNotification,
   consumeMoodSwitchOnMessaging,
+  getAreaNearbyBadgeActive,
   getCrcleBroadcast,
   getCrcleIncognito,
+  setAreaNearbyBadgeActive,
   setCrcleAreaInboxOpen,
   subscribeCrcleBroadcast,
 } from "@/components/portfolio/crcleBroadcast";
@@ -273,11 +275,32 @@ export function CrcleMessaging({
     setMenuOpen(false);
     setNotificationsOpen(true);
     setTab("received");
+    setAreaNearbyBadgeActive(true);
     areaNotificationTimerRef.current = window.setTimeout(() => {
       areaNotificationTimerRef.current = null;
       setAreaNotificationOpen(true);
     }, NEARBY_NOTIFICATION_DELAY_MS);
   }, [clearAreaNotificationTimer]);
+
+  const openAreaNearbyNotification = useCallback(() => {
+    clearAreaNotificationTimer();
+    setOnboardingOpen(false);
+    setPhase("inbox");
+    setMoodOpen(false);
+    setMenuOpen(false);
+    setNotificationsOpen(true);
+    setAreaNearbyBadgeActive(true);
+    setAreaNotificationOpen(true);
+  }, [clearAreaNotificationTimer]);
+
+  const handleAreaRadar = useCallback(() => {
+    if (areaNotificationOpen) return;
+    if (areaNotificationTimerRef.current != null || getAreaNearbyBadgeActive()) {
+      openAreaNearbyNotification();
+      return;
+    }
+    openAreaInbox();
+  }, [areaNotificationOpen, openAreaInbox, openAreaNearbyNotification]);
 
   const setAreaInbox = useCallback((next: "off" | "screen" | "drawer") => {
     setAreaInboxState(next);
@@ -471,7 +494,6 @@ export function CrcleMessaging({
     !activeMatch &&
     areaInbox === "off" &&
     !moodOpen &&
-    !areaNotificationOpen &&
     !locusOpen;
 
   return (
@@ -522,7 +544,7 @@ export function CrcleMessaging({
               onMessages={openInbox}
               onRadar={goRadar}
               onSignalHome={goHome}
-              onAreaRadar={openAreaInbox}
+              onAreaRadar={handleAreaRadar}
             />
           ) : null
         }
@@ -680,9 +702,15 @@ export function CrcleMessaging({
         <AnimatePresence>
           {areaNotificationOpen ? (
             <AreaNearbyNotificationModal
-              onDismiss={() => setAreaNotificationOpen(false)}
+              onDismiss={() => {
+                setAreaNotificationOpen(false);
+                setAreaNearbyBadgeActive(false);
+                areaNotificationScheduledRef.current = false;
+              }}
               onConnect={() => {
                 setAreaNotificationOpen(false);
+                setAreaNearbyBadgeActive(false);
+                areaNotificationScheduledRef.current = false;
                 openAreaInbox();
               }}
             />

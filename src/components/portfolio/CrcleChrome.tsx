@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { useState } from "react";
-import areaPinIcon from "@/assets/crcle/mood/area-pin.svg";
+import areaHeartIcon from "@/assets/crcle/area/heart.svg";
 import radarTwoIcon from "@/assets/crcle/mood/radar-two.svg";
 import navHomeIcon from "@/assets/crcle/nav-home.svg";
 import navMessageIcon from "@/assets/crcle/nav-message-figma.svg";
@@ -10,7 +10,7 @@ import navUserIcon from "@/assets/crcle/nav-user-figma.svg";
 import arrowLeftIcon from "@/assets/crcle/arrow-left.svg";
 import moreHorizIcon from "@/assets/crcle/more-horiz.svg";
 import moreDotsIcon from "@/assets/crcle/more-dots.svg";
-import { useCrcleBroadcast, useCrcleIncognito } from "@/components/portfolio/crcleBroadcast";
+import { useCrcleBroadcast, useCrcleIncognito, useAreaNearbyBadgeActive } from "@/components/portfolio/crcleBroadcast";
 
 export type CrcleDockTab = "profile" | "signal" | "messages";
 
@@ -49,6 +49,7 @@ export function CrclePrimaryDock({
   const [forceClosed, setForceClosed] = useState(false);
   const [broadcastMood] = useCrcleBroadcast();
   const [isIncognito] = useCrcleIncognito();
+  const areaNearbyBadge = useAreaNearbyBadgeActive();
   const showAreaRadar = broadcastMood === "in_the_area" && !isIncognito;
   const controlled = signalOpenProp !== undefined;
   const signalOpen = controlled ? signalOpenProp : pinnedOpen;
@@ -104,16 +105,18 @@ export function CrclePrimaryDock({
                 />
               </span>
             </span>
-            <span className="relative z-[1] flex size-5 shrink-0 flex-col items-center justify-center rounded-[64px] bg-[rgba(17,223,89,0.8)] p-1">
-              <span className="relative h-3 w-[7px] shrink-0 overflow-hidden">
-                <img
-                  alt=""
-                  src={areaPinIcon}
-                  className="absolute inset-0 size-full max-w-none object-contain"
-                  draggable={false}
-                />
+            {areaNearbyBadge ? (
+              <span className="relative z-[1] flex size-5 shrink-0 flex-col items-center justify-center rounded-[64px] bg-[rgba(17,223,89,0.8)] p-1">
+                <span className="relative size-3.5 shrink-0 overflow-hidden">
+                  <img
+                    alt=""
+                    src={areaHeartIcon}
+                    className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
+                    draggable={false}
+                  />
+                </span>
               </span>
-            </span>
+            ) : null}
           </motion.button>
         ) : null}
       </AnimatePresence>
