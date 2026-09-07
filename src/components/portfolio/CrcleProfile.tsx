@@ -57,6 +57,7 @@ import workBriefcaseIcon from "@/assets/crcle/profile/work-briefcase.svg";
 import workLogoPreviewIcon from "@/assets/crcle/profile/work-logo-preview.svg";
 import workMarkIcon from "@/assets/crcle/profile/work-mark.svg";
 import logoRadioDotIcon from "@/assets/crcle/profile/logo-radio-dot.svg";
+import closeAddIcon from "@/assets/crcle/onboarding/close-add.svg";
 import shareIcon from "@/assets/crcle/share.svg";
 import shareInnerIcon from "@/assets/crcle/share-inner.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
@@ -227,6 +228,9 @@ export function CrcleProfile({
     broadcast: { ...INITIAL.broadcast, activeState: broadcastMood, isIncognito },
   }));
   const [overlay, setOverlay] = useState<Overlay>(null);
+  /* Figma 313:115854 — Profile onboarding over live profile */
+  const [onboardingOpen, setOnboardingOpen] = useState(true);
+  const dismissOnboarding = () => setOnboardingOpen(false);
 
   useEffect(() => {
     setCrcleVerifyOpen(overlay === "verify");
@@ -258,7 +262,7 @@ export function CrcleProfile({
           ) : null
         }
         bottomChrome={
-          overlay ? null : (
+          overlay || onboardingOpen ? null : (
             <CrclePrimaryDock
               embedded
               active="profile"
@@ -296,7 +300,7 @@ export function CrcleProfile({
               />
             </div>
 
-            {!overlay ? <CrcleStickyMoreButton /> : null}
+            {!overlay && !onboardingOpen ? <CrcleStickyMoreButton /> : null}
 
             {/* Status + wordmark float over content with a soft fade — no hard cutoff */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
@@ -391,9 +395,120 @@ export function CrcleProfile({
           {overlay === "verify" ? (
             <VerificationSheet onClose={() => setOverlay(null)} />
           ) : null}
+
+          <AnimatePresence>
+            {onboardingOpen ? (
+              <ProfileOnboarding onClose={dismissOnboarding} onContinue={dismissOnboarding} />
+            ) : null}
+          </AnimatePresence>
         </div>
       </CrclePhoneFrame>
     </div>
+  );
+}
+
+/* ——— Profile Onboarding (Figma 313:116043) ——— */
+
+function ProfileOnboarding({
+  onClose,
+  onContinue,
+}: {
+  onClose: () => void;
+  onContinue: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.28, ease: EASE }}
+      className="absolute inset-0 z-[55] flex flex-col overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.4)] backdrop-blur-[9px]"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="profile-onboarding-title"
+    >
+      <div className="flex min-h-0 flex-1 flex-col px-3 pb-11 pt-[112px]">
+        <div className="flex w-full shrink-0 flex-col items-end gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close onboarding"
+            className="crcle-glass-btn relative flex h-10 shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-[#f7f6f2] px-2 py-0.5 backdrop-blur-[6px]"
+          >
+            <div className="dock-glass-lens opacity-40" aria-hidden />
+            <IconImg src={closeAddIcon} className="relative z-[1] size-6" />
+          </button>
+
+          <div className="w-full overflow-hidden rounded-[24px] border border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)]">
+            <div className="border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.2)] px-4 py-4 backdrop-blur-[12px]">
+              <p
+                id="profile-onboarding-title"
+                className="text-center text-[18px] font-normal leading-[25px] text-white"
+                style={{ fontFamily: FONT }}
+              >
+                Customise Your Profile
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-5 bg-[rgba(255,255,255,0.2)] p-4 backdrop-blur-[12px]">
+              <p
+                className="text-center text-[15px] font-normal leading-[22.5px] text-[rgba(255,255,255,0.6)]"
+                style={{ fontFamily: FONT }}
+              >
+                Let&apos;s personalize your dashboard! Add widgets to make your profile uniquely yours.
+              </p>
+              <div className="flex h-2 items-center justify-center gap-2">
+                <span className="h-2 w-8 shrink-0 rounded-full bg-[#010211]" aria-hidden />
+                <span className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]" aria-hidden />
+                <span className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]" aria-hidden />
+                <span className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]" aria-hidden />
+              </div>
+            </div>
+
+            <div className="flex gap-2 border-t border-[rgba(230,230,233,0.1)] bg-[rgba(255,255,255,0.2)] p-4 backdrop-blur-[12px]">
+              <button
+                type="button"
+                onClick={onContinue}
+                className="flex h-[49px] flex-1 items-center justify-center rounded-full bg-[rgba(230,230,233,0.6)] text-[15px] font-normal leading-[21px] text-[rgba(0,0,0,0.25)] transition hover:brightness-95"
+                style={{ fontFamily: FONT }}
+              >
+                Skip tutorial
+              </button>
+              <button
+                type="button"
+                onClick={onContinue}
+                className="flex h-[49px] flex-1 items-center justify-center rounded-full bg-[#010211] text-[15px] font-normal leading-[21px] text-[#b1b1bc] transition hover:brightness-110"
+                style={{ fontFamily: FONT }}
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto flex shrink-0 flex-col items-center gap-[18px] pt-10">
+          <p
+            className="w-full text-center text-[14px] font-medium leading-[21px] text-[rgba(247,246,242,0.5)]"
+            style={{ fontFamily: FONT }}
+          >
+            Profile configurations
+          </p>
+          <button
+            type="button"
+            onClick={onContinue}
+            className="flex w-[91px] flex-col items-center gap-[5px] rounded-xl transition hover:bg-white/5"
+          >
+            <IconImg src={crcleLogo} className="h-[17px] w-[49px]" />
+            <span
+              className="w-full text-center text-[11px] leading-[1.1] tracking-[-0.2px] text-[rgba(247,246,242,0.4)]"
+              style={{ fontFamily: FONT }}
+            >
+              Verified Social
+            </span>
+          </button>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
