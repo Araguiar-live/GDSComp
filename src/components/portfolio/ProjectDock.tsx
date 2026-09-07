@@ -127,7 +127,7 @@ export function ProjectDock({ onPlus }: Props) {
                   rotate: { duration: 2.4, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.35 },
                 }
           }
-          className="pointer-events-auto relative flex size-[120px] flex-col items-center justify-center rounded-[30px] border border-zinc-400/45 bg-white/30 p-[15px] shadow-[0px_16px_24px_rgba(11,14,20,0.12),inset_0px_1px_0_rgba(255,255,255,0.55)] backdrop-blur-[14px] supports-[backdrop-filter]:bg-white/25 motion-reduce:animate-none"
+          className="pointer-events-auto relative flex size-[120px] cursor-pointer flex-col items-center justify-center rounded-[30px] border border-zinc-400/45 bg-white/30 p-[15px] shadow-[0px_16px_24px_rgba(11,14,20,0.12),inset_0px_1px_0_rgba(255,255,255,0.55)] backdrop-blur-[14px] supports-[backdrop-filter]:bg-white/25 motion-reduce:animate-none"
         >
           <button
             type="button"
@@ -138,11 +138,11 @@ export function ProjectDock({ onPlus }: Props) {
                 ? "Close Industrial Design Graduate Work"
                 : "Open Industrial Design Graduate Work"
             }
-            onClick={() => (overlayOpen ? closeOverlay() : openOverlay())}
-            className="absolute inset-0 rounded-[30px]"
+            onClick={openOverlay}
+            className="absolute inset-0 z-0 rounded-[30px]"
           />
 
-          <div className="relative z-[1] grid w-full grid-cols-3 gap-x-[9px] gap-y-[8px]">
+          <div className="pointer-events-none relative z-[1] grid w-full grid-cols-3 gap-x-[9px] gap-y-[8px]">
             <PlusButton
               onDark={onDark}
               onClick={(e) => {
@@ -199,7 +199,7 @@ const PlusButton = ({
       onClick={onClick}
       aria-label="Open profile"
       data-on-dark={onDark ? "true" : "false"}
-      className="relative z-[2] flex shrink-0 items-center justify-center rounded-md transition-transform hover:scale-110 active:scale-95"
+      className="pointer-events-auto relative z-[2] flex shrink-0 items-center justify-center rounded-md transition-transform hover:scale-110 active:scale-95"
       style={{ width: ICON, height: ICON }}
     >
       <span className="relative inline-grid size-[15px] place-items-start leading-none">
@@ -234,17 +234,7 @@ function DockSphere({
         e.stopPropagation();
         onOpen();
       }}
-      animate={{ y: [0, -2.5, 0] }}
-      transition={{
-        duration: 1.8,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: bounceDelay,
-        repeatDelay: 0.4,
-      }}
-      whileHover={{ scale: 1.18, y: -1 }}
-      whileTap={{ scale: 0.9 }}
-      className="group relative z-[2] flex shrink-0 items-center justify-center overflow-visible rounded-full motion-reduce:animate-none"
+      className="group pointer-events-auto relative z-[2] flex shrink-0 items-center justify-center overflow-visible rounded-full motion-reduce:animate-none"
       style={{ width: ICON, height: ICON, ["--glow" as string]: project.glow }}
     >
       <span
