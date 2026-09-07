@@ -374,6 +374,10 @@ export function CrcleMoreButtonSpacer() {
   return <span className="h-10 w-12 shrink-0" aria-hidden />;
 }
 
+/** Positions the theme toggle centered 8px above a CRCLE phone frame. */
+export const crcleThemeToggleAboveClass =
+  "absolute bottom-full left-1/2 z-30 mb-2 -translate-x-1/2";
+
 /** Sun / moon pill toggle for CRCLE phone light mode. */
 export function CrcleThemeToggle({
   light,

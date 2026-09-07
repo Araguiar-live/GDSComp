@@ -35,6 +35,7 @@ import {
   CrcleMoreButton,
   CrclePrimaryDock,
   CrcleThemeToggle,
+  crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
 import {
   SignalInterceptModal,
@@ -398,7 +399,7 @@ export function CrcleMessaging({
       <CrcleThemeToggle
         light={isLightMode}
         onToggle={() => setIsLightMode((v) => !v)}
-        className="absolute left-1/2 -top-10 z-30 -translate-x-1/2"
+        className={crcleThemeToggleAboveClass}
       />
 
       <CrclePhoneFrame

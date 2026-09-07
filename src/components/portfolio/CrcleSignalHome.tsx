@@ -32,6 +32,7 @@ import {
   CrcleMoreButton,
   CrclePrimaryDock,
   CrcleThemeToggle,
+  crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
 import { requestAreaInboxOnMessaging } from "@/components/portfolio/crcleBroadcast";
 import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
@@ -87,7 +88,7 @@ export function CrcleSignalHome({
       <CrcleThemeToggle
         light={isLightMode}
         onToggle={() => setIsLightMode((v) => !v)}
-        className="absolute left-1/2 -top-10 z-30 -translate-x-1/2"
+        className={crcleThemeToggleAboveClass}
       />
 
       <CrclePhoneFrame

@@ -46,7 +46,7 @@ import lightbulbIcon from "@/assets/crcle/signal/lightbulb.svg";
 import unlockIcon from "@/assets/crcle/unlock.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
-import { CrclePrimaryDock, CrcleThemeToggle } from "@/components/portfolio/CrcleChrome";
+import { CrclePrimaryDock, CrcleThemeToggle, crcleThemeToggleAboveClass } from "@/components/portfolio/CrcleChrome";
 import { requestAreaInboxOnMessaging, useCrcleBroadcast } from "@/components/portfolio/crcleBroadcast";
 
 /**
@@ -285,7 +285,7 @@ export function CrcleRadar({
         light={light}
         onToggle={() => setIsLightMode((v) => !v)}
         disabled={isNoc}
-        className="absolute left-1/2 -top-10 z-30 -translate-x-1/2"
+        className={crcleThemeToggleAboveClass}
       />
 
       <CrclePhoneFrame light={light}>

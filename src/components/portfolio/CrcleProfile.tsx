@@ -66,6 +66,7 @@ import {
   CrclePrimaryDock,
   CrcleStickyMoreButton,
   CrcleThemeToggle,
+  crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
 import {
   requestAreaInboxOnMessaging,
@@ -242,7 +243,7 @@ export function CrcleProfile({
       <CrcleThemeToggle
         light={isLightMode}
         onToggle={() => setIsLightMode((v) => !v)}
-        className="absolute -right-12 top-12 z-30"
+        className={crcleThemeToggleAboveClass}
       />
 
       <CrclePhoneFrame
