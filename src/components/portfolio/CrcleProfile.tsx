@@ -61,7 +61,11 @@ import shareIcon from "@/assets/crcle/share.svg";
 import shareInnerIcon from "@/assets/crcle/share-inner.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
-import { CrcleMoreButton, CrclePrimaryDock } from "@/components/portfolio/CrcleChrome";
+import {
+  CrcleMoreButtonSpacer,
+  CrclePrimaryDock,
+  CrcleStickyMoreButton,
+} from "@/components/portfolio/CrcleChrome";
 import {
   requestAreaInboxOnMessaging,
   requestMoodSwitchOnMessaging,
@@ -301,6 +305,8 @@ export function CrcleProfile({
               />
             </div>
 
+            {!overlay ? <CrcleStickyMoreButton /> : null}
+
             {/* Status + wordmark float over content with a soft fade — no hard cutoff */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
               <div className="bg-gradient-to-b from-[#010211] from-40% via-[#010211]/85 to-transparent pb-8 transition-colors duration-300 [.crcle-phone--light_&]:from-[#f7f6f2] [.crcle-phone--light_&]:via-[#f7f6f2]/85">
@@ -479,7 +485,7 @@ function ProfileMainView({
             {user.handle}
           </p>
         </div>
-        <CrcleMoreButton />
+        <CrcleMoreButtonSpacer />
       </div>
 
       {/* Signal Live + mood — Figma 1005:49875 / glass like CrcleMoreButton */}
