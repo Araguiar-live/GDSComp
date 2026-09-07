@@ -370,6 +370,17 @@ function DockSphere({
   );
 }
 
+const PREVIEW_CAROUSEL_FRAME =
+  "flex h-[420px] w-[560px] shrink-0 snap-center items-center justify-center overflow-hidden rounded-3xl bg-zinc-900/10 sm:h-[480px] sm:w-[640px]";
+
+function ProjectPreviewCarouselImage({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className={PREVIEW_CAROUSEL_FRAME}>
+      <img src={src} alt={alt} className="size-full object-contain" draggable={false} />
+    </div>
+  );
+}
+
 function ProjectPreviewFrame({
   project,
   onClose,
@@ -448,20 +459,9 @@ function ProjectPreviewFrame({
             <div
               className="flex snap-x snap-mandatory flex-nowrap gap-6 overflow-x-auto px-5 pb-4 sm:px-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-              <img
-                src={project.hero}
-                alt={`${project.title} hero`}
-                className="h-[420px] w-auto flex-shrink-0 snap-center rounded-3xl bg-transparent object-contain sm:h-[480px]"
-                draggable={false}
-              />
+              <ProjectPreviewCarouselImage src={project.hero} alt={`${project.title} hero`} />
               {project.gallery.map((src, i) => (
-                <img
-                  key={`${project.id}-g-${i}`}
-                  src={src}
-                  alt=""
-                  className="h-[420px] w-auto flex-shrink-0 snap-center rounded-3xl bg-transparent object-contain sm:h-[480px]"
-                  draggable={false}
-                />
+                <ProjectPreviewCarouselImage key={`${project.id}-g-${i}`} src={src} alt="" />
               ))}
             </div>
           </div>
