@@ -498,7 +498,8 @@ export function CrcleMessaging({
     !activeMatch &&
     areaInbox === "off" &&
     !moodOpen &&
-    !locusOpen;
+    !locusOpen &&
+    !areaNotificationOpen;
 
   return (
     <div className="relative ml-auto w-fit">

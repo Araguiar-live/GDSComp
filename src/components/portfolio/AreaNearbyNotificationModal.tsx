@@ -124,7 +124,7 @@ export function AreaNearbyNotificationModal({
               className="absolute left-1/2 top-1/2 h-[220%] w-[220%] max-w-none -translate-x-1/2 -translate-y-[58%] scale-110 object-cover object-[center_20%]"
               draggable={false}
             />
-            <div className="absolute inset-0 bg-[rgba(2,3,29,0.32)]" />
+            <div className="absolute inset-0 bg-[rgba(2,3,29,0.52)]" />
           </div>
           <div aria-hidden className="crcle-nearby-modal-glass-plate rounded-[inherit]" />
           <div aria-hidden className="crcle-nearby-modal-glass-frost rounded-[inherit]" />
@@ -221,7 +221,7 @@ export function AreaNearbyNotificationModal({
           </div>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
 

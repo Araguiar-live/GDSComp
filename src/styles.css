@@ -1724,8 +1724,8 @@
 }
 
 .crcle-nearby-modal-glass-backdrop > img {
-  opacity: 0.55;
-  filter: blur(40px) saturate(0.92);
+  opacity: 0.42;
+  filter: blur(40px) saturate(0.85);
 }
 
 .crcle-nearby-modal-glass-plate {
@@ -1736,12 +1736,12 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(247, 246, 242, 0.22) 0%,
-    rgba(255, 255, 255, 0.06) 52%,
-    rgba(2, 3, 29, 0.12) 100%
+    rgba(2, 3, 29, 0.58) 0%,
+    rgba(2, 3, 29, 0.46) 52%,
+    rgba(2, 3, 29, 0.62) 100%
   );
-  backdrop-filter: blur(28px) saturate(165%);
-  -webkit-backdrop-filter: blur(28px) saturate(165%);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
 }
 
 .crcle-nearby-modal-glass-plate::before {
@@ -1750,8 +1750,8 @@
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 44%);
-  opacity: 0.55;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 44%);
+  opacity: 0.45;
 }
 
 .crcle-nearby-modal-glass-frost {
@@ -1762,10 +1762,10 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.12) 0%,
     transparent 46%
   );
-  opacity: 0.58;
+  opacity: 0.42;
 }
 
 .crcle-nearby-modal-glass-frost::after {
@@ -1800,11 +1800,11 @@
   pointer-events: none;
   background: radial-gradient(
     120% 90% at 50% -22%,
-    rgba(255, 255, 255, 0.46),
+    rgba(255, 255, 255, 0.22),
     transparent 58%
   );
   mix-blend-mode: soft-light;
-  opacity: 0.62;
+  opacity: 0.4;
 }
 
 .crcle-nearby-modal-glass-dispersion {
