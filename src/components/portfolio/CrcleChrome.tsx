@@ -181,6 +181,7 @@ export function CrclePrimaryDock({
         <div aria-hidden className="crcle-primary-dock-plate rounded-[inherit]" />
         <div aria-hidden className="crcle-primary-dock-frost rounded-[inherit]" />
         <div aria-hidden className="crcle-primary-dock-lens rounded-[inherit]" />
+        <div aria-hidden className="crcle-primary-dock-dispersion rounded-[inherit]" />
         <DockIconButton
           label="Profile"
           active={active === "profile"}
