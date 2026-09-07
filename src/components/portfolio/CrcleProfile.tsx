@@ -60,7 +60,7 @@ import closeAddIcon from "@/assets/crcle/onboarding/close-add.svg";
 import shareIcon from "@/assets/crcle/share.svg";
 import shareInnerIcon from "@/assets/crcle/share-inner.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
-import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
+import { CrcleMoodSwitch, PROFILE_MOOD_IDS } from "@/components/portfolio/CrcleMoodSwitch";
 import {
   CrcleMoreButtonSpacer,
   CrclePrimaryDock,
@@ -70,8 +70,6 @@ import {
 } from "@/components/portfolio/CrcleChrome";
 import {
   requestAreaNearbyNotification,
-  requestMoodSwitchOnMessaging,
-  setCrcleBroadcast,
   setCrcleVerifyOpen,
   useCrcleBroadcast,
   useCrcleIncognito,
@@ -227,6 +225,7 @@ export function CrcleProfile({
     broadcast: { ...INITIAL.broadcast, activeState: broadcastMood, isIncognito },
   }));
   const [overlay, setOverlay] = useState<Overlay>(null);
+  const [moodOpen, setMoodOpen] = useState(false);
   /* Figma 313:115854 — Profile onboarding over live profile */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
   const dismissOnboarding = () => setOnboardingOpen(false);
@@ -261,7 +260,7 @@ export function CrcleProfile({
           ) : null
         }
         bottomChrome={
-          overlay || onboardingOpen ? null : (
+          overlay || onboardingOpen || moodOpen ? null : (
             <CrclePrimaryDock
               embedded
               active="profile"
@@ -284,11 +283,7 @@ export function CrcleProfile({
               <ProfileMainView
                 profile={profile}
                 socialCount={socialCount}
-                onOpenMood={() => {
-                  setCrcleBroadcast("in_the_area");
-                  requestMoodSwitchOnMessaging();
-                  onGoToMessages?.();
-                }}
+                onOpenMood={() => setMoodOpen(true)}
                 onOpenEducation={() => setOverlay("education")}
                 onOpenWork={() => setOverlay("work")}
                 onOpenRelationship={() => setOverlay("relationship")}
@@ -299,7 +294,7 @@ export function CrcleProfile({
               />
             </div>
 
-            {!overlay && !onboardingOpen ? <CrcleStickyMoreButton /> : null}
+            {!overlay && !onboardingOpen && !moodOpen ? <CrcleStickyMoreButton /> : null}
 
             {/* Status + wordmark float over content with a soft fade — no hard cutoff */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
@@ -394,6 +389,16 @@ export function CrcleProfile({
           {overlay === "verify" ? (
             <VerificationSheet onClose={() => setOverlay(null)} />
           ) : null}
+
+          <AnimatePresence>
+            {moodOpen ? (
+              <CrcleMoodSwitch
+                allowedMoods={PROFILE_MOOD_IDS}
+                closeOnInTheAreaSelect={false}
+                onClose={() => setMoodOpen(false)}
+              />
+            ) : null}
+          </AnimatePresence>
 
           <AnimatePresence>
             {onboardingOpen ? (
@@ -538,13 +543,7 @@ function ProfileMainView({
   const [broadcastMood] = useCrcleBroadcast();
   const [isIncognito] = useCrcleIncognito();
   const moodChipIcon =
-    broadcastMood === "in_the_area"
-      ? profilePinIcon
-      : broadcastMood === "night_owl"
-        ? profileMoonCloudIcon
-        : broadcastMood === "collab"
-          ? profileLaptopIcon
-          : profileMaskGreenIcon;
+    broadcastMood === "in_the_area" ? profilePinIcon : profileMoonCloudIcon;
   const signalLiveLabel = broadcastMood === "in_the_area" ? "In The Area" : "Signal Live";
   const [locationEnabled, setLocationEnabled] = useState(true);
   const [lookingForWork, setLookingForWork] = useState(false);
