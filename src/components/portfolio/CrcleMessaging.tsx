@@ -1,6 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import avatarImg from "@/assets/crcle/avatar.png";
+import arjunPatelPortrait from "@/assets/crcle/arjun-patel-portrait.png";
+import elenaRuizPortrait from "@/assets/crcle/elena-ruiz-portrait.png";
+import jordanEllisPortrait from "@/assets/crcle/jordan-ellis-portrait.png";
+import leoHartmanPortrait from "@/assets/crcle/leo-hartman-portrait.png";
+import mayaOkonkwoPortrait from "@/assets/crcle/maya-okonkwo-portrait.png";
+import sarahChenPortrait from "@/assets/crcle/sarah-chen-portrait.png";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
 import chatCameraIcon from "@/assets/crcle/chat/camera.svg";
@@ -80,7 +86,7 @@ const CONNECTION_PROFILES: UserProfile[] = [
     orientation: "Queer",
     distance: "1.1km",
     age: 27,
-    photoUrl: avatarImg,
+    photoUrl: jordanEllisPortrait,
     matchType: "Purpose Match",
     matchBio: "Building intentional communities and late-night design critiques",
     isVerified: false,
@@ -98,6 +104,32 @@ const CONNECTION_PROFILES: UserProfile[] = [
     matchBio: "Looking for high romantic connections",
     isVerified: true,
   },
+  {
+    id: "conn-elena",
+    name: "Elena Ruiz",
+    username: "@ElenaRuiz",
+    relationshipStatus: "Single",
+    orientation: "Bi",
+    distance: "0.8km",
+    age: 26,
+    photoUrl: elenaRuizPortrait,
+    matchType: "Area Match",
+    matchBio: "Weekend markets, rooftop sunsets, and spontaneous road trips",
+    isVerified: true,
+  },
+  {
+    id: "conn-arjun",
+    name: "Arjun Patel",
+    username: "@ArjunPatel",
+    relationshipStatus: "Open",
+    orientation: "Hetero",
+    distance: "3.2km",
+    age: 29,
+    photoUrl: arjunPatelPortrait,
+    matchType: "Purpose Match",
+    matchBio: "Product designer who lives in coffee shops and side projects",
+    isVerified: false,
+  },
 ];
 
 const SENT_PROFILES: UserProfile[] = [
@@ -109,9 +141,22 @@ const SENT_PROFILES: UserProfile[] = [
     orientation: "Queer",
     distance: "1.1km",
     age: 27,
-    photoUrl: avatarImg,
+    photoUrl: jordanEllisPortrait,
     matchType: "Sent Request",
     matchBio: "Waiting on a reply",
+    isVerified: false,
+  },
+  {
+    id: "sent-leo",
+    name: "Leo Hartman",
+    username: "@LeoHartman",
+    relationshipStatus: "Single",
+    orientation: "Queer",
+    distance: "1.9km",
+    age: 25,
+    photoUrl: leoHartmanPortrait,
+    matchType: "Sent Request",
+    matchBio: "Sent a signal yesterday",
     isVerified: false,
   },
 ];
@@ -120,7 +165,7 @@ const MOCK_CONVERSATIONS: ChatConversation[] = [
   {
     id: "chat-sarah",
     userName: "Sarah Chen",
-    userAvatarUrl: avatarImg,
+    userAvatarUrl: sarahChenPortrait,
     lastMessage: "Let's catch up next week",
     timestamp: "1d",
     unreadCount: 2,
@@ -144,7 +189,7 @@ const MOCK_CONVERSATIONS: ChatConversation[] = [
   {
     id: "chat-jordan",
     userName: "Jordan Ellis",
-    userAvatarUrl: avatarImg,
+    userAvatarUrl: jordanEllisPortrait,
     lastMessage: "That workshop was wild — coffee soon?",
     timestamp: "3h",
     unreadCount: 1,
@@ -186,7 +231,7 @@ const MOCK_CONVERSATIONS: ChatConversation[] = [
   {
     id: "chat-maya",
     userName: "Maya Okonkwo",
-    userAvatarUrl: avatarImg,
+    userAvatarUrl: mayaOkonkwoPortrait,
     lastMessage: "Sent you the deck",
     timestamp: "1w",
     unreadCount: 0,
@@ -198,6 +243,66 @@ const MOCK_CONVERSATIONS: ChatConversation[] = [
         text: "Sent you the deck — let me know what you think.",
         sentAt: "1w ago",
         fromMe: false,
+      },
+    ],
+  },
+  {
+    id: "chat-elena",
+    userName: "Elena Ruiz",
+    userAvatarUrl: elenaRuizPortrait,
+    lastMessage: "That rooftop spot is perfect for Friday",
+    timestamp: "5h",
+    unreadCount: 0,
+    isOnline: true,
+    showFlame: true,
+    messages: [
+      {
+        id: "m1",
+        text: "Found a rooftop with the best sunset view — want to check it out Friday?",
+        sentAt: "5h ago",
+        fromMe: false,
+      },
+    ],
+  },
+  {
+    id: "chat-arjun",
+    userName: "Arjun Patel",
+    userAvatarUrl: arjunPatelPortrait,
+    lastMessage: "Just shipped the prototype 🎉",
+    timestamp: "12h",
+    unreadCount: 1,
+    isOnline: false,
+    showFlame: false,
+    messages: [
+      {
+        id: "m1",
+        text: "Just shipped the prototype — would love your feedback on the onboarding flow.",
+        sentAt: "12h ago",
+        fromMe: false,
+      },
+    ],
+  },
+  {
+    id: "chat-leo",
+    userName: "Leo Hartman",
+    userAvatarUrl: leoHartmanPortrait,
+    lastMessage: "Still down for the gallery opening?",
+    timestamp: "2d",
+    unreadCount: 0,
+    isOnline: true,
+    showFlame: true,
+    messages: [
+      {
+        id: "m1",
+        text: "Still down for the gallery opening this Saturday?",
+        sentAt: "2d ago",
+        fromMe: false,
+      },
+      {
+        id: "m2",
+        text: "Absolutely — I'll meet you there at 7.",
+        sentAt: "1d ago",
+        fromMe: true,
       },
     ],
   },
