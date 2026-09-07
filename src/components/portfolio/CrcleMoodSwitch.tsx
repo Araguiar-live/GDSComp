@@ -3,7 +3,7 @@ import { useState } from "react";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
 import locusCloseIcon from "@/assets/crcle/locus/close-x.svg";
 import profileLaptopIcon from "@/assets/crcle/profile/laptop.svg";
-import profileMaskIcon from "@/assets/crcle/profile/mask.svg";
+import dominoMaskOutlineIcon from "@/assets/crcle/profile/domino-mask-outline.svg";
 import masksTheaterIcon from "@/assets/crcle/profile/masks-theater.svg";
 import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
 import profilePinIcon from "@/assets/crcle/profile/pin.svg";
@@ -100,7 +100,29 @@ export function CrcleMoodSwitch({
 
         <div className="mt-6 flex flex-col items-center gap-[42px]">
           <div className="mt-4 flex flex-col items-center gap-2">
-            <IconImg src={masksTheaterIcon} className="size-5" />
+            <AnimatePresence mode="wait">
+              {isIncognito ? (
+                <motion.div
+                  key="incognito-header-icon"
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.92 }}
+                  transition={{ duration: 0.2, ease: EASE }}
+                >
+                  <IconImg src={dominoMaskOutlineIcon} className="size-5" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="mood-header-icon"
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.92 }}
+                  transition={{ duration: 0.2, ease: EASE }}
+                >
+                  <IconImg src={masksTheaterIcon} className="size-5" />
+                </motion.div>
+              )}
+            </AnimatePresence>
             <p
               className="text-center text-[19px] font-normal leading-[1.4] text-[#f7f6f2]"
               style={{ fontFamily: FONT }}
@@ -114,7 +136,7 @@ export function CrcleMoodSwitch({
             onClick={() => setIncognito(!isIncognito)}
             className="flex items-center gap-2 rounded-[24px] bg-[rgba(255,255,255,0.2)] px-3 py-1.5 backdrop-blur-[6px] transition hover:bg-[rgba(255,255,255,0.26)]"
           >
-            <IconImg src={profileMaskIcon} className="size-6" />
+            <IconImg src={dominoMaskOutlineIcon} className="size-6" />
             <span className="text-[11px] leading-[1.4] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
               Incognito Mode
             </span>
