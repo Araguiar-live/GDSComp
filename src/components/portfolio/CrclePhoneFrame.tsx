@@ -21,7 +21,6 @@ export function CrclePhoneFrame({
   return (
     <div
       className={`relative ml-auto h-[874px] w-[402px] shrink-0 overflow-hidden rounded-[58px] ${className}`}
-      style={{ clipPath: "inset(0 round 58px)" }}
       data-device="iphone-crcle-402x874"
     >
       {/* Hardware buttons — flush to rim (clipped by rounded frame) */}
