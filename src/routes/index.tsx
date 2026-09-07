@@ -301,7 +301,7 @@ function Index() {
           className={
             isExpanded
               ? "mx-auto flex w-full max-w-[1690px] flex-col items-center gap-[78px] px-6 pb-0 pt-10 sm:px-10"
-              : "absolute left-1/2 top-[calc(50%+18.5px)] flex h-[min(704px,83.1%)] w-[min(1690px,94%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[78px] overflow-x-visible overflow-y-hidden"
+              : "absolute left-1/2 top-[calc(50%+18.5px)] flex h-[min(704px,83.1%)] w-[min(1690px,94%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[78px] overflow-visible"
           }
         >
           <header className="flex w-full max-w-[720px] shrink-0 flex-col items-center gap-5 text-center">
@@ -331,8 +331,8 @@ function Index() {
             </p>
           </header>
 
-          <div className="relative w-full shrink-0">
-            <div className="pointer-events-none absolute -left-[84px] top-5 z-0 hidden md:block">
+          <div className="relative w-full shrink-0 overflow-visible">
+            <div className="pointer-events-none absolute left-0 top-0 z-[5] hidden -translate-x-1/2 -translate-y-1/2 md:block">
               <PortfolioCalculatorCard />
             </div>
             <ProjectBentoStack
