@@ -499,10 +499,12 @@ export function SignalCard({
   isLight?: boolean;
 }) {
   const [counterText, setCounterText] = useState("Try tomorrow instead?");
+  const [responseOpen, setResponseOpen] = useState(false);
   const activity = ACTIVITIES.find((a) => a.id === signal.activityId) ?? ACTIVITIES[1];
   const timeGlyph = TIME_GLYPH[signal.timeOfDay];
   const isSent = signal.direction === "sent";
-  const showResponsePill = !isSent && signal.status === "pending";
+  const canRespond = !isSent && signal.status === "pending";
+  const showResponsePill = canRespond && responseOpen;
   const prompt = isSent
     ? `Up for ${signal.activityLabel.toLowerCase()} ${signal.when.toLowerCase()} ${signal.timeOfDay}?`
     : `Up for ${signal.activityLabel} ${signal.when.toLowerCase()}?`;
@@ -513,28 +515,44 @@ export function SignalCard({
         isSent ? "items-end self-end" : "items-start self-start"
       }`}
     >
-      {showResponsePill ? (
-        <div className="crcle-signal-response-pill flex h-14 w-full items-center gap-3 rounded-[56px] p-3">
-          <button
-            type="button"
-            aria-label="I'm down"
-            onClick={onAccept}
-            className="relative flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
-            title="I'm down"
+      <AnimatePresence>
+        {showResponsePill ? (
+          <motion.div
+            key="signal-response-pill"
+            initial={{ opacity: 0, y: 6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.98 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            className="crcle-signal-response-pill relative flex h-14 w-fit items-center gap-3 overflow-hidden rounded-[56px] px-3 py-3"
           >
-            <img alt="" src={locusThumbsUpIcon} className="size-8 max-w-none object-contain" draggable={false} />
-          </button>
-          <button
-            type="button"
-            aria-label="Raincheck"
-            onClick={onRaincheck}
-            className="relative flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
-            title="Raincheck"
-          >
-            <img alt="" src={locusRainFillIcon} className="size-8 max-w-none object-contain" draggable={false} />
-          </button>
-        </div>
-      ) : null}
+            <div className="dock-glass-lens opacity-40" aria-hidden />
+            <button
+              type="button"
+              aria-label="I'm down"
+              onClick={() => {
+                setResponseOpen(false);
+                onAccept();
+              }}
+              className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+              title="I'm down"
+            >
+              <img alt="" src={locusThumbsUpIcon} className="size-8 max-w-none object-contain" draggable={false} />
+            </button>
+            <button
+              type="button"
+              aria-label="Raincheck"
+              onClick={() => {
+                setResponseOpen(false);
+                onRaincheck();
+              }}
+              className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+              title="Raincheck"
+            >
+              <img alt="" src={locusRainFillIcon} className="size-8 max-w-none object-contain" draggable={false} />
+            </button>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       {/* Figma 984:85497 · received 769:204909 · sent 769:204994 */}
       <div
@@ -597,15 +615,16 @@ export function SignalCard({
               </span>
               <button
                 type="button"
-                aria-label="Respond to signal"
-                disabled={signal.status !== "pending" || isSent}
+                aria-label={responseOpen ? "Hide response options" : "Show response options"}
+                aria-expanded={responseOpen}
+                disabled={!canRespond}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (signal.status === "pending" && !isSent) onAccept();
+                  if (canRespond) setResponseOpen((open) => !open);
                 }}
                 className={`crcle-signal-card-plus flex shrink-0 items-center rounded-[24px] p-2.5 disabled:opacity-50 ${
                   isSent ? "bg-transparent" : ""
-                }`}
+                } ${responseOpen && canRespond ? "crcle-signal-card-plus--active" : ""}`}
               >
                 <img alt="" src={locusPlusIcon} className="size-5 max-w-none" draggable={false} />
               </button>
