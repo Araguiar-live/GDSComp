@@ -224,6 +224,7 @@ export function CrcleMessaging({
   const [isLightMode, setIsLightMode] = useState(false);
   const [locusOpen, setLocusOpen] = useState(false);
   const [signalCard, setSignalCard] = useState<SignalCardModel | null>(null);
+  const signalInviteTimerRef = useRef<number | null>(null);
   const [moodOpen, setMoodOpen] = useState(false);
   const [areaNotificationOpen, setAreaNotificationOpen] = useState(false);
   const [areaInbox, setAreaInboxState] = useState<"off" | "screen" | "drawer">("off");
@@ -233,6 +234,13 @@ export function CrcleMessaging({
     if (areaNotificationTimerRef.current != null) {
       window.clearTimeout(areaNotificationTimerRef.current);
       areaNotificationTimerRef.current = null;
+    }
+  }, []);
+
+  const clearSignalInviteTimer = useCallback(() => {
+    if (signalInviteTimerRef.current != null) {
+      window.clearTimeout(signalInviteTimerRef.current);
+      signalInviteTimerRef.current = null;
     }
   }, []);
 
@@ -258,6 +266,37 @@ export function CrcleMessaging({
   useEffect(() => {
     return () => setCrcleAreaInboxOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (phase !== "chat" || !activeConversation) {
+      clearSignalInviteTimer();
+      return;
+    }
+
+    clearSignalInviteTimer();
+    signalInviteTimerRef.current = window.setTimeout(() => {
+      signalInviteTimerRef.current = null;
+      setSignalCard((current) => {
+        if (current) return current;
+        return {
+          id: `signal-invite-${Date.now()}`,
+          activityId: "icecream",
+          activityLabel: "Ice cream",
+          when: "Tonight",
+          timeOfDay: "evening",
+          location: "Nearby café",
+          status: "pending",
+          direction: "received",
+        };
+      });
+    }, 3000);
+
+    return clearSignalInviteTimer;
+  }, [phase, activeConversation?.id, clearSignalInviteTimer]);
+
+  useEffect(() => {
+    return () => clearSignalInviteTimer();
+  }, [clearSignalInviteTimer]);
 
   const openAreaInbox = useCallback(() => {
     setMoodOpen(false);
@@ -383,6 +422,7 @@ export function CrcleMessaging({
       ...payload,
       id: `signal-${Date.now()}`,
       status: "pending",
+      direction: "sent",
     });
   }, []);
 
@@ -469,6 +509,7 @@ export function CrcleMessaging({
               <ChatThread
                 conversation={activeConversation}
                 signal={signalCard}
+                isLight={isLightMode}
                 onAcceptSignal={() =>
                   setSignalCard((s) => (s ? { ...s, status: "accepted" } : s))
                 }
@@ -1285,12 +1326,14 @@ function ContextMenu({
 function ChatThread({
   conversation,
   signal,
+  isLight,
   onAcceptSignal,
   onRaincheckSignal,
   onCounterPropose,
 }: {
   conversation: ChatConversation | null;
   signal: SignalCardModel | null;
+  isLight?: boolean;
   onAcceptSignal: () => void;
   onRaincheckSignal: () => void;
   onCounterPropose: () => void;
@@ -1333,14 +1376,17 @@ function ChatThread({
         ),
       )}
 
-      {signal && (
-        <SignalCard
-          signal={signal}
-          onAccept={onAcceptSignal}
-          onRaincheck={onRaincheckSignal}
-          onCounterPropose={onCounterPropose}
-        />
-      )}
+      {signal ? (
+        <div className={`flex w-full ${signal.direction === "sent" ? "justify-end" : "justify-start"}`}>
+          <SignalCard
+            signal={signal}
+            isLight={isLight}
+            onAccept={onAcceptSignal}
+            onRaincheck={onRaincheckSignal}
+            onCounterPropose={onCounterPropose}
+          />
+        </div>
+      ) : null}
 
       <p className="text-center text-[11px] leading-[1.4] text-[#b1b1bc]" style={{ fontFamily: FONT }}>
         End-to-end encrypted

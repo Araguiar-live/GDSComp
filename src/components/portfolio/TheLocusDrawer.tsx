@@ -461,6 +461,8 @@ export type SignalCardStatus = "pending" | "accepted" | "raincheck";
 export type SignalCardModel = LocusSignalPayload & {
   id: string;
   status: SignalCardStatus;
+  /** Received locus vs sent by the current user — Figma 769:204909 / 769:204994 */
+  direction: "received" | "sent";
 };
 
 const TIME_GLYPH: Record<
@@ -488,21 +490,31 @@ export function SignalCard({
   onAccept,
   onRaincheck,
   onCounterPropose,
+  isLight = false,
 }: {
   signal: SignalCardModel;
   onAccept: () => void;
   onRaincheck: () => void;
   onCounterPropose: () => void;
+  isLight?: boolean;
 }) {
   const [counterText, setCounterText] = useState("Try tomorrow instead?");
   const activity = ACTIVITIES.find((a) => a.id === signal.activityId) ?? ACTIVITIES[1];
   const timeGlyph = TIME_GLYPH[signal.timeOfDay];
-  const prompt = `Up for ${signal.activityLabel} ${signal.when.toLowerCase()}?`;
+  const isSent = signal.direction === "sent";
+  const showResponsePill = !isSent && signal.status === "pending";
+  const prompt = isSent
+    ? `Up for ${signal.activityLabel.toLowerCase()} ${signal.when.toLowerCase()} ${signal.timeOfDay}?`
+    : `Up for ${signal.activityLabel} ${signal.when.toLowerCase()}?`;
 
   return (
-    <div className="relative flex w-full max-w-[284px] flex-col items-start gap-2 self-start">
-      {signal.status === "pending" ? (
-        <div className="crcle-signal-response-pill flex h-[58px] w-full items-center gap-3 rounded-[56px] p-3">
+    <div
+      className={`relative flex w-full max-w-[286px] flex-col gap-3 ${
+        isSent ? "items-end self-end" : "items-start self-start"
+      }`}
+    >
+      {showResponsePill ? (
+        <div className="crcle-signal-response-pill flex h-14 w-full items-center gap-3 rounded-[56px] p-3">
           <button
             type="button"
             aria-label="I'm down"
@@ -510,14 +522,7 @@ export function SignalCard({
             className="relative flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
             title="I'm down"
           >
-            <span className="absolute inset-[1.75%_9.57%_0_12.5%]">
-              <img
-                alt=""
-                src={locusThumbsUpIcon}
-                className="absolute inset-0 size-full max-w-none"
-                draggable={false}
-              />
-            </span>
+            <img alt="" src={locusThumbsUpIcon} className="size-8 max-w-none object-contain" draggable={false} />
           </button>
           <button
             type="button"
@@ -526,20 +531,19 @@ export function SignalCard({
             className="relative flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
             title="Raincheck"
           >
-            <span className="absolute inset-[16.65%_12.5%_12.5%_12.5%]">
-              <img
-                alt=""
-                src={locusRainFillIcon}
-                className="absolute inset-0 size-full max-w-none"
-                draggable={false}
-              />
-            </span>
+            <img alt="" src={locusRainFillIcon} className="size-8 max-w-none object-contain" draggable={false} />
           </button>
         </div>
       ) : null}
 
-      {/* Figma 769:205972 dark · 769:205341 light */}
-      <div className="crcle-signal-card flex w-full flex-col gap-6 rounded-tl-[36px] rounded-tr-[36px] rounded-br-[36px] rounded-bl-[4px] p-4 text-left">
+      {/* Figma 984:85497 · received 769:204909 · sent 769:204994 */}
+      <div
+        className={`crcle-signal-card flex w-full flex-col p-4 text-left ${
+          isSent
+            ? "crcle-signal-card--sent gap-4"
+            : "crcle-signal-card--received gap-6 rounded-tl-[36px] rounded-tr-[36px] rounded-br-[36px] rounded-bl-[4px]"
+        } ${isLight && !isSent ? "crcle-signal-card--received-light" : ""}`}
+      >
         <div className="flex w-full items-start justify-between">
           <span className="crcle-signal-card-icon relative block size-6 shrink-0">{activity.icon}</span>
           <span className="crcle-signal-card-crosshair relative block size-6 shrink-0">
@@ -562,8 +566,12 @@ export function SignalCard({
             {prompt}
           </p>
 
-          <div className="flex w-full items-start gap-2">
-            <span className="crcle-signal-card-time flex shrink-0 items-center p-2.5">
+          <div className="flex w-full items-start justify-center gap-2">
+            <span
+              className={`crcle-signal-card-time flex shrink-0 items-center rounded-[24px] p-2.5 ${
+                isLight && !isSent ? "border border-[rgba(0,0,0,0.25)]" : ""
+              }`}
+            >
               <img
                 alt=""
                 src={timeGlyph.icon}
@@ -574,7 +582,7 @@ export function SignalCard({
               />
             </span>
 
-            <div className="crcle-signal-card-venue flex min-w-0 flex-1 items-center gap-1.5 py-1 pl-3 pr-1">
+            <div className="crcle-signal-card-venue flex min-w-0 flex-1 items-center gap-1.5 rounded-[24px] py-1 pl-3 pr-1">
               <img
                 alt=""
                 src={locusPinRedIcon}
@@ -590,12 +598,14 @@ export function SignalCard({
               <button
                 type="button"
                 aria-label="Respond to signal"
-                disabled={signal.status !== "pending"}
+                disabled={signal.status !== "pending" || isSent}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (signal.status === "pending") onAccept();
+                  if (signal.status === "pending" && !isSent) onAccept();
                 }}
-                className="crcle-signal-card-plus flex shrink-0 items-center p-2.5 disabled:opacity-50"
+                className={`crcle-signal-card-plus flex shrink-0 items-center rounded-[24px] p-2.5 disabled:opacity-50 ${
+                  isSent ? "bg-transparent" : ""
+                }`}
               >
                 <img alt="" src={locusPlusIcon} className="size-5 max-w-none" draggable={false} />
               </button>

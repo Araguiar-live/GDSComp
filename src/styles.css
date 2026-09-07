@@ -1143,35 +1143,46 @@
   content: none;
 }
 
-/* Signal response pill — Figma 769:205338 */
+/* Signal response pill — Figma 984:85497 / 769:206081 */
 .crcle-signal-response-pill {
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
-.crcle-phone--light .crcle-signal-response-pill {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(0, 0, 0, 0.25);
-}
-
-/* Signal card — Figma 769:205972 dark · 769:205341 light */
+/* Signal card — Figma 984:85497 dark · 769:204909 received light · 769:204994 sent */
 .crcle-signal-card {
   position: relative;
   overflow: hidden;
+}
+
+.crcle-signal-card--received {
   background: rgba(2, 3, 29, 0.4);
+}
+
+.crcle-signal-card--sent {
+  background: rgba(2, 3, 29, 0.4);
+  border-radius: 36px 36px 4px 36px;
+}
+
+.crcle-signal-card--received-light {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
 .crcle-signal-card-prompt {
   color: #f7f6f2;
 }
 
+.crcle-signal-card--sent .crcle-signal-card-prompt {
+  color: #02031d;
+}
+
+.crcle-signal-card--received-light .crcle-signal-card-prompt {
+  color: #02031d;
+}
+
 .crcle-signal-card-icon img,
 .crcle-signal-card-crosshair img {
   filter: brightness(0) invert(1);
-}
-
-.crcle-signal-card-time {
-  border-radius: 24px;
 }
 
 .crcle-signal-card-venue {
@@ -1186,44 +1197,40 @@
 
 .crcle-signal-card-plus {
   border-radius: 24px;
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.crcle-phone--light .crcle-signal-card {
+.crcle-signal-card--sent .crcle-signal-card-plus {
   background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
-.crcle-phone--light .crcle-signal-card-prompt {
-  color: #02031d;
-}
-
-.crcle-phone--light .crcle-signal-card-icon img {
+.crcle-signal-card--received-light .crcle-signal-card-icon img {
   filter: brightness(0);
 }
 
-.crcle-phone--light .crcle-signal-card-crosshair img {
+.crcle-signal-card--received-light .crcle-signal-card-crosshair img {
   filter: none;
 }
 
-.crcle-phone--light .crcle-signal-card-time,
-.crcle-phone--light .crcle-signal-card-plus {
-  border: 1px solid rgba(0, 0, 0, 0.25);
-}
-
-.crcle-phone--light .crcle-signal-card-venue {
+.crcle-signal-card--received-light .crcle-signal-card-venue {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
-.crcle-phone--light .crcle-signal-card-venue-text {
+.crcle-signal-card--received-light .crcle-signal-card-venue-text {
   color: #02031d;
 }
 
-.crcle-signal-card:hover {
+.crcle-signal-card--received-light .crcle-signal-card-plus {
+  background: transparent;
+  border: none;
+}
+
+.crcle-signal-card:hover.crcle-signal-card--received:not(.crcle-signal-card--received-light) {
   background: rgba(2, 3, 29, 0.48);
 }
 
-.crcle-phone--light .crcle-signal-card:hover {
+.crcle-signal-card--received-light:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
