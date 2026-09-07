@@ -1171,7 +1171,7 @@ function buildSignalKeyframes(barIndex: number, frames: readonly [number, number
   return { heights, times, duration: total };
 }
 
-/** Figma 257:67520 — signal activated confirmation sheet on photo card. */
+/** Figma 55:58689 — signal activated confirmation sheet on photo card. */
 function SignalCompleteSheet({
   onGoToRecommendations,
   onGoToProfile,
@@ -1183,34 +1183,34 @@ function SignalCompleteSheet({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.98 }}
       transition={{ duration: 0.32, ease: EASE }}
-      className="crcle-signal-complete-sheet absolute left-1/2 top-[14%] z-40 w-[calc(100%-16px)] max-w-[402px] -translate-x-1/2 overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
+      className="crcle-signal-complete-sheet absolute left-1/2 top-[calc(50%-216px)] z-40 w-[calc(100%-16px)] max-w-[412px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="signal-complete-title"
     >
-      <div className="px-4 pb-[9px] pt-9">
+      <div className="dock-glass-lens opacity-50" aria-hidden />
+      <div className="relative z-[1] px-4 pb-[9px] pt-9">
         <div className="flex flex-col gap-2">
           <p
             id="signal-complete-title"
             className="text-center text-[16px] font-medium leading-[1.4] text-[#f7f6f2]"
             style={{ fontFamily: FONT }}
           >
-            You&apos;re all set
+            Signal Live
           </p>
           <p
             className="text-center text-[13px] leading-[1.4] text-[#f7f6f2]"
             style={{ fontFamily: FONT }}
           >
-            Your profile is locked in for the next drop. Sit tight, your new matches will appear
-            when the timer runs out.
+            You&apos;re officially live in this drop. Tap below to see who&apos;s around you.
           </p>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-4 border-t border-[rgba(2,3,29,0.05)] p-3">
+      <div className="relative z-[1] flex flex-col items-center gap-4 border-t border-[rgba(2,3,29,0.05)] p-3">
         <div className="flex w-full flex-col gap-3">
           <button
             type="button"
