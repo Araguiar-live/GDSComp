@@ -16,6 +16,7 @@ import chatPhotoIcon from "@/assets/crcle/chat/photo.svg";
 import chatPlusIcon from "@/assets/crcle/chat/plus.svg";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
 import heartIcon from "@/assets/crcle/heart.svg";
+import fireInnerIcon from "@/assets/crcle/fire-inner.svg";
 import laptopBadgeIcon from "@/assets/crcle/signal/laptop-badge.svg";
 import notificationBg from "@/assets/crcle/notification-bg.svg";
 import chatHeaderPattern from "@/assets/crcle/chat-header-pattern.png";
@@ -69,6 +70,16 @@ import {
  * inbox (notifications) → signal gate → active chat, with context menu overlay.
  */
 
+type ConnectionBadge = "laptop" | "heart" | "fire";
+
+/** Work = laptop · Soul = fire · Love / signal = heart */
+function connectionBadgeFor(profile: UserProfile): ConnectionBadge {
+  const type = profile.matchType.toLowerCase();
+  if (type.includes("soul")) return "fire";
+  if (type.includes("signal") || type.includes("area") || type.includes("love")) return "heart";
+  return "laptop";
+}
+
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 const GLASS =
   "backdrop-blur-xl bg-[rgba(2,3,29,0.55)] border border-[rgba(247,246,242,0.18)]";
@@ -100,8 +111,8 @@ const CONNECTION_PROFILES: UserProfile[] = [
     distance: "2.4km",
     age: 24,
     photoUrl: serenaPortrait,
-    matchType: "Signal Match",
-    matchBio: "Looking for high romantic connections",
+    matchType: "Soul Match",
+    matchBio: "Seeking deeper resonance beyond first impressions",
     isVerified: true,
   },
   {
@@ -1211,7 +1222,7 @@ function NotificationCenter({
               {profiles.map((profile) => (
                 <ConnectionAvatar
                   key={profile.id}
-                  badge="laptop"
+                  badge={connectionBadgeFor(profile)}
                   photoUrl={profile.photoUrl}
                   name={profile.name}
                   onClick={() => onViewSignal(profile)}
@@ -1635,13 +1646,16 @@ function ConnectionAvatar({
   showWaveform = false,
   onClick,
 }: {
-  badge: "laptop" | "heart";
+  badge: ConnectionBadge;
   photoUrl: string;
   name: string;
   showWaveform?: boolean;
   onClick?: () => void;
 }) {
-  const badgeSrc = badge === "laptop" ? laptopBadgeIcon : heartIcon;
+  const badgeSrc =
+    badge === "laptop" ? laptopBadgeIcon : badge === "fire" ? fireInnerIcon : heartIcon;
+  const badgeClassName =
+    badge === "fire" ? "h-3 w-2.5 brightness-0" : badge === "laptop" ? "h-3 w-3.5" : "h-3 w-3";
 
   return (
     <button
@@ -1658,9 +1672,9 @@ function ConnectionAvatar({
           }`}
         />
       </div>
-      {/* Purpose badge — Figma 350:22979 stroke laptop */}
+      {/* Intent badge — work (laptop) · soul (fire) · love (heart) */}
       <div className="absolute -left-[3px] -top-[4px] z-[1] flex w-5 flex-col items-center justify-center rounded-[64px] border-[0.5px] border-[#f7f6f2] bg-[rgba(253,252,251,0.8)] p-1 backdrop-blur-[0.5px]">
-        <IconImg src={badgeSrc} className="h-3 w-3.5" />
+        <IconImg src={badgeSrc} className={badgeClassName} />
       </div>
       <div
         className={`pointer-events-none absolute inset-0 z-[1] flex items-center justify-center gap-[2.3px] transition-opacity duration-200 ease-out ${
