@@ -23,12 +23,11 @@ import eyeWeekIcon from "@/assets/crcle/profile/eye-week.svg";
 import graduationIcon from "@/assets/crcle/profile/graduation.svg";
 import heartDatingIcon from "@/assets/crcle/profile/heart-dating.svg";
 import laptopWorkIcon from "@/assets/crcle/profile/laptop-work.svg";
-import bytesizeInfoIcon from "@/assets/crcle/profile/bytesize-info.svg";
-import locationCurrentIcon from "@/assets/crcle/profile/location-current.svg";
-import locationMapImg from "@/assets/crcle/profile/location-map.png";
+import locationMapImg from "@/assets/crcle/profile/location-map-figma.png";
+import locationPinMarkerIcon from "@/assets/crcle/profile/location-pin-marker.svg";
+import locationProximityRingIcon from "@/assets/crcle/profile/location-proximity-ring.svg";
 import lockFilledIcon from "@/assets/crcle/profile/lock-filled.svg";
 import loughboroughCrest from "@/assets/crcle/profile/loughborough-crest.png";
-import mapPinPreciseIcon from "@/assets/crcle/profile/map-pin-precise.svg";
 import profileLaptopIcon from "@/assets/crcle/profile/laptop.svg";
 import profileMaskGreenIcon from "@/assets/crcle/profile/mask-green.svg";
 import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
@@ -520,7 +519,7 @@ function ProfileMainView({
   onOpenWork,
   onOpenRelationship,
   onOpenLocation,
-  onOpenLocationInfo,
+  onOpenLocationInfo: _onOpenLocationInfo,
   onOpenSocials,
   onOpenVerify,
 }: {
@@ -781,10 +780,10 @@ function ProfileMainView({
                 <img
                   alt=""
                   src={locationMapImg}
-                  className="absolute inset-0 size-full object-cover"
+                  className="absolute inset-0 size-full rounded-2xl object-cover"
                   draggable={false}
                 />
-                <div className="absolute inset-0 rounded-2xl bg-[rgba(2,4,38,0.1)]" />
+                <div aria-hidden className="absolute inset-0 rounded-2xl bg-[rgba(2,4,38,0.1)]" />
                 <button
                   type="button"
                   aria-label="Edit location"
@@ -793,25 +792,42 @@ function ProfileMainView({
                 />
                 {showLocationDetails ? (
                   <>
-                    <span className="pointer-events-none absolute left-[72px] top-[84px] z-[2] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
-                      <span className="size-0.5 rounded-full bg-white" />
-                      <span
-                        className="text-[11px] leading-[1.4] text-[#fefefe]"
-                        style={{ fontFamily: FONT }}
-                      >
-                        {widgets.location ?? "Holland Park"}
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute left-[34px] top-[52px] z-[2] h-[88px] w-[140px]"
+                    >
+                      <img
+                        alt=""
+                        src={locationProximityRingIcon}
+                        className="absolute left-[5px] top-4 size-[88px]"
+                        draggable={false}
+                      />
+                      <span className="absolute left-11 top-[31px] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
+                        <span
+                          className="text-[11px] leading-[1.4] text-[#fefefe]"
+                          style={{ fontFamily: FONT }}
+                        >
+                          London
+                        </span>
+                        <span className="size-0.5 shrink-0 rounded-full bg-[#fefefe]" />
+                        <span
+                          className="text-[11px] leading-[1.4] text-[#fefefe]"
+                          style={{ fontFamily: FONT }}
+                        >
+                          2 Km
+                        </span>
                       </span>
-                    </span>
+                    </div>
                     <img
                       alt=""
-                      src={mapPinPreciseIcon}
-                      className="pointer-events-none absolute left-[72px] top-[107px] z-[2] size-2.5"
+                      src={locationPinMarkerIcon}
+                      className="pointer-events-none absolute left-[78px] top-[108px] z-[2] size-2.5"
                       draggable={false}
                     />
                   </>
                 ) : null}
                 {frostMap ? (
-                  <div className="pointer-events-none absolute inset-0 z-[2] flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[rgba(255,255,255,0.1)] px-[35px] backdrop-blur-[4px]">
+                  <div className="pointer-events-none absolute inset-0 z-[3] flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[rgba(255,255,255,0.1)] px-[35px] backdrop-blur-[4px]">
                     <div className="flex w-[110px] flex-col items-center justify-center gap-[7px]">
                       <span className="relative size-6 shrink-0 overflow-clip">
                         <span className="absolute inset-[8.33%_16.67%]">
@@ -832,21 +848,15 @@ function ProfileMainView({
                     </div>
                   </div>
                 ) : null}
-                <span className="pointer-events-auto relative z-[4] flex w-full items-center justify-between rounded-[24px] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1 backdrop-blur-[4px]">
-                  <img alt="" src={locationCurrentIcon} className="size-4 object-contain" draggable={false} />
-                  <span className="text-[13px] leading-[1.1] text-[#030426]" style={{ fontFamily: FONT }}>
-                    Location
-                  </span>
-                  <button
-                    type="button"
-                    aria-label="Location privacy information"
-                    onClick={onOpenLocationInfo}
-                    className="relative z-[1] flex size-6 shrink-0 items-center justify-center rounded-full"
+                <span className="relative z-[4] inline-flex w-fit items-center rounded-[24px] bg-[#030426] py-0.5 pl-2 pr-2.5">
+                  <span
+                    className="text-[13px] leading-[1.4] text-[#fefefe]"
+                    style={{ fontFamily: FONT }}
                   >
-                    <img alt="" src={bytesizeInfoIcon} className="size-4 object-contain" draggable={false} />
-                  </button>
+                    Current Location
+                  </span>
                 </span>
-                <div className="pointer-events-auto relative z-[4] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1.5 backdrop-blur-[4px]">
+                <div className="pointer-events-auto relative z-[4] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(2,4,38,0.4)] py-1 pl-2 pr-1.5">
                   <button
                     type="button"
                     onClick={() => setLocationEnabled((v) => !v)}
