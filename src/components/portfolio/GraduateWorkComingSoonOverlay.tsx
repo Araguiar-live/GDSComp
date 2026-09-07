@@ -68,9 +68,10 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
               className="mt-2 max-w-xl text-[13px] leading-relaxed text-zinc-600 sm:text-[14px]"
               style={{ fontFamily: FONT }}
             >
-              Physical product explorations from my MA — tactile interfaces, street hardware,
-              and objects that bridge digital intent with material craft. Case studies are
-              being prepared for the portfolio.
+              Physical product explorations from my Industrial Design Technology degree at
+              Loughborough — tactile interfaces, street hardware, and objects that bridge
+              digital intent with material craft. Case studies are being prepared for the
+              portfolio.
             </p>
           </div>
           <button
