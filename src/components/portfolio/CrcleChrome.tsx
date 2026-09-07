@@ -129,6 +129,9 @@ export function CrclePrimaryDock({
           >
             <div aria-hidden className="crcle-signal-panel-glass rounded-[inherit]" />
             <div aria-hidden className="crcle-signal-panel-plate rounded-[inherit]" />
+            <div aria-hidden className="crcle-signal-panel-frost rounded-[inherit]" />
+            <div aria-hidden className="crcle-signal-panel-lens rounded-[inherit]" />
+            <div aria-hidden className="crcle-signal-panel-dispersion rounded-[inherit]" />
             <div className="relative z-[1] flex items-center justify-center gap-0.5">
               <div className="flex size-6 items-center justify-center">
                 <SoundWaveIcon size={16} active />
