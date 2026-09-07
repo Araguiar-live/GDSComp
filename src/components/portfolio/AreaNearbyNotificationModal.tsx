@@ -90,7 +90,11 @@ export function AreaNearbyNotificationModal({
         : "Connection established";
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
       className="pointer-events-auto absolute inset-0 z-[50] overflow-hidden rounded-[53px]"
       style={{ clipPath: "inset(0 round 53px)" }}
       role="dialog"
@@ -100,7 +104,7 @@ export function AreaNearbyNotificationModal({
       <button
         type="button"
         aria-label="Dismiss"
-        className="absolute inset-0 bg-black/40"
+        className="absolute inset-0 bg-black/45 backdrop-blur-[8px]"
         onClick={handleBackdrop}
       />
 

@@ -55,6 +55,8 @@ import {
   getAreaNearbyBadgeActive,
   getCrcleBroadcast,
   getCrcleIncognito,
+  isAreaNearbyFlowComplete,
+  markAreaNearbyFlowComplete,
   setAreaNearbyBadgeActive,
   setCrcleAreaInboxOpen,
   subscribeCrcleBroadcast,
@@ -266,7 +268,7 @@ export function CrcleMessaging({
   }, []);
 
   const scheduleAreaNearbyNotification = useCallback(() => {
-    if (areaNotificationScheduledRef.current) return;
+    if (areaNotificationScheduledRef.current || isAreaNearbyFlowComplete()) return;
     areaNotificationScheduledRef.current = true;
     clearAreaNotificationTimer();
     setOnboardingOpen(false);
@@ -372,7 +374,8 @@ export function CrcleMessaging({
     if (
       getCrcleBroadcast() === "in_the_area" &&
       !getCrcleIncognito() &&
-      !areaNotificationScheduledRef.current
+      !areaNotificationScheduledRef.current &&
+      !isAreaNearbyFlowComplete()
     ) {
       scheduleAreaNearbyNotification();
     }
@@ -382,7 +385,8 @@ export function CrcleMessaging({
       if (
         getCrcleBroadcast() === "in_the_area" &&
         !getCrcleIncognito() &&
-        !areaNotificationScheduledRef.current
+        !areaNotificationScheduledRef.current &&
+        !isAreaNearbyFlowComplete()
       ) {
         scheduleAreaNearbyNotification();
       }
@@ -709,10 +713,12 @@ export function CrcleMessaging({
                 areaNotificationScheduledRef.current = false;
               }}
               onComplete={() => {
+                clearAreaNotificationTimer();
+                markAreaNearbyFlowComplete();
+                areaNotificationScheduledRef.current = true;
                 setAreaNotificationOpen(false);
-                setAreaNearbyBadgeActive(false);
-                areaNotificationScheduledRef.current = false;
-                openAreaInbox();
+                setNotificationsOpen(false);
+                setAreaInbox("off");
               }}
             />
           ) : null}
