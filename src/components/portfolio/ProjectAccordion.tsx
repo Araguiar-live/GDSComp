@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { forwardRef, useEffect, useRef, useState, type MutableRefObject } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
 import {
   useCrcleAreaInboxOpen,
@@ -101,7 +101,10 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
   { project, isOpen, onToggle },
   ref,
 ) {
-  const tabs = project.tabs?.length ? [...project.tabs] : [...DEFAULT_TABS];
+  const tabs = useMemo(
+    () => (project.tabs?.length ? [...project.tabs] : [...DEFAULT_TABS]),
+    [project.tabs],
+  );
   const [activeTab, setActiveTab] = useState<Tab>(() => resolveDefaultTab(project, tabs));
   const tabContent = project.content?.[activeTab] ?? {};
   const tabIndex = Math.max(0, tabs.indexOf(activeTab));
