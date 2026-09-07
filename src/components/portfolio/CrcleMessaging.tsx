@@ -226,6 +226,28 @@ export function CrcleMessaging({
   const [moodOpen, setMoodOpen] = useState(false);
   const [areaNotificationOpen, setAreaNotificationOpen] = useState(false);
   const [areaInbox, setAreaInboxState] = useState<"off" | "screen" | "drawer">("off");
+  const areaNotificationTimerRef = useRef<number | null>(null);
+
+  const clearAreaNotificationTimer = useCallback(() => {
+    if (areaNotificationTimerRef.current != null) {
+      window.clearTimeout(areaNotificationTimerRef.current);
+      areaNotificationTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleAreaNearbyNotification = useCallback(() => {
+    clearAreaNotificationTimer();
+    setOnboardingOpen(false);
+    setPhase("inbox");
+    setMoodOpen(false);
+    setMenuOpen(false);
+    setNotificationsOpen(true);
+    setTab("sent");
+    areaNotificationTimerRef.current = window.setTimeout(() => {
+      areaNotificationTimerRef.current = null;
+      setAreaNotificationOpen(true);
+    }, 5000);
+  }, [clearAreaNotificationTimer]);
 
   const setAreaInbox = useCallback((next: "off" | "screen" | "drawer") => {
     setAreaInboxState(next);
@@ -248,15 +270,12 @@ export function CrcleMessaging({
   useEffect(() => {
     const tryOpen = () => {
       if (consumeAreaInboxOnMessaging()) {
+        clearAreaNotificationTimer();
         openAreaInbox();
         return;
       }
       if (consumeAreaNearbyNotification()) {
-        setOnboardingOpen(false);
-        setPhase("inbox");
-        setMoodOpen(false);
-        setMenuOpen(false);
-        setAreaNotificationOpen(true);
+        scheduleAreaNearbyNotification();
         return;
       }
       if (!consumeMoodSwitchOnMessaging()) return;
@@ -265,8 +284,12 @@ export function CrcleMessaging({
       setMoodOpen(true);
     };
     tryOpen();
-    return subscribeCrcleBroadcast(tryOpen);
-  }, [openAreaInbox]);
+    const unsub = subscribeCrcleBroadcast(tryOpen);
+    return () => {
+      unsub();
+      clearAreaNotificationTimer();
+    };
+  }, [openAreaInbox, scheduleAreaNearbyNotification, clearAreaNotificationTimer]);
 
   useEffect(() => {
     if (areaInbox !== "screen") return;
