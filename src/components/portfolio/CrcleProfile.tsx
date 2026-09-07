@@ -60,6 +60,7 @@ import shareIcon from "@/assets/crcle/share.svg";
 import shareInnerIcon from "@/assets/crcle/share-inner.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrcleMoodSwitch, PROFILE_MOOD_IDS } from "@/components/portfolio/CrcleMoodSwitch";
+import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
   CrcleMoreButtonSpacer,
   CrclePrimaryDock,
