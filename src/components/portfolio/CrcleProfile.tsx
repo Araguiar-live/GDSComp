@@ -282,7 +282,7 @@ export function CrcleProfile({
         <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
           <div className="relative min-h-0 flex-1 overflow-hidden">
             {/* Absolute scroll so the dock can sample this layer for backdrop-filter */}
-            <div className="absolute inset-2 overflow-x-hidden overflow-y-auto overscroll-contain pb-20 pt-[86px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="absolute inset-2 overflow-x-hidden overflow-y-auto overscroll-contain pb-14 pt-[86px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <ProfileMainView
                 profile={profile}
                 socialCount={socialCount}
@@ -449,7 +449,7 @@ function ProfileMainView({
   const isEmptyWidgets = !hasEducation && !hasWork && !hasRelationship && !hasLocation;
 
   return (
-    <div className="flex flex-col gap-4 pb-2">
+    <div className="flex flex-col gap-4">
       {/* Identity — Figma 1005:49864 / light 1005:49620 */}
       <div className="flex w-full items-end justify-between px-0">
         <div className="flex flex-col items-start justify-center">
