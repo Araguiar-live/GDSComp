@@ -948,66 +948,41 @@
   opacity: 0.85;
 }
 
-/* Profile Signal Live + mood chips — Figma 1005:49875 subtle glass + green tint */
-.crcle-glass-btn--signal {
+/* Profile Signal Live + mood row — Figma 1005:49835 wireframe pills */
+.crcle-profile-signal-live,
+.crcle-profile-signal-mood {
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0.03) 0%,
     rgba(15, 201, 80, 0.12) 100%
   );
-  backdrop-filter: blur(18px) saturate(190%);
-  -webkit-backdrop-filter: blur(18px) saturate(190%);
+}
+
+.crcle-profile-signal-live {
   border: 1px solid rgba(15, 201, 80, 0.2);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.42) inset,
-    0 -0.5px 0 rgba(255, 255, 255, 0.1) inset,
-    0 8px 20px rgba(0, 0, 0, 0.18),
-    -3px 0 12px rgba(255, 120, 160, 0.08),
-    3px 0 12px rgba(90, 170, 255, 0.1);
 }
 
-.crcle-glass-btn--signal::before {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.48) 0%,
-    rgba(255, 255, 255, 0.1) 36%,
-    transparent 58%
-  );
-  opacity: 0.85;
+.crcle-profile-signal-mood {
+  border: 1px solid #0fc950;
 }
 
-.crcle-glass-btn--signal::after {
-  background: linear-gradient(
-    115deg,
-    rgba(15, 201, 80, 0.35) 0%,
-    rgba(255, 255, 255, 0.18) 38%,
-    rgba(15, 201, 80, 0.28) 72%,
-    rgba(120, 255, 170, 0.2) 100%
-  );
-  opacity: 0.55;
-}
-
-.crcle-glass-btn--signal-accent {
-  border-color: #0fc950;
-}
-
-/* Profile mood chip — green tint, compact icon */
-.crcle-mood-chip-icon img {
+.crcle-profile-mood-icon img {
   filter: brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(1352%) hue-rotate(87deg)
     brightness(95%) contrast(89%);
 }
 
-.crcle-phone--light .crcle-glass-btn--signal {
+.crcle-phone--light .crcle-profile-signal-live,
+.crcle-phone--light .crcle-profile-signal-mood {
   background: linear-gradient(
     90deg,
-    rgba(253, 252, 251, 0.55) 0%,
+    rgba(253, 252, 251, 0.92) 0%,
     rgba(15, 201, 80, 0.1) 100%
   );
-  border-color: rgba(15, 201, 80, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-.crcle-phone--light .crcle-glass-btn--signal-accent {
-  border-color: rgba(15, 201, 80, 0.75);
+.crcle-phone--light .crcle-profile-signal-live {
+  border-color: rgba(15, 201, 80, 0.25);
 }
 
 /* The Locus — Figma 781:207205 / Signal Panel Dark #02031d66
