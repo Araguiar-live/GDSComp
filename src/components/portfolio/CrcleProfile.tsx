@@ -263,7 +263,8 @@ export function CrcleProfile({
           ) : null
         }
         bottomChrome={
-          <CrclePrimaryDock
+          overlay ? null : (
+            <CrclePrimaryDock
             embedded
             active="profile"
             onProfile={() => {}}

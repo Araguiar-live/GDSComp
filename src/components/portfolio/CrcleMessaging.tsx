@@ -362,6 +362,14 @@ export function CrcleMessaging({
     });
   }, []);
 
+  const showPrimaryDock =
+    !onboardingOpen &&
+    !activeMatch &&
+    areaInbox === "off" &&
+    !moodOpen &&
+    !areaNotificationOpen &&
+    !locusOpen;
+
   return (
     <div className="relative ml-auto w-fit">
       <motion.button
@@ -413,7 +421,7 @@ export function CrcleMessaging({
           </>
         }
         bottomChrome={
-          !onboardingOpen ? (
+          showPrimaryDock ? (
             <CrclePrimaryDock
               embedded
               active="messages"
