@@ -390,11 +390,7 @@ export function CrcleSignalHome({
                       onClick={() => setIntentOpen(true)}
                       lit={intentDone || intentOpen}
                     >
-                      <div className="flex items-center gap-[2.9px]">
-                        <span className="h-[12.3px] w-[4.8px] rounded-[4.7px] border border-[#f7f6f2] bg-[#f7f6f2]" />
-                        <span className="h-[20.4px] w-[5.2px] rounded-[4.7px] bg-[#f7f6f2]" />
-                        <span className="h-[12.3px] w-[4.8px] rounded-[4.7px] border border-[#f7f6f2] bg-[#f7f6f2]" />
-                      </div>
+                      <SignalBarsCore variant="overlay" activeBars={0} />
                     </OverlayToolButton>
                   </div>
                 </div>
@@ -588,11 +584,11 @@ function SignalOnboardingFeature({
 
 function MiniSignalBars() {
   return (
-    <div className="flex items-center gap-[2.2px]" aria-hidden>
-      <span className="h-[8.2px] w-[4.1px] rounded-[3.5px] bg-[#f7f6f2]" />
-      <span className="h-[13.7px] w-[4.4px] rounded-[3.5px] bg-[#f7f6f2]" />
-      <span className="h-[8.2px] w-[4.1px] rounded-[3.5px] bg-[#f7f6f2]" />
-    </div>
+    <SignalBarsCore
+      variant="overlay"
+      activeBars={0}
+      aria-hidden
+    />
   );
 }
 
@@ -930,6 +926,93 @@ function StatusBar() {
   );
 }
 
+/** Figma 257:66491 — footer signal bars (short · tall · short, center-aligned). */
+const FOOTER_SIGNAL_BAR_WIDTHS = [9.194, 9.194, 9.194] as const;
+const FOOTER_SIGNAL_BAR_HEIGHTS = [18.387, 30.645, 18.387] as const;
+const FOOTER_SIGNAL_GAP = 4.903;
+const FOOTER_SIGNAL_RADIUS = 7.986;
+
+/** Figma 458:82643 — overlay chip signal bars on photo. */
+const OVERLAY_SIGNAL_BAR_WIDTHS = [4.839, 5.161, 4.839] as const;
+const OVERLAY_SIGNAL_BAR_HEIGHTS = [12.256, 20.427, 12.256] as const;
+const OVERLAY_SIGNAL_GAP = 2.904;
+const OVERLAY_SIGNAL_RADIUS = 4.73;
+
+function signalBarClass(index: number, activeBars: number, allLit: boolean) {
+  if (index < activeBars) {
+    return allLit ? "border border-[#e7fcee] bg-[#0fc950]" : "bg-[#0fc950]";
+  }
+  return "bg-[rgba(15,201,80,0.2)]";
+}
+
+function SignalBarsCore({
+  variant,
+  activeBars,
+  glow = false,
+  animate = false,
+  className = "",
+  "aria-hidden": ariaHidden,
+}: {
+  variant: "footer" | "overlay";
+  activeBars: number;
+  glow?: boolean;
+  animate?: boolean;
+  className?: string;
+  "aria-hidden"?: boolean;
+}) {
+  const allLit = glow && activeBars >= 3;
+  const widths = variant === "footer" ? FOOTER_SIGNAL_BAR_WIDTHS : OVERLAY_SIGNAL_BAR_WIDTHS;
+  const heights = variant === "footer" ? FOOTER_SIGNAL_BAR_HEIGHTS : OVERLAY_SIGNAL_BAR_HEIGHTS;
+  const gap = variant === "footer" ? FOOTER_SIGNAL_GAP : OVERLAY_SIGNAL_GAP;
+  const radius = variant === "footer" ? FOOTER_SIGNAL_RADIUS : OVERLAY_SIGNAL_RADIUS;
+
+  return (
+    <div
+      className={`flex shrink-0 items-center ${className}`}
+      style={{ gap }}
+      aria-hidden={ariaHidden}
+    >
+      {widths.map((width, i) => {
+        const baseHeight = heights[i];
+        const barClass =
+          variant === "overlay"
+            ? i === 1
+              ? "bg-[#f7f6f2]"
+              : "border border-[#f7f6f2] bg-[#f7f6f2]"
+            : signalBarClass(i, activeBars, allLit);
+
+        if (animate) {
+          const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
+          const { heights: keyHeights, times, duration } = buildSignalKeyframes(i, frames);
+          return (
+            <motion.span
+              key={i}
+              className={`block shrink-0 ${barClass}`}
+              style={{ width, borderRadius: radius }}
+              initial={{ height: allLit ? baseHeight : keyHeights[0] }}
+              animate={{ height: keyHeights }}
+              transition={{
+                duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+                times,
+              }}
+            />
+          );
+        }
+
+        return (
+          <span
+            key={i}
+            className={`block shrink-0 transition-colors duration-300 ${barClass}`}
+            style={{ width, height: baseHeight, borderRadius: radius }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 /** Signal strength bars — shared by overlay chip + footer (Figma signal-strength icon). */
 function SignalStrengthIcon({
   activeBars,
@@ -940,27 +1023,14 @@ function SignalStrengthIcon({
   glow?: boolean;
   className?: string;
 }) {
-  const allLit = glow && activeBars >= 3;
-
-  const barClass = (index: number) => {
-    if (index < activeBars) {
-      return allLit ? "border border-[#e7fcee] bg-[#0fc950]" : "bg-[#0fc950]";
-    }
-    return "bg-[rgba(15,201,80,0.2)]";
-  };
-
   return (
-    <div className={`flex shrink-0 items-end gap-[4.903px] ${className}`} aria-hidden>
-      <span
-        className={`h-[18.387px] w-[9.194px] rounded-[7.986px] transition-colors duration-300 ${barClass(0)}`}
-      />
-      <span
-        className={`h-[30.645px] w-[9.806px] rounded-[7.986px] transition-colors duration-300 ${barClass(1)}`}
-      />
-      <span
-        className={`h-[18.387px] w-[9.194px] rounded-[7.986px] transition-colors duration-300 ${barClass(2)}`}
-      />
-    </div>
+    <SignalBarsCore
+      variant="footer"
+      activeBars={activeBars}
+      glow={glow}
+      className={className}
+      aria-hidden
+    />
   );
 }
 
@@ -976,40 +1046,20 @@ function SignalBars({
   glow?: boolean;
 }) {
   const allLit = glow && activeBars >= 3;
+  const shouldAnimate = glow && tone === "live";
 
   return (
     <div
-      className={`relative flex h-[30.645px] items-center justify-center ${allLit ? "crcle-signal-bars-glow" : ""}`}
+      className={`relative flex items-center justify-center ${allLit ? "crcle-signal-bars-glow" : ""}`}
       aria-hidden
     >
-      <div className={`flex items-end gap-[4.903px] ${allLit ? "relative z-[1]" : ""}`}>
-        {SIGNAL_BAR_WIDTHS.map((width, i) => {
-          const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
-          const { heights, times, duration } = buildSignalKeyframes(i, frames);
-          const lit = i < activeBars;
-          const barClass = lit
-            ? allLit
-              ? "border border-[#e7fcee] bg-[#0fc950]"
-              : "bg-[#0fc950]"
-            : "bg-[rgba(15,201,80,0.2)]";
-          const baseHeight = SIGNAL_BAR_HEIGHTS[i];
-          return (
-            <motion.span
-              key={`${tone}-${activeBars}-${isLight}-${glow}-${i}`}
-              className={`block shrink-0 rounded-[7.986px] ${barClass}`}
-              style={{ width }}
-              initial={{ height: allLit ? baseHeight : heights[0] }}
-              animate={{ height: heights }}
-              transition={{
-                duration,
-                repeat: Infinity,
-                ease: "easeInOut",
-                times,
-              }}
-            />
-          );
-        })}
-      </div>
+      <SignalBarsCore
+        variant="footer"
+        activeBars={activeBars}
+        glow={glow}
+        animate={shouldAnimate}
+        className={allLit ? "relative z-[1]" : ""}
+      />
     </div>
   );
 }
@@ -1024,8 +1074,6 @@ const SIGNAL_FRAMES: readonly [number, number, number][] = [
   [14, 30.645, 15],
   [14, 30.645, 15],
 ];
-const SIGNAL_BAR_WIDTHS = [9.194, 9.806, 9.194] as const;
-const SIGNAL_BAR_HEIGHTS = [18.387, 30.645, 18.387] as const;
 const SIGNAL_GLOW_FRAMES: readonly [number, number, number][] = [
   [18.387, 30.645, 18.387],
   [16, 30.645, 17],
