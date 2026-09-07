@@ -427,6 +427,7 @@ export function CrcleMessaging({
   }, []);
 
   const showPrimaryDock =
+    phase !== "chat" &&
     !onboardingOpen &&
     !activeMatch &&
     areaInbox === "off" &&
