@@ -377,39 +377,7 @@ export function SignalInterceptModal({
                 </div>
               </div>
 
-              <div className="relative shrink-0">
-                <AnimatePresence>
-                  {linksOpen ? (
-                    <motion.div
-                      key="signal-social-links"
-                      initial={{ opacity: 0, scale: 0.96, x: 10 }}
-                      animate={{ opacity: 1, scale: 1, x: 0 }}
-                      exit={{ opacity: 0, scale: 0.96, x: 10 }}
-                      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                      className="crcle-signal-social-links absolute right-10 top-1/2 z-10 flex h-11 w-[188px] -translate-y-1/2 items-center gap-3 rounded-[64px] p-1"
-                    >
-                      {SIGNAL_SOCIAL_LINKS.map((social) => (
-                        <a
-                          key={social.id}
-                          href={social.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={social.label}
-                          className="relative block size-9 shrink-0 transition hover:brightness-110"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <img
-                            alt=""
-                            src={social.icon}
-                            className="size-full max-w-none object-contain"
-                            draggable={false}
-                          />
-                        </a>
-                      ))}
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
-
+              <div className="relative flex shrink-0 flex-col items-end gap-2">
                 <motion.button
                   type="button"
                   className={`flex size-8 shrink-0 items-center justify-center rounded-full p-1 ${
@@ -434,6 +402,41 @@ export function SignalInterceptModal({
                     </div>
                   </div>
                 </motion.button>
+
+                <AnimatePresence>
+                  {linksOpen ? (
+                    <motion.div
+                      key="signal-social-links"
+                      initial={{ opacity: 0, scale: 0.96, y: -6 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.96, y: -4 }}
+                      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                      className="crcle-signal-social-links relative z-10 flex h-11 w-[188px] items-center gap-3 rounded-[64px] p-1"
+                    >
+                      <div className="crcle-signal-social-links-plate" aria-hidden />
+                      <div className="dock-glass-lens opacity-55" aria-hidden />
+                      <div className="crcle-signal-social-links-dispersion" aria-hidden />
+                      {SIGNAL_SOCIAL_LINKS.map((social) => (
+                        <a
+                          key={social.id}
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={social.label}
+                          className="relative block size-9 shrink-0 transition hover:brightness-110"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <img
+                            alt=""
+                            src={social.icon}
+                            className="size-full max-w-none object-contain"
+                            draggable={false}
+                          />
+                        </a>
+                      ))}
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
               </div>
             </div>
 
