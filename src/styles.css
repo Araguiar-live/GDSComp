@@ -948,41 +948,26 @@
   opacity: 0.85;
 }
 
-/* Profile Signal Live + mood row — Figma 1005:49835 wireframe pills */
-.crcle-profile-signal-live,
-.crcle-profile-signal-mood {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.03) 0%,
-    rgba(15, 201, 80, 0.12) 100%
-  );
-}
-
-.crcle-profile-signal-live {
-  border: 1px solid rgba(15, 201, 80, 0.2);
-}
-
-.crcle-profile-signal-mood {
-  border: 1px solid #0fc950;
-}
-
+/* Profile mood chip icon — green tint on glass pill */
 .crcle-profile-mood-icon img {
   filter: brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(1352%) hue-rotate(87deg)
     brightness(95%) contrast(89%);
 }
 
-.crcle-phone--light .crcle-profile-signal-live,
-.crcle-phone--light .crcle-profile-signal-mood {
+.crcle-phone--light .crcle-glass-btn--success {
   background: linear-gradient(
-    90deg,
-    rgba(253, 252, 251, 0.92) 0%,
-    rgba(15, 201, 80, 0.1) 100%
+    165deg,
+    rgba(15, 201, 80, 0.28) 0%,
+    rgba(15, 201, 80, 0.12) 45%,
+    rgba(253, 252, 251, 0.55) 100%
   );
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.crcle-phone--light .crcle-profile-signal-live {
-  border-color: rgba(15, 201, 80, 0.25);
+  border-color: rgba(15, 201, 80, 0.45);
+  box-shadow:
+    0 1.5px 0 rgba(255, 255, 255, 0.65) inset,
+    0 -0.5px 0 rgba(15, 201, 80, 0.12) inset,
+    0 4px 12px rgba(2, 3, 29, 0.08),
+    -2px 0 10px rgba(15, 201, 80, 0.12),
+    2px 0 10px rgba(15, 201, 80, 0.1);
 }
 
 /* The Locus — Figma 781:207205 / Signal Panel Dark #02031d66

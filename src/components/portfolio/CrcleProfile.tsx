@@ -479,16 +479,17 @@ function ProfileMainView({
         <CrcleMoreButtonSpacer />
       </div>
 
-      {/* Signal Live + mood — Figma 1005:49835 */}
+      {/* Signal Live + mood — glass pills with green gradient rim */}
       <div className="flex items-start justify-center gap-2 px-2">
         <button
           type="button"
           onClick={onOpenMood}
-          className="crcle-profile-signal-live flex shrink-0 items-center gap-1 rounded-[24px] px-4 py-2 transition hover:brightness-[1.02]"
+          className="crcle-glass-btn crcle-glass-btn--success relative flex shrink-0 items-center gap-1 overflow-hidden rounded-[24px] px-4 py-2 backdrop-blur-[12px] transition hover:brightness-110"
         >
-          <span className="size-2 shrink-0 rounded-full bg-[#22c55e]" aria-hidden />
+          <div className="dock-glass-lens opacity-40" aria-hidden />
+          <span className="relative z-[1] size-2 shrink-0 rounded-full bg-[#22c55e]" aria-hidden />
           <span
-            className="whitespace-nowrap text-[11px] leading-[1.4] text-[#22c55e]"
+            className="relative z-[1] whitespace-nowrap text-[11px] leading-[1.4] text-[#22c55e]"
             style={{ fontFamily: FONT }}
           >
             {signalLiveLabel}
@@ -498,11 +499,12 @@ function ProfileMainView({
           type="button"
           onClick={onOpenMood}
           aria-label="Change mood"
-          className="crcle-profile-signal-mood flex shrink-0 items-center justify-center gap-0.5 rounded-[64px] py-1 pl-2 pr-1 transition hover:brightness-[1.02]"
+          className="crcle-glass-btn crcle-glass-btn--success relative flex shrink-0 items-center justify-center gap-0.5 overflow-hidden rounded-[24px] py-1 pl-2 pr-1 backdrop-blur-[12px] transition hover:brightness-110"
         >
-          <IconImg src={moodChipIcon} className="crcle-profile-mood-icon size-6 shrink-0" />
+          <div className="dock-glass-lens opacity-40" aria-hidden />
+          <IconImg src={moodChipIcon} className="crcle-profile-mood-icon relative z-[1] size-6 shrink-0" />
           <ChevronDown
-            className="size-6 shrink-0 text-[rgba(247,246,242,0.4)] [.crcle-phone--light_&]:text-[rgba(2,3,29,0.45)]"
+            className="relative z-[1] size-6 shrink-0 text-[rgba(247,246,242,0.4)] [.crcle-phone--light_&]:text-[rgba(2,3,29,0.45)]"
             strokeWidth={1.5}
           />
         </button>
