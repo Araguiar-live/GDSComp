@@ -702,6 +702,7 @@ export function CrcleMessaging({
         <AnimatePresence>
           {areaNotificationOpen ? (
             <AreaNearbyNotificationModal
+              backdropUrl={avatarImg}
               onDismiss={() => {
                 setAreaNotificationOpen(false);
                 setAreaNearbyBadgeActive(false);

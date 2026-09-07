@@ -38,9 +38,12 @@ const stageFadeVariants = {
 
 /** Figma 1142:35114 prompt → 1142:35535 request sent → 1391:214524 connected. */
 export function AreaNearbyNotificationModal({
+  backdropUrl,
   onDismiss,
   onComplete,
 }: {
+  /** Frost wash when sibling backdrop-filter cannot sample the clipped screen. */
+  backdropUrl: string;
   onDismiss: () => void;
   onComplete: () => void;
 }) {
@@ -110,8 +113,19 @@ export function AreaNearbyNotificationModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="crcle-nearby-modal-glass relative flex w-full max-w-[360px] flex-col items-center gap-4 overflow-hidden rounded-[52px] p-6 shadow-2xl">
+          <div aria-hidden className="crcle-nearby-modal-glass-backdrop rounded-[inherit]">
+            <img
+              alt=""
+              src={backdropUrl}
+              className="absolute left-1/2 top-1/2 h-[220%] w-[220%] max-w-none -translate-x-1/2 -translate-y-[58%] scale-110 object-cover object-[center_20%]"
+              draggable={false}
+            />
+            <div className="absolute inset-0 bg-[rgba(2,3,29,0.32)]" />
+          </div>
           <div aria-hidden className="crcle-nearby-modal-glass-plate rounded-[inherit]" />
+          <div aria-hidden className="crcle-nearby-modal-glass-frost rounded-[inherit]" />
           <div aria-hidden className="crcle-nearby-modal-glass-lens rounded-[inherit]" />
+          <div aria-hidden className="crcle-nearby-modal-glass-dispersion rounded-[inherit]" />
 
           <div className="relative z-[1] flex w-full flex-col items-center gap-4">
             <AnimatePresence mode="wait" initial={false}>

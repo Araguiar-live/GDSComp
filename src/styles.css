@@ -1702,17 +1702,30 @@
   z-index: 1;
 }
 
-/* Nearby notification modal — Figma 1142:35114 */
+/* Nearby notification modal — Figma 1142:35114 / 1391:214524
+   Full optical stack like area-inbox + signal panel (blur, frost, dispersion, splay). */
 .crcle-nearby-modal-glass {
   position: relative;
   overflow: hidden;
-  background: rgba(2, 3, 29, 0.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.28),
-    0 1px 0 rgba(255, 255, 255, 0.18) inset;
+    0 16px 48px rgba(0, 0, 0, 0.32),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.crcle-nearby-modal-glass-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.crcle-nearby-modal-glass-backdrop > img {
+  opacity: 0.55;
+  filter: blur(40px) saturate(0.92);
 }
 
 .crcle-nearby-modal-glass-plate {
@@ -1722,11 +1735,61 @@
   border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(
-    165deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.05) 42%,
-    rgba(2, 3, 29, 0.2) 100%
+    180deg,
+    rgba(247, 246, 242, 0.22) 0%,
+    rgba(255, 255, 255, 0.06) 52%,
+    rgba(2, 3, 29, 0.12) 100%
   );
+  backdrop-filter: blur(28px) saturate(165%);
+  -webkit-backdrop-filter: blur(28px) saturate(165%);
+}
+
+.crcle-nearby-modal-glass-plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 44%);
+  opacity: 0.55;
+}
+
+.crcle-nearby-modal-glass-frost {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    transparent 46%
+  );
+  opacity: 0.58;
+}
+
+.crcle-nearby-modal-glass-frost::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 0.5px;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.34) 0%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.72;
 }
 
 .crcle-nearby-modal-glass-lens {
@@ -1736,15 +1799,42 @@
   border-radius: inherit;
   pointer-events: none;
   background: radial-gradient(
-    120% 90% at 50% -20%,
-    rgba(255, 255, 255, 0.38),
-    transparent 55%
+    120% 90% at 50% -22%,
+    rgba(255, 255, 255, 0.46),
+    transparent 58%
   );
   mix-blend-mode: soft-light;
-  opacity: 0.5;
+  opacity: 0.62;
 }
 
-.crcle-nearby-modal-glass > *:not(.crcle-nearby-modal-glass-plate):not(.crcle-nearby-modal-glass-lens) {
+.crcle-nearby-modal-glass-dispersion {
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 0.5px;
+  background: linear-gradient(
+    118deg,
+    rgba(255, 92, 92, 0.2) 0%,
+    rgba(255, 255, 255, 0.14) 42%,
+    rgba(92, 140, 255, 0.18) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.55;
+}
+
+.crcle-nearby-modal-glass
+  > *:not(.crcle-nearby-modal-glass-backdrop):not(.crcle-nearby-modal-glass-plate):not(
+    .crcle-nearby-modal-glass-frost
+  ):not(.crcle-nearby-modal-glass-lens):not(.crcle-nearby-modal-glass-dispersion) {
   position: relative;
   z-index: 1;
 }
