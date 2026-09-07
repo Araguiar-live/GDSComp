@@ -22,7 +22,7 @@ export const SIDEBAR_PANEL_ID = "profile-sidebar-panel";
 const CONTACT = {
   email: "A.rafaela.aguiar@outlook.com",
   phone: "+44 0000 000000",
-  linkedin: "https://www.linkedin.com/",
+  linkedin: "https://www.linkedin.com/feed/",
   github: "https://github.com/",
 } as const;
 
