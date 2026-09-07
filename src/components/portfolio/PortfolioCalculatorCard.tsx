@@ -51,7 +51,7 @@ export function PortfolioCalculatorCard() {
             className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[rgba(78,171,149,0.42)] to-[rgba(15,201,80,0.22)]"
           />
           <div className="relative z-[1] flex w-full items-center justify-end gap-2.5 rounded-[24px] border border-[#1ab5ac]/80 bg-white/20 px-3 pb-2 backdrop-blur-[8px]">
-            <p className="text-right text-[56px] font-light leading-none text-[#1d3b51]">A.RA</p>
+            <p className="text-right text-[44.8px] font-light leading-none text-[#1d3b51]">A.RA</p>
             <div className="flex size-6 shrink-0 items-center justify-center opacity-80">
               <img alt="" src={calculatorBackspaceIcon} className="size-5" draggable={false} />
             </div>
@@ -66,11 +66,11 @@ export function PortfolioCalculatorCard() {
                     className={
                       "flex size-[54px] shrink-0 items-center justify-center rounded-[27px] border text-center text-[#f7f6f2] backdrop-blur-[6px] " +
                       (key.operator
-                        ? "border-[#4eab95] bg-[rgba(29,59,81,0.72)] text-[20px] font-normal"
+                        ? "border-[#4eab95] bg-[rgba(29,59,81,0.72)] text-[16px] font-normal"
                         : key.accent
-                          ? "border-[rgba(15,201,80,0.28)] bg-white/10 text-[20px] font-normal"
+                          ? "border-[rgba(15,201,80,0.28)] bg-white/10 text-[16px] font-normal"
                           : "border-[rgba(255,255,255,0.38)] bg-white/10 " +
-                            (key.label === "AC" ? "text-[16px] font-medium" : "text-[20px] font-normal"))
+                            (key.label === "AC" ? "text-[12.8px] font-medium" : "text-[16px] font-normal"))
                     }
                   >
                     {key.label}
