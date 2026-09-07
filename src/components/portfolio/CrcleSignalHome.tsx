@@ -967,6 +967,8 @@ const FOOTER_SIGNAL_BAR_WIDTHS = [9.194, 9.194, 9.194] as const;
 const FOOTER_SIGNAL_BAR_HEIGHTS = [18.387, 30.645, 18.387] as const;
 const FOOTER_SIGNAL_GAP = 4.903;
 const FOOTER_SIGNAL_RADIUS = 7.986;
+/** Banner chip icon — 15% smaller than footer bars */
+const SIGNAL_BANNER_SCALE = 0.85;
 
 /** Figma 458:82643 — overlay chip signal bars on photo. */
 const OVERLAY_SIGNAL_BAR_WIDTHS = [4.839, 5.161, 4.839] as const;
@@ -995,6 +997,7 @@ function SignalBarsCore({
   glow = false,
   animate = false,
   centerOnly = false,
+  sizeScale = 1,
   className = "",
   "aria-hidden": ariaHidden,
 }: {
@@ -1003,14 +1006,17 @@ function SignalBarsCore({
   glow?: boolean;
   animate?: boolean;
   centerOnly?: boolean;
+  sizeScale?: number;
   className?: string;
   "aria-hidden"?: boolean;
 }) {
   const allLit = glow && activeBars >= 3 && !centerOnly;
-  const widths = variant === "footer" ? FOOTER_SIGNAL_BAR_WIDTHS : OVERLAY_SIGNAL_BAR_WIDTHS;
-  const heights = variant === "footer" ? FOOTER_SIGNAL_BAR_HEIGHTS : OVERLAY_SIGNAL_BAR_HEIGHTS;
-  const gap = variant === "footer" ? FOOTER_SIGNAL_GAP : OVERLAY_SIGNAL_GAP;
-  const radius = variant === "footer" ? FOOTER_SIGNAL_RADIUS : OVERLAY_SIGNAL_RADIUS;
+  const rawWidths = variant === "footer" ? FOOTER_SIGNAL_BAR_WIDTHS : OVERLAY_SIGNAL_BAR_WIDTHS;
+  const rawHeights = variant === "footer" ? FOOTER_SIGNAL_BAR_HEIGHTS : OVERLAY_SIGNAL_BAR_HEIGHTS;
+  const widths = rawWidths.map((w) => w * sizeScale);
+  const heights = rawHeights.map((h) => h * sizeScale);
+  const gap = (variant === "footer" ? FOOTER_SIGNAL_GAP : OVERLAY_SIGNAL_GAP) * sizeScale;
+  const radius = (variant === "footer" ? FOOTER_SIGNAL_RADIUS : OVERLAY_SIGNAL_RADIUS) * sizeScale;
 
   return (
     <div
@@ -1032,13 +1038,14 @@ function SignalBarsCore({
         if (animate && !centerOnly) {
           const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
           const { heights: keyHeights, times, duration } = buildSignalKeyframes(i, frames);
+          const scaledKeyHeights = keyHeights.map((h) => h * sizeScale);
           return (
             <motion.span
               key={i}
               className={`block shrink-0 ${barClass}`}
               style={{ width, borderRadius: radius }}
-              initial={{ height: allLit ? baseHeight : keyHeights[0] }}
-              animate={{ height: keyHeights }}
+              initial={{ height: allLit ? baseHeight : scaledKeyHeights[0] }}
+              animate={{ height: scaledKeyHeights }}
               transition={{
                 duration,
                 repeat: Infinity,
@@ -1076,6 +1083,7 @@ function SignalStrengthIcon({
       variant="footer"
       activeBars={activeBars}
       glow={glow}
+      sizeScale={SIGNAL_BANNER_SCALE}
       className={className}
       aria-hidden
     />
