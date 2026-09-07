@@ -134,7 +134,7 @@ export function CrclePrimaryDock({
                 <SoundWaveIcon size={16} active />
               </div>
               <p
-                className="whitespace-nowrap text-[11px] leading-[1.4] text-[#02031d]"
+                className="whitespace-nowrap text-[11px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#02031d]"
                 style={{ fontFamily: FONT }}
               >
                 Signal Panel
