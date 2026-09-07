@@ -115,6 +115,7 @@ export function CrcleSignalHome({
             open={tuneOpen}
             onClose={() => setTuneOpen(false)}
             onSave={() => setSignalStrength(100)}
+            isLight={isLightMode}
             backdropImage={screen === "photo" ? dropPhoto : undefined}
           />
           <IntentTuneModal
