@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import handleIcon from "@/assets/crcle/area/handle.svg";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
@@ -48,6 +48,9 @@ const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 type Screen = "empty" | "photo";
+/** Figma 257:67308 → 257:67462 — green pulse → activating load → complete sheet */
+type SignalActivationPhase = null | "activating" | "complete";
+const SIGNAL_ACTIVATION_MS = 2400;
 
 export function CrcleSignalHome({
   onGoToMessages,
@@ -64,7 +67,8 @@ export function CrcleSignalHome({
   const [locationDone, setLocationDone] = useState(false);
   const [intentOpen, setIntentOpen] = useState(false);
   const [intentDone, setIntentDone] = useState(false);
-  const [signalActivated, setSignalActivated] = useState(false);
+  const [signalPhase, setSignalPhase] = useState<SignalActivationPhase>(null);
+  const activationTimerRef = useRef<number | null>(null);
   const [signalStrength, setSignalStrength] = useState(10);
   /* Figma 322:118233 — Signal Features overlay on light Daily 3 */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
@@ -79,6 +83,29 @@ export function CrcleSignalHome({
 
   const dismissOnboarding = useCallback(() => {
     setOnboardingOpen(false);
+  }, []);
+
+  const clearSignalActivation = useCallback(() => {
+    if (activationTimerRef.current !== null) {
+      window.clearTimeout(activationTimerRef.current);
+      activationTimerRef.current = null;
+    }
+    setSignalPhase(null);
+  }, []);
+
+  const startSignalActivation = useCallback(() => {
+    clearSignalActivation();
+    setSignalPhase("activating");
+    activationTimerRef.current = window.setTimeout(() => {
+      activationTimerRef.current = null;
+      setSignalPhase("complete");
+    }, SIGNAL_ACTIVATION_MS);
+  }, [clearSignalActivation]);
+
+  useEffect(() => () => {
+    if (activationTimerRef.current !== null) {
+      window.clearTimeout(activationTimerRef.current);
+    }
   }, []);
 
   const showPrimaryDock = !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen;
@@ -138,15 +165,6 @@ export function CrcleSignalHome({
               />
             ) : null}
           </AnimatePresence>
-          <AnimatePresence>
-            {signalActivated ? (
-              <SignalCompleteSheet
-                onGoToRecommendations={() => onGoToRadar?.()}
-                onGoToProfile={() => onGoToProfile?.()}
-                onClose={() => setSignalActivated(false)}
-              />
-            ) : null}
-          </AnimatePresence>
           <StatusBar />
           <div className="mt-[5px] flex shrink-0 justify-center pb-[12px]">
             <IconImg src={crcleLogo} className="crcle-theme-icon h-[13px] w-[38px]" />
@@ -160,7 +178,7 @@ export function CrcleSignalHome({
                   setSignalStrength(10);
                   setLocationDone(false);
                   setIntentDone(false);
-                  setSignalActivated(false);
+                  clearSignalActivation();
                   setLocationOpen(false);
                   setIntentOpen(false);
                   setTuneOpen(false);
@@ -204,74 +222,52 @@ export function CrcleSignalHome({
               }
             >
               <AnimatePresence mode="wait">
-                {screen === "photo" ? (
+                {screen === "photo" && signalPhase !== "complete" ? (
                   <motion.div
-                    key={signalActivated ? "activating" : "signal-strength"}
+                    key="signal-strength"
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.28, ease: EASE }}
-                    className={`absolute inset-x-0 top-0 z-30 flex rounded-[28px] bg-[rgba(247,246,242,0.2)] p-2 backdrop-blur-[12px] ${
-                      signalActivated ? "justify-center" : "items-center justify-between"
-                    }`}
+                    className="absolute inset-x-0 top-0 z-30 flex items-center justify-between rounded-[28px] bg-[rgba(247,246,242,0.2)] p-2 backdrop-blur-[12px]"
                   >
-                    {signalActivated ? (
-                      <div className="flex items-center gap-1 rounded-xl bg-[rgba(255,255,255,0.1)] px-3 py-1">
-                        <span className="relative flex size-2 items-center justify-center">
-                          <span
-                            aria-hidden
-                            className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/70"
-                          />
-                          <span className="relative size-1 rounded-full bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.85)]" />
-                        </span>
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <SignalStrengthIcon activeBars={activeBars} />
+                      <div className="min-w-0 flex-1 leading-[1.2] text-[#030426]">
+                        <p className="text-[14px] font-medium" style={{ fontFamily: FONT }}>
+                          Signal Strength: {signalStrength}%
+                        </p>
+                        <p className="text-[12px] font-normal" style={{ fontFamily: FONT }}>
+                          {signalLive ? (
+                            <span className="inline-flex flex-wrap items-center gap-1">
+                              <span>You can now calibrate your signal. Press</span>
+                              <IconImg src={pulseIcon} className="inline-block size-[15px]" />
+                              <span>to calibrate.</span>
+                            </span>
+                          ) : activeBars >= 3 ? (
+                            "Signal fully calibrated."
+                          ) : activeBars >= 2 ? (
+                            "Add 1 more detail to hit 100%."
+                          ) : (
+                            "Add 3 more details to hit 100%."
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                    {!signalLive ? (
+                      <button
+                        type="button"
+                        onClick={() => setTuneOpen(true)}
+                        className="flex h-9 shrink-0 items-center justify-center rounded-[36px] bg-[#030426] px-4 py-2"
+                      >
                         <span
-                          className="text-[11px] leading-[1.4] text-[#22c55e]"
+                          className="text-[13px] leading-[1.4] text-[#fefefe]"
                           style={{ fontFamily: FONT }}
                         >
-                          Activating...
+                          {tuned ? "Edit" : "Complete"}
                         </span>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="flex min-w-0 flex-1 items-center gap-3">
-                          <SignalStrengthIcon activeBars={activeBars} />
-                          <div className="min-w-0 flex-1 leading-[1.2] text-[#030426]">
-                            <p className="text-[14px] font-medium" style={{ fontFamily: FONT }}>
-                              Signal Strength: {signalStrength}%
-                            </p>
-                            <p className="text-[12px] font-normal" style={{ fontFamily: FONT }}>
-                              {signalLive ? (
-                                <span className="inline-flex flex-wrap items-center gap-1">
-                                  <span>You can now calibrate your signal. Press</span>
-                                  <IconImg src={pulseIcon} className="inline-block size-[15px]" />
-                                  <span>to calibrate.</span>
-                                </span>
-                              ) : activeBars >= 3 ? (
-                                "Signal fully calibrated."
-                              ) : activeBars >= 2 ? (
-                                "Add 1 more detail to hit 100%."
-                              ) : (
-                                "Add 3 more details to hit 100%."
-                              )}
-                            </p>
-                          </div>
-                        </div>
-                        {!signalLive ? (
-                          <button
-                            type="button"
-                            onClick={() => setTuneOpen(true)}
-                            className="flex h-9 shrink-0 items-center justify-center rounded-[36px] bg-[#030426] px-4 py-2"
-                          >
-                            <span
-                              className="text-[13px] leading-[1.4] text-[#fefefe]"
-                              style={{ fontFamily: FONT }}
-                            >
-                              {tuned ? "Edit" : "Complete"}
-                            </span>
-                          </button>
-                        ) : null}
-                      </>
-                    )}
+                      </button>
+                    ) : null}
                   </motion.div>
                 ) : null}
               </AnimatePresence>
@@ -407,6 +403,37 @@ export function CrcleSignalHome({
                 </div>
               ) : null}
 
+              <AnimatePresence>
+                {screen === "photo" && signalPhase === "complete" ? (
+                  <SignalCompleteSheet
+                    onGoToRecommendations={() => onGoToRadar?.()}
+                    onGoToProfile={() => onGoToProfile?.()}
+                    onClose={clearSignalActivation}
+                  />
+                ) : null}
+              </AnimatePresence>
+
+              {screen === "photo" && signalPhase !== null ? (
+                <div className="pointer-events-none absolute bottom-10 left-1/2 z-[2] -translate-x-1/2">
+                  <div className="flex items-center gap-1 rounded-xl bg-[rgba(255,255,255,0.1)] px-3 py-1">
+                    {signalPhase === "activating" ? (
+                      <span className="relative flex size-2 items-center justify-center" aria-hidden>
+                        <span className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/70" />
+                        <span className="relative size-1 rounded-full bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.85)]" />
+                      </span>
+                    ) : (
+                      <span className="size-2 rounded-full bg-[#22c55e]" aria-hidden />
+                    )}
+                    <span
+                      className="whitespace-nowrap text-[11px] leading-[1.4] text-[#22c55e]"
+                      style={{ fontFamily: FONT }}
+                    >
+                      {signalPhase === "activating" ? "Activating..." : "Signal Live"}
+                    </span>
+                  </div>
+                </div>
+              ) : null}
+
               <div className="relative z-[1] mt-auto flex w-full items-end justify-between pb-0.5">
                 {screen === "photo" ? (
                   <>
@@ -423,7 +450,7 @@ export function CrcleSignalHome({
                         lit={signalLive}
                         greenLit={signalLive}
                         onClick={() => {
-                          if (signalLive) setSignalActivated(true);
+                          if (signalLive && signalPhase === null) startSignalActivation();
                         }}
                       >
                         <IconImg src={pulseIcon} className="size-6" />
@@ -439,6 +466,7 @@ export function CrcleSignalHome({
               activeBars={activeBars}
               isLight={isLightMode}
               glow={signalLive}
+              activationPhase={signalPhase}
             />
           </div>
 
@@ -878,27 +906,38 @@ function FooterSignal({
   activeBars = 0,
   isLight = false,
   glow = false,
+  activationPhase = null,
 }: {
   tone: "neutral" | "live";
   activeBars?: number;
   isLight?: boolean;
   glow?: boolean;
+  activationPhase?: SignalActivationPhase;
 }) {
+  const tunedCopy =
+    activationPhase === "activating" || activationPhase === "complete" || isLight;
+
   return (
-    <div className="flex w-full flex-col items-center gap-4 px-3">
-      <SignalBars tone={tone} activeBars={activeBars} isLight={isLight} glow={glow} />
+    <div className="flex w-full flex-col items-center gap-2.5 px-3">
+      <SignalBars
+        tone={tone}
+        activeBars={activeBars}
+        isLight={isLight}
+        glow={glow}
+        activationPhase={activationPhase}
+      />
       <p
         className="max-w-[392px] text-center text-[11px] leading-[1.4] text-[#b1b1bc]"
         style={{ fontFamily: FONT }}
       >
-        {tone === "live" || !isLight ? (
-          <>Your signal will connect you with compatible users nearby when your drop goes live.</>
-        ) : (
+        {tunedCopy ? (
           <>
             Your tuned signal will broadcast to compatible users.
             <br />
             The algorithm calibrates high-fidelity matches based on your frequency
           </>
+        ) : (
+          <>Your signal will connect you with compatible users nearby when your drop goes live.</>
         )}
       </p>
     </div>
@@ -935,7 +974,15 @@ const OVERLAY_SIGNAL_BAR_HEIGHTS = [12.256, 20.427, 12.256] as const;
 const OVERLAY_SIGNAL_GAP = 2.904;
 const OVERLAY_SIGNAL_RADIUS = 4.73;
 
-function signalBarClass(index: number, activeBars: number, allLit: boolean) {
+function signalBarClass(
+  index: number,
+  activeBars: number,
+  allLit: boolean,
+  centerOnly = false,
+) {
+  if (centerOnly) {
+    return index === 1 ? "bg-[#0fc950]" : "bg-[rgba(15,201,80,0.2)]";
+  }
   if (index < activeBars) {
     return allLit ? "border border-[#e7fcee] bg-[#0fc950]" : "bg-[#0fc950]";
   }
@@ -947,6 +994,7 @@ function SignalBarsCore({
   activeBars,
   glow = false,
   animate = false,
+  centerOnly = false,
   className = "",
   "aria-hidden": ariaHidden,
 }: {
@@ -954,10 +1002,11 @@ function SignalBarsCore({
   activeBars: number;
   glow?: boolean;
   animate?: boolean;
+  centerOnly?: boolean;
   className?: string;
   "aria-hidden"?: boolean;
 }) {
-  const allLit = glow && activeBars >= 3;
+  const allLit = glow && activeBars >= 3 && !centerOnly;
   const widths = variant === "footer" ? FOOTER_SIGNAL_BAR_WIDTHS : OVERLAY_SIGNAL_BAR_WIDTHS;
   const heights = variant === "footer" ? FOOTER_SIGNAL_BAR_HEIGHTS : OVERLAY_SIGNAL_BAR_HEIGHTS;
   const gap = variant === "footer" ? FOOTER_SIGNAL_GAP : OVERLAY_SIGNAL_GAP;
@@ -976,9 +1025,9 @@ function SignalBarsCore({
             ? i === 1
               ? "bg-[#f7f6f2]"
               : "border border-[#f7f6f2] bg-[#f7f6f2]"
-            : signalBarClass(i, activeBars, allLit);
+            : signalBarClass(i, activeBars, allLit, centerOnly);
 
-        if (animate) {
+        if (animate && !centerOnly) {
           const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
           const { heights: keyHeights, times, duration } = buildSignalKeyframes(i, frames);
           return (
@@ -1036,27 +1085,35 @@ function SignalBars({
   activeBars = 0,
   isLight = false,
   glow = false,
+  activationPhase = null,
 }: {
   tone?: "neutral" | "live";
   activeBars?: number;
   isLight?: boolean;
   glow?: boolean;
+  activationPhase?: SignalActivationPhase;
 }) {
+  const activating = activationPhase === "activating";
+  const complete = activationPhase === "complete";
   const allLit = glow && activeBars >= 3;
-  /** Figma 257:63722 — idle + live footer bars loop through variant heights. */
-  const shouldAnimate = true;
+  const centerOnly = complete;
+  /** Figma 257:63722 — idle + live footer bars loop; 257:67308 — full green pulse while activating */
+  const shouldAnimate = !complete;
 
   return (
     <div
-      className={`relative flex items-center justify-center ${allLit ? "crcle-signal-bars-glow" : ""}`}
+      className={`relative flex items-center justify-center px-2 py-[11px] ${
+        activating || allLit ? "crcle-signal-bars-glow" : ""
+      }`}
       aria-hidden
     >
       <SignalBarsCore
         variant="footer"
-        activeBars={activeBars}
-        glow={glow}
+        activeBars={activating ? 3 : activeBars}
+        glow={activating || glow}
         animate={shouldAnimate}
-        className={allLit ? "relative z-[1]" : ""}
+        centerOnly={centerOnly}
+        className={activating || allLit ? "relative z-[1]" : ""}
       />
     </div>
   );
@@ -1104,7 +1161,7 @@ function buildSignalKeyframes(barIndex: number, frames: readonly [number, number
   return { heights, times, duration: total };
 }
 
-/** Figma 257:67520 — signal activated confirmation sheet. */
+/** Figma 257:67520 — signal activated confirmation sheet on photo card. */
 function SignalCompleteSheet({
   onGoToRecommendations,
   onGoToProfile,
@@ -1116,73 +1173,61 @@ function SignalCompleteSheet({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.24, ease: EASE }}
-      className="absolute inset-0 z-[60] flex flex-col justify-end overflow-hidden rounded-[53px]"
-      style={{ clipPath: "inset(0 round 53px)" }}
+      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+      transition={{ duration: 0.32, ease: EASE }}
+      className="crcle-signal-complete-sheet absolute left-1/2 top-[14%] z-40 w-[calc(100%-16px)] max-w-[402px] -translate-x-1/2 overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="signal-complete-title"
     >
-      <button
-        type="button"
-        aria-label="Dismiss"
-        className="absolute inset-0 bg-[rgba(2,3,29,0.18)] backdrop-blur-[8px] [-webkit-backdrop-filter:blur(8px)]"
-        onClick={onClose}
-      />
-      <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ duration: 0.34, ease: EASE }}
-        className="crcle-signal-complete-sheet relative z-[1] mx-3 mb-3 overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
-      >
-        <div className="px-4 pb-[9px] pt-9">
-          <div className="flex flex-col gap-2">
-            <p
-              id="signal-complete-title"
-              className="text-center text-[16px] font-medium leading-[1.4] text-[#f7f6f2]"
-              style={{ fontFamily: FONT }}
-            >
-              You&apos;re all set
-            </p>
-            <p
-              className="text-center text-[13px] leading-[1.4] text-[#f7f6f2]"
-              style={{ fontFamily: FONT }}
-            >
-              Your profile is locked in for the next drop. Sit tight, your new matches will appear
-              when the timer runs out.
-            </p>
-          </div>
+      <div className="px-4 pb-[9px] pt-9">
+        <div className="flex flex-col gap-2">
+          <p
+            id="signal-complete-title"
+            className="text-center text-[16px] font-medium leading-[1.4] text-[#f7f6f2]"
+            style={{ fontFamily: FONT }}
+          >
+            You&apos;re all set
+          </p>
+          <p
+            className="text-center text-[13px] leading-[1.4] text-[#f7f6f2]"
+            style={{ fontFamily: FONT }}
+          >
+            Your profile is locked in for the next drop. Sit tight, your new matches will appear
+            when the timer runs out.
+          </p>
         </div>
-        <div className="flex flex-col items-center gap-4 border-t border-[rgba(2,3,29,0.05)] p-3">
-          <div className="flex w-full flex-col gap-3">
-            <button
-              type="button"
-              onClick={onGoToRecommendations}
-              className="flex w-full items-center justify-center rounded-full bg-[#020217] px-3 py-2"
-            >
-              <span
-                className="text-center text-[15px] leading-[21px] text-[#f7f6f2]"
-                style={{ fontFamily: FONT }}
-              >
-                Go to recommendations
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={onGoToProfile}
-              className="w-full text-center text-[11px] leading-[1.4] text-[rgba(247,246,242,0.6)]"
+      </div>
+      <div className="flex flex-col items-center gap-4 border-t border-[rgba(2,3,29,0.05)] p-3">
+        <div className="flex w-full flex-col gap-3">
+          <button
+            type="button"
+            onClick={onGoToRecommendations}
+            className="flex w-full items-center justify-center rounded-full bg-[#020217] px-3 py-2 transition hover:brightness-110"
+          >
+            <span
+              className="text-center text-[15px] leading-[21px] text-[#f7f6f2]"
               style={{ fontFamily: FONT }}
             >
-              Go back to profile
-            </button>
-          </div>
-          <img alt="" src={handleIcon} className="h-[3px] w-[66px] max-w-none object-contain opacity-70" draggable={false} />
+              Go to recommendations
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              onGoToProfile();
+            }}
+            className="w-full text-center text-[11px] leading-[1.4] text-[rgba(247,246,242,0.6)] transition hover:text-[rgba(247,246,242,0.85)]"
+            style={{ fontFamily: FONT }}
+          >
+            Go back to profile
+          </button>
         </div>
-      </motion.div>
+        <img alt="" src={handleIcon} className="h-[3px] w-[66px] max-w-none object-contain opacity-70" draggable={false} />
+      </div>
     </motion.div>
   );
 }
