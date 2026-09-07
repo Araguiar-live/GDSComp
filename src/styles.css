@@ -15,6 +15,28 @@
   animation: marquee 40s linear infinite;
 }
 
+@keyframes portfolio-logo-breathe {
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+@utility animate-portfolio-logo-breathe {
+  animation: portfolio-logo-breathe 2.4s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-portfolio-logo-breathe {
+    animation: none;
+    transform: none;
+  }
+}
+
 /* First Design coming-soon — background ghost frames breathe as loading cards */
 @keyframes fd-ghost-pulse-a {
   0%,

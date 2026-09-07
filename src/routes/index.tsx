@@ -277,7 +277,7 @@ function Index() {
             src={girlPleaseLogo}
             alt=""
             aria-hidden
-            className="h-[70%] w-[70%] animate-pulse object-contain invert transition-[filter] duration-200 group-hover:animate-none group-hover:invert-0"
+            className="h-[70%] w-[70%] animate-portfolio-logo-breathe object-contain invert transition-[filter] duration-200 group-hover:animate-none group-hover:scale-100 group-hover:invert-0"
           />
         </button>
         <a
