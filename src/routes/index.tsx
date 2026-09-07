@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
-import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import girlPleaseLogo from "@/assets/girl-please.svg";
 import designToggleKnob from "@/assets/portfolio/design-toggle-knob.svg";
 import { ProjectBentoStack, type Project } from "@/components/portfolio/ProjectAccordion";
@@ -18,7 +18,6 @@ import { CrcleProfile } from "@/components/portfolio/CrcleProfile";
 import { CrcleRadar } from "@/components/portfolio/CrcleRadar";
 import { CrcleSignalHome } from "@/components/portfolio/CrcleSignalHome";
 import { FirstDesignComingSoon } from "@/components/portfolio/FirstDesignComingSoon";
-import { StoneSkipRipple } from "@/components/portfolio/StoneSkipRipple";
 import { WireframeStage } from "@/components/portfolio/SiteWireframe";
 export const Route = createFileRoute("/")({
   component: Index,
@@ -241,9 +240,6 @@ function Index() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [designOn, setDesignOn] = useState(false);
   const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const accordionRef = useRef<HTMLDivElement>(null);
-  const designToggleRef = useRef<HTMLButtonElement>(null);
-  const [skipSignal, setSkipSignal] = useState(0);
   const isExpanded = openSlug !== null;
 
   const toggle = useCallback((slug: string) => {
@@ -322,10 +318,8 @@ function Index() {
 
               <div className="w-[72px] shrink-0 pb-2.5 sm:w-[87px]">
                 <DesignToggle
-                  ref={designToggleRef}
                   on={designOn}
                   onToggle={() => setDesignOn((v) => !v)}
-                  onSkip={() => setSkipSignal((n) => n + 1)}
                 />
               </div>
             </div>
@@ -337,7 +331,6 @@ function Index() {
           </header>
 
           <ProjectBentoStack
-            ref={accordionRef}
             projects={PROJECTS}
             openSlug={openSlug}
             onToggle={toggle}
@@ -345,12 +338,6 @@ function Index() {
           />
         </div>
       </WireframeStage>
-
-      <StoneSkipRipple
-        accordionRef={accordionRef}
-        originRef={designToggleRef}
-        signal={skipSignal}
-      />
 
       {/* Exactly 2px of #f3f4f6 between wireframe frame and marquee */}
       <div className="relative z-20 h-[2px] w-full shrink-0 bg-[#f3f4f6]" aria-hidden />
@@ -374,10 +361,13 @@ function Index() {
  * Figma Design toggle — mint ↔ purple.
  * Auto-flips ~every 10s; click still works; bouncy spring + float + occasional shake.
  */
-const DesignToggle = forwardRef<
-  HTMLButtonElement,
-  { on: boolean; onToggle: () => void; onSkip?: () => void }
->(function DesignToggle({ on, onToggle, onSkip }, ref) {
+const DesignToggle = ({
+  on,
+  onToggle,
+}: {
+  on: boolean;
+  onToggle: () => void;
+}) => {
   const reduceMotion = useReducedMotion();
   const shakeControls = useAnimationControls();
   const flipControls = useAnimationControls();
@@ -402,9 +392,8 @@ const DesignToggle = forwardRef<
   const handleToggle = useCallback(() => {
     pauseUntilRef.current = Date.now() + 12_000;
     playFlipBounce();
-    onSkip?.();
     onToggleRef.current();
-  }, [onSkip, playFlipBounce]);
+  }, [playFlipBounce]);
 
   // Auto-flip every ~10s (jitter 9–11s). Skips briefly after a manual click.
   useEffect(() => {
@@ -473,7 +462,6 @@ const DesignToggle = forwardRef<
       }
     >
       <motion.button
-        ref={ref}
         type="button"
         role="switch"
         aria-checked={on}
@@ -509,5 +497,4 @@ const DesignToggle = forwardRef<
       </motion.button>
     </motion.div>
   );
-},
-);
+};
