@@ -622,11 +622,17 @@ export function SignalCard({
                   e.stopPropagation();
                   if (canRespond) setResponseOpen((open) => !open);
                 }}
-                className={`crcle-signal-card-plus flex shrink-0 items-center rounded-[24px] p-2.5 disabled:opacity-50 ${
-                  isSent ? "bg-transparent" : ""
-                } ${responseOpen && canRespond ? "crcle-signal-card-plus--active" : ""}`}
+                className={`crcle-glass-btn crcle-signal-card-plus relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 backdrop-blur-[12px] transition hover:brightness-110 disabled:opacity-50 ${
+                  responseOpen && canRespond ? "brightness-110" : ""
+                }`}
               >
-                <img alt="" src={locusPlusIcon} className="size-5 max-w-none" draggable={false} />
+                <div className="dock-glass-lens opacity-40" aria-hidden />
+                <img
+                  alt=""
+                  src={locusPlusIcon}
+                  className="relative z-[1] size-5 max-w-none"
+                  draggable={false}
+                />
               </button>
             </div>
           </div>
