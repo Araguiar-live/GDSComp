@@ -80,6 +80,8 @@ export function CrcleSignalHome({
     setOnboardingOpen(false);
   }, []);
 
+  const showPrimaryDock = !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen;
+
   return (
     <div className="relative ml-auto w-fit">
       <motion.button
@@ -102,7 +104,7 @@ export function CrcleSignalHome({
       <CrclePhoneFrame
         light={isLightMode}
         bottomChrome={
-          !onboardingOpen ? (
+          showPrimaryDock ? (
             <CrclePrimaryDock
               embedded
               active="signal"
