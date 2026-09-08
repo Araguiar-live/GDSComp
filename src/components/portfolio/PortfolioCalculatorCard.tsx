@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react";
+import { useReducedMotion } from "framer-motion";
 import calculatorBackspaceIcon from "@/assets/portfolio/calculator-backspace.svg";
 
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
+const DISPLAY_TEXT = "A.RA";
 
 const KEY_ROWS: { label: string; operator?: boolean; accent?: boolean }[][] = [
   [
@@ -33,8 +36,65 @@ const KEY_ROWS: { label: string; operator?: boolean; accent?: boolean }[][] = [
   ],
 ];
 
+function useCalculatorDisplayText() {
+  const reduceMotion = useReducedMotion();
+  const [display, setDisplay] = useState(DISPLAY_TEXT);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      setDisplay(DISPLAY_TEXT);
+      return;
+    }
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+
+    const wait = (ms: number) =>
+      new Promise<void>((resolve) => {
+        timer = setTimeout(() => resolve(), ms);
+      });
+
+    const run = async () => {
+      const show = (value: string) => {
+        if (!cancelled) setDisplay(value);
+      };
+
+      while (!cancelled) {
+        show(DISPLAY_TEXT);
+        await wait(2400);
+        if (cancelled) break;
+
+        for (let i = DISPLAY_TEXT.length; i >= 0; i -= 1) {
+          if (cancelled) break;
+          show(DISPLAY_TEXT.slice(0, i));
+          await wait(110);
+        }
+
+        await wait(500);
+        if (cancelled) break;
+
+        for (let i = 0; i <= DISPLAY_TEXT.length; i += 1) {
+          if (cancelled) break;
+          show(DISPLAY_TEXT.slice(0, i));
+          await wait(140);
+        }
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [reduceMotion]);
+
+  return display;
+}
+
 /** Figma 1394:214995 — decorative A.RA calculator card at 50% scale. */
 export function PortfolioCalculatorCard() {
+  const displayText = useCalculatorDisplayText();
+
   return (
     <div
       aria-hidden
@@ -51,7 +111,9 @@ export function PortfolioCalculatorCard() {
             className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[rgba(78,171,149,0.42)] to-[rgba(15,201,80,0.22)]"
           />
           <div className="relative z-[1] flex w-full items-center justify-end gap-2.5 rounded-[24px] border border-[#1ab5ac]/80 bg-white/20 px-3 pb-2 backdrop-blur-[8px]">
-            <p className="text-right text-[44.8px] font-light leading-none text-[#1d3b51]">A.RA</p>
+            <p className="min-w-[5ch] text-right text-[44.8px] font-light leading-none text-[#1d3b51] tabular-nums">
+              {displayText}
+            </p>
             <div className="flex size-6 shrink-0 items-center justify-center opacity-80">
               <img alt="" src={calculatorBackspaceIcon} className="size-5" draggable={false} />
             </div>
