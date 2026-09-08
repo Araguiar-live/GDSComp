@@ -350,7 +350,7 @@ export function WireframeStage({
       className={
         expanded
           ? "relative w-full overflow-x-hidden bg-[#f3f4f6] pb-0 pt-[96px]"
-          : "relative w-full overflow-hidden bg-[#f3f4f6]"
+          : "relative w-full overflow-visible bg-[#f3f4f6]"
       }
       style={
         expanded
