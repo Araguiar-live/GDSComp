@@ -5,6 +5,10 @@ const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 const DISPLAY_TEXT = "A.RA";
 /** Matches operator button base — rgba(29,59,81,…). */
 const OPERATOR_GREEN = "#1d3b51";
+const TEXT_FAINT = "text-[#f7f6f2]/80";
+const DISPLAY_SIZE = "text-[38.08px]";
+const KEY_SIZE = "text-[13.6px]";
+const AC_SIZE = "text-[10.88px]";
 
 const KEY_ROWS: { label: string; operator?: boolean; accent?: boolean }[][] = [
   [
@@ -102,9 +106,15 @@ function BackspaceIcon({ className = "size-5" }: { className?: string }) {
       aria-hidden
     >
       <path
-        d="M10 7.49971L15.0004 12.5003M15.0004 7.49971L10 12.5003M8.33317 4.166C7.91904 4.16602 7.51974 4.32022 7.21308 4.59855L1.93931 9.38243C1.85323 9.46055 1.78445 9.55581 1.73738 9.6621C1.69032 9.76838 1.666 9.88334 1.666 9.99958C1.666 10.1158 1.69032 10.2308 1.73738 10.3371C1.78445 10.4434 1.85323 10.5386 1.93931 10.6167L7.21308 15.4015C7.51974 15.6798 7.91904 15.834 8.33317 15.834H16.6672C17.1093 15.834 17.5332 15.6584 17.8458 15.3458C18.1584 15.0332 18.334 14.6092 18.334 14.1671V5.83286C18.334 5.39078 18.1584 4.96681 17.8458 4.65421C17.5332 4.34161 17.1093 4.166 16.6672 4.166H8.33317Z"
-        stroke={OPERATOR_GREEN}
-        strokeWidth="2"
+        d="M8.33317 4.166C7.91904 4.16602 7.51974 4.32022 7.21308 4.59855L1.93931 9.38243C1.85323 9.46055 1.78445 9.55581 1.73738 9.6621C1.69032 9.76838 1.666 9.88334 1.666 9.99958C1.666 10.1158 1.69032 10.2308 1.73738 10.3371C1.78445 10.4434 1.85323 10.5386 1.93931 10.6167L7.21308 15.4015C7.51974 15.6798 7.91904 15.834 8.33317 15.834H16.6672C17.1093 15.834 17.5332 15.6584 17.8458 15.3458C18.1584 15.0332 18.334 14.6092 18.334 14.1671V5.83286C18.334 5.39078 18.1584 4.96681 17.8458 4.65421C17.5332 4.34161 17.1093 4.166 16.6672 4.166H8.33317Z"
+        fill={OPERATOR_GREEN}
+        fillOpacity={0.72}
+      />
+      <path
+        d="M10 7.49971L15.0004 12.5003M15.0004 7.49971L10 12.5003"
+        stroke="#f7f6f2"
+        strokeOpacity={0.8}
+        strokeWidth="1.6"
         strokeLinecap="round"
       />
     </svg>
@@ -133,12 +143,14 @@ export function PortfolioCalculatorCard() {
           <div className="relative z-[1] flex h-[76px] w-full shrink-0 items-center justify-end gap-2.5 rounded-[24px] border border-[#1ab5ac]/80 bg-white/20 px-3 backdrop-blur-[8px]">
             <div className="relative h-[38.08px] w-[133px] shrink-0">
               <span
-                className="invisible block text-right text-[38.08px] font-light leading-none tabular-nums"
+                className={`invisible block text-right ${DISPLAY_SIZE} font-light leading-none tabular-nums`}
                 aria-hidden
               >
                 {DISPLAY_TEXT}
               </span>
-              <span className="absolute inset-0 text-right text-[38.08px] font-light leading-none tabular-nums text-[#1d3b51]/80">
+              <span
+                className={`absolute inset-0 text-right ${DISPLAY_SIZE} font-light leading-none tabular-nums text-[#1d3b51]/80`}
+              >
                 {displayText}
               </span>
             </div>
@@ -154,13 +166,13 @@ export function PortfolioCalculatorCard() {
                   <div
                     key={key.label}
                     className={
-                      "flex size-[54px] shrink-0 items-center justify-center rounded-[27px] border text-center text-[#f7f6f2] backdrop-blur-[6px] " +
+                      `flex size-[54px] shrink-0 items-center justify-center rounded-[27px] border text-center backdrop-blur-[6px] ${TEXT_FAINT} ` +
                       (key.operator
-                        ? "border-[#4eab95] bg-[rgba(29,59,81,0.72)] text-[16px] font-normal"
+                        ? `border-[#4eab95] bg-[rgba(29,59,81,0.72)] ${KEY_SIZE} font-normal`
                         : key.accent
-                          ? "border-[rgba(15,201,80,0.28)] bg-white/10 text-[16px] font-normal"
-                          : "border-[rgba(255,255,255,0.38)] bg-white/10 " +
-                            (key.label === "AC" ? "text-[12.8px] font-medium" : "text-[16px] font-normal"))
+                          ? `border-[rgba(15,201,80,0.28)] bg-white/10 ${KEY_SIZE} font-normal`
+                          : `border-[rgba(255,255,255,0.38)] bg-white/10 ` +
+                            (key.label === "AC" ? `${AC_SIZE} font-medium` : `${KEY_SIZE} font-normal`))
                     }
                   >
                     {key.label}
