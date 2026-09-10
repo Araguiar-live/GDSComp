@@ -349,7 +349,7 @@ export function WireframeStage({
     <div
       className={
         expanded
-          ? "relative w-full overflow-x-hidden bg-[#f3f4f6] pb-0 pt-[96px]"
+          ? "relative w-full overflow-visible bg-[#f3f4f6] pb-0 pt-[96px]"
           : "relative w-full overflow-visible bg-[#f3f4f6]"
       }
       style={
@@ -371,7 +371,7 @@ export function WireframeStage({
 
       {/* Content overlay — Figma 530:151856 */}
       {expanded ? (
-        <div className="relative z-10">{children}</div>
+        <div className="relative z-10 overflow-visible">{children}</div>
       ) : (
         <div className="absolute inset-0 z-10 overflow-visible">{children}</div>
       )}

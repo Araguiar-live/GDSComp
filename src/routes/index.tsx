@@ -303,7 +303,7 @@ function Index() {
         <div
           className={
             isExpanded
-              ? "mx-auto flex w-full max-w-[1690px] flex-col items-center gap-[78px] px-6 pb-0 pt-10 sm:px-10"
+              ? "mx-auto flex w-full max-w-[1690px] flex-col items-center gap-[78px] overflow-visible px-6 pb-0 pt-10 sm:px-10"
               : "absolute left-1/2 top-[calc(50%+18.5px)] flex h-[min(704px,83.1%)] w-[min(1690px,94%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[78px] overflow-visible"
           }
         >
@@ -331,19 +331,25 @@ function Index() {
             </p>
           </header>
 
-          <div className="relative w-full shrink-0 overflow-visible">
-            <div className="pointer-events-none absolute left-0 top-0 z-[5] hidden -translate-x-1/2 -translate-y-1/2 md:block">
-              <PortfolioCalculatorCard />
-            </div>
-            <div className="pointer-events-none absolute top-4 right-4 z-10 hidden md:block">
-              <PortfolioPeekMouse />
-            </div>
+          <div className="relative w-full shrink-0">
             <ProjectBentoStack
               projects={PROJECTS}
               openSlug={openSlug}
               onToggle={toggle}
               rowRefs={rowRefs}
             />
+            {/* Decorative layer sits above the accordion so edges are never clipped */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-20 overflow-visible"
+            >
+              <div className="absolute left-0 top-0 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+                <PortfolioCalculatorCard />
+              </div>
+              <div className="absolute top-4 right-4 hidden md:block">
+                <PortfolioPeekMouse />
+              </div>
+            </div>
           </div>
         </div>
       </WireframeStage>
