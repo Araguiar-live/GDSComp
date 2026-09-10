@@ -106,7 +106,7 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
     return tabs[0];
   };
 
-  const [activeTab, setActiveTab] = useState<Tab>(resolveDefaultTab);
+  const [activeTab, setActiveTab] = useState<Tab>(() => resolveDefaultTab());
 
   useEffect(() => {
     if (isOpen) {

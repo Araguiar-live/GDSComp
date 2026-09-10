@@ -171,6 +171,7 @@ const PROJECTS: Project[] = [
     title: "Odicci",
     role: "Product Team / Core UX",
     year: "2025-26",
+    defaultTab: "Create Workspace\u00a0",
     content: {
       "Create Workspace\u00a0": {
         label: "Odicci — Workspace",
