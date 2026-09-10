@@ -195,25 +195,17 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                 </>
               ) : null}
 
-              {/* Copy fills leftover width; prototypes stay on the right */}
-              <div className="mx-auto flex min-h-0 w-full flex-1 items-start px-[68px] pt-2">
-                <div className="grid w-full grid-cols-1 items-start gap-8 overflow-visible md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-8">
+              {/* Copy + prototype — stack on narrow viewports; 1:2 side-by-side at lg+ */}
+              <div className="mx-auto flex min-h-0 w-full flex-1 items-start px-4 pt-2 sm:px-8 lg:px-12 xl:px-[68px]">
+                <div className="grid w-full min-w-0 grid-cols-1 items-start gap-8 overflow-x-hidden lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-8">
                 {/* LEFT — case-study copy (1 part) */}
-                <div className="flex max-h-[874px] min-h-0 min-w-0 flex-col overflow-y-auto overscroll-contain">
+                <div className="flex max-h-[874px] min-h-0 min-w-0 flex-col overflow-y-auto overflow-x-hidden overscroll-contain break-words [overflow-wrap:anywhere]">
                   <CaseStudyCopy project={project} tab={activeTab} content={tabContent} />
                 </div>
 
                 {/* RIGHT — prototype (2 parts) */}
-                <div
-                  className={`relative flex min-w-0 items-start justify-end ${
-                    project.slug === "odicci" ? "w-full" : "w-full max-w-full"
-                  }`}
-                >
-                  <div
-                    className={`flex w-full items-start justify-end overflow-visible ${
-                      project.slug === "odicci" ? "min-w-0" : "w-max max-w-full"
-                    }`}
-                  >
+                <div className="relative flex min-w-0 w-full items-start justify-center overflow-hidden lg:justify-end">
+                  <div className="flex w-full min-w-0 max-w-full items-start justify-center overflow-hidden lg:justify-end">
                     {tabContent.customBody ? (
                       typeof tabContent.customBody === "function"
                         ? tabContent.customBody({
@@ -296,13 +288,13 @@ function CaseStudyCopy({
   return (
     <div
       key={featureKey ?? "tab"}
-      className="flex w-full min-w-0 flex-col gap-[30px] py-0"
+      className="flex w-full min-w-0 flex-col gap-[30px] break-words py-0 [overflow-wrap:anywhere]"
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex min-w-0 flex-col gap-4">
         <span className="text-[9px] font-medium uppercase tracking-[0.18em] text-zinc-400">
           {copy.label ?? `${project.title} — ${tab}`}
         </span>
-        <h3 className="text-[25px] font-medium leading-[1.15] tracking-tight text-zinc-900 md:text-[33px]">
+        <h3 className="text-[25px] font-medium leading-[1.15] tracking-tight text-balance text-zinc-900 lg:text-[33px]">
           {copy.subtitle ?? "Case study headline — edit me"}
         </h3>
         <p className="text-[14px] leading-[26px] text-zinc-500">{overview}</p>
@@ -317,7 +309,7 @@ function CaseStudyCopy({
 
 function TextBlock({ heading, children }: { heading: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex min-w-0 flex-col gap-2.5 break-words [overflow-wrap:anywhere]">
       <div className="text-[9px] font-semibold tracking-[0.2em] uppercase text-zinc-900">
         {heading}
       </div>
