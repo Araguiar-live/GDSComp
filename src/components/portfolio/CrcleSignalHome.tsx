@@ -172,22 +172,26 @@ export function CrcleSignalHome({
           </div>
 
           <div className="flex w-full shrink-0 flex-col items-center gap-px px-3">
-            <div className="relative z-[60] flex h-10 w-full items-center justify-between">
-              <CrcleBackButton
-                onClick={() => {
-                  setScreen("empty");
-                  setSignalStrength(10);
-                  setLocationDone(false);
-                  setIntentDone(false);
-                  setSignalActivated(false);
-                  setLocationOpen(false);
-                  setIntentOpen(false);
-                  setTuneOpen(false);
-                }}
-              />
-              <CrcleHeaderNavPill onRadar={onGoToRadar} onMessages={goMessages} />
-              <CrcleMoreButton />
-            </div>
+            {!onboardingOpen ? (
+              <div className="relative z-[60] flex h-10 w-full items-center justify-between">
+                <CrcleBackButton
+                  onClick={() => {
+                    setScreen("empty");
+                    setSignalStrength(10);
+                    setLocationDone(false);
+                    setIntentDone(false);
+                    setSignalActivated(false);
+                    setLocationOpen(false);
+                    setIntentOpen(false);
+                    setTuneOpen(false);
+                  }}
+                />
+                <CrcleHeaderNavPill onRadar={onGoToRadar} onMessages={goMessages} />
+                <CrcleMoreButton />
+              </div>
+            ) : (
+              <div className="h-10 w-full shrink-0" aria-hidden />
+            )}
 
             <div className="flex flex-col items-center justify-center rounded-[24px] bg-[rgba(1,2,17,0.01)] px-4 py-1 text-center">
               <p
