@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface DockItem {
   label: string;
@@ -14,8 +14,9 @@ interface Props {
 
 const BASE = 44;
 const GAP = 12;
-/** Extra-squishy spring — low stiffness, soft bounce */
-const SPRING = { type: "spring" as const, stiffness: 90, damping: 10, mass: 0.65 };
+/** Bouncy macOS-style spring — stays inside the glass capsule */
+const SPRING = { type: "spring" as const, stiffness: 280, damping: 13, mass: 0.58 };
+const TAP_SPRING = { type: "spring" as const, stiffness: 520, damping: 16, mass: 0.45 };
 
 /**
  * Floating macOS-style dock — clear glass capsule with symmetrical padding.
@@ -23,19 +24,30 @@ const SPRING = { type: "spring" as const, stiffness: 90, damping: 10, mass: 0.65
  */
 export function Dock({ items, onSelect, activeSlug }: Props) {
   const [hovered, setHovered] = useState<number | null>(null);
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.div
-      initial={{ y: 56, opacity: 0, scale: 0.92 }}
+      initial={{ y: 72, opacity: 0, scale: 0.86 }}
       animate={{ y: 0, opacity: 1, scale: 1 }}
-      transition={{ ...SPRING, delay: 0.15 }}
+      transition={{ ...SPRING, delay: 0.1 }}
       className="pointer-events-none fixed bottom-8 left-1/2 z-[60] -translate-x-1/2"
     >
       <motion.div
         layout
         transition={SPRING}
         onMouseLeave={() => setHovered(null)}
-        className="dock-glass pointer-events-auto relative flex items-center justify-center overflow-hidden rounded-full border border-white/15 bg-white/5 p-3 shadow-2xl backdrop-blur-sm"
+        animate={
+          reduceMotion || hovered !== null
+            ? { y: 0 }
+            : { y: [0, -5, 0, -2.5, 0] }
+        }
+        transition={
+          reduceMotion || hovered !== null
+            ? SPRING
+            : { y: { duration: 2.8, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.45 } }
+        }
+        className="dock-glass pointer-events-auto relative flex items-center justify-center overflow-hidden rounded-full border border-white/15 bg-white/5 p-3 shadow-2xl backdrop-blur-sm motion-reduce:animate-none"
         style={{ gap: GAP }}
       >
         <div
@@ -89,14 +101,15 @@ function DockButton({
   const isDistant = dist !== null && dist >= 2;
 
   // Magnification stays inside the slot — no y-lift past the glass edge
-  const scale = isHovered ? 1.28 : isNeighbour ? 1.08 : isDistant ? 0.95 : 1;
+  const scale = isHovered ? 1.34 : isNeighbour ? 1.12 : isDistant ? 0.94 : 1;
   const pushDir =
     hovered !== null && dist !== null && dist > 0
       ? index < hovered
         ? -1
         : 1
       : 0;
-  const x = isNeighbour ? pushDir * 8 : isDistant ? pushDir * 3 : 0;
+  const x = isNeighbour ? pushDir * 10 : isDistant ? pushDir * 4 : 0;
+  const rotate = isHovered ? (index % 2 === 0 ? -5 : 5) : 0;
 
   // Slot = visual icon size so the capsule layout-springs symmetrically
   const slot = Math.ceil(BASE * scale);
@@ -112,9 +125,9 @@ function DockButton({
       <motion.button
         type="button"
         onClick={() => onSelect(item.slug)}
-        animate={{ scale, x }}
+        animate={{ scale, x, rotate }}
         transition={SPRING}
-        whileTap={{ scale: scale * 0.9 }}
+        whileTap={{ scale: scale * 0.82, rotate: rotate * 1.4, transition: TAP_SPRING }}
         aria-label={`Open ${item.label} project`}
         aria-current={active ? "true" : undefined}
         className={
@@ -140,7 +153,13 @@ function DockButton({
           transition={SPRING}
           className="pointer-events-none absolute -left-1/4 top-0 h-1/2 w-3/4 rounded-full bg-white/60 blur-[6px]"
         />
-        <span className="relative z-[1]">{item.label}</span>
+        <motion.span
+          className="relative z-[1]"
+          animate={{ y: isHovered ? -1 : 0, scale: isHovered ? 1.06 : 1 }}
+          transition={SPRING}
+        >
+          {item.label}
+        </motion.span>
 
         <motion.span
           aria-hidden
