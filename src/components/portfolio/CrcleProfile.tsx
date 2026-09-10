@@ -1028,6 +1028,7 @@ function ProfileMainView({
                   subtitle="What’s your situation?"
                   tip="Let others know if you are single, taken, or looking to avoid mixed signals."
                   onClick={onOpenRelationship}
+                  hug
                 />
               )}
 
@@ -1035,7 +1036,7 @@ function ProfileMainView({
                 <button
                   type="button"
                   onClick={onOpenEducation}
-                  className="flex min-w-0 flex-col self-stretch rounded-[20px] border border-[rgba(247,246,242,0.4)] bg-gradient-to-b from-[rgba(1,2,17,0.6)] to-[rgba(170,194,240,0.6)] p-[5px] text-left shadow-[0_4px_4px_rgba(0,0,0,0.25)] [.crcle-phone--light_&]:border-[#f7f6f2] [.crcle-phone--light_&]:from-[rgba(0,85,255,0.3)] [.crcle-phone--light_&]:to-[rgba(170,194,240,0.3)] [.crcle-phone--light_&]:shadow-none"
+                  className="flex min-w-0 flex-col rounded-[20px] border border-[rgba(247,246,242,0.4)] bg-gradient-to-b from-[rgba(1,2,17,0.6)] to-[rgba(170,194,240,0.6)] p-[5px] text-left shadow-[0_4px_4px_rgba(0,0,0,0.25)] [.crcle-phone--light_&]:border-[#f7f6f2] [.crcle-phone--light_&]:from-[rgba(0,85,255,0.3)] [.crcle-phone--light_&]:to-[rgba(170,194,240,0.3)] [.crcle-phone--light_&]:shadow-none"
                 >
                   <div className="flex w-full flex-col items-center gap-3 rounded-2xl bg-[#f7f6f2] p-2">
                     <div className="flex w-full items-center gap-1">
@@ -1083,6 +1084,7 @@ function ProfileMainView({
                   subtitle="Add your education"
                   tip="Share where you studied to connect with alumni and classmates"
                   onClick={onOpenEducation}
+                  hug
                 />
               )}
             </div>
@@ -1156,7 +1158,7 @@ function DatingWidget({
     <button
       type="button"
       onClick={onOpen}
-      className="flex h-full w-full min-w-0 flex-col gap-2 rounded-[20px] p-2 text-left"
+      className="flex w-full min-w-0 flex-col gap-2 rounded-[20px] p-2 text-left"
       style={{ backgroundColor: option.cardBg }}
     >
       <div className="flex items-center gap-1 pl-0.5 pt-0.5">
@@ -1230,6 +1232,7 @@ function EmptyWidgetCard({
   tip,
   onClick,
   padY = "default",
+  hug = false,
 }: {
   icon: string;
   title: string;
@@ -1237,16 +1240,22 @@ function EmptyWidgetCard({
   tip: string;
   onClick: () => void;
   padY?: "default" | "comfortable";
+  /** Figma hug — height follows content instead of filling the grid row. */
+  hug?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`relative flex h-full min-h-0 w-full min-w-0 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[rgba(177,177,188,0.2)] bg-transparent text-left transition hover:bg-white/[0.02] [.crcle-phone--light_&]:border-[rgba(3,4,38,0.18)] [.crcle-phone--light_&]:hover:bg-black/[0.03] ${
-        padY === "comfortable" ? "px-3 py-4" : "p-3"
-      }`}
+      className={`relative flex w-full min-w-0 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[rgba(177,177,188,0.2)] bg-transparent text-left transition hover:bg-white/[0.02] [.crcle-phone--light_&]:border-[rgba(3,4,38,0.18)] [.crcle-phone--light_&]:hover:bg-black/[0.03] ${
+        hug ? "" : "h-full min-h-0"
+      } ${padY === "comfortable" ? "px-3 py-4" : "p-3"}`}
     >
-      <div className="flex h-full w-full max-w-[154px] flex-col items-start justify-between">
+      <div
+        className={`flex w-full max-w-[154px] flex-col items-start ${
+          hug ? "gap-4" : "h-full justify-between"
+        }`}
+      >
         <div className="flex w-full items-start justify-between">
           <span className="relative size-9 shrink-0 overflow-hidden">
             <img
