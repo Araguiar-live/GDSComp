@@ -14,8 +14,8 @@ const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 const SPRING = { type: "spring", stiffness: 380, damping: 22, mass: 0.8 } as const;
 const DRAG_THRESHOLD = 48;
 
-/** 8px inset from the iPhone screen edge — Figma 1142:33118 */
-const SHEET_INSET = "inset-x-2 bottom-2";
+/** 8px inset from left, right, and bottom of the iPhone screen — Figma 1142:33118 */
+const SHEET_EDGE = "left-2 right-2 bottom-2";
 
 type NearbyVariant = "love" | "purpose" | "soul";
 type NearbyStage = "prompt" | "request_sent" | "connected";
@@ -96,9 +96,6 @@ export function AreaNearbyNotificationModal({
 
   const titleInk = isLight ? "text-[#02031d]" : "text-white";
   const bodyInk = "text-[#9ca3af]";
-  const promptInk = isLight ? "text-[#02031d]" : "text-white";
-  const dividerClass = isLight ? "bg-[rgba(2,3,29,0.12)]" : "bg-[rgba(247,246,242,0.25)]";
-  const iconInk = isLight ? "brightness-0" : "";
 
   return (
     <motion.div
@@ -126,7 +123,7 @@ export function AreaNearbyNotificationModal({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 24 }}
         transition={SPRING}
-        className={`pointer-events-auto absolute z-10 flex w-full ${SHEET_INSET}`}
+        className={`pointer-events-auto absolute z-10 ${SHEET_EDGE}`}
       >
         <div
           className={`pointer-events-none crcle-nearby-modal-glass relative flex w-full flex-col items-center gap-4 overflow-hidden rounded-[52px] p-6 shadow-2xl ${
