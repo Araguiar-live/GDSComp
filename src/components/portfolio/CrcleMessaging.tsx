@@ -47,9 +47,13 @@ import {
   consumeAreaInboxOnMessaging,
   consumeAreaNearbyNotification,
   consumeMoodSwitchOnMessaging,
+  getCrcleBroadcast,
   setCrcleAreaInboxOpen,
   subscribeCrcleBroadcast,
 } from "@/components/portfolio/crcleBroadcast";
+
+/** Figma 1387:214097 — nearby sheet appears 2s after entering Messaging Hub */
+const AREA_NEARBY_NOTIFICATION_DELAY_MS = 2000;
 import {
   SignalCard,
   TheLocusDrawer,
@@ -246,7 +250,7 @@ export function CrcleMessaging({
     areaNotificationTimerRef.current = window.setTimeout(() => {
       areaNotificationTimerRef.current = null;
       setAreaNotificationOpen(true);
-    }, 5000);
+    }, AREA_NEARBY_NOTIFICATION_DELAY_MS);
   }, [clearAreaNotificationTimer]);
 
   const setAreaInbox = useCallback((next: "off" | "screen" | "drawer") => {
@@ -278,10 +282,16 @@ export function CrcleMessaging({
         scheduleAreaNearbyNotification();
         return;
       }
-      if (!consumeMoodSwitchOnMessaging()) return;
-      setOnboardingOpen(false);
-      setPhase("inbox");
-      setMoodOpen(true);
+      if (consumeMoodSwitchOnMessaging()) {
+        setOnboardingOpen(false);
+        setPhase("inbox");
+        setMoodOpen(true);
+        return;
+      }
+      /* Figma 1387:214097 — entered Messaging Hub with In The Area already active */
+      if (getCrcleBroadcast() === "in_the_area") {
+        scheduleAreaNearbyNotification();
+      }
     };
     tryOpen();
     const unsub = subscribeCrcleBroadcast(tryOpen);
