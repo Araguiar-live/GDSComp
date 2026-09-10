@@ -136,6 +136,36 @@ const RELATIONSHIP_OPTIONS = [
   },
 ] as const;
 
+function clamp255(value: number) {
+  return Math.max(0, Math.min(255, Math.round(value)));
+}
+
+function hexToRgb(hex: string) {
+  const normalized = hex.replace("#", "");
+  return {
+    r: parseInt(normalized.slice(0, 2), 16),
+    g: parseInt(normalized.slice(2, 4), 16),
+    b: parseInt(normalized.slice(4, 6), 16),
+  };
+}
+
+/** Share-status pill — darker saturated glass when on, lighter frosted glass when off */
+function datingShareBarStyles(cardBg: string, shareStatus: boolean) {
+  const { r, g, b } = hexToRgb(cardBg);
+  if (shareStatus) {
+    return {
+      backgroundColor: `rgba(${clamp255(r * 0.68)}, ${clamp255(g * 0.68)}, ${clamp255(b * 0.68)}, 0.58)`,
+      borderColor: `rgba(${clamp255(r * 0.55)}, ${clamp255(g * 0.55)}, ${clamp255(b * 0.55)}, 0.72)`,
+      boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.38)",
+    };
+  }
+  return {
+    backgroundColor: `rgba(${r}, ${g}, ${b}, 0.26)`,
+    borderColor: `rgba(${clamp255(r * 0.82)}, ${clamp255(g * 0.82)}, ${clamp255(b * 0.82)}, 0.44)`,
+    boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.22)",
+  };
+}
+
 export type ProfileState = {
   user: {
     name: string;
@@ -1134,18 +1164,26 @@ function DatingWidget({
       </div>
 
       <div
-        className="flex w-full items-center justify-between rounded-[24px] border border-[rgba(204,0,0,0.3)] bg-[rgba(204,0,0,0.2)] py-1 pl-2 pr-1.5"
+        role="switch"
+        aria-checked={shareStatus}
+        aria-label="Share relationship status"
+        className="relative flex w-full items-center justify-between overflow-hidden rounded-[24px] border py-1 pl-2 pr-1.5 backdrop-blur-[12px] transition-all duration-300"
+        style={datingShareBarStyles(option.cardBg, shareStatus)}
         onClick={(e) => {
           e.stopPropagation();
           onToggleShare();
         }}
       >
-        <span className="text-[11px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
+        <div className="dock-glass-lens pointer-events-none absolute inset-0 opacity-35" aria-hidden />
+        <span
+          className="relative z-[1] text-[11px] leading-[1.4] text-[#030426]"
+          style={{ fontFamily: FONT }}
+        >
           Share status
         </span>
         <span
-          className={`flex w-6 items-center rounded-[24px] p-0.5 ${
-            shareStatus ? "justify-end bg-[#030426]" : "justify-start bg-[rgba(3,4,38,0.25)]"
+          className={`relative z-[1] flex w-6 items-center rounded-[24px] p-0.5 transition-colors duration-300 ${
+            shareStatus ? "justify-end bg-[#030426]" : "justify-start bg-[rgba(3,4,38,0.22)]"
           }`}
         >
           <span className="size-2 rounded bg-[#fdfcfb]" />
