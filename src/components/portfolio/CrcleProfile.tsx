@@ -74,6 +74,7 @@ import {
   setCrcleVerifyOpen,
   useCrcleBroadcast,
   useCrcleIncognito,
+  useCrcleVerifyOpen,
   type BroadcastState,
 } from "@/components/portfolio/crcleBroadcast";
 
@@ -257,17 +258,10 @@ export function CrcleProfile({
   }));
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [moodOpen, setMoodOpen] = useState(false);
+  const verifySheetOpen = useCrcleVerifyOpen();
   /* Figma 313:115854 — Profile onboarding over live profile */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
   const dismissOnboarding = () => setOnboardingOpen(false);
-
-  useEffect(() => {
-    setCrcleVerifyOpen(overlay === "verify");
-  }, [overlay]);
-
-  useEffect(() => {
-    return () => setCrcleVerifyOpen(false);
-  }, []);
 
   const socialCount = Object.values(profile.socials).filter(Boolean).length;
 
@@ -289,18 +283,12 @@ export function CrcleProfile({
               backdropUrl={profile.user.avatarUrl}
               isLight={isLightMode}
             />
-          ) : overlay === "verify" ? (
-            <VerificationSheet
-              key="verify"
-              onClose={() => {
-                setCrcleVerifyOpen(false);
-                setOverlay(null);
-              }}
-            />
+          ) : verifySheetOpen ? (
+            <VerificationSheet key="verify" onClose={() => setCrcleVerifyOpen(false)} />
           ) : null
         }
         bottomChrome={
-          overlay || onboardingOpen || moodOpen ? null : (
+          overlay || verifySheetOpen || onboardingOpen || moodOpen ? null : (
             <CrclePrimaryDock
               embedded
               active="profile"
@@ -335,7 +323,6 @@ export function CrcleProfile({
                   setOnboardingOpen(false);
                   setMoodOpen(false);
                   setCrcleVerifyOpen(true);
-                  setOverlay("verify");
                 }}
               />
             </div>
@@ -443,7 +430,7 @@ export function CrcleProfile({
           </AnimatePresence>
 
           <AnimatePresence>
-            {onboardingOpen && overlay !== "verify" ? (
+            {onboardingOpen && !verifySheetOpen ? (
               <ProfileOnboarding onClose={dismissOnboarding} onContinue={dismissOnboarding} />
             ) : null}
           </AnimatePresence>

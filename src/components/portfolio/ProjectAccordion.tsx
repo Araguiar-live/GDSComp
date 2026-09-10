@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { forwardRef, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
 import {
+  setCrcleVerifyOpen,
   useCrcleAreaInboxOpen,
   useCrcleVerifyOpen,
 } from "@/components/portfolio/crcleBroadcast";
@@ -116,6 +117,13 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
     }
     wasOpenRef.current = isOpen;
   }, [isOpen, project, tabs]);
+
+  useEffect(() => {
+    if (project.slug !== "crcle") return;
+    if (!isOpen || activeTab !== "Template Library") {
+      setCrcleVerifyOpen(false);
+    }
+  }, [project.slug, isOpen, activeTab]);
 
   return (
     <div ref={ref} className="border-b border-[#d1d5db] last:border-b-0">
