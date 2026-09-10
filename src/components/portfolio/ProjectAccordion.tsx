@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { forwardRef, useEffect, useState, type MutableRefObject } from "react";
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
 import {
+  requestOpenMessaging,
   useCrcleAreaInboxOpen,
   useCrcleVerifyOpen,
 } from "@/components/portfolio/crcleBroadcast";
@@ -163,7 +164,12 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                       <button
                         key={tab}
                         type="button"
-                        onClick={() => setActiveTab(tab)}
+                        onClick={() => {
+                          if (project.slug === "crcle" && tab === "Sign Up") {
+                            requestOpenMessaging();
+                          }
+                          setActiveTab(tab);
+                        }}
                         className={
                           "rounded-full border px-4 py-1.5 text-xs font-medium tracking-tight transition-all duration-300 " +
                           (active

@@ -10,6 +10,7 @@ let broadcastState: BroadcastState = "open_day";
 let incognitoState = false;
 let pendingMoodSwitch = false;
 let pendingAreaInbox = false;
+let pendingOpenMessaging = false;
 let pendingAreaNotification = false;
 let areaNearbyBadgeActive = false;
 let areaNearbyFlowComplete = false;
@@ -44,9 +45,22 @@ export function setCrcleIncognito(next: boolean) {
   emit();
 }
 
+/** Explicit navigation to Messaging Hub — skips first-run onboarding on mount. */
+export function requestOpenMessaging() {
+  pendingOpenMessaging = true;
+  emit();
+}
+
+export function consumeOpenMessaging() {
+  const pending = pendingOpenMessaging;
+  pendingOpenMessaging = false;
+  return pending;
+}
+
 /** Profile mood control: jump to Messaging Hub with Mood Switch open. */
 export function requestMoodSwitchOnMessaging() {
   pendingMoodSwitch = true;
+  pendingOpenMessaging = true;
   emit();
 }
 
@@ -59,6 +73,7 @@ export function consumeMoodSwitchOnMessaging() {
 /** Dock radar+pin control: jump to Messaging Hub with In The Area inbox. */
 export function requestAreaInboxOnMessaging() {
   pendingAreaInbox = true;
+  pendingOpenMessaging = true;
   emit();
 }
 

@@ -29,12 +29,16 @@ import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
   CrcleBackButton,
+  CrcleHeaderNavPill,
   CrcleMoreButton,
   CrclePrimaryDock,
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
-import { requestAreaInboxOnMessaging } from "@/components/portfolio/crcleBroadcast";
+import {
+  requestAreaInboxOnMessaging,
+  requestOpenMessaging,
+} from "@/components/portfolio/crcleBroadcast";
 import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
 import { SignalTuneDrawer } from "@/components/portfolio/SignalTuneDrawer";
 
@@ -81,6 +85,11 @@ export function CrcleSignalHome({
     setOnboardingOpen(false);
   }, []);
 
+  const goMessages = useCallback(() => {
+    requestOpenMessaging();
+    onGoToMessages?.();
+  }, [onGoToMessages]);
+
   const showPrimaryDock = !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen;
 
   return (
@@ -99,12 +108,12 @@ export function CrcleSignalHome({
               embedded
               active="signal"
               onProfile={onGoToProfile}
-              onMessages={onGoToMessages}
+              onMessages={goMessages}
               onRadar={onGoToRadar}
               onSignalHome={() => {}}
               onAreaRadar={() => {
                 requestAreaInboxOnMessaging();
-                onGoToMessages?.();
+                goMessages();
               }}
             />
           ) : null
@@ -152,7 +161,7 @@ export function CrcleSignalHome({
           </div>
 
           <div className="flex w-full shrink-0 flex-col items-center gap-px px-3">
-            <div className="flex h-10 w-full items-center justify-between">
+            <div className="relative z-[60] flex h-10 w-full items-center justify-between">
               <CrcleBackButton
                 onClick={() => {
                   setScreen("empty");
@@ -165,6 +174,7 @@ export function CrcleSignalHome({
                   setTuneOpen(false);
                 }}
               />
+              <CrcleHeaderNavPill onRadar={onGoToRadar} onMessages={goMessages} />
               <CrcleMoreButton />
             </div>
 

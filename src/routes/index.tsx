@@ -16,6 +16,7 @@ import { Sidebar, SIDEBAR_PANEL_ID } from "@/components/portfolio/Sidebar";
 import { CrcleMessaging } from "@/components/portfolio/CrcleMessaging";
 import { CrcleProfile } from "@/components/portfolio/CrcleProfile";
 import { CrcleRadar } from "@/components/portfolio/CrcleRadar";
+import { requestOpenMessaging } from "@/components/portfolio/crcleBroadcast";
 import { CrcleSignalHome } from "@/components/portfolio/CrcleSignalHome";
 import { FirstDesignComingSoon } from "@/components/portfolio/FirstDesignComingSoon";
 import { WireframeStage } from "@/components/portfolio/SiteWireframe";
@@ -50,7 +51,10 @@ const PROJECTS: Project[] = [
           "A living Signal Home wireframe judges (and clients) can feel before they read a paragraph.",
         customBody: ({ goToTab }) => (
           <CrcleSignalHome
-            onGoToMessages={() => goToTab("Sign Up")}
+            onGoToMessages={() => {
+              requestOpenMessaging();
+              goToTab("Sign Up");
+            }}
             onGoToProfile={() => goToTab("Template Library")}
             onGoToRadar={() => goToTab("Brand Personality")}
           />
@@ -135,7 +139,10 @@ const PROJECTS: Project[] = [
         customBody: ({ goToTab }) => (
           <CrcleProfile
             onGoToSignalHome={() => goToTab("Create Workspace\u00a0")}
-            onGoToMessages={() => goToTab("Sign Up")}
+            onGoToMessages={() => {
+              requestOpenMessaging();
+              goToTab("Sign Up");
+            }}
             onGoToRadar={() => goToTab("Brand Personality")}
           />
         ),

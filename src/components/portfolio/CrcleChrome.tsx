@@ -306,6 +306,57 @@ export function CrcleBackButton({
   );
 }
 
+/** Compact radar + messages pill — sits in screen headers above onboarding overlays. */
+export function CrcleHeaderNavPill({
+  onRadar,
+  onMessages,
+  className = "",
+}: {
+  onRadar?: () => void;
+  onMessages?: () => void;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`crcle-glass-btn relative flex h-10 shrink-0 items-center gap-1 overflow-hidden rounded-[24px] px-2 py-0.5 backdrop-blur-[12px] ${className}`}
+    >
+      <div className="dock-glass-lens opacity-40" aria-hidden />
+      <button
+        type="button"
+        aria-label="Open radar"
+        onClick={onRadar}
+        disabled={!onRadar}
+        className={`relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110 ${
+          onRadar ? "" : "opacity-40"
+        }`}
+      >
+        <img
+          alt=""
+          src={navRadarIcon}
+          className="crcle-dock-icon size-5 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+          draggable={false}
+        />
+      </button>
+      <button
+        type="button"
+        aria-label="Open messages"
+        onClick={onMessages}
+        disabled={!onMessages}
+        className={`relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110 ${
+          onMessages ? "" : "opacity-40"
+        }`}
+      >
+        <img
+          alt=""
+          src={navMessageIcon}
+          className="crcle-dock-icon size-5 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+          draggable={false}
+        />
+      </button>
+    </div>
+  );
+}
+
 /** Standardized more (⋯) control — frosted glass + blur */
 export function CrcleMoreButton({
   onClick,

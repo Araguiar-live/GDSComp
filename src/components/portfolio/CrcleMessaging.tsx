@@ -47,6 +47,7 @@ import {
   consumeAreaInboxOnMessaging,
   consumeAreaNearbyNotification,
   consumeMoodSwitchOnMessaging,
+  consumeOpenMessaging,
   getCrcleBroadcast,
   setCrcleAreaInboxOpen,
   subscribeCrcleBroadcast,
@@ -273,6 +274,12 @@ export function CrcleMessaging({
 
   useEffect(() => {
     const tryOpen = () => {
+      if (consumeOpenMessaging()) {
+        setOnboardingOpen(false);
+        setPhase("inbox");
+        setNotificationsOpen(true);
+        setMenuOpen(false);
+      }
       if (consumeAreaInboxOnMessaging()) {
         clearAreaNotificationTimer();
         openAreaInbox();

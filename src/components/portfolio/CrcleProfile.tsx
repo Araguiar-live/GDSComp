@@ -71,6 +71,8 @@ import {
 } from "@/components/portfolio/CrcleChrome";
 import {
   requestAreaNearbyNotification,
+  requestMoodSwitchOnMessaging,
+  requestOpenMessaging,
   setCrcleVerifyOpen,
   useCrcleBroadcast,
   useCrcleIncognito,
@@ -265,6 +267,16 @@ export function CrcleProfile({
   const [onboardingOpen, setOnboardingOpen] = useState(true);
   const dismissOnboarding = () => setOnboardingOpen(false);
 
+  const goMessages = () => {
+    requestOpenMessaging();
+    onGoToMessages?.();
+  };
+
+  const openMoodOnMessaging = () => {
+    requestMoodSwitchOnMessaging();
+    onGoToMessages?.();
+  };
+
   const socialCount = Object.values(profile.socials).filter(Boolean).length;
 
   return (
@@ -295,12 +307,12 @@ export function CrcleProfile({
               embedded
               active="profile"
               onProfile={() => {}}
-              onMessages={onGoToMessages}
+              onMessages={goMessages}
               onRadar={onGoToRadar}
               onSignalHome={onGoToSignalHome}
               onAreaRadar={() => {
                 requestAreaNearbyNotification();
-                onGoToMessages?.();
+                goMessages();
               }}
             />
           )
@@ -313,7 +325,7 @@ export function CrcleProfile({
               <ProfileMainView
                 profile={profile}
                 socialCount={socialCount}
-                onOpenMood={() => setMoodOpen(true)}
+                onOpenMood={openMoodOnMessaging}
                 onOpenEducation={() => setOverlay("education")}
                 onOpenWork={() => setOverlay("work")}
                 onOpenRelationship={() => setOverlay("relationship")}
