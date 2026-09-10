@@ -1,7 +1,7 @@
 <svg preserveAspectRatio="xMidYMid meet" overflow="visible" style="display: block;" width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g id="red-dot" filter="url(#filter0_d_red)">
-    <rect x="6" y="2" width="68" height="68" rx="34" fill="url(#paint0_red)" shape-rendering="crispEdges"/>
-    <rect x="6.5" y="2.5" width="67" height="67" rx="33.5" stroke="url(#paint1_red)" shape-rendering="crispEdges"/>
+    <rect x="6" y="2" width="68" height="68" rx="34" fill="url(#paint0_red)"/>
+    <rect x="6.5" y="2.5" width="67" height="67" rx="33.5" stroke="url(#paint1_red)"/>
     <ellipse id="gloss-highlight" cx="38.0696" cy="13.4222" rx="18.5" ry="8.5" transform="rotate(-15 38.0696 13.4222)" fill="white" fill-opacity="0.2"/>
   </g>
   <defs>

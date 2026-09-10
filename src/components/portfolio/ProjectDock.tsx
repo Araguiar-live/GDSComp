@@ -12,6 +12,42 @@ const ICON = 24;
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+/** Native CSS spheres stay sharp at 24px — scaled SVG filters looked pixelated live. */
+const SPHERE_GRADIENTS: Record<
+  GraduateProjectId,
+  { from: string; to: string; shadow: string }
+> = {
+  artaeka: { from: "#FFA6A6", to: "#E57575", shadow: "rgba(229, 117, 117, 0.35)" },
+  poqy: { from: "#007764", to: "#01D081", shadow: "rgba(1, 208, 129, 0.32)" },
+  strolla: { from: "#5D8197", to: "#87BAB7", shadow: "rgba(93, 129, 151, 0.35)" },
+  roamer: { from: "#FF6238", to: "#FF5126", shadow: "rgba(255, 98, 56, 0.35)" },
+  beese: { from: "#7070DF", to: "#556695", shadow: "rgba(112, 112, 223, 0.35)" },
+};
+
+function DockColorDot({
+  projectId,
+  size = ICON,
+}: {
+  projectId: GraduateProjectId;
+  size?: number;
+}) {
+  const gradient = SPHERE_GRADIENTS[projectId];
+  return (
+    <span
+      className="relative block shrink-0 rounded-full ring-1 ring-inset ring-white/35"
+      style={{
+        width: size,
+        height: size,
+        background: `linear-gradient(180deg, ${gradient.from} 0%, ${gradient.to} 100%)`,
+        boxShadow: `0 3px 6px ${gradient.shadow}`,
+      }}
+      aria-hidden
+    >
+      <span className="pointer-events-none absolute inset-x-[14%] top-[11%] h-[36%] rounded-full bg-white/25" />
+    </span>
+  );
+}
+
 interface Props {
   /** Optional — plus control opens the profile inspector. */
   onPlus?: () => void;
@@ -146,30 +182,22 @@ export function ProjectDock({ onPlus }: Props) {
           initial={{ y: 0, scale: 1, rotate: 0 }}
           animate={
             folderOpen
-              ? { y: 0, scale: 1, rotate: 0 }
-              : {
-                  y: [0, -7, 0, -3, 0],
-                  scale: [1, 1.02, 1, 1.01, 1],
-                  rotate: [0, -1.4, 0.8, -0.6, 0],
-                }
+              ? { y: 0 }
+              : { y: [0, -7, 0, -3, 0] }
           }
           whileHover={{
-            scale: 1.08,
             y: -4,
-            rotate: 0,
             transition: { type: "spring", stiffness: 420, damping: 16 },
           }}
-          whileTap={{ scale: 0.94, rotate: -2 }}
+          whileTap={{ y: -1 }}
           transition={
             folderOpen
               ? { duration: 0.2 }
               : {
                   y: { duration: 2.4, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.35 },
-                  scale: { duration: 2.4, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.35 },
-                  rotate: { duration: 2.4, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.35 },
                 }
           }
-          className="pointer-events-auto relative flex size-[120px] flex-col items-center justify-center rounded-[30px] border border-zinc-400/45 bg-white/30 p-[15px] shadow-[0px_16px_24px_rgba(11,14,20,0.12),inset_0px_1px_0_rgba(255,255,255,0.55)] backdrop-blur-[14px] supports-[backdrop-filter]:bg-white/25 motion-reduce:animate-none"
+          className="pointer-events-auto relative isolate flex size-[120px] flex-col items-center justify-center rounded-[30px] border border-zinc-400/45 bg-white/30 p-[15px] shadow-[0px_16px_24px_rgba(11,14,20,0.12),inset_0px_1px_0_rgba(255,255,255,0.55)] backdrop-blur-[14px] supports-[backdrop-filter]:bg-white/25 motion-reduce:animate-none [transform:translateZ(0)]"
         >
           <button
             type="button"
@@ -251,15 +279,8 @@ export function ProjectDock({ onPlus }: Props) {
                         className="group flex w-full items-center gap-3 rounded-[10px] px-2.5 py-2 text-left transition hover:bg-zinc-900/[0.05] dark:hover:bg-white/[0.07]"
                         style={{ ["--glow" as string]: project.glow }}
                       >
-                        <span className="relative flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-full transition duration-200 group-hover:scale-110 group-hover:shadow-[0_0_14px_var(--glow)]">
-                          <img
-                            src={project.dot}
-                            alt=""
-                            width={28}
-                            height={28}
-                            className="size-full object-contain"
-                            draggable={false}
-                          />
+                        <span className="relative flex size-7 shrink-0 items-center justify-center transition duration-200 group-hover:shadow-[0_0_14px_var(--glow)]">
+                          <DockColorDot projectId={project.id} size={28} />
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[13px] font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
@@ -348,8 +369,8 @@ function DockSphere({
         delay: bounceDelay,
         repeatDelay: 0.4,
       }}
-      whileHover={{ scale: 1.18, y: -1 }}
-      whileTap={{ scale: 0.9 }}
+      whileHover={{ y: -1 }}
+      whileTap={{ y: 0 }}
       className="group relative z-[2] flex shrink-0 items-center justify-center overflow-visible rounded-full motion-reduce:animate-none"
       style={{ width: ICON, height: ICON, ["--glow" as string]: project.glow }}
     >
@@ -358,14 +379,9 @@ function DockSphere({
         className="pointer-events-none absolute inset-[-4px] rounded-full opacity-0 blur-[6px] transition-opacity duration-200 group-hover:opacity-100"
         style={{ background: project.glow }}
       />
-      <img
-        src={project.dot}
-        alt=""
-        width={ICON}
-        height={ICON}
-        className="relative size-full object-contain transition-[filter] duration-200 group-hover:drop-shadow-[0_0_10px_var(--glow)]"
-        draggable={false}
-      />
+      <span className="relative transition-[filter] duration-200 group-hover:drop-shadow-[0_0_10px_var(--glow)]">
+        <DockColorDot projectId={project.id} />
+      </span>
     </motion.button>
   );
 }
