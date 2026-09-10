@@ -3,7 +3,7 @@ import { useState } from "react";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
 import locusCloseIcon from "@/assets/crcle/locus/close-x.svg";
 import profileLaptopIcon from "@/assets/crcle/profile/laptop.svg";
-import profileMaskIcon from "@/assets/crcle/profile/mask.svg";
+import dominoMaskOutlineIcon from "@/assets/crcle/profile/domino-mask-outline.svg";
 import masksTheaterIcon from "@/assets/crcle/profile/masks-theater.svg";
 import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
 import profilePinIcon from "@/assets/crcle/profile/pin.svg";
@@ -62,16 +62,32 @@ function IconImg({ src, className = "size-6" }: { src: string; className?: strin
   );
 }
 
-/** Mood Switch overlay — lives on the Messaging Hub (Figma 1142:34693 / 853:225874). */
+/** Profile — Signal Live moods only (Figma 949:30494). */
+export const PROFILE_MOOD_IDS: BroadcastState[] = ["night_owl", "in_the_area"];
+
+/** Mood Switch overlay — lives on Profile + Messaging Hub (Figma 1142:34693 / 949:30494). */
 export function CrcleMoodSwitch({
   onClose,
+  allowedMoods,
+  closeOnInTheAreaSelect = true,
 }: {
   onClose: () => void;
+  /** When set, only these moods appear in the dock (e.g. Profile: Night Owl + In The Area). */
+  allowedMoods?: BroadcastState[];
+  /** Messaging auto-dismisses after picking In The Area; Profile keeps the sheet open. */
+  closeOnInTheAreaSelect?: boolean;
 }) {
   const [activeState, setActiveState] = useCrcleBroadcast();
   const [isIncognito, setIncognito] = useCrcleIncognito();
   const [hoveredMood, setHoveredMood] = useState<BroadcastState | null>(null);
-  const activeMood = MOODS.find((m) => m.id === activeState) ?? MOODS[0];
+  const visibleMoods = allowedMoods?.length
+    ? MOODS.filter((m) => allowedMoods.includes(m.id))
+    : MOODS;
+  const effectiveActive = visibleMoods.some((m) => m.id === activeState)
+    ? activeState
+    : (visibleMoods[0]?.id ?? activeState);
+  const activeMood = visibleMoods.find((m) => m.id === effectiveActive) ?? visibleMoods[0] ?? MOODS[0];
+  const compactDock = visibleMoods.length <= 2;
 
   return (
     <motion.div
@@ -114,7 +130,7 @@ export function CrcleMoodSwitch({
             onClick={() => setIncognito(!isIncognito)}
             className="flex items-center gap-2 rounded-[24px] bg-[rgba(255,255,255,0.2)] px-3 py-1.5 backdrop-blur-[6px] transition hover:bg-[rgba(255,255,255,0.26)]"
           >
-            <IconImg src={profileMaskIcon} className="size-6" />
+            <IconImg src={dominoMaskOutlineIcon} className="size-6" />
             <span className="text-[11px] leading-[1.4] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
               Incognito Mode
             </span>
@@ -144,7 +160,9 @@ export function CrcleMoodSwitch({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.98 }}
               transition={{ type: "spring", stiffness: 380, damping: 28 }}
-              className="mt-[290px] flex w-full max-w-[280px] flex-col items-center gap-4 text-center"
+              className={`flex w-full max-w-[280px] flex-col items-center gap-4 text-center ${
+                compactDock ? "mt-[300px]" : "mt-[290px]"
+              }`}
             >
               <IconImg src={activeMood.icon} className="size-6" />
               <p
@@ -158,15 +176,17 @@ export function CrcleMoodSwitch({
         </div>
 
         <div
-          className={`pointer-events-none absolute right-3 top-[282px] z-[2] flex items-center gap-[11px] transition ${
-            isIncognito ? "opacity-30" : "opacity-100"
-          }`}
+          className={`pointer-events-none absolute right-3 z-[2] flex items-center gap-[11px] transition ${
+            compactDock ? "top-[320px]" : "top-[282px]"
+          } ${isIncognito ? "opacity-30" : "opacity-100"}`}
         >
           <div
-            className="flex h-[170px] flex-col justify-between text-right text-[13px] font-medium leading-[1.4] text-white"
+            className={`flex flex-col justify-between text-right text-[13px] font-medium leading-[1.4] text-white ${
+              compactDock ? "h-[88px]" : "h-[170px]"
+            }`}
             style={{ fontFamily: FONT }}
           >
-            {MOODS.map((m) => {
+            {visibleMoods.map((m) => {
               const show = activeState === m.id || hoveredMood === m.id;
               return (
                 <span
@@ -181,7 +201,7 @@ export function CrcleMoodSwitch({
           </div>
 
           <div className="pointer-events-auto flex flex-col gap-[11px] rounded-[36px] bg-[rgba(255,255,255,0.1)] p-2 backdrop-blur-[12px]">
-            {MOODS.map((m) => {
+            {visibleMoods.map((m) => {
               const active = activeState === m.id;
               const rimId = `mood-dock-rim-${m.id}`;
               return (
@@ -196,7 +216,9 @@ export function CrcleMoodSwitch({
                     setActiveState(m.id);
                     if (m.id === "in_the_area") {
                       requestAreaNearbyNotification();
-                      window.setTimeout(onClose, 280);
+                      if (closeOnInTheAreaSelect) {
+                        window.setTimeout(onClose, 280);
+                      }
                     }
                   }}
                   onMouseEnter={() => setHoveredMood(m.id)}

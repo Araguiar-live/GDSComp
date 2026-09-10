@@ -32,12 +32,12 @@ type Mark = "dot" | "none" | "house" | "modules" | "modules-tall" | "modules-l" 
 const MARK = "bg-[#e5e7eb]";
 const MARK_SOFT = "bg-[#eceff3]";
 
+/** Figma 530:151786 — two horizontal chips */
 function HouseMark({ soft = false }: { soft?: boolean }) {
   const chip = soft ? MARK_SOFT : MARK;
   return (
     <div className="flex w-4 flex-col items-center" aria-hidden>
-      <div className={`mb-[-2px] size-1.5 rounded-[1px] ${chip}`} />
-      <div className="flex gap-1">
+      <div className="flex w-full items-center justify-center gap-1">
         <div className={`size-1.5 rounded-[1px] ${chip}`} />
         <div className={`size-1.5 rounded-[1px] ${chip}`} />
       </div>
@@ -160,19 +160,7 @@ function JengaCellBand() {
       <div className="absolute inset-0 flex flex-col gap-[2px]">
         {/* Row 1 — 14 × 1 */}
         <div className="flex min-h-0 w-full flex-[88] gap-[2px]">
-          <TileRow
-            count={14}
-            marks={{
-              0: "house",
-              2: "none",
-              4: "none",
-              5: "modules-grid",
-              7: "none",
-              9: "none",
-              11: "modules-l",
-              13: "none",
-            }}
-          />
+          <TileRow count={14} marks={{ 0: "modules-l" }} />
         </div>
 
         {/* Middle jenga — 270 units */}
@@ -181,24 +169,27 @@ function JengaCellBand() {
             {/* Upper 178: 7 | tall(88×178) | 5 */}
             <div className="flex min-h-0 flex-[178] gap-[2px]">
               <div className="flex min-h-0 min-w-0 flex-[630] flex-col gap-[2px]">
-                <TileRow count={7} marks={{ 1: "none", 3: "modules-tall", 5: "none" }} />
-                <TileRow count={7} marks={{ 0: "none", 2: "none", 4: "modules-l", 6: "none" }} />
+                <TileRow count={7} marks={{ 3: "modules-tall" }} />
+                <TileRow count={7} />
               </div>
               <Tile className="min-h-0 min-w-0 flex-[88] self-stretch" mark="none" />
               <div className="flex min-h-0 min-w-0 flex-[446] flex-col gap-[2px]">
-                <TileRow count={5} marks={{ 0: "none", 3: "house" }} />
-                <TileRow count={5} marks={{ 1: "none", 2: "modules-l", 4: "none" }} />
+                <TileRow count={5} marks={{ 3: "house" }} />
+                <TileRow count={5} />
               </div>
             </div>
 
             {/* Lower 90: 4 | wide(178) | 7 */}
             <div className="flex min-h-0 flex-[90] gap-[2px]">
               <div className="flex min-h-0 min-w-0 flex-[358] gap-[2px]">
-                <TileRow count={4} marks={{ 0: "none", 2: "modules-grid" }} />
+                <TileRow
+                  count={4}
+                  marks={{ 0: "none", 1: "none", 2: "none", 3: "none" }}
+                />
               </div>
               <Tile className="min-h-0 min-w-0 flex-[178] self-stretch" mark="none" />
               <div className="flex min-h-0 min-w-0 flex-[628] gap-[2px]">
-                <TileRow count={7} marks={{ 1: "none", 3: "none", 5: "modules-grid", 6: "none" }} />
+                <TileRow count={7} />
               </div>
             </div>
           </div>
@@ -210,42 +201,17 @@ function JengaCellBand() {
         {/* Lower band — 268 units */}
         <div className="flex min-h-0 w-full flex-[268] flex-col gap-[2px]">
           <div className="flex min-h-0 flex-[88]">
-            <TileRow
-              count={14}
-              marks={{
-                1: "none",
-                3: "modules-l",
-                5: "none",
-                7: "none",
-                9: "modules-grid",
-                11: "none",
-                12: "none",
-              }}
-            />
+            <TileRow count={14} />
           </div>
           <div className="flex min-h-0 flex-[178] flex-col gap-[2px]">
             <div className="flex min-h-0 flex-1 gap-[2px]">
               <Tile className="min-h-0 min-w-0 flex-[178] self-stretch" mark="none" />
               <div className="flex min-h-0 min-w-0 flex-[1078] gap-[2px]">
-                <TileRow
-                  count={12}
-                  marks={{ 1: "modules", 3: "none", 5: "none", 8: "none", 10: "modules-grid" }}
-                />
+                <TileRow count={12} marks={{ 1: "modules" }} />
               </div>
             </div>
             <div className="flex min-h-0 flex-1">
-              <TileRow
-                count={14}
-                marks={{
-                  0: "none",
-                  2: "modules-grid",
-                  4: "none",
-                  6: "none",
-                  8: "modules-l",
-                  10: "none",
-                  13: "none",
-                }}
-              />
+              <TileRow count={14} />
             </div>
           </div>
         </div>

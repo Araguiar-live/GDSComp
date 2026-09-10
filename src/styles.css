@@ -15,6 +15,49 @@
   animation: marquee 40s linear infinite;
 }
 
+@keyframes portfolio-logo-breathe {
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+@utility animate-portfolio-logo-breathe {
+  animation: portfolio-logo-breathe 2.4s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-portfolio-logo-breathe {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* Hero peek mouse — soft vertical bob, no shake. */
+@keyframes portfolio-peek-mouse-motion {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -48px, 0);
+  }
+}
+
+.portfolio-peek-mouse-motion {
+  animation: portfolio-peek-mouse-motion 2.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-peek-mouse-motion {
+    animation: none;
+  }
+}
+
 /* First Design coming-soon — background ghost frames breathe as loading cards */
 @keyframes fd-ghost-pulse-a {
   0%,
@@ -809,6 +852,57 @@
     hue-rotate(93deg) brightness(98%) contrast(92%);
 }
 
+/* Footer signal bars — Figma 1330:39422 / 257:63722 */
+.crcle-footer-signal-bars {
+  gap: 4.903px;
+}
+
+.crcle-footer-signal-bar {
+  box-sizing: border-box;
+  border: 1px solid transparent;
+}
+
+.crcle-footer-signal-bar--dim {
+  background: rgba(15, 201, 80, 0.2);
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 rgba(247, 246, 242, 0.14),
+    inset 0 -1px 0 rgba(2, 3, 29, 0.18);
+}
+
+.crcle-footer-signal-bar--lit {
+  background: linear-gradient(180deg, #12e061 0%, #0fc950 52%, #0ab343 100%);
+  border-color: rgba(247, 246, 242, 0.8);
+  box-shadow:
+    0 0 10px rgba(15, 201, 80, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.14);
+}
+
+.crcle-footer-signal-bar--lit-all {
+  background: linear-gradient(180deg, #12e061 0%, #0fc950 52%, #0ab343 100%);
+  border-color: #e7fcee;
+  box-shadow:
+    0 0 12px rgba(15, 201, 80, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.crcle-phone--light .crcle-footer-signal-bar--dim {
+  background: rgba(15, 201, 80, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(2, 3, 29, 0.08);
+}
+
+.crcle-phone--light .crcle-footer-signal-bar--lit,
+.crcle-phone--light .crcle-footer-signal-bar--lit-all {
+  box-shadow:
+    0 0 8px rgba(15, 201, 80, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
 /* Fully tuned signal bars — Figma 257:67366 pulsing halo */
 .crcle-signal-bars-glow {
   width: 54px;
@@ -852,12 +946,30 @@
   }
 }
 
-/* Signal activation complete sheet — Figma 257:67520 */
+/* Signal activation complete sheet — Figma 55:58689 */
 .crcle-signal-complete-sheet {
-  background: rgba(2, 2, 23, 0.3);
-  backdrop-filter: blur(6px) saturate(140%);
-  -webkit-backdrop-filter: blur(6px) saturate(140%);
-  box-shadow: 0 -12px 40px rgba(2, 3, 29, 0.18);
+  isolation: isolate;
+  background: linear-gradient(
+    165deg,
+    rgba(2, 2, 23, 0.52) 0%,
+    rgba(2, 2, 23, 0.38) 48%,
+    rgba(2, 2, 23, 0.44) 100%
+  );
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.18) inset;
+}
+
+.crcle-signal-complete-sheet-frost {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    transparent 42%
+  );
+  opacity: 0.55;
 }
 
 /* Lighter fill — Pulse / chrome that sits on dark photo */
@@ -948,66 +1060,121 @@
   opacity: 0.85;
 }
 
-/* Profile Signal Live + mood chips — Figma 1005:49875 subtle glass + green tint */
-.crcle-glass-btn--signal {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.03) 0%,
-    rgba(15, 201, 80, 0.12) 100%
-  );
-  backdrop-filter: blur(18px) saturate(190%);
-  -webkit-backdrop-filter: blur(18px) saturate(190%);
-  border: 1px solid rgba(15, 201, 80, 0.2);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.42) inset,
-    0 -0.5px 0 rgba(255, 255, 255, 0.1) inset,
-    0 8px 20px rgba(0, 0, 0, 0.18),
-    -3px 0 12px rgba(255, 120, 160, 0.08),
-    3px 0 12px rgba(90, 170, 255, 0.1);
-}
-
-.crcle-glass-btn--signal::before {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.48) 0%,
-    rgba(255, 255, 255, 0.1) 36%,
-    transparent 58%
-  );
-  opacity: 0.85;
-}
-
-.crcle-glass-btn--signal::after {
-  background: linear-gradient(
-    115deg,
-    rgba(15, 201, 80, 0.35) 0%,
-    rgba(255, 255, 255, 0.18) 38%,
-    rgba(15, 201, 80, 0.28) 72%,
-    rgba(120, 255, 170, 0.2) 100%
-  );
-  opacity: 0.55;
-}
-
-.crcle-glass-btn--signal-accent {
-  border-color: #0fc950;
-}
-
-/* Profile mood chip — green tint, compact icon */
-.crcle-mood-chip-icon img {
+/* Profile mood chip icon — green tint on glass pill */
+.crcle-profile-mood-icon img {
   filter: brightness(0) saturate(100%) invert(58%) sepia(93%) saturate(1352%) hue-rotate(87deg)
     brightness(95%) contrast(89%);
 }
 
-.crcle-phone--light .crcle-glass-btn--signal {
+.crcle-phone--light .crcle-glass-btn--success {
   background: linear-gradient(
-    90deg,
-    rgba(253, 252, 251, 0.55) 0%,
-    rgba(15, 201, 80, 0.1) 100%
+    165deg,
+    rgba(15, 201, 80, 0.28) 0%,
+    rgba(15, 201, 80, 0.12) 45%,
+    rgba(253, 252, 251, 0.55) 100%
   );
-  border-color: rgba(15, 201, 80, 0.35);
+  border-color: rgba(15, 201, 80, 0.45);
+  box-shadow:
+    0 1.5px 0 rgba(255, 255, 255, 0.65) inset,
+    0 -0.5px 0 rgba(15, 201, 80, 0.12) inset,
+    0 4px 12px rgba(2, 3, 29, 0.08),
+    -2px 0 10px rgba(15, 201, 80, 0.12),
+    2px 0 10px rgba(15, 201, 80, 0.1);
 }
 
-.crcle-phone--light .crcle-glass-btn--signal-accent {
-  border-color: rgba(15, 201, 80, 0.75);
+/* Profile Signal Live pills — soft glass + subtle moving green rim light */
+@keyframes crcle-signal-rim-sweep {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.crcle-signal-live-dot {
+  animation: crcle-signal-live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes crcle-signal-live-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    scale: 0.94;
+  }
+  50% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crcle-signal-live-dot {
+    animation: none;
+  }
+}
+
+.crcle-glass-btn--signal-live {
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.24) 0%,
+    rgba(15, 201, 80, 0.05) 46%,
+    rgba(253, 252, 251, 0.08) 100%
+  );
+  border: 1px solid rgba(15, 201, 80, 0.16);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.32) inset,
+    0 -0.5px 0 rgba(15, 201, 80, 0.06) inset,
+    0 6px 16px rgba(0, 0, 0, 0.14);
+}
+
+.crcle-glass-btn--signal-live::before {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.38) 0%,
+    rgba(200, 255, 220, 0.06) 38%,
+    transparent 62%
+  );
+  opacity: 0.75;
+}
+
+.crcle-glass-btn--signal-live::after {
+  background: linear-gradient(
+    105deg,
+    rgba(15, 201, 80, 0.05) 0%,
+    rgba(15, 201, 80, 0.22) 22%,
+    rgba(200, 255, 220, 0.18) 50%,
+    rgba(15, 201, 80, 0.22) 78%,
+    rgba(15, 201, 80, 0.05) 100%
+  );
+  background-size: 220% 100%;
+  animation: crcle-signal-rim-sweep 5.5s ease-in-out infinite;
+  opacity: 0.42;
+}
+
+.crcle-phone--light .crcle-glass-btn--signal-live {
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.72) 0%,
+    rgba(15, 201, 80, 0.06) 48%,
+    rgba(247, 246, 242, 0.45) 100%
+  );
+  border-color: rgba(15, 201, 80, 0.14);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 4px 10px rgba(2, 3, 29, 0.06);
+}
+
+.crcle-phone--light .crcle-glass-btn--signal-live::after {
+  opacity: 0.36;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crcle-glass-btn--signal-live::after {
+    animation: none;
+    background-position: 50% 50%;
+  }
 }
 
 /* The Locus — Figma 781:207205 / Signal Panel Dark #02031d66
@@ -1183,35 +1350,115 @@
   content: none;
 }
 
-/* Signal response pill — Figma 769:205338 */
+/* Signal social links pill — Figma 1378:214083 */
+.crcle-signal-social-links {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: transparent;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.14) inset;
+}
+
+.crcle-signal-social-links-plate {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    182.32deg,
+    rgba(255, 255, 255, 0.28) 25.54%,
+    rgba(2, 3, 29, 0.22) 98.49%
+  );
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+.crcle-signal-social-links-plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, transparent 44%);
+  opacity: 0.55;
+}
+
+.crcle-signal-social-links-dispersion {
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 0.5px;
+  background: linear-gradient(
+    118deg,
+    rgba(255, 92, 92, 0.22) 0%,
+    rgba(255, 255, 255, 0.14) 42%,
+    rgba(92, 140, 255, 0.2) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.75;
+}
+
+.crcle-signal-social-links
+  > *:not(.crcle-signal-social-links-plate):not(.dock-glass-lens):not(
+    .crcle-signal-social-links-dispersion
+  ) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Signal response pill — Figma 984:85497 / 769:206081 */
 .crcle-signal-response-pill {
+  isolation: isolate;
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-.crcle-phone--light .crcle-signal-response-pill {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(0, 0, 0, 0.25);
-}
-
-/* Signal card — Figma 769:205972 dark · 769:205341 light */
+/* Signal card — Figma 984:85497 dark · 769:204909 received light · 769:204994 sent */
 .crcle-signal-card {
   position: relative;
   overflow: hidden;
+}
+
+.crcle-signal-card--received {
   background: rgba(2, 3, 29, 0.4);
+}
+
+.crcle-signal-card--sent {
+  background: rgba(2, 3, 29, 0.4);
+  border-radius: 36px 36px 4px 36px;
+}
+
+.crcle-signal-card--received-light {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
 .crcle-signal-card-prompt {
   color: #f7f6f2;
 }
 
+.crcle-signal-card--sent .crcle-signal-card-prompt {
+  color: #02031d;
+}
+
+.crcle-signal-card--received-light .crcle-signal-card-prompt {
+  color: #02031d;
+}
+
 .crcle-signal-card-icon img,
 .crcle-signal-card-crosshair img {
   filter: brightness(0) invert(1);
-}
-
-.crcle-signal-card-time {
-  border-radius: 24px;
 }
 
 .crcle-signal-card-venue {
@@ -1224,46 +1471,55 @@
   color: rgba(247, 246, 242, 0.7);
 }
 
-.crcle-signal-card-plus {
-  border-radius: 24px;
+.crcle-signal-card-plus.crcle-glass-btn {
+  border-radius: 40px;
 }
 
-.crcle-phone--light .crcle-signal-card {
+.crcle-signal-card--sent .crcle-signal-card-plus.crcle-glass-btn {
   background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-.crcle-phone--light .crcle-signal-card-prompt {
-  color: #02031d;
+.crcle-signal-card--sent .crcle-signal-card-plus.crcle-glass-btn::before,
+.crcle-signal-card--sent .crcle-signal-card-plus.crcle-glass-btn::after {
+  display: none;
 }
 
-.crcle-phone--light .crcle-signal-card-icon img {
+.crcle-signal-card--received-light .crcle-signal-card-icon img {
   filter: brightness(0);
 }
 
-.crcle-phone--light .crcle-signal-card-crosshair img {
+.crcle-signal-card--received-light .crcle-signal-card-crosshair img {
   filter: none;
 }
 
-.crcle-phone--light .crcle-signal-card-time,
-.crcle-phone--light .crcle-signal-card-plus {
-  border: 1px solid rgba(0, 0, 0, 0.25);
-}
-
-.crcle-phone--light .crcle-signal-card-venue {
+.crcle-signal-card--received-light .crcle-signal-card-venue {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
-.crcle-phone--light .crcle-signal-card-venue-text {
+.crcle-signal-card--received-light .crcle-signal-card-venue-text {
   color: #02031d;
 }
 
-.crcle-signal-card:hover {
+.crcle-signal-card--received-light .crcle-signal-card-plus.crcle-glass-btn {
+  background: linear-gradient(
+    165deg,
+    rgba(253, 252, 251, 0.42) 0%,
+    rgba(253, 252, 251, 0.16) 42%,
+    rgba(253, 252, 251, 0.08) 100%
+  );
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.crcle-signal-card:hover.crcle-signal-card--received:not(.crcle-signal-card--received-light) {
   background: rgba(2, 3, 29, 0.48);
 }
 
-.crcle-phone--light .crcle-signal-card:hover {
+.crcle-signal-card--received-light:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -1319,24 +1575,60 @@
   -webkit-backdrop-filter: blur(18px) saturate(160%);
 }
 
+.crcle-tune-sheet--dark {
+  background: rgba(1, 2, 17, 0.6);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+/* Verify drawer scrim — Figma 257:82967 (50% tint + blur over profile). */
+.crcle-verify-scrim {
+  background: rgba(2, 3, 29, 0.5);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+@keyframes crcle-verify-scrim-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes crcle-verify-sheet-slide {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.crcle-verify-scrim-enter {
+  opacity: 1;
+  animation: crcle-verify-scrim-fade 0.24s ease forwards;
+}
+
+.crcle-verify-sheet-enter {
+  transform: translateY(0);
+  animation: crcle-verify-sheet-slide 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crcle-verify-scrim-enter,
+  .crcle-verify-sheet-enter {
+    animation: none;
+  }
+}
+
 /* Profile KYC drawer — Figma 257:83140 / 257:83150 Glass (radius 40, blur 40).
    Backdrop-filter on the panel root so profile frames beneath are illegible. */
 .crcle-verify-sheet {
   position: relative;
   overflow: hidden;
-  background: rgba(247, 246, 242, 0.82);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-}
-
-.crcle-verify-sheet-frost {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: rgba(247, 246, 242, 0.48);
-  backdrop-filter: blur(32px) saturate(160%);
-  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  background: transparent;
 }
 
 .crcle-verify-sheet-header {
@@ -1350,8 +1642,9 @@
 .crcle-verify-sheet-body {
   position: relative;
   z-index: 1;
-  overflow: hidden;
-  background: rgba(247, 246, 242, 0.94);
+  isolation: isolate;
+  overflow-y: auto;
+  background: rgba(247, 246, 242, 0.5);
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
 }
@@ -1483,17 +1776,30 @@
   z-index: 1;
 }
 
-/* Nearby notification modal — Figma 1142:35114 */
+/* Nearby notification modal — Figma 1142:35114 / 1391:214524
+   Full optical stack like area-inbox + signal panel (blur, frost, dispersion, splay). */
 .crcle-nearby-modal-glass {
   position: relative;
   overflow: hidden;
-  background: rgba(2, 3, 29, 0.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.28),
-    0 1px 0 rgba(255, 255, 255, 0.18) inset;
+    0 16px 48px rgba(0, 0, 0, 0.32),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.crcle-nearby-modal-glass-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.crcle-nearby-modal-glass-backdrop > img {
+  opacity: 0.42;
+  filter: blur(40px) saturate(0.85);
 }
 
 .crcle-nearby-modal-glass-plate {
@@ -1503,11 +1809,61 @@
   border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(
-    165deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.05) 42%,
-    rgba(2, 3, 29, 0.2) 100%
+    180deg,
+    rgba(2, 3, 29, 0.58) 0%,
+    rgba(2, 3, 29, 0.46) 52%,
+    rgba(2, 3, 29, 0.62) 100%
   );
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+}
+
+.crcle-nearby-modal-glass-plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 44%);
+  opacity: 0.45;
+}
+
+.crcle-nearby-modal-glass-frost {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    transparent 46%
+  );
+  opacity: 0.42;
+}
+
+.crcle-nearby-modal-glass-frost::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 0.5px;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.34) 0%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.72;
 }
 
 .crcle-nearby-modal-glass-lens {
@@ -1517,15 +1873,42 @@
   border-radius: inherit;
   pointer-events: none;
   background: radial-gradient(
-    120% 90% at 50% -20%,
-    rgba(255, 255, 255, 0.38),
-    transparent 55%
+    120% 90% at 50% -22%,
+    rgba(255, 255, 255, 0.22),
+    transparent 58%
   );
   mix-blend-mode: soft-light;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
-.crcle-nearby-modal-glass > *:not(.crcle-nearby-modal-glass-plate):not(.crcle-nearby-modal-glass-lens) {
+.crcle-nearby-modal-glass-dispersion {
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 0.5px;
+  background: linear-gradient(
+    118deg,
+    rgba(255, 92, 92, 0.2) 0%,
+    rgba(255, 255, 255, 0.14) 42%,
+    rgba(92, 140, 255, 0.18) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.55;
+}
+
+.crcle-nearby-modal-glass
+  > *:not(.crcle-nearby-modal-glass-backdrop):not(.crcle-nearby-modal-glass-plate):not(
+    .crcle-nearby-modal-glass-frost
+  ):not(.crcle-nearby-modal-glass-lens):not(.crcle-nearby-modal-glass-dispersion) {
   position: relative;
   z-index: 1;
 }

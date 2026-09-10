@@ -461,6 +461,8 @@ export type SignalCardStatus = "pending" | "accepted" | "raincheck";
 export type SignalCardModel = LocusSignalPayload & {
   id: string;
   status: SignalCardStatus;
+  /** Received locus vs sent by the current user — Figma 769:204909 / 769:204994 */
+  direction: "received" | "sent";
 };
 
 const TIME_GLYPH: Record<
@@ -488,58 +490,78 @@ export function SignalCard({
   onAccept,
   onRaincheck,
   onCounterPropose,
+  isLight = false,
 }: {
   signal: SignalCardModel;
   onAccept: () => void;
   onRaincheck: () => void;
   onCounterPropose: () => void;
+  isLight?: boolean;
 }) {
   const [counterText, setCounterText] = useState("Try tomorrow instead?");
+  const [responseOpen, setResponseOpen] = useState(false);
   const activity = ACTIVITIES.find((a) => a.id === signal.activityId) ?? ACTIVITIES[1];
   const timeGlyph = TIME_GLYPH[signal.timeOfDay];
-  const prompt = `Up for ${signal.activityLabel} ${signal.when.toLowerCase()}?`;
+  const isSent = signal.direction === "sent";
+  const canRespond = !isSent && signal.status === "pending";
+  const showResponsePill = canRespond && responseOpen;
+  const prompt = isSent
+    ? `Up for ${signal.activityLabel.toLowerCase()} ${signal.when.toLowerCase()} ${signal.timeOfDay}?`
+    : `Up for ${signal.activityLabel} ${signal.when.toLowerCase()}?`;
 
   return (
-    <div className="relative flex w-full max-w-[284px] flex-col items-start gap-2 self-start">
-      {signal.status === "pending" ? (
-        <div className="crcle-signal-response-pill flex h-[58px] w-full items-center gap-3 rounded-[56px] p-3">
-          <button
-            type="button"
-            aria-label="I'm down"
-            onClick={onAccept}
-            className="relative flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
-            title="I'm down"
+    <div
+      className={`relative flex w-full max-w-[286px] flex-col gap-3 ${
+        isSent ? "items-end self-end" : "items-start self-start"
+      }`}
+    >
+      <AnimatePresence>
+        {showResponsePill ? (
+          <motion.div
+            key="signal-response-pill"
+            initial={{ opacity: 0, y: 6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.98 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            className="crcle-signal-response-pill relative flex h-14 w-fit items-center gap-3 overflow-hidden rounded-[56px] px-3 py-3"
           >
-            <span className="absolute inset-[1.75%_9.57%_0_12.5%]">
-              <img
-                alt=""
-                src={locusThumbsUpIcon}
-                className="absolute inset-0 size-full max-w-none"
-                draggable={false}
-              />
-            </span>
-          </button>
-          <button
-            type="button"
-            aria-label="Raincheck"
-            onClick={onRaincheck}
-            className="relative flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
-            title="Raincheck"
-          >
-            <span className="absolute inset-[16.65%_12.5%_12.5%_12.5%]">
-              <img
-                alt=""
-                src={locusRainFillIcon}
-                className="absolute inset-0 size-full max-w-none"
-                draggable={false}
-              />
-            </span>
-          </button>
-        </div>
-      ) : null}
+            <div className="dock-glass-lens opacity-40" aria-hidden />
+            <button
+              type="button"
+              aria-label="I'm down"
+              onClick={() => {
+                setResponseOpen(false);
+                onAccept();
+              }}
+              className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+              title="I'm down"
+            >
+              <img alt="" src={locusThumbsUpIcon} className="size-8 max-w-none object-contain" draggable={false} />
+            </button>
+            <button
+              type="button"
+              aria-label="Raincheck"
+              onClick={() => {
+                setResponseOpen(false);
+                onRaincheck();
+              }}
+              className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+              title="Raincheck"
+            >
+              <img alt="" src={locusRainFillIcon} className="size-8 max-w-none object-contain" draggable={false} />
+            </button>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
-      {/* Figma 769:205972 dark · 769:205341 light */}
-      <div className="crcle-signal-card flex w-full flex-col gap-6 rounded-tl-[36px] rounded-tr-[36px] rounded-br-[36px] rounded-bl-[4px] p-4 text-left">
+      {/* Figma 984:85497 · received 769:204909 · sent 769:204994 */}
+      <div
+        className={`crcle-signal-card flex w-full flex-col p-4 text-left ${
+          isSent
+            ? "crcle-signal-card--sent gap-4"
+            : "crcle-signal-card--received gap-6 rounded-tl-[36px] rounded-tr-[36px] rounded-br-[36px] rounded-bl-[4px]"
+        } ${isLight && !isSent ? "crcle-signal-card--received-light" : ""}`}
+      >
         <div className="flex w-full items-start justify-between">
           <span className="crcle-signal-card-icon relative block size-6 shrink-0">{activity.icon}</span>
           <span className="crcle-signal-card-crosshair relative block size-6 shrink-0">
@@ -562,8 +584,12 @@ export function SignalCard({
             {prompt}
           </p>
 
-          <div className="flex w-full items-start gap-2">
-            <span className="crcle-signal-card-time flex shrink-0 items-center p-2.5">
+          <div className="flex w-full items-start justify-center gap-2">
+            <span
+              className={`crcle-signal-card-time flex shrink-0 items-center rounded-[24px] p-2.5 ${
+                isLight && !isSent ? "border border-[rgba(0,0,0,0.25)]" : ""
+              }`}
+            >
               <img
                 alt=""
                 src={timeGlyph.icon}
@@ -574,7 +600,7 @@ export function SignalCard({
               />
             </span>
 
-            <div className="crcle-signal-card-venue flex min-w-0 flex-1 items-center gap-1.5 py-1 pl-3 pr-1">
+            <div className="crcle-signal-card-venue flex min-w-0 flex-1 items-center gap-1.5 rounded-[24px] py-1 pl-3 pr-1">
               <img
                 alt=""
                 src={locusPinRedIcon}
@@ -589,15 +615,24 @@ export function SignalCard({
               </span>
               <button
                 type="button"
-                aria-label="Respond to signal"
-                disabled={signal.status !== "pending"}
+                aria-label={responseOpen ? "Hide response options" : "Show response options"}
+                aria-expanded={responseOpen}
+                disabled={!canRespond}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (signal.status === "pending") onAccept();
+                  if (canRespond) setResponseOpen((open) => !open);
                 }}
-                className="crcle-signal-card-plus flex shrink-0 items-center p-2.5 disabled:opacity-50"
+                className={`crcle-glass-btn crcle-signal-card-plus relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 backdrop-blur-[12px] transition hover:brightness-110 disabled:opacity-50 ${
+                  responseOpen && canRespond ? "brightness-110" : ""
+                }`}
               >
-                <img alt="" src={locusPlusIcon} className="size-5 max-w-none" draggable={false} />
+                <div className="dock-glass-lens opacity-40" aria-hidden />
+                <img
+                  alt=""
+                  src={locusPlusIcon}
+                  className="relative z-[1] size-5 max-w-none"
+                  draggable={false}
+                />
               </button>
             </div>
           </div>

@@ -41,7 +41,7 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: "Socials",
     links: [
-      { label: "LinkedIn", href: "https://www.linkedin.com/", external: true },
+      { label: "LinkedIn", href: "https://www.linkedin.com/feed/", external: true },
       { label: "GitHub", href: "https://github.com/", external: true },
       { label: "Twitter / X", href: "https://x.com/", external: true },
       { label: "ReadCV", href: "https://read.cv/", external: true },

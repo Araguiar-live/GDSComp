@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Sun } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
+import { useState, type ReactNode } from "react";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
@@ -23,17 +23,16 @@ import eyeWeekIcon from "@/assets/crcle/profile/eye-week.svg";
 import graduationIcon from "@/assets/crcle/profile/graduation.svg";
 import heartDatingIcon from "@/assets/crcle/profile/heart-dating.svg";
 import laptopWorkIcon from "@/assets/crcle/profile/laptop-work.svg";
-import bytesizeInfoIcon from "@/assets/crcle/profile/bytesize-info.svg";
 import locationCurrentIcon from "@/assets/crcle/profile/location-current.svg";
-import locationMapImg from "@/assets/crcle/profile/location-map.png";
+import locationMapImg from "@/assets/crcle/profile/location-map-figma.png";
+import locationPinMarkerIcon from "@/assets/crcle/profile/location-pin-marker.svg";
+import locationProximityRingIcon from "@/assets/crcle/profile/location-proximity-ring.svg";
 import lockFilledIcon from "@/assets/crcle/profile/lock-filled.svg";
 import loughboroughCrest from "@/assets/crcle/profile/loughborough-crest.png";
-import mapPinPreciseIcon from "@/assets/crcle/profile/map-pin-precise.svg";
-import profileLaptopIcon from "@/assets/crcle/profile/laptop.svg";
-import profileMaskGreenIcon from "@/assets/crcle/profile/mask-green.svg";
 import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
 import profilePinIcon from "@/assets/crcle/profile/pin.svg";
 import raindropBadgeIcon from "@/assets/crcle/profile/raindrop-badge.svg";
+import signalLiveIndicatorIcon from "@/assets/crcle/profile/signal-live-indicator.svg";
 import relComplicatedIcon from "@/assets/crcle/profile/rel-complicated.svg";
 import relFriendsIcon from "@/assets/crcle/profile/rel-friends.svg";
 import relInfoIcon from "@/assets/crcle/profile/rel-info.svg";
@@ -57,22 +56,25 @@ import workBriefcaseIcon from "@/assets/crcle/profile/work-briefcase.svg";
 import workLogoPreviewIcon from "@/assets/crcle/profile/work-logo-preview.svg";
 import workMarkIcon from "@/assets/crcle/profile/work-mark.svg";
 import logoRadioDotIcon from "@/assets/crcle/profile/logo-radio-dot.svg";
+import closeAddIcon from "@/assets/crcle/onboarding/close-add.svg";
 import shareIcon from "@/assets/crcle/share.svg";
 import shareInnerIcon from "@/assets/crcle/share-inner.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
+import { CrcleMoodSwitch, PROFILE_MOOD_IDS } from "@/components/portfolio/CrcleMoodSwitch";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
   CrcleMoreButtonSpacer,
   CrclePrimaryDock,
   CrcleStickyMoreButton,
+  CrcleThemeToggle,
+  crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
 import {
-  requestAreaInboxOnMessaging,
-  requestMoodSwitchOnMessaging,
-  setCrcleBroadcast,
+  requestAreaNearbyNotification,
   setCrcleVerifyOpen,
   useCrcleBroadcast,
   useCrcleIncognito,
+  useCrcleVerifyOpen,
   type BroadcastState,
 } from "@/components/portfolio/crcleBroadcast";
 
@@ -135,6 +137,36 @@ const RELATIONSHIP_OPTIONS = [
     ctaIcon: "send" as const,
   },
 ] as const;
+
+function clamp255(value: number) {
+  return Math.max(0, Math.min(255, Math.round(value)));
+}
+
+function hexToRgb(hex: string) {
+  const normalized = hex.replace("#", "");
+  return {
+    r: parseInt(normalized.slice(0, 2), 16),
+    g: parseInt(normalized.slice(2, 4), 16),
+    b: parseInt(normalized.slice(4, 6), 16),
+  };
+}
+
+/** Share-status pill — darker saturated glass when on, lighter frosted glass when off */
+function datingShareBarStyles(cardBg: string, shareStatus: boolean) {
+  const { r, g, b } = hexToRgb(cardBg);
+  if (shareStatus) {
+    return {
+      backgroundColor: `rgba(${clamp255(r * 0.68)}, ${clamp255(g * 0.68)}, ${clamp255(b * 0.68)}, 0.58)`,
+      borderColor: `rgba(${clamp255(r * 0.55)}, ${clamp255(g * 0.55)}, ${clamp255(b * 0.55)}, 0.72)`,
+      boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.38)",
+    };
+  }
+  return {
+    backgroundColor: `rgba(${r}, ${g}, ${b}, 0.26)`,
+    borderColor: `rgba(${clamp255(r * 0.82)}, ${clamp255(g * 0.82)}, ${clamp255(b * 0.82)}, 0.44)`,
+    boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.22)",
+  };
+}
 
 export type ProfileState = {
   user: {
@@ -225,49 +257,38 @@ export function CrcleProfile({
     broadcast: { ...INITIAL.broadcast, activeState: broadcastMood, isIncognito },
   }));
   const [overlay, setOverlay] = useState<Overlay>(null);
-
-  useEffect(() => {
-    setCrcleVerifyOpen(overlay === "verify");
-  }, [overlay]);
-
-  useEffect(() => {
-    return () => setCrcleVerifyOpen(false);
-  }, []);
+  const [moodOpen, setMoodOpen] = useState(false);
+  const verifySheetOpen = useCrcleVerifyOpen();
+  /* Figma 313:115854 — Profile onboarding over live profile */
+  const [onboardingOpen, setOnboardingOpen] = useState(true);
+  const dismissOnboarding = () => setOnboardingOpen(false);
 
   const socialCount = Object.values(profile.socials).filter(Boolean).length;
 
   return (
     <div className="relative ml-auto w-fit">
-      <motion.button
-        type="button"
-        aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
-        aria-pressed={isLightMode}
-        onClick={() => setIsLightMode((v) => !v)}
-        className="absolute -right-10 top-12 z-30 flex size-8 items-center justify-center border-0 bg-transparent p-0 shadow-none outline-none ring-0"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.92 }}
-      >
-        <Sun
-          strokeWidth={1.5}
-          className={`size-6 transition-colors duration-300 ${
-            isLightMode ? "fill-amber-400 text-amber-400" : "fill-none text-zinc-800"
-          }`}
-        />
-      </motion.button>
+      <CrcleThemeToggle
+        light={isLightMode}
+        onToggle={() => setIsLightMode((v) => !v)}
+        className={crcleThemeToggleAboveClass}
+      />
 
       <CrclePhoneFrame
         light={isLightMode}
         overlay={
           overlay === "locationInfo" ? (
             <LocationInfoSheet
+              key="location-info"
               onClose={() => setOverlay(null)}
               backdropUrl={profile.user.avatarUrl}
               isLight={isLightMode}
             />
+          ) : verifySheetOpen ? (
+            <VerificationSheet key="verify" onClose={() => setCrcleVerifyOpen(false)} />
           ) : null
         }
         bottomChrome={
-          overlay ? null : (
+          overlay || verifySheetOpen || onboardingOpen || moodOpen ? null : (
             <CrclePrimaryDock
               embedded
               active="profile"
@@ -276,7 +297,7 @@ export function CrcleProfile({
               onRadar={onGoToRadar}
               onSignalHome={onGoToSignalHome}
               onAreaRadar={() => {
-                requestAreaInboxOnMessaging();
+                requestAreaNearbyNotification();
                 onGoToMessages?.();
               }}
             />
@@ -290,22 +311,23 @@ export function CrcleProfile({
               <ProfileMainView
                 profile={profile}
                 socialCount={socialCount}
-                onOpenMood={() => {
-                  setCrcleBroadcast("in_the_area");
-                  requestMoodSwitchOnMessaging();
-                  onGoToMessages?.();
-                }}
+                onOpenMood={() => setMoodOpen(true)}
                 onOpenEducation={() => setOverlay("education")}
                 onOpenWork={() => setOverlay("work")}
                 onOpenRelationship={() => setOverlay("relationship")}
                 onOpenLocation={() => setOverlay("location")}
                 onOpenLocationInfo={() => setOverlay("locationInfo")}
                 onOpenSocials={() => setOverlay("socials")}
-                onOpenVerify={() => setOverlay("verify")}
+                onOpenVerify={() => {
+                  setIsLightMode(true);
+                  setOnboardingOpen(false);
+                  setMoodOpen(false);
+                  setCrcleVerifyOpen(true);
+                }}
               />
             </div>
 
-            {!overlay ? <CrcleStickyMoreButton /> : null}
+            {!overlay && !onboardingOpen && !moodOpen ? <CrcleStickyMoreButton /> : null}
 
             {/* Status + wordmark float over content with a soft fade — no hard cutoff */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
@@ -397,12 +419,129 @@ export function CrcleProfile({
             ) : null}
           </AnimatePresence>
 
-          {overlay === "verify" ? (
-            <VerificationSheet onClose={() => setOverlay(null)} />
-          ) : null}
+          <AnimatePresence>
+            {moodOpen ? (
+              <CrcleMoodSwitch
+                allowedMoods={PROFILE_MOOD_IDS}
+                closeOnInTheAreaSelect={false}
+                onClose={() => setMoodOpen(false)}
+              />
+            ) : null}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {onboardingOpen && !verifySheetOpen ? (
+              <ProfileOnboarding onClose={dismissOnboarding} onContinue={dismissOnboarding} />
+            ) : null}
+          </AnimatePresence>
         </div>
       </CrclePhoneFrame>
     </div>
+  );
+}
+
+/* ——— Profile Onboarding (Figma 313:116043) ——— */
+
+function ProfileOnboarding({
+  onClose,
+  onContinue,
+}: {
+  onClose: () => void;
+  onContinue: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.28, ease: EASE }}
+      className="absolute inset-0 z-[55] flex flex-col overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.4)] backdrop-blur-[9px]"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="profile-onboarding-title"
+    >
+      <div className="flex min-h-0 flex-1 flex-col px-3 pb-11 pt-[112px]">
+        <div className="flex w-full shrink-0 flex-col items-end gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close onboarding"
+            className="crcle-glass-btn relative flex h-10 shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-[#f7f6f2] px-2 py-0.5 backdrop-blur-[6px]"
+          >
+            <div className="dock-glass-lens opacity-40" aria-hidden />
+            <IconImg src={closeAddIcon} className="relative z-[1] size-6" />
+          </button>
+
+          <div className="w-full overflow-hidden rounded-[24px] border border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.2)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]">
+            <div className="border-b border-[rgba(255,255,255,0.05)] px-4 py-4">
+              <p
+                id="profile-onboarding-title"
+                className="text-center text-[18px] font-normal leading-[25px] text-white"
+                style={{ fontFamily: FONT }}
+              >
+                Customise Your Profile
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-5 p-4">
+              <p
+                className="text-center text-[15px] font-normal leading-[22.5px] text-[rgba(255,255,255,0.6)]"
+                style={{ fontFamily: FONT }}
+              >
+                Let&apos;s personalize your dashboard! Add widgets to make your profile uniquely yours.
+              </p>
+              <div className="flex h-2 items-center justify-center gap-2">
+                <span className="h-2 w-8 shrink-0 rounded-full bg-[#010211]" aria-hidden />
+                <span className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]" aria-hidden />
+                <span className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]" aria-hidden />
+                <span className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]" aria-hidden />
+              </div>
+            </div>
+
+            <div className="flex gap-2 border-t border-[rgba(230,230,233,0.1)] p-4">
+              <button
+                type="button"
+                onClick={onContinue}
+                className="flex h-[49px] flex-1 items-center justify-center rounded-full bg-[rgba(230,230,233,0.6)] text-[15px] font-normal leading-[21px] text-[rgba(0,0,0,0.25)] transition hover:brightness-95"
+                style={{ fontFamily: FONT }}
+              >
+                Skip tutorial
+              </button>
+              <button
+                type="button"
+                onClick={onContinue}
+                className="flex h-[49px] flex-1 items-center justify-center rounded-full bg-[#010211] text-[15px] font-normal leading-[21px] text-[#b1b1bc] transition hover:brightness-110"
+                style={{ fontFamily: FONT }}
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto flex shrink-0 flex-col items-center gap-[18px] pt-10">
+          <p
+            className="w-full text-center text-[14px] font-medium leading-[21px] text-[rgba(247,246,242,0.5)]"
+            style={{ fontFamily: FONT }}
+          >
+            Profile configurations
+          </p>
+          <button
+            type="button"
+            onClick={onContinue}
+            className="flex w-[91px] flex-col items-center gap-[5px] rounded-xl transition hover:bg-white/5"
+          >
+            <IconImg src={crcleLogo} className="h-[17px] w-[49px]" />
+            <span
+              className="w-full text-center text-[11px] leading-[1.1] tracking-[-0.2px] text-[rgba(247,246,242,0.4)]"
+              style={{ fontFamily: FONT }}
+            >
+              Verified Social
+            </span>
+          </button>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -433,13 +572,7 @@ function ProfileMainView({
   const [broadcastMood] = useCrcleBroadcast();
   const [isIncognito] = useCrcleIncognito();
   const moodChipIcon =
-    broadcastMood === "in_the_area"
-      ? profilePinIcon
-      : broadcastMood === "night_owl"
-        ? profileMoonCloudIcon
-        : broadcastMood === "collab"
-          ? profileLaptopIcon
-          : profileMaskGreenIcon;
+    broadcastMood === "in_the_area" ? profilePinIcon : profileMoonCloudIcon;
   const signalLiveLabel = broadcastMood === "in_the_area" ? "In The Area" : "Signal Live";
   const [locationEnabled, setLocationEnabled] = useState(true);
   const [lookingForWork, setLookingForWork] = useState(false);
@@ -474,7 +607,10 @@ function ProfileMainView({
             <button
               type="button"
               aria-label="Verify identity"
-              onClick={onOpenVerify}
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenVerify();
+              }}
               className="hidden items-center rounded-[24px] border border-[#030426] px-3 py-1 text-[11px] leading-[1.4] text-[#030426] [.crcle-phone--light_&]:inline-flex"
               style={{ fontFamily: FONT }}
             >
@@ -488,21 +624,18 @@ function ProfileMainView({
         <CrcleMoreButtonSpacer />
       </div>
 
-      {/* Signal Live + mood — Figma 1005:49875 / glass like CrcleMoreButton */}
+      {/* Signal Live + mood — glass pills with green gradient rim */}
       <div className="flex items-start justify-center gap-2 px-2">
         <button
           type="button"
           onClick={onOpenMood}
-          className="crcle-glass-btn crcle-glass-btn--signal relative flex shrink-0 items-center gap-1 overflow-hidden rounded-[24px] px-4 py-2 backdrop-blur-[12px] transition hover:brightness-110"
+          className="crcle-glass-btn crcle-glass-btn--signal-live relative flex shrink-0 items-center gap-1 overflow-hidden rounded-[24px] px-4 py-2 backdrop-blur-[12px] transition hover:brightness-110"
         >
           <div className="dock-glass-lens opacity-40" aria-hidden />
-          <span className="relative z-[1] flex size-2 shrink-0 items-center justify-center">
-            <span
-              aria-hidden
-              className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/70"
-            />
-            <span className="relative size-2 rounded-full bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.85)]" />
-          </span>
+          <IconImg
+            src={signalLiveIndicatorIcon}
+            className="crcle-signal-live-dot relative z-[1] size-2 shrink-0"
+          />
           <span
             className="relative z-[1] whitespace-nowrap text-[11px] leading-[1.4] text-[#22c55e]"
             style={{ fontFamily: FONT }}
@@ -514,20 +647,20 @@ function ProfileMainView({
           type="button"
           onClick={onOpenMood}
           aria-label="Change mood"
-          className="crcle-glass-btn crcle-glass-btn--signal relative flex shrink-0 items-center justify-center gap-1 overflow-hidden rounded-[64px] py-1 pl-2 pr-1 backdrop-blur-[12px] transition hover:brightness-110"
+          className="crcle-glass-btn crcle-glass-btn--signal-live relative flex shrink-0 items-center justify-center gap-0.5 overflow-hidden rounded-[24px] py-1 pl-2 pr-1.5 backdrop-blur-[12px] transition hover:brightness-110"
         >
           <div className="dock-glass-lens opacity-40" aria-hidden />
-          <IconImg src={moodChipIcon} className="crcle-mood-chip-icon relative z-[1] size-4" />
+          <IconImg src={moodChipIcon} className="crcle-profile-mood-icon relative z-[1] size-[20px] shrink-0" />
           <ChevronDown
-            className="relative z-[1] size-6 text-[rgba(247,246,242,0.4)] [.crcle-phone--light_&]:text-[rgba(2,3,29,0.4)]"
+            className="relative z-[1] size-6 shrink-0 text-[rgba(247,246,242,0.4)] [.crcle-phone--light_&]:text-[rgba(2,3,29,0.45)]"
             strokeWidth={1.5}
           />
         </button>
       </div>
 
-      {/* Top row: portrait + stats — Figma 1005:49883 / light 1005:49632 */}
-      <div className="mx-auto flex h-[255px] w-full items-stretch gap-4 [.crcle-phone--light_&]:h-[251px]">
-        <div className="relative min-w-0 flex-1 overflow-hidden rounded-[24px]">
+      {/* Top row: portrait + stats — match widget grid column widths below */}
+      <div className="mx-auto grid h-[255px] w-full grid-cols-2 gap-4 [.crcle-phone--light_&]:h-[251px]">
+        <div className="relative min-w-0 overflow-hidden rounded-[24px]">
           <img
             alt=""
             src={user.avatarUrl}
@@ -539,7 +672,7 @@ function ProfileMainView({
           </div>
         </div>
 
-        <div className="relative flex min-w-0 flex-1 flex-col gap-3 overflow-hidden rounded-2xl bg-[#1e2939] p-3 [.crcle-phone--light_&]:gap-2 [.crcle-phone--light_&]:bg-[#f7f6f2] [.crcle-phone--light_&]:p-2">
+        <div className="relative flex min-h-0 min-w-0 flex-col gap-3 overflow-hidden rounded-2xl bg-[#1e2939] p-3 [.crcle-phone--light_&]:gap-2 [.crcle-phone--light_&]:bg-[#f7f6f2] [.crcle-phone--light_&]:p-2">
           <img
             alt=""
             src={statsDecoIcon}
@@ -681,37 +814,54 @@ function ProfileMainView({
                 <img
                   alt=""
                   src={locationMapImg}
-                  className="absolute inset-0 size-full object-cover"
+                  className="absolute inset-0 size-full rounded-2xl object-cover"
                   draggable={false}
                 />
-                <div className="absolute inset-0 rounded-2xl bg-[rgba(2,4,38,0.1)]" />
+                <div aria-hidden className="absolute inset-0 rounded-2xl bg-[rgba(2,4,38,0.1)]" />
                 <button
                   type="button"
                   aria-label="Edit location"
                   onClick={onOpenLocation}
-                  className="absolute inset-x-0 top-0 bottom-[84px] z-[1] cursor-pointer border-0 bg-transparent p-0"
+                  className="absolute inset-x-0 top-8 bottom-[84px] z-[1] cursor-pointer border-0 bg-transparent p-0"
                 />
                 {showLocationDetails ? (
                   <>
-                    <span className="pointer-events-none absolute left-[72px] top-[84px] z-[2] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
-                      <span className="size-0.5 rounded-full bg-white" />
-                      <span
-                        className="text-[11px] leading-[1.4] text-[#fefefe]"
-                        style={{ fontFamily: FONT }}
-                      >
-                        {widgets.location ?? "Holland Park"}
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute left-[34px] top-[52px] z-[2] h-[88px] w-[140px]"
+                    >
+                      <img
+                        alt=""
+                        src={locationProximityRingIcon}
+                        className="absolute left-[5px] top-4 size-[88px]"
+                        draggable={false}
+                      />
+                      <span className="absolute left-11 top-[31px] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
+                        <span
+                          className="text-[11px] leading-[1.4] text-[#fefefe]"
+                          style={{ fontFamily: FONT }}
+                        >
+                          London
+                        </span>
+                        <span className="size-0.5 shrink-0 rounded-full bg-[#fefefe]" />
+                        <span
+                          className="text-[11px] leading-[1.4] text-[#fefefe]"
+                          style={{ fontFamily: FONT }}
+                        >
+                          2 Km
+                        </span>
                       </span>
-                    </span>
+                    </div>
                     <img
                       alt=""
-                      src={mapPinPreciseIcon}
-                      className="pointer-events-none absolute left-[72px] top-[107px] z-[2] size-2.5"
+                      src={locationPinMarkerIcon}
+                      className="pointer-events-none absolute left-[78px] top-[108px] z-[2] size-2.5"
                       draggable={false}
                     />
                   </>
                 ) : null}
                 {frostMap ? (
-                  <div className="pointer-events-none absolute inset-0 z-[2] flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[rgba(255,255,255,0.1)] px-[35px] backdrop-blur-[4px]">
+                  <div className="pointer-events-none absolute inset-0 z-[3] flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[rgba(255,255,255,0.1)] px-[35px] backdrop-blur-[4px]">
                     <div className="flex w-[110px] flex-col items-center justify-center gap-[7px]">
                       <span className="relative size-6 shrink-0 overflow-clip">
                         <span className="absolute inset-[8.33%_16.67%]">
@@ -732,25 +882,43 @@ function ProfileMainView({
                     </div>
                   </div>
                 ) : null}
-                <span className="pointer-events-auto relative z-[4] flex w-full items-center justify-between rounded-[24px] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1 backdrop-blur-[4px]">
-                  <img alt="" src={locationCurrentIcon} className="size-4 object-contain" draggable={false} />
-                  <span className="text-[13px] leading-[1.1] text-[#030426]" style={{ fontFamily: FONT }}>
+                {/* Location header — Figma 1005:49679 */}
+                <div className="relative z-[4] flex w-full items-center justify-between rounded-[24px] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1 backdrop-blur-[4px]">
+                  <img
+                    alt=""
+                    src={locationCurrentIcon}
+                    className="size-4 shrink-0 object-contain"
+                    draggable={false}
+                  />
+                  <span
+                    className="min-w-0 flex-1 text-center text-[13px] leading-[1.1] text-[#030426]"
+                    style={{ fontFamily: FONT }}
+                  >
                     Location
                   </span>
                   <button
                     type="button"
                     aria-label="Location privacy information"
-                    onClick={onOpenLocationInfo}
-                    className="relative z-[1] flex size-6 shrink-0 items-center justify-center rounded-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenLocationInfo();
+                    }}
+                    className="flex size-4 shrink-0 items-center justify-center border-0 bg-transparent p-0"
                   >
-                    <img alt="" src={bytesizeInfoIcon} className="size-4 object-contain" draggable={false} />
+                    <img
+                      alt=""
+                      src={relInfoIcon}
+                      className="size-4 object-contain"
+                      draggable={false}
+                    />
                   </button>
-                </span>
-                <div className="pointer-events-auto relative z-[4] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1.5 backdrop-blur-[4px]">
+                </div>
+                <div className="pointer-events-auto relative z-[4] flex w-[165px] items-center justify-between overflow-hidden rounded-[24px] border border-[rgba(2,4,38,0.4)] bg-[rgba(254,254,254,0.42)] py-1 pl-2 pr-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.38)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]">
+                  <div className="dock-glass-lens pointer-events-none absolute inset-0 opacity-35" aria-hidden />
                   <button
                     type="button"
                     onClick={() => setLocationEnabled((v) => !v)}
-                    className="flex w-full items-center justify-between"
+                    className="relative z-[1] flex w-full items-center justify-between"
                     aria-pressed={locationEnabled}
                   >
                     <span className="text-[11px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
@@ -1022,18 +1190,26 @@ function DatingWidget({
       </div>
 
       <div
-        className="flex w-full items-center justify-between rounded-[24px] border border-[rgba(204,0,0,0.3)] bg-[rgba(204,0,0,0.2)] py-1 pl-2 pr-1.5"
+        role="switch"
+        aria-checked={shareStatus}
+        aria-label="Share relationship status"
+        className="relative flex w-full items-center justify-between overflow-hidden rounded-[24px] border py-1 pl-2 pr-1.5 backdrop-blur-[12px] transition-all duration-300"
+        style={datingShareBarStyles(option.cardBg, shareStatus)}
         onClick={(e) => {
           e.stopPropagation();
           onToggleShare();
         }}
       >
-        <span className="text-[11px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
+        <div className="dock-glass-lens pointer-events-none absolute inset-0 opacity-35" aria-hidden />
+        <span
+          className="relative z-[1] text-[11px] leading-[1.4] text-[#030426]"
+          style={{ fontFamily: FONT }}
+        >
           Share status
         </span>
         <span
-          className={`flex w-6 items-center rounded-[24px] p-0.5 ${
-            shareStatus ? "justify-end bg-[#030426]" : "justify-start bg-[rgba(3,4,38,0.25)]"
+          className={`relative z-[1] flex w-6 items-center rounded-[24px] p-0.5 transition-colors duration-300 ${
+            shareStatus ? "justify-end bg-[#030426]" : "justify-start bg-[rgba(3,4,38,0.22)]"
           }`}
         >
           <span className="size-2 rounded bg-[#fdfcfb]" />
@@ -1680,40 +1856,48 @@ function LocationInfoSheet({
   );
 }
 
-/** Figma 257:83140 — Join the verified crcle (light KYC drawer). */
+/** Figma 257:82967 — Verify your identity (light KYC drawer). */
 function VerificationSheet({ onClose }: { onClose: () => void }) {
   return (
     <div
-      className="absolute inset-0 z-40 flex flex-col justify-end overflow-hidden rounded-[53px]"
+      className="pointer-events-auto absolute inset-0 z-[60] flex flex-col justify-end overflow-hidden rounded-[53px]"
       role="dialog"
       aria-modal="true"
-      aria-label="Join the verified crcle"
-      style={{ clipPath: "inset(0 round 53px)" }}
+      aria-label="Verify your identity"
     >
       <button
         type="button"
         aria-label="Dismiss verification"
-        className="absolute inset-0 overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.18)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]"
+        className="crcle-verify-scrim crcle-verify-scrim-enter absolute inset-0 z-0 overflow-hidden rounded-[53px]"
         onClick={onClose}
       />
 
-      <div className="crcle-verify-sheet relative z-[1] flex h-[386px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]">
-        <div className="crcle-verify-sheet-frost rounded-[inherit]" aria-hidden />
-
-        {/* Header — Figma 257:83141 */}
-        <div className="crcle-verify-sheet-header relative flex h-[52px] shrink-0 items-center gap-[25px] border border-[rgba(2,3,29,0.1)] border-b-0 px-3 pb-3 pt-4">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="crcle-verify-sheet crcle-verify-sheet-enter relative z-10 flex max-h-[88%] min-h-[420px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]"
+      >
+        {/* Header — Figma 257:82968 */}
+        <div className="crcle-verify-sheet-header relative flex shrink-0 items-start gap-[25px] border border-[rgba(2,3,29,0.1)] border-b-0 px-3 pb-3 pt-4">
           <img
             alt=""
             src={verifyHandleIcon}
             className="pointer-events-none absolute left-1/2 top-[5px] h-[3px] w-[56px] -translate-x-1/2 max-w-none"
             draggable={false}
           />
-          <p
-            className="min-w-0 flex-1 text-[16px] font-medium leading-none text-[#02031d]"
-            style={{ fontFamily: FONT }}
-          >
-            Join the verified crcle
-          </p>
+          <div className="min-w-0 flex-1 flex flex-col gap-[3px]">
+            <p
+              className="text-[16px] font-medium leading-none text-[#02031d]"
+              style={{ fontFamily: FONT }}
+            >
+              Verify your identity
+            </p>
+            <p
+              className="text-[12px] leading-none tracking-[-0.15px] text-[#b1b1bc]"
+              style={{ fontFamily: FONT }}
+            >
+              Verified identity for an authentic community.
+            </p>
+          </div>
           <button
             type="button"
             aria-label="Close"
@@ -1731,18 +1915,9 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        {/* Body — Figma 257:83150, glass blur 40 */}
-        <div className="crcle-verify-sheet-body flex min-h-0 flex-1 flex-col items-center justify-between border-t border-[rgba(2,3,29,0.1)] px-3 pb-4 pt-6">
-          <div className="flex items-center justify-center rounded-[36px] bg-[rgba(247,246,242,0.6)] px-3 py-1">
-            <p
-              className="text-center text-[12px] leading-[1.2] tracking-[-0.15px] text-[rgba(2,3,29,0.5)]"
-              style={{ fontFamily: FONT }}
-            >
-              Verified Social
-            </p>
-          </div>
-
-          <div className="flex w-full flex-col items-center gap-6">
+        {/* Body — Figma 257:82978 + crcle KYC philosophy */}
+        <div className="crcle-verify-sheet-body flex min-h-0 flex-1 flex-col items-center justify-between gap-[16px] overflow-y-auto border-t border-[rgba(2,3,29,0.1)] px-3 pb-4 pt-[46px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex w-full flex-col items-center gap-[16px]">
             <span className="relative size-[46px] shrink-0 overflow-hidden">
               <img
                 alt=""
@@ -1751,12 +1926,29 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 draggable={false}
               />
             </span>
-            <p
-              className="w-full text-center text-[14px] font-medium leading-[1.2] tracking-[-0.15px] text-[#02031d]"
-              style={{ fontFamily: FONT }}
-            >
-              To keep the community authentic, verify your identity and claim your verified status.
-            </p>
+            <div className="flex w-full flex-col items-center gap-[16px]">
+              <p
+                className="w-full text-center text-[14px] font-normal leading-[1.2] tracking-[-0.15px] text-[#02031d]"
+                style={{ fontFamily: FONT }}
+              >
+                To keep the community authentic, verify your identity to send this request.
+              </p>
+              <p
+                className="w-full text-center text-[12px] font-medium leading-[1.35] tracking-[-0.15px] text-[#02031d]"
+                style={{ fontFamily: FONT }}
+              >
+                At crcle, trust is the philosophy — not a feature flag.
+              </p>
+              <p
+                className="w-full text-center text-[12px] font-light leading-[1.4] tracking-[-0.15px] text-[rgba(2,3,29,0.55)]"
+                style={{ fontFamily: FONT }}
+              >
+                CRCLE is a small, high-trust graph: dating, work, and location shared with people
+                you might actually meet. KYC adds friction on purpose — one verified person per
+                profile, not a borrowed photo or a bot — so intimacy stays real before Radar, In
+                The Area, or messaging deepen.
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-1">
@@ -1784,11 +1976,17 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
             </span>
           </div>
 
-          <div className="flex w-full flex-col items-center gap-4">
+          <div className="flex w-full flex-col items-center gap-[16px]">
+            <p
+              className="w-full text-center text-[9px] leading-[1.1] tracking-[-0.15px] text-[rgba(2,3,29,0.4)]"
+              style={{ fontFamily: FONT }}
+            >
+              Your data is encrypted and used only to identify verification
+            </p>
             <button
               type="button"
               onClick={onClose}
-              className="flex items-center justify-center rounded-full bg-[#02031d] px-9 py-3"
+              className="relative z-10 flex items-center justify-center rounded-full bg-[#02031d] px-9 py-3"
             >
               <span
                 className="text-center text-[16px] font-medium leading-[1.2] tracking-[-0.44px] text-[#f7f6f2]"
@@ -1797,12 +1995,14 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 Start Verification
               </span>
             </button>
-            <p
-              className="w-full text-center text-[9px] leading-[1.1] tracking-[-0.15px] text-[rgba(2,3,29,0.4)]"
-              style={{ fontFamily: FONT }}
-            >
-              Your data is encrypted and used only to identify verification
-            </p>
+            <div className="flex items-center justify-center rounded-[36px] bg-[rgba(247,246,242,0.6)] px-3 py-1">
+              <p
+                className="text-center text-[12px] leading-[1.2] tracking-[-0.15px] text-[rgba(2,3,29,0.5)]"
+                style={{ fontFamily: FONT }}
+              >
+                Verified Social
+              </p>
+            </div>
           </div>
         </div>
       </div>

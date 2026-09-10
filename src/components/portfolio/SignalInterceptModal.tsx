@@ -18,6 +18,10 @@ import laptopStrokeIcon from "@/assets/crcle/signal/laptop-stroke.svg";
 import lightbulbIcon from "@/assets/crcle/signal/lightbulb.svg";
 import signalBg from "@/assets/crcle/signal-bg.png";
 import unlockIcon from "@/assets/crcle/unlock.svg";
+import socialBehanceIcon from "@/assets/crcle/profile/social-behance.svg";
+import socialDribbbleIcon from "@/assets/crcle/profile/social-dribbble.svg";
+import socialInstagramIcon from "@/assets/crcle/profile/social-instagram.svg";
+import socialLinkedinIcon from "@/assets/crcle/profile/social-linkedin.svg";
 
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 const SPRING = { type: "spring", stiffness: 380, damping: 22, mass: 0.8 } as const;
@@ -42,6 +46,13 @@ type SignalVariant = "purpose" | "soul" | "love";
 /** Figma 452:81989 Default → Variant2 → Variant3 */
 const VARIANT_ORDER: SignalVariant[] = ["purpose", "soul", "love"];
 
+const SIGNAL_SOCIAL_LINKS = [
+  { id: "behance", label: "Behance", icon: socialBehanceIcon, href: "https://www.behance.net/" },
+  { id: "instagram", label: "Instagram", icon: socialInstagramIcon, href: "https://www.instagram.com/" },
+  { id: "linkedin", label: "LinkedIn", icon: socialLinkedinIcon, href: "https://www.linkedin.com/in/" },
+  { id: "dribbble", label: "Dribbble", icon: socialDribbbleIcon, href: "https://dribbble.com/" },
+] as const;
+
 type SignalInterceptModalProps = {
   user: UserProfile;
   isLight?: boolean;
@@ -61,6 +72,7 @@ export function SignalInterceptModal({
   const handle = user.username.startsWith("@") ? user.username : `@${user.username}`;
   const [variantIndex, setVariantIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [linksOpen, setLinksOpen] = useState(false);
   const variant = VARIANT_ORDER[variantIndex];
 
   const goTo = useCallback((nextIndex: number, dir: number) => {
@@ -365,28 +377,67 @@ export function SignalInterceptModal({
                 </div>
               </div>
 
-              <motion.button
-                type="button"
-                className={`flex size-8 shrink-0 items-center justify-center rounded-full p-1 ${
-                  isLight ? "bg-[#02031d]" : "bg-[#f7f6f2]"
-                }`}
-                aria-label="Open links"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.92 }}
-              >
-                <div className="relative size-4 shrink-0 overflow-hidden rounded-[2px]">
-                  <div className="absolute inset-[29.17%_8.33%]">
-                    <img
-                      alt=""
-                      src={linkInnerIcon}
-                      className={`absolute inset-0 size-full max-w-none object-contain ${
-                        isLight ? "" : "brightness-0"
-                      }`}
-                      draggable={false}
-                    />
+              <div className="relative flex shrink-0 flex-col items-end gap-2">
+                <motion.button
+                  type="button"
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-full p-1 ${
+                    isLight ? "bg-[#02031d]" : "bg-[#f7f6f2]"
+                  } ${linksOpen ? "ring-2 ring-white/25" : ""}`}
+                  aria-label={linksOpen ? "Hide links" : "Open links"}
+                  aria-expanded={linksOpen}
+                  onClick={() => setLinksOpen((open) => !open)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.92 }}
+                >
+                  <div className="relative size-4 shrink-0 overflow-hidden rounded-[2px]">
+                    <div className="absolute inset-[29.17%_8.33%]">
+                      <img
+                        alt=""
+                        src={linkInnerIcon}
+                        className={`absolute inset-0 size-full max-w-none object-contain ${
+                          isLight ? "" : "brightness-0"
+                        }`}
+                        draggable={false}
+                      />
+                    </div>
                   </div>
-                </div>
-              </motion.button>
+                </motion.button>
+
+                <AnimatePresence>
+                  {linksOpen ? (
+                    <motion.div
+                      key="signal-social-links"
+                      initial={{ opacity: 0, scale: 0.96, y: -6 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.96, y: -4 }}
+                      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                      className="crcle-signal-social-links relative z-10 flex h-11 w-[188px] items-center gap-3 rounded-[64px] p-1"
+                    >
+                      <div className="crcle-signal-social-links-plate" aria-hidden />
+                      <div className="dock-glass-lens opacity-55" aria-hidden />
+                      <div className="crcle-signal-social-links-dispersion" aria-hidden />
+                      {SIGNAL_SOCIAL_LINKS.map((social) => (
+                        <a
+                          key={social.id}
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={social.label}
+                          className="relative block size-9 shrink-0 transition hover:brightness-110"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <img
+                            alt=""
+                            src={social.icon}
+                            className="size-full max-w-none object-contain"
+                            draggable={false}
+                          />
+                        </a>
+                      ))}
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* Match panel — outer 24px; Profile Verified inner 20px (4px smaller) */}

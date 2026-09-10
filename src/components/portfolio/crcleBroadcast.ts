@@ -11,6 +11,8 @@ let incognitoState = false;
 let pendingMoodSwitch = false;
 let pendingAreaInbox = false;
 let pendingAreaNotification = false;
+let areaNearbyBadgeActive = false;
+let areaNearbyFlowComplete = false;
 let areaInboxOpen = false;
 let verifyOpen = false;
 const listeners = new Set<() => void>();
@@ -25,6 +27,9 @@ export function getCrcleBroadcast(): BroadcastState {
 
 export function setCrcleBroadcast(next: BroadcastState) {
   if (next === broadcastState) return;
+  if (next !== "in_the_area") {
+    areaNearbyFlowComplete = false;
+  }
   broadcastState = next;
   emit();
 }
@@ -73,6 +78,36 @@ export function consumeAreaNearbyNotification() {
   const pending = pendingAreaNotification;
   pendingAreaNotification = false;
   return pending;
+}
+
+/** Green heart badge on the dock radar control while a nearby alert is unread. */
+export function getAreaNearbyBadgeActive(): boolean {
+  return areaNearbyBadgeActive;
+}
+
+export function setAreaNearbyBadgeActive(next: boolean) {
+  if (next === areaNearbyBadgeActive) return;
+  areaNearbyBadgeActive = next;
+  emit();
+}
+
+/** Nearby Connect flow finished — suppress re-scheduling until mood leaves In The Area. */
+export function markAreaNearbyFlowComplete() {
+  areaNearbyFlowComplete = true;
+  areaNearbyBadgeActive = false;
+  emit();
+}
+
+export function isAreaNearbyFlowComplete() {
+  return areaNearbyFlowComplete;
+}
+
+export function useAreaNearbyBadgeActive(): boolean {
+  return useSyncExternalStore(
+    subscribeCrcleBroadcast,
+    getAreaNearbyBadgeActive,
+    getAreaNearbyBadgeActive,
+  );
 }
 
 /** True while the In The Area overlay is on the Messaging Hub prototype. */

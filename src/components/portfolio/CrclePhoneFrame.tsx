@@ -82,8 +82,8 @@ export function CrclePhoneFrame({
           </div>
 
           {/* Modals/scrims — rounded clip only; clip-path breaks backdrop-filter */}
-          {overlay ? (
-            <div className="pointer-events-none absolute inset-0 z-[60] overflow-hidden rounded-[56px]">
+          {overlay != null ? (
+            <div className="absolute inset-0 z-[60] overflow-hidden rounded-[56px]">
               {overlay}
             </div>
           ) : null}

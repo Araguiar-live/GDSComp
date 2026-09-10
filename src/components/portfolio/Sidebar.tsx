@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChevronDown,
-  Download,
   Github,
   Linkedin,
   Mail,
@@ -23,11 +22,9 @@ export const SIDEBAR_PANEL_ID = "profile-sidebar-panel";
 const CONTACT = {
   email: "A.rafaela.aguiar@outlook.com",
   phone: "+44 0000 000000",
-  linkedin: "https://www.linkedin.com/",
+  linkedin: "https://www.linkedin.com/feed/",
   github: "https://github.com/",
 } as const;
-
-const CV_HREF = "/Ana-Rafaela-Aguiar-CV.pdf";
 
 interface Experience {
   id: string;
@@ -354,33 +351,6 @@ export function Sidebar({
                       );
                     })}
                   </ul>
-                </div>
-
-                {/* Footer action */}
-                <div
-                  className={`shrink-0 border-t p-3 ${
-                    isDark ? "border-white/10 bg-[#12151b]" : "border-zinc-300/70 bg-[#e8eaee]"
-                  }`}
-                >
-                  <a
-                    href={CV_HREF}
-                    download
-                    className="group relative flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#FF5A1F] font-mono text-[11px] font-semibold tracking-[0.08em] uppercase text-white transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97]"
-                    style={{
-                      boxShadow:
-                        "inset 0 1px 2px rgba(255,255,255,0.45), inset 0 -2px 3px rgba(0,0,0,0.28), 0 4px 14px rgba(255,90,31,0.35)",
-                    }}
-                  >
-                    <Download
-                      className="size-3.5 text-[#FFE08A] transition-transform duration-150 group-hover:translate-y-px group-active:translate-y-0.5"
-                      style={{
-                        filter:
-                          "drop-shadow(0 0 4px rgba(255, 200, 80, 0.85)) drop-shadow(0 1px 0 rgba(120, 40, 0, 0.35))",
-                      }}
-                      strokeWidth={2.25}
-                    />
-                    Download CV
-                  </a>
                 </div>
               </div>
             </motion.aside>
