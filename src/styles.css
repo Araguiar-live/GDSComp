@@ -37,7 +37,7 @@
   }
 }
 
-/* Hero peek mouse — bobs vertically, then vibrates gently (top exposed below accordion). */
+/* Hero peek mouse — mirrors calculator corner; bobs vertically + gentle vibrate. */
 @keyframes portfolio-peek-mouse-bob {
   0%,
   100% {

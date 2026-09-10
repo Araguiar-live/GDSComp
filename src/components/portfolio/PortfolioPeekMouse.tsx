@@ -1,21 +1,20 @@
 import peekMouse from "@/assets/portfolio/peek-mouse.svg";
 
-/** Decorative mouse peeking from below the accordion — bobs up/down with a gentle vibrate. */
-export function PortfolioPeekMouse({ hidden = false }: { hidden?: boolean }) {
-  if (hidden) return null;
-
+/** Figma 1458:215048 — decorative mouse peeking from the accordion top-right (mirror of calculator). */
+export function PortfolioPeekMouse() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute right-4 bottom-0 z-[4] hidden h-[54px] w-[56px] overflow-hidden sm:right-8 sm:block md:right-10 lg:right-14"
+      className="pointer-events-none relative size-[117px] shrink-0 select-none"
+      data-name="peek-mouse"
     >
-      <div className="portfolio-peek-mouse-bob h-full w-full">
-        <div className="portfolio-peek-mouse-vibrate h-full w-full">
+      <div className="portfolio-peek-mouse-bob absolute inset-0">
+        <div className="portfolio-peek-mouse-vibrate flex h-full w-full items-center justify-center">
           <img
             src={peekMouse}
             alt=""
             draggable={false}
-            className="block h-[96px] w-[56px] max-w-none translate-y-[38px] object-contain object-top"
+            className="block h-[99px] w-[74px] max-w-none object-contain"
           />
         </div>
       </div>
