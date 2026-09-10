@@ -335,7 +335,7 @@ function Index() {
             <div className="pointer-events-none absolute left-0 top-0 z-[5] hidden -translate-x-1/2 -translate-y-1/2 md:block">
               <PortfolioCalculatorCard />
             </div>
-            <div className="pointer-events-none absolute top-4 right-4 z-10 hidden md:block">
+            <div className="pointer-events-none absolute top-4 right-4 z-10 hidden -translate-y-[30%] md:block">
               <PortfolioPeekMouse />
             </div>
             <ProjectBentoStack
