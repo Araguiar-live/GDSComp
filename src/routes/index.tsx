@@ -33,6 +33,7 @@ const PROJECTS: Project[] = [
     title: "CRCLE",
     role: "Lead Product Designer/Owner",
     year: "2025-26",
+    defaultTab: "Create Workspace\u00a0",
     content: {
       "Create Workspace\u00a0": {
         tabLabel: "Signal Home",

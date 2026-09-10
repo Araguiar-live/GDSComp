@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { forwardRef, useState, type MutableRefObject } from "react";
+import { forwardRef, useEffect, useState, type MutableRefObject } from "react";
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
 import {
   useCrcleAreaInboxOpen,
@@ -23,6 +23,8 @@ export interface Project {
   year: string;
   /** Override the default four case-study steps. */
   tabs?: readonly string[];
+  /** Tab key to show when the accordion opens (defaults to the first tab). */
+  defaultTab?: string;
   // Per-tab content slots. Each returns whatever prototype/text you want to drop in later.
   content?: Partial<Record<string, ProjectTabContent>>;
 }
@@ -96,9 +98,21 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
   ref,
 ) {
   const tabs = project.tabs?.length ? [...project.tabs] : [...DEFAULT_TABS];
-  const [activeTab, setActiveTab] = useState<Tab>(
-    project.tabs?.[0] ?? (tabs.includes("Template Library") ? "Template Library" : tabs[0]),
-  );
+
+  const resolveDefaultTab = (): Tab => {
+    if (project.defaultTab && tabs.includes(project.defaultTab)) {
+      return project.defaultTab;
+    }
+    return tabs[0];
+  };
+
+  const [activeTab, setActiveTab] = useState<Tab>(resolveDefaultTab);
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(resolveDefaultTab());
+    }
+  }, [isOpen, project.defaultTab, project.tabs]);
   const tabContent = project.content?.[activeTab] ?? {};
   const tabIndex = Math.max(0, tabs.indexOf(activeTab));
 
