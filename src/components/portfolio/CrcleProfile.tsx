@@ -323,6 +323,8 @@ export function CrcleProfile({
                 onOpenSocials={() => setOverlay("socials")}
                 onOpenVerify={() => {
                   setIsLightMode(true);
+                  setOnboardingOpen(false);
+                  setMoodOpen(false);
                   setOverlay("verify");
                 }}
               />
@@ -420,9 +422,11 @@ export function CrcleProfile({
             ) : null}
           </AnimatePresence>
 
-          {overlay === "verify" ? (
-            <VerificationSheet onClose={() => setOverlay(null)} />
-          ) : null}
+          <AnimatePresence>
+            {overlay === "verify" ? (
+              <VerificationSheet onClose={() => setOverlay(null)} />
+            ) : null}
+          </AnimatePresence>
 
           <AnimatePresence>
             {moodOpen ? (
@@ -435,7 +439,7 @@ export function CrcleProfile({
           </AnimatePresence>
 
           <AnimatePresence>
-            {onboardingOpen ? (
+            {onboardingOpen && overlay !== "verify" ? (
               <ProfileOnboarding onClose={dismissOnboarding} onContinue={dismissOnboarding} />
             ) : null}
           </AnimatePresence>
@@ -1860,8 +1864,12 @@ function LocationInfoSheet({
 /** Figma 257:82967 — Verify your identity (light KYC drawer). */
 function VerificationSheet({ onClose }: { onClose: () => void }) {
   return (
-    <div
-      className="absolute inset-0 z-40 flex flex-col justify-end overflow-hidden rounded-[53px]"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.24, ease: EASE }}
+      className="absolute inset-0 z-[60] flex flex-col justify-end overflow-hidden rounded-[53px]"
       role="dialog"
       aria-modal="true"
       aria-label="Verify your identity"
@@ -1874,7 +1882,14 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
         onClick={onClose}
       />
 
-      <div className="crcle-verify-sheet relative z-[1] flex h-[420px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]">
+      <motion.div
+        initial={{ y: 48 }}
+        animate={{ y: 0 }}
+        exit={{ y: 32 }}
+        transition={{ duration: 0.32, ease: EASE }}
+        onClick={(e) => e.stopPropagation()}
+        className="crcle-verify-sheet relative z-[1] flex max-h-[88%] min-h-[420px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]"
+      >
         <div className="crcle-verify-sheet-frost rounded-[inherit]" aria-hidden />
 
         {/* Header — Figma 257:82968 */}
@@ -1916,8 +1931,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        {/* Body — Figma 257:82978 */}
-        <div className="crcle-verify-sheet-body flex min-h-0 flex-1 flex-col items-center justify-between border-t border-[rgba(2,3,29,0.1)] px-3 pb-4 pt-[46px]">
+        {/* Body — Figma 257:82978 + crcle KYC philosophy */}
+        <div className="crcle-verify-sheet-body flex min-h-0 flex-1 flex-col items-center justify-between overflow-y-auto border-t border-[rgba(2,3,29,0.1)] px-3 pb-4 pt-[46px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <div className="flex w-full flex-col items-center gap-6">
             <span className="relative size-[46px] shrink-0 overflow-hidden">
               <img
@@ -1935,12 +1950,19 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 To keep the community authentic, verify your identity to send this request.
               </p>
               <p
+                className="w-full text-center text-[12px] font-medium leading-[1.35] tracking-[-0.15px] text-[#02031d]"
+                style={{ fontFamily: FONT }}
+              >
+                At crcle, trust is the philosophy — not a feature flag.
+              </p>
+              <p
                 className="w-full text-center text-[12px] font-light leading-[1.4] tracking-[-0.15px] text-[rgba(2,3,29,0.55)]"
                 style={{ fontFamily: FONT }}
               >
-                KYC adds friction — we ask for it so dating, work, and location on crcle stay
-                between real people, not borrowed photos or bots. That step protects everyone on
-                the platform.
+                CRCLE is a small, high-trust graph: dating, work, and location shared with people
+                you might actually meet. KYC adds friction on purpose — one verified person per
+                profile, not a borrowed photo or a bot — so intimacy stays real before Radar, In
+                The Area, or messaging deepen.
               </p>
             </div>
           </div>
@@ -1999,8 +2021,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
