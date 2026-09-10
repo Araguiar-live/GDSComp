@@ -331,11 +331,11 @@ function Index() {
             </p>
           </header>
 
-          <div className="relative w-full shrink-0 overflow-visible">
+          <div className="relative w-full shrink-0 overflow-hidden">
             <div className="pointer-events-none absolute left-0 top-0 z-[5] hidden -translate-x-1/2 -translate-y-1/2 md:block">
               <PortfolioCalculatorCard />
             </div>
-            <div className="pointer-events-none absolute right-0 top-0 z-[5] hidden -translate-y-1/2 translate-x-[calc(50%-40px)] md:block">
+            <div className="pointer-events-none absolute top-4 right-4 z-10 hidden md:block">
               <PortfolioPeekMouse />
             </div>
             <ProjectBentoStack
