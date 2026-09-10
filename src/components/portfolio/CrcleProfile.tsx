@@ -918,11 +918,12 @@ function ProfileMainView({
                     />
                   </button>
                 </div>
-                <div className="pointer-events-auto relative z-[4] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(2,4,38,0.4)] py-1 pl-2 pr-1.5">
+                <div className="pointer-events-auto relative z-[4] flex w-[165px] items-center justify-between overflow-hidden rounded-[24px] border border-[rgba(2,4,38,0.4)] bg-[rgba(254,254,254,0.42)] py-1 pl-2 pr-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.38)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]">
+                  <div className="dock-glass-lens pointer-events-none absolute inset-0 opacity-35" aria-hidden />
                   <button
                     type="button"
                     onClick={() => setLocationEnabled((v) => !v)}
-                    className="flex w-full items-center justify-between"
+                    className="relative z-[1] flex w-full items-center justify-between"
                     aria-pressed={locationEnabled}
                   >
                     <span className="text-[11px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
