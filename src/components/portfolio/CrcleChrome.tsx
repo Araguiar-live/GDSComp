@@ -373,30 +373,3 @@ export function CrcleStickyMoreButton({
 export function CrcleMoreButtonSpacer() {
   return <span className="h-10 w-12 shrink-0" aria-hidden />;
 }
-
-/** Pins the more control to the top-right — aligned with Profile / Messaging headers. */
-export function CrcleStickyMoreButton({
-  onClick,
-  expanded,
-  className = "",
-}: {
-  onClick?: () => void;
-  expanded?: boolean;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`pointer-events-none absolute inset-x-2 top-0 z-30 pt-[86px] ${className}`}
-      aria-hidden={false}
-    >
-      <div className="pointer-events-auto flex justify-end">
-        <CrcleMoreButton onClick={onClick} expanded={expanded} />
-      </div>
-    </div>
-  );
-}
-
-/** Keeps scroll content aligned when the more button is pinned outside the scroller. */
-export function CrcleMoreButtonSpacer() {
-  return <span className="h-10 w-12 shrink-0" aria-hidden />;
-}
