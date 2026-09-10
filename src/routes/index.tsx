@@ -331,17 +331,11 @@ function Index() {
             </p>
           </header>
 
-          <div className="relative w-full shrink-0">
-            <ProjectBentoStack
-              projects={PROJECTS}
-              openSlug={openSlug}
-              onToggle={toggle}
-              rowRefs={rowRefs}
-            />
-            {/* Decorative layer sits above the accordion so edges are never clipped */}
+          <div className="relative w-full shrink-0 overflow-visible">
+            {/* Decorative layer — beneath the accordion, peeking from the corners */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-0 z-20 overflow-visible"
+              className="pointer-events-none absolute inset-0 z-[5] overflow-visible"
             >
               <div className="absolute left-0 top-0 hidden -translate-x-1/2 -translate-y-1/2 md:block">
                 <PortfolioCalculatorCard />
@@ -350,6 +344,12 @@ function Index() {
                 <PortfolioPeekMouse />
               </div>
             </div>
+            <ProjectBentoStack
+              projects={PROJECTS}
+              openSlug={openSlug}
+              onToggle={toggle}
+              rowRefs={rowRefs}
+            />
           </div>
         </div>
       </WireframeStage>
