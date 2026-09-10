@@ -37,6 +37,51 @@
   }
 }
 
+/* Hero peek mouse — bobs vertically, then vibrates gently (top exposed below accordion). */
+@keyframes portfolio-peek-mouse-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes portfolio-peek-mouse-vibrate {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(0.7px);
+  }
+  40% {
+    transform: translateX(-0.6px);
+  }
+  60% {
+    transform: translateX(0.5px);
+  }
+  80% {
+    transform: translateX(-0.4px);
+  }
+}
+
+.portfolio-peek-mouse-bob {
+  animation: portfolio-peek-mouse-bob 2.6s ease-in-out infinite;
+}
+
+.portfolio-peek-mouse-vibrate {
+  animation: portfolio-peek-mouse-vibrate 0.14s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-peek-mouse-bob,
+  .portfolio-peek-mouse-vibrate {
+    animation: none;
+  }
+}
+
 /* First Design coming-soon — background ghost frames breathe as loading cards */
 @keyframes fd-ghost-pulse-a {
   0%,

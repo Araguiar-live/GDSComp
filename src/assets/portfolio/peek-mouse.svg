@@ -1,0 +1,16 @@
+<svg width="56" height="96" viewBox="0 0 56 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="peek-mouse-body" x1="28" y1="8" x2="28" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#ECEFF3"/>
+    </linearGradient>
+    <filter id="peek-mouse-shadow" x="-20%" y="-10%" width="140%" height="130%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0B0E14" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <g filter="url(#peek-mouse-shadow)">
+    <path d="M28 4C14.745 4 4 14.745 4 28V68C4 81.255 14.745 92 28 92C41.255 92 52 81.255 52 68V28C52 14.745 41.255 4 28 4Z" fill="url(#peek-mouse-body)" stroke="#D1D5DB" stroke-width="1.25"/>
+    <path d="M28 18C24.134 18 21 21.134 21 25V41C21 44.866 24.134 48 28 48C31.866 48 35 44.866 35 41V25C35 21.134 31.866 18 28 18Z" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1"/>
+    <line x1="28" y1="25" x2="28" y2="41" stroke="#BFC5CE" stroke-width="1.25" stroke-linecap="round"/>
+  </g>
+</svg>

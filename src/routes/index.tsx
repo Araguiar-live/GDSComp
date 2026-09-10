@@ -20,6 +20,7 @@ import { CrcleSignalHome } from "@/components/portfolio/CrcleSignalHome";
 import { FirstDesignComingSoon } from "@/components/portfolio/FirstDesignComingSoon";
 import { WireframeStage } from "@/components/portfolio/SiteWireframe";
 import { PortfolioCalculatorCard } from "@/components/portfolio/PortfolioCalculatorCard";
+import { PortfolioPeekMouse } from "@/components/portfolio/PortfolioPeekMouse";
 export const Route = createFileRoute("/")({
   component: Index,
 });
@@ -341,6 +342,7 @@ function Index() {
               onToggle={toggle}
               rowRefs={rowRefs}
             />
+            <PortfolioPeekMouse hidden={isExpanded} />
           </div>
         </div>
       </WireframeStage>
