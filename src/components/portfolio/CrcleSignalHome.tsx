@@ -564,7 +564,7 @@ function SignalOnboardingFeature({
   return (
     <div className="flex w-full shrink-0 flex-col gap-3">
       <div className="flex items-center gap-2">
-        <div className="flex size-4 shrink-0 items-center justify-center">{icon}</div>
+        <div className="flex h-[21px] w-[23px] shrink-0 items-center justify-center">{icon}</div>
         <p
           className="min-w-0 text-[15px] font-normal leading-[1.2] text-[#f7f6f2]"
           style={{ fontFamily: FONT }}
