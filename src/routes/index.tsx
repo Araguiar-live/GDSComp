@@ -335,11 +335,9 @@ function Index() {
             <div className="pointer-events-none absolute left-0 top-0 z-[5] hidden -translate-x-1/2 -translate-y-1/2 md:block">
               <PortfolioCalculatorCard />
             </div>
-            {!isExpanded ? (
-              <div className="pointer-events-none absolute right-0 top-0 z-[5] hidden -translate-y-1/2 translate-x-[calc(50%-40px)] md:block">
-                <PortfolioPeekMouse />
-              </div>
-            ) : null}
+            <div className="pointer-events-none absolute right-0 top-0 z-[5] hidden -translate-y-1/2 translate-x-[calc(50%-40px)] md:block">
+              <PortfolioPeekMouse />
+            </div>
             <ProjectBentoStack
               projects={PROJECTS}
               openSlug={openSlug}
