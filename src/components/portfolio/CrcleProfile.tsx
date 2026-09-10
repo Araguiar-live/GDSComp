@@ -1052,7 +1052,7 @@ function ProfileMainView({
                         Education
                       </span>
                     </div>
-                    <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2.5">
+                    <div className="flex flex-col items-center gap-2.5">
                       <img
                         alt=""
                         src={loughboroughCrest}
@@ -1074,6 +1074,7 @@ function ProfileMainView({
                         </p>
                       </div>
                     </div>
+                    <ProfileWidgetBottomSpacer />
                   </div>
                 </button>
               ) : (
@@ -1139,6 +1140,21 @@ function ProfileMainView({
   );
 }
 
+/** Matches Dating share-status row height so paired widgets stay equal without inner stretch. */
+function ProfileWidgetBottomSpacer() {
+  return (
+    <div
+      aria-hidden
+      className="mt-auto flex w-full items-center justify-between py-1 pl-2 pr-1.5 opacity-0"
+    >
+      <span className="text-[11px] leading-[1.4]">Share status</span>
+      <span className="flex w-6 rounded-[24px] p-0.5">
+        <span className="size-2 rounded bg-transparent" />
+      </span>
+    </div>
+  );
+}
+
 /* ——— Edit form sheets ——— */
 
 function DatingWidget({
@@ -1169,7 +1185,7 @@ function DatingWidget({
         </span>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2">
+      <div className="flex flex-col items-center gap-2">
         <div
           className="flex size-16 items-center justify-center rounded-[40px] p-2"
           style={{ backgroundColor: option.iconBg }}
@@ -1196,7 +1212,7 @@ function DatingWidget({
         role="switch"
         aria-checked={shareStatus}
         aria-label="Share relationship status"
-        className="relative flex w-full items-center justify-between overflow-hidden rounded-[24px] border py-1 pl-2 pr-1.5 backdrop-blur-[12px] transition-all duration-300"
+        className="relative mt-auto flex w-full items-center justify-between overflow-hidden rounded-[24px] border py-1 pl-2 pr-1.5 backdrop-blur-[12px] transition-all duration-300"
         style={datingShareBarStyles(option.cardBg, shareStatus)}
         onClick={(e) => {
           e.stopPropagation();
