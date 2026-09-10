@@ -321,7 +321,10 @@ export function CrcleProfile({
                 onOpenLocation={() => setOverlay("location")}
                 onOpenLocationInfo={() => setOverlay("locationInfo")}
                 onOpenSocials={() => setOverlay("socials")}
-                onOpenVerify={() => setOverlay("verify")}
+                onOpenVerify={() => {
+                  setIsLightMode(true);
+                  setOverlay("verify");
+                }}
               />
             </div>
 
@@ -1854,14 +1857,14 @@ function LocationInfoSheet({
   );
 }
 
-/** Figma 257:83140 — Join the verified crcle (light KYC drawer). */
+/** Figma 257:82967 — Verify your identity (light KYC drawer). */
 function VerificationSheet({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="absolute inset-0 z-40 flex flex-col justify-end overflow-hidden rounded-[53px]"
       role="dialog"
       aria-modal="true"
-      aria-label="Join the verified crcle"
+      aria-label="Verify your identity"
       style={{ clipPath: "inset(0 round 53px)" }}
     >
       <button
@@ -1871,23 +1874,31 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
         onClick={onClose}
       />
 
-      <div className="crcle-verify-sheet relative z-[1] flex h-[386px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]">
+      <div className="crcle-verify-sheet relative z-[1] flex h-[420px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]">
         <div className="crcle-verify-sheet-frost rounded-[inherit]" aria-hidden />
 
-        {/* Header — Figma 257:83141 */}
-        <div className="crcle-verify-sheet-header relative flex h-[52px] shrink-0 items-center gap-[25px] border border-[rgba(2,3,29,0.1)] border-b-0 px-3 pb-3 pt-4">
+        {/* Header — Figma 257:82968 */}
+        <div className="crcle-verify-sheet-header relative flex shrink-0 items-start gap-[25px] border border-[rgba(2,3,29,0.1)] border-b-0 bg-[#f7f6f2] px-3 pb-3 pt-4">
           <img
             alt=""
             src={verifyHandleIcon}
             className="pointer-events-none absolute left-1/2 top-[5px] h-[3px] w-[56px] -translate-x-1/2 max-w-none"
             draggable={false}
           />
-          <p
-            className="min-w-0 flex-1 text-[16px] font-medium leading-none text-[#02031d]"
-            style={{ fontFamily: FONT }}
-          >
-            Join the verified crcle
-          </p>
+          <div className="min-w-0 flex-1 flex flex-col gap-[3px]">
+            <p
+              className="text-[16px] font-medium leading-none text-[#02031d]"
+              style={{ fontFamily: FONT }}
+            >
+              Verify your identity
+            </p>
+            <p
+              className="text-[12px] leading-none tracking-[-0.15px] text-[#b1b1bc]"
+              style={{ fontFamily: FONT }}
+            >
+              Verified identity for an authentic community.
+            </p>
+          </div>
           <button
             type="button"
             aria-label="Close"
@@ -1905,17 +1916,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        {/* Body — Figma 257:83150, glass blur 40 */}
-        <div className="crcle-verify-sheet-body flex min-h-0 flex-1 flex-col items-center justify-between border-t border-[rgba(2,3,29,0.1)] px-3 pb-4 pt-6">
-          <div className="flex items-center justify-center rounded-[36px] bg-[rgba(247,246,242,0.6)] px-3 py-1">
-            <p
-              className="text-center text-[12px] leading-[1.2] tracking-[-0.15px] text-[rgba(2,3,29,0.5)]"
-              style={{ fontFamily: FONT }}
-            >
-              Verified Social
-            </p>
-          </div>
-
+        {/* Body — Figma 257:82978 */}
+        <div className="crcle-verify-sheet-body flex min-h-0 flex-1 flex-col items-center justify-between border-t border-[rgba(2,3,29,0.1)] px-3 pb-4 pt-[46px]">
           <div className="flex w-full flex-col items-center gap-6">
             <span className="relative size-[46px] shrink-0 overflow-hidden">
               <img
@@ -1925,12 +1927,22 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 draggable={false}
               />
             </span>
-            <p
-              className="w-full text-center text-[14px] font-medium leading-[1.2] tracking-[-0.15px] text-[#02031d]"
-              style={{ fontFamily: FONT }}
-            >
-              To keep the community authentic, verify your identity and claim your verified status.
-            </p>
+            <div className="flex w-full flex-col items-center gap-3">
+              <p
+                className="w-full text-center text-[14px] font-normal leading-[1.2] tracking-[-0.15px] text-[#02031d]"
+                style={{ fontFamily: FONT }}
+              >
+                To keep the community authentic, verify your identity to send this request.
+              </p>
+              <p
+                className="w-full text-center text-[12px] font-light leading-[1.4] tracking-[-0.15px] text-[rgba(2,3,29,0.55)]"
+                style={{ fontFamily: FONT }}
+              >
+                KYC adds friction — we ask for it so dating, work, and location on crcle stay
+                between real people, not borrowed photos or bots. That step protects everyone on
+                the platform.
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-1">
@@ -1959,6 +1971,12 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="flex w-full flex-col items-center gap-4">
+            <p
+              className="w-full text-center text-[9px] leading-[1.1] tracking-[-0.15px] text-[rgba(2,3,29,0.4)]"
+              style={{ fontFamily: FONT }}
+            >
+              Your data is encrypted and used only to identify verification
+            </p>
             <button
               type="button"
               onClick={onClose}
@@ -1971,12 +1989,14 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 Start Verification
               </span>
             </button>
-            <p
-              className="w-full text-center text-[9px] leading-[1.1] tracking-[-0.15px] text-[rgba(2,3,29,0.4)]"
-              style={{ fontFamily: FONT }}
-            >
-              Your data is encrypted and used only to identify verification
-            </p>
+            <div className="flex items-center justify-center rounded-[36px] bg-[rgba(247,246,242,0.6)] px-3 py-1">
+              <p
+                className="text-center text-[12px] leading-[1.2] tracking-[-0.15px] text-[rgba(2,3,29,0.5)]"
+                style={{ fontFamily: FONT }}
+              >
+                Verified Social
+              </p>
+            </div>
           </div>
         </div>
       </div>
