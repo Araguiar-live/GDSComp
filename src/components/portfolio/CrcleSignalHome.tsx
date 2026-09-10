@@ -102,6 +102,17 @@ export function CrcleSignalHome({
 
       <CrclePhoneFrame
         light={light}
+        overlay={
+          onboardingOpen ? (
+            <AnimatePresence>
+              <SignalOnboarding
+                key="signal-onboarding"
+                onClose={dismissOnboarding}
+                onContinue={dismissOnboarding}
+              />
+            </AnimatePresence>
+          ) : undefined
+        }
         bottomChrome={
           showPrimaryDock ? (
             <CrclePrimaryDock
@@ -444,19 +455,15 @@ export function CrcleSignalHome({
               </div>
             </div>
 
-            <FooterSignal
-              tone={screen === "photo" ? "live" : "neutral"}
-              activeBars={activeBars}
-              isLight={light}
-              glow={signalLive}
-            />
-          </div>
-
-          <AnimatePresence>
-            {onboardingOpen ? (
-              <SignalOnboarding onClose={dismissOnboarding} onContinue={dismissOnboarding} />
+            {!onboardingOpen ? (
+              <FooterSignal
+                tone={screen === "photo" ? "live" : "neutral"}
+                activeBars={activeBars}
+                isLight={light}
+                glow={signalLive}
+              />
             ) : null}
-          </AnimatePresence>
+          </div>
         </div>
       </CrclePhoneFrame>
     </div>
@@ -478,7 +485,8 @@ function SignalOnboarding({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.28, ease: EASE }}
-      className="absolute inset-0 z-[55] flex flex-col overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.6)] backdrop-blur-[8px]"
+      className="pointer-events-auto absolute inset-0 z-[63] flex flex-col overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.6)] backdrop-blur-[8px]"
+      style={{ clipPath: "inset(0 round 53px)" }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="signal-onboarding-title"

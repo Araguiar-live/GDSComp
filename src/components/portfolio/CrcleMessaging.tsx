@@ -418,6 +418,7 @@ export function CrcleMessaging({
   }, []);
 
   const showPrimaryDock =
+    phase === "inbox" &&
     !onboardingOpen &&
     !activeMatch &&
     areaInbox === "off" &&
