@@ -812,7 +812,7 @@ function ProfileMainView({
         ) : (
           <div className="flex flex-col gap-4">
             {/* Location + Work */}
-            <div className="grid grid-cols-2 items-stretch gap-4">
+            <div className="grid grid-cols-2 items-start gap-4">
               <div className="relative flex h-[184px] min-w-0 flex-col justify-between overflow-hidden rounded-2xl p-2 text-left">
                 <img
                   alt=""
@@ -1013,7 +1013,7 @@ function ProfileMainView({
             </div>
 
             {/* Dating + Education */}
-            <div className="grid grid-cols-2 items-stretch gap-4">
+            <div className="grid grid-cols-2 items-start gap-4">
               {hasRelationship ? (
                 <DatingWidget
                   option={relationshipMeta}
@@ -1037,7 +1037,7 @@ function ProfileMainView({
                   onClick={onOpenEducation}
                   className="flex min-w-0 flex-col self-stretch rounded-[20px] border border-[rgba(247,246,242,0.4)] bg-gradient-to-b from-[rgba(1,2,17,0.6)] to-[rgba(170,194,240,0.6)] p-[5px] text-left shadow-[0_4px_4px_rgba(0,0,0,0.25)] [.crcle-phone--light_&]:border-[#f7f6f2] [.crcle-phone--light_&]:from-[rgba(0,85,255,0.3)] [.crcle-phone--light_&]:to-[rgba(170,194,240,0.3)] [.crcle-phone--light_&]:shadow-none"
                 >
-                  <div className="flex min-h-0 w-full flex-1 flex-col items-center gap-3 rounded-2xl bg-[#f7f6f2] p-2">
+                  <div className="flex w-full flex-col items-center gap-3 rounded-2xl bg-[#f7f6f2] p-2">
                     <div className="flex w-full items-center gap-1">
                       <img
                         alt=""

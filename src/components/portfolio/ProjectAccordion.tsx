@@ -195,11 +195,11 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                 </>
               ) : null}
 
-              {/* Copy fills leftover width; prototypes stay on the right */}
-              <div className="mx-auto flex min-h-0 w-full flex-1 items-start px-[68px] pt-2">
-                <div className="grid w-full grid-cols-1 items-start gap-8 overflow-visible md:grid-cols-[minmax(0,1fr)_auto] md:gap-10">
-                {/* LEFT — case-study copy fills leftover space */}
-                <div className="flex max-h-[874px] min-h-0 min-w-0 flex-col overflow-y-auto overscroll-contain">
+              {/* Copy + prototype — stack until lg so the 402px phone never overlaps copy */}
+              <div className="mx-auto flex min-h-0 w-full flex-1 items-start px-4 pt-2 sm:px-8 lg:px-12 xl:px-[68px]">
+                <div className="grid w-full min-w-0 grid-cols-1 items-start gap-8 overflow-x-hidden lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-8">
+                {/* LEFT — case-study copy */}
+                <div className="flex max-h-[874px] min-h-0 min-w-0 flex-col overflow-y-auto overflow-x-hidden overscroll-contain">
                   <CaseStudyCopy project={project} tab={activeTab} content={tabContent} />
                 </div>
 
