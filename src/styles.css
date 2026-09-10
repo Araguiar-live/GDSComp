@@ -37,47 +37,42 @@
   }
 }
 
-/* Hero peek mouse — mirrors calculator corner; bobs vertically + gentle vibrate. */
-@keyframes portfolio-peek-mouse-bob {
-  0%,
-  100% {
-    transform: translateY(0);
+/* Hero peek mouse — 120px up/down in 600ms, then a quick shake. */
+@keyframes portfolio-peek-mouse-motion {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(0, -120px);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translate(0, 0);
   }
-}
-
-@keyframes portfolio-peek-mouse-vibrate {
-  0%,
+  58% {
+    transform: translate(3px, 0);
+  }
+  66% {
+    transform: translate(-3px, 0);
+  }
+  74% {
+    transform: translate(2px, 0);
+  }
+  82% {
+    transform: translate(-2px, 0);
+  }
+  90%,
   100% {
-    transform: translateX(0);
-  }
-  20% {
-    transform: translateX(0.7px);
-  }
-  40% {
-    transform: translateX(-0.6px);
-  }
-  60% {
-    transform: translateX(0.5px);
-  }
-  80% {
-    transform: translateX(-0.4px);
+    transform: translate(0, 0);
   }
 }
 
-.portfolio-peek-mouse-bob {
-  animation: portfolio-peek-mouse-bob 2.6s ease-in-out infinite;
-}
-
-.portfolio-peek-mouse-vibrate {
-  animation: portfolio-peek-mouse-vibrate 0.14s linear infinite;
+.portfolio-peek-mouse-motion {
+  animation: portfolio-peek-mouse-motion 1.1s ease-in-out infinite;
+  animation-timing-function: ease-in-out, ease-in-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .portfolio-peek-mouse-bob,
-  .portfolio-peek-mouse-vibrate {
+  .portfolio-peek-mouse-motion {
     animation: none;
   }
 }

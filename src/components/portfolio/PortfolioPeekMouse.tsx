@@ -8,15 +8,13 @@ export function PortfolioPeekMouse() {
       className="pointer-events-none relative size-[117px] shrink-0 select-none"
       data-name="peek-mouse"
     >
-      <div className="portfolio-peek-mouse-bob absolute inset-0">
-        <div className="portfolio-peek-mouse-vibrate flex h-full w-full items-center justify-center">
-          <img
-            src={peekMouse}
-            alt=""
-            draggable={false}
-            className="block h-[99px] w-[74px] max-w-none object-contain"
-          />
-        </div>
+      <div className="portfolio-peek-mouse-motion absolute inset-0 flex items-center justify-center">
+        <img
+          src={peekMouse}
+          alt=""
+          draggable={false}
+          className="block h-[99px] w-[74px] max-w-none object-contain"
+        />
       </div>
     </div>
   );
