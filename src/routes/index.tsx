@@ -340,7 +340,7 @@ function Index() {
               <div className="absolute left-0 top-0 hidden -translate-x-1/2 -translate-y-1/2 md:block">
                 <PortfolioCalculatorCard />
               </div>
-              <div className="absolute top-4 right-4 hidden -translate-y-10 md:block">
+              <div className="absolute top-4 right-4 hidden -translate-y-[70px] md:block">
                 <PortfolioPeekMouse />
               </div>
             </div>
