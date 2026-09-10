@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Sun } from "lucide-react";
 import { useCallback, useState, type ReactNode } from "react";
 import handleIcon from "@/assets/crcle/area/handle.svg";
 import batteryIcon from "@/assets/crcle/battery.svg";
@@ -32,6 +31,8 @@ import {
   CrcleBackButton,
   CrcleMoreButton,
   CrclePrimaryDock,
+  CrcleThemeToggle,
+  crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
 import { requestAreaInboxOnMessaging } from "@/components/portfolio/crcleBroadcast";
 import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
@@ -39,8 +40,8 @@ import { SignalTuneDrawer } from "@/components/portfolio/SignalTuneDrawer";
 
 /**
  * CRCLE Signal Home — Daily 3 empty → photo drop.
- * Dark: Figma 957:30981. Light + Signal Features onboarding: 322:118233.
- * Location Required modal: Figma 986:85539 (stage 2 → second signal bar).
+ * Light empty: Figma 257:66247. Dark empty: Figma 257:90883.
+ * Signal Features onboarding: 322:118233. Location Required: 986:85539.
  */
 
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
@@ -67,8 +68,8 @@ export function CrcleSignalHome({
   const [signalStrength, setSignalStrength] = useState(10);
   /* Figma 322:118233 — Signal Features overlay on light Daily 3 */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
-  /* Light default matches Signal Onboarding - Light; sun flips to dark Daily 3 */
-  const [isLightMode, setIsLightMode] = useState(true);
+  /** Light Figma 257:66247 · Dark Figma 257:90883 */
+  const [light, setLight] = useState(true);
   /** Fine-tune drawer completed */
   const tuned = signalStrength >= 90;
   /** Stage 1 photo → 1 bar; stage 2 location → 2 bars; intent tune → 3 bars */
@@ -78,32 +79,20 @@ export function CrcleSignalHome({
 
   const dismissOnboarding = useCallback(() => {
     setOnboardingOpen(false);
-    setIsLightMode(false);
   }, []);
 
   const showPrimaryDock = !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen;
 
   return (
     <div className="relative ml-auto w-fit">
-      <motion.button
-        type="button"
-        aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
-        aria-pressed={isLightMode}
-        onClick={() => setIsLightMode((v) => !v)}
-        className="absolute left-1/2 -top-10 z-30 flex size-8 -translate-x-1/2 items-center justify-center border-0 bg-transparent p-0 shadow-none outline-none ring-0"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.92 }}
-      >
-        <Sun
-          strokeWidth={1.5}
-          className={`size-6 transition-colors duration-300 ${
-            isLightMode ? "fill-amber-400 text-amber-400" : "fill-none text-zinc-800"
-          }`}
-        />
-      </motion.button>
+      <CrcleThemeToggle
+        light={light}
+        onToggle={() => setLight((v) => !v)}
+        className={crcleThemeToggleAboveClass}
+      />
 
       <CrclePhoneFrame
-        light={isLightMode}
+        light={light}
         bottomChrome={
           showPrimaryDock ? (
             <CrclePrimaryDock
@@ -184,7 +173,7 @@ export function CrcleSignalHome({
                 className="whitespace-nowrap text-[23px] leading-[1.2] text-[#f7f6f2] transition-colors duration-300 [.crcle-phone--light_&]:text-[#02031d]"
                 style={{ fontFamily: FONT }}
               >
-                {isLightMode ? "03:40" : "00:40"}
+                {light ? "03:40" : "00:40"}
               </p>
               <p
                 className="text-[11px] leading-[1.4] tracking-[0.35em] text-[rgba(247,246,242,0.48)] transition-colors duration-300 [.crcle-phone--light_&]:text-[rgba(2,3,29,0.12)]"
@@ -200,12 +189,12 @@ export function CrcleSignalHome({
               className={`relative flex min-h-0 w-full flex-1 flex-col overflow-hidden p-3 transition-colors duration-300 ${
                 screen === "photo"
                   ? "rounded-[28px] border border-[#f7f6f2]"
-                  : isLightMode
-                    ? "rounded-[16px] border-2 border-dashed border-[#b1b1bc] bg-[rgba(2,3,29,0.1)] px-3 py-[46px]"
-                    : "rounded-[16px] border border-dashed border-[rgba(177,177,188,0.4)] px-3 py-[46px]"
+                  : light
+                    ? "min-h-[580px] rounded-[16px] border-2 border-dashed border-[#b1b1bc] bg-[rgba(2,3,29,0.1)] px-3 py-[46px]"
+                    : "min-h-[648px] rounded-[16px] border border-dashed border-[rgba(177,177,188,0.4)] px-3 py-[46px]"
               }`}
               style={
-                screen === "empty" && !isLightMode
+                screen === "empty" && !light
                   ? {
                       backgroundImage:
                         "linear-gradient(150.6deg, rgba(247,246,242,0.2) 1.63%, rgba(247,246,242,0.143) 47.28%, rgba(247,246,242,0.08) 97.56%)",
@@ -316,13 +305,13 @@ export function CrcleSignalHome({
                   >
                     <div
                       className={`pointer-events-none absolute inset-x-0 top-0 z-[1] flex flex-col items-center overflow-hidden rounded-b-[24px] border border-[#f7f6f2] border-t-0 transition-colors duration-300 ${
-                        isLightMode ? "bg-[#dddcdb]" : "bg-transparent"
+                        light ? "bg-[#dddcdb]" : "bg-transparent"
                       }`}
                     >
                       <div className="flex w-full flex-col items-center gap-5 px-4 pb-3 pt-6">
                         <p
                           className={`w-full text-center text-[16px] font-medium leading-[1.4] transition-colors duration-300 ${
-                            isLightMode ? "text-[#020426]" : "text-[#f7f6f2]"
+                            light ? "text-[#020426]" : "text-[#f7f6f2]"
                           }`}
                           style={{ fontFamily: FONT }}
                         >
@@ -330,7 +319,7 @@ export function CrcleSignalHome({
                         </p>
                         <p
                           className={`max-w-[248px] text-center text-[13px] font-normal leading-[1.4] transition-colors duration-300 ${
-                            isLightMode ? "text-[#020426]" : "text-[#f7f6f2]"
+                            light ? "text-[#020426]" : "text-[#f7f6f2]"
                           }`}
                           style={{ fontFamily: FONT }}
                         >
@@ -342,7 +331,7 @@ export function CrcleSignalHome({
                           alt=""
                           src={philosophyDivider}
                           className={`h-[3px] w-[64.5px] max-w-none object-contain ${
-                            isLightMode ? "" : "brightness-200"
+                            light ? "" : "brightness-200"
                           }`}
                           draggable={false}
                         />
@@ -354,21 +343,21 @@ export function CrcleSignalHome({
                       onClick={() => {
                         setScreen("photo");
                         setSignalStrength(33);
-                        setIsLightMode(false);
+                        setLight(false);
                       }}
                       className={`absolute inset-0 z-0 flex flex-col items-center justify-center gap-2 px-3 pt-24 transition active:scale-[0.995] ${
-                        isLightMode ? "hover:bg-black/[0.03]" : "hover:bg-white/[0.03]"
+                        light ? "hover:bg-black/[0.03]" : "hover:bg-white/[0.03]"
                       }`}
                       aria-label="Tap to upload photo"
                     >
                       <IconImg
                         src={cameraIcon}
-                        className={`size-5 ${isLightMode ? "" : "brightness-0 invert"}`}
+                        className={`size-5 ${light ? "" : "brightness-0 invert"}`}
                       />
                       <div className="flex w-full flex-col items-center gap-0.5 text-center">
                         <p
                           className={`w-full text-[13px] leading-[1.4] transition-colors duration-300 ${
-                            isLightMode ? "text-[#030422]" : "text-[rgba(247,246,242,0.8)]"
+                            light ? "text-[#030422]" : "text-[rgba(247,246,242,0.8)]"
                           }`}
                           style={{ fontFamily: FONT }}
                         >
@@ -376,7 +365,7 @@ export function CrcleSignalHome({
                         </p>
                         <p
                           className={`w-full text-[11px] leading-[1.4] transition-colors duration-300 ${
-                            isLightMode
+                            light
                               ? "text-[rgba(2,3,29,0.6)]"
                               : "text-[rgba(247,246,242,0.8)]"
                           }`}
@@ -448,7 +437,7 @@ export function CrcleSignalHome({
             <FooterSignal
               tone={screen === "photo" ? "live" : "neutral"}
               activeBars={activeBars}
-              isLight={isLightMode}
+              isLight={light}
               glow={signalLive}
             />
           </div>
@@ -897,7 +886,7 @@ function FooterSignal({
 }) {
   return (
     <div className="flex w-full flex-col items-center gap-4 px-3">
-      <SignalBars tone={tone} activeBars={activeBars} isLight={isLight} glow={glow} />
+      <SignalBars tone={tone} activeBars={activeBars} isLight={isLight} glow={glow} animateIdle />
       <p
         className="max-w-[392px] text-center text-[11px] leading-[1.4] text-[#b1b1bc]"
         style={{ fontFamily: FONT }}
@@ -937,6 +926,8 @@ function StatusBar() {
 /** Figma 257:66491 — footer signal bars (short · tall · short, center-aligned). */
 const FOOTER_SIGNAL_BAR_WIDTHS = [9.194, 9.194, 9.194] as const;
 const FOOTER_SIGNAL_BAR_HEIGHTS = [18.387, 30.645, 18.387] as const;
+/** Figma 257:66286 — light-mode idle bars (Variant7). */
+const FOOTER_SIGNAL_BAR_HEIGHTS_LIGHT = [14, 30.645, 15] as const;
 const FOOTER_SIGNAL_GAP = 4.903;
 const FOOTER_SIGNAL_RADIUS = 7.986;
 
@@ -946,9 +937,17 @@ const OVERLAY_SIGNAL_BAR_HEIGHTS = [12.256, 20.427, 12.256] as const;
 const OVERLAY_SIGNAL_GAP = 2.904;
 const OVERLAY_SIGNAL_RADIUS = 4.73;
 
-function signalBarClass(index: number, activeBars: number, allLit: boolean) {
+function signalBarClass(
+  index: number,
+  activeBars: number,
+  allLit: boolean,
+  isLight: boolean,
+) {
   if (index < activeBars) {
     return allLit ? "border border-[#e7fcee] bg-[#0fc950]" : "bg-[#0fc950]";
+  }
+  if (activeBars === 0) {
+    return isLight ? "bg-[rgba(0,0,0,0.2)]" : "bg-[rgba(247,246,242,0.3)]";
   }
   return "bg-[rgba(15,201,80,0.2)]";
 }
@@ -958,6 +957,7 @@ function SignalBarsCore({
   activeBars,
   glow = false,
   animate = false,
+  isLight = false,
   className = "",
   "aria-hidden": ariaHidden,
 }: {
@@ -965,12 +965,18 @@ function SignalBarsCore({
   activeBars: number;
   glow?: boolean;
   animate?: boolean;
+  isLight?: boolean;
   className?: string;
   "aria-hidden"?: boolean;
 }) {
   const allLit = glow && activeBars >= 3;
   const widths = variant === "footer" ? FOOTER_SIGNAL_BAR_WIDTHS : OVERLAY_SIGNAL_BAR_WIDTHS;
-  const heights = variant === "footer" ? FOOTER_SIGNAL_BAR_HEIGHTS : OVERLAY_SIGNAL_BAR_HEIGHTS;
+  const heights =
+    variant === "footer" && isLight && activeBars === 0
+      ? FOOTER_SIGNAL_BAR_HEIGHTS_LIGHT
+      : variant === "footer"
+        ? FOOTER_SIGNAL_BAR_HEIGHTS
+        : OVERLAY_SIGNAL_BAR_HEIGHTS;
   const gap = variant === "footer" ? FOOTER_SIGNAL_GAP : OVERLAY_SIGNAL_GAP;
   const radius = variant === "footer" ? FOOTER_SIGNAL_RADIUS : OVERLAY_SIGNAL_RADIUS;
 
@@ -987,7 +993,7 @@ function SignalBarsCore({
             ? i === 1
               ? "bg-[#f7f6f2]"
               : "border border-[#f7f6f2] bg-[#f7f6f2]"
-            : signalBarClass(i, activeBars, allLit);
+            : signalBarClass(i, activeBars, allLit, isLight);
 
         if (animate) {
           const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
@@ -1047,15 +1053,17 @@ function SignalBars({
   activeBars = 0,
   isLight = false,
   glow = false,
+  animateIdle = false,
 }: {
   tone?: "neutral" | "live";
   activeBars?: number;
   isLight?: boolean;
   glow?: boolean;
+  /** Pulse idle bars in empty state — Figma 257:63722 / 257:66286. */
+  animateIdle?: boolean;
 }) {
   const allLit = glow && activeBars >= 3;
-  /** Figma 257:63722 — idle + live footer bars loop through variant heights. */
-  const shouldAnimate = true;
+  const shouldAnimate = animateIdle || activeBars > 0;
 
   return (
     <div
@@ -1066,6 +1074,7 @@ function SignalBars({
         variant="footer"
         activeBars={activeBars}
         glow={glow}
+        isLight={isLight}
         animate={shouldAnimate}
         className={allLit ? "relative z-[1]" : ""}
       />
