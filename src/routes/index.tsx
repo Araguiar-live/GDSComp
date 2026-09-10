@@ -31,7 +31,7 @@ const PROJECTS: Project[] = [
     slug: "crcle",
     title: "CRCLE",
     role: "Lead Product Designer/Owner",
-    year: "2025",
+    year: "2025-26",
     content: {
       "Create Workspace\u00a0": {
         tabLabel: "Signal Home",
