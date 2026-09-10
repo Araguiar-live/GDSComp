@@ -320,10 +320,12 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
             </motion.button>
 
             <motion.div
-              className="relative flex h-full min-w-0 flex-1 touch-pan-y items-center justify-center overflow-hidden"
+              className="relative flex h-full min-w-0 flex-1 cursor-grab items-center justify-center overflow-hidden active:cursor-grabbing"
+              style={{ touchAction: "pan-y" }}
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.25}
+              dragMomentum={false}
               onDragEnd={onPillDragEnd}
             >
               <AnimatePresence mode="wait" custom={direction} initial={false}>
@@ -451,16 +453,21 @@ function NearbyIdentity({
           Same venue detected · <span className="text-[#0fc950]">privacy protected</span>
         </p>
       </div>
-      <button
+      <motion.button
         type="button"
-        onClick={onConnect}
-        className={`shrink-0 rounded-[36px] bg-[rgba(247,246,242,0.2)] text-[11px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:bg-[#030426] [.crcle-phone--light_&]:text-[#fefefe] ${
+        onClick={(e) => {
+          e.stopPropagation();
+          onConnect();
+        }}
+        className={`relative z-[2] shrink-0 rounded-[36px] bg-[rgba(247,246,242,0.2)] text-[11px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:bg-[#030426] [.crcle-phone--light_&]:text-[#fefefe] ${
           compact ? "px-3 py-1.5" : "px-4 py-2"
         }`}
         style={{ fontFamily: FONT }}
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.96 }}
       >
         Connect
-      </button>
+      </motion.button>
     </div>
   );
 }

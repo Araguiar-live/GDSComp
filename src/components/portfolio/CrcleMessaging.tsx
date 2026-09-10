@@ -424,33 +424,48 @@ export function CrcleMessaging({
       <CrclePhoneFrame
         light={light}
         overlay={
-          <>
-            {areaInbox !== "off" ? (
-              <CrcleInTheAreaInbox
-                phase={areaInbox === "drawer" ? "drawer" : "screen"}
-                isLight={light}
-                backdropUrl={avatarImg}
-                onExpand={() => setAreaInbox("drawer")}
-                onCollapse={() => setAreaInbox("screen")}
-                onConnect={() => {
-                  setAreaInbox("off");
-                  openSignal(CONNECTION_PROFILES[1]);
-                }}
-                onMarkRead={() => setAreaInbox("off")}
-              />
-            ) : null}
-            <AnimatePresence>
-              {activeMatch ? (
-                <SignalInterceptModal
-                  key={activeMatch.id}
-                  user={activeMatch}
+          areaInbox !== "off" || activeMatch != null || areaNotificationOpen ? (
+            <>
+              {areaInbox !== "off" ? (
+                <CrcleInTheAreaInbox
+                  phase={areaInbox === "drawer" ? "drawer" : "screen"}
                   isLight={light}
-                  onDecline={declineSignal}
-                  onAccept={acceptSignal}
+                  backdropUrl={avatarImg}
+                  onExpand={() => setAreaInbox("drawer")}
+                  onCollapse={() => setAreaInbox("screen")}
+                  onConnect={() => {
+                    setAreaInbox("off");
+                    openSignal(CONNECTION_PROFILES[1]);
+                  }}
+                  onMarkRead={() => setAreaInbox("off")}
                 />
               ) : null}
-            </AnimatePresence>
-          </>
+              <AnimatePresence>
+                {activeMatch ? (
+                  <SignalInterceptModal
+                    key={activeMatch.id}
+                    user={activeMatch}
+                    isLight={light}
+                    onDecline={declineSignal}
+                    onAccept={acceptSignal}
+                  />
+                ) : null}
+              </AnimatePresence>
+              <AnimatePresence>
+                {areaNotificationOpen ? (
+                  <AreaNearbyNotificationModal
+                    key="area-nearby-notification"
+                    backdropUrl={avatarImg}
+                    onDismiss={() => setAreaNotificationOpen(false)}
+                    onComplete={() => {
+                      setAreaNotificationOpen(false);
+                      openAreaInbox();
+                    }}
+                  />
+                ) : null}
+              </AnimatePresence>
+            </>
+          ) : undefined
         }
         bottomChrome={
           showPrimaryDock ? (
@@ -612,18 +627,6 @@ export function CrcleMessaging({
         <AnimatePresence>
           {moodOpen ? (
             <CrcleMoodSwitch onClose={() => setMoodOpen(false)} />
-          ) : null}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {areaNotificationOpen ? (
-            <AreaNearbyNotificationModal
-              onDismiss={() => setAreaNotificationOpen(false)}
-              onConnect={() => {
-                setAreaNotificationOpen(false);
-                openAreaInbox();
-              }}
-            />
           ) : null}
         </AnimatePresence>
 

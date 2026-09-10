@@ -95,7 +95,7 @@ export function AreaNearbyNotificationModal({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-      className="pointer-events-auto absolute inset-0 z-[50] overflow-hidden rounded-[53px]"
+      className="pointer-events-auto absolute inset-0 z-[62] flex items-end justify-center overflow-hidden rounded-[53px]"
       style={{ clipPath: "inset(0 round 53px)" }}
       role="dialog"
       aria-modal="true"
@@ -104,19 +104,20 @@ export function AreaNearbyNotificationModal({
       <button
         type="button"
         aria-label="Dismiss"
-        className="absolute inset-0 bg-black/45 backdrop-blur-[8px]"
+        className="absolute inset-0 z-0 bg-black/45 backdrop-blur-[8px]"
         onClick={handleBackdrop}
       />
 
       <motion.div
-        initial={{ marginBottom: -28 }}
-        animate={{ marginBottom: 0 }}
-        exit={{ marginBottom: -20 }}
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 24 }}
         transition={SPRING}
-        className="absolute inset-x-2 bottom-2 z-[1] flex justify-center"
+        className="relative z-[1] mx-2 mb-2 flex w-[calc(100%-16px)] max-w-[360px] justify-center"
         onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
       >
-        <div className="crcle-nearby-modal-glass relative flex w-full max-w-[360px] flex-col items-center gap-4 overflow-hidden rounded-[52px] p-6 shadow-2xl">
+        <div className="crcle-nearby-modal-glass relative flex w-full flex-col items-center gap-4 overflow-hidden rounded-[52px] p-6 shadow-2xl">
           <div aria-hidden className="crcle-nearby-modal-glass-backdrop rounded-[inherit]">
             <img
               alt=""
@@ -318,10 +319,12 @@ function NearbyPromptContent({
         </motion.button>
 
         <motion.div
-          className="relative flex h-[44px] min-w-0 flex-1 touch-pan-y items-center justify-center overflow-hidden px-2"
+          className="relative flex h-[44px] min-w-0 flex-1 cursor-grab items-center justify-center overflow-hidden px-2 active:cursor-grabbing"
+          style={{ touchAction: "pan-y" }}
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.25}
+          dragMomentum={false}
           onDragEnd={onPillDragEnd}
         >
           <AnimatePresence mode="wait" custom={direction} initial={false}>
@@ -361,23 +364,27 @@ function NearbyPromptContent({
         Would you like to connect?
       </p>
 
-      <div className="flex w-full items-start gap-3">
-        <button
+      <div className="relative z-[2] flex w-full items-start gap-3">
+        <motion.button
           type="button"
           onClick={onDismiss}
           className="flex h-12 min-w-0 flex-1 items-center justify-center rounded-[24px] bg-[rgba(255,255,255,0.2)] px-4 text-[14px] font-semibold leading-normal text-[#f7f6f2] transition hover:brightness-110"
           style={{ fontFamily: FONT }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
         >
           Dismiss
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           type="button"
           onClick={onConnect}
           className="flex h-12 min-w-0 flex-1 items-center justify-center rounded-[24px] bg-[#f7f6f2] px-4 text-[14px] font-semibold leading-normal text-[#02031d] transition hover:brightness-95"
           style={{ fontFamily: FONT }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
         >
           Connect
-        </button>
+        </motion.button>
       </div>
 
       <p className="w-full text-center text-[10px] font-medium leading-normal text-[#9ca3af]" style={{ fontFamily: FONT }}>
