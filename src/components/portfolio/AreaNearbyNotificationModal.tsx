@@ -14,6 +14,9 @@ const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 const SPRING = { type: "spring", stiffness: 380, damping: 22, mass: 0.8 } as const;
 const DRAG_THRESHOLD = 48;
 
+/** 8px inset from the iPhone screen edge — Figma 1142:33118 */
+const SHEET_INSET = "inset-x-2 bottom-2";
+
 type NearbyVariant = "love" | "purpose" | "soul";
 type NearbyStage = "prompt" | "request_sent" | "connected";
 const VARIANT_ORDER: NearbyVariant[] = ["love", "purpose", "soul"];
@@ -36,14 +39,16 @@ const stageFadeVariants = {
   exit: { opacity: 0, y: -8 },
 };
 
-/** Figma 1142:35114 prompt → 1142:35535 request sent → 1391:214524 connected. */
+/** Figma 1142:35114 dark · 1142:33288 light prompt → 1142:35535 request sent → 1391:214524 connected. */
 export function AreaNearbyNotificationModal({
   backdropUrl,
+  isLight = false,
   onDismiss,
   onComplete,
 }: {
   /** Frost wash when sibling backdrop-filter cannot sample the clipped screen. */
   backdropUrl: string;
+  isLight?: boolean;
   onDismiss: () => void;
   onComplete: () => void;
 }) {
@@ -89,6 +94,12 @@ export function AreaNearbyNotificationModal({
         ? "Connection request sent"
         : "Connection established";
 
+  const titleInk = isLight ? "text-[#02031d]" : "text-white";
+  const bodyInk = "text-[#9ca3af]";
+  const promptInk = isLight ? "text-[#02031d]" : "text-white";
+  const dividerClass = isLight ? "bg-[rgba(2,3,29,0.12)]" : "bg-[rgba(247,246,242,0.25)]";
+  const iconInk = isLight ? "brightness-0" : "";
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -101,11 +112,12 @@ export function AreaNearbyNotificationModal({
       aria-modal="true"
       aria-label={ariaLabel}
     >
-      {/* Scrim — sibling layer below sheet (Signal Intercepted pattern) */}
       <button
         type="button"
         aria-label="Dismiss"
-        className="pointer-events-auto absolute inset-0 z-0 bg-black/45 backdrop-blur-[8px]"
+        className={`pointer-events-auto absolute inset-0 z-0 backdrop-blur-[8px] ${
+          isLight ? "bg-[rgba(2,3,29,0.28)]" : "bg-black/45"
+        }`}
         onClick={handleBackdrop}
       />
 
@@ -114,9 +126,13 @@ export function AreaNearbyNotificationModal({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 24 }}
         transition={SPRING}
-        className="pointer-events-auto absolute inset-x-0 bottom-0 z-10 flex justify-center px-2 pb-2"
+        className={`pointer-events-auto absolute z-10 flex w-full ${SHEET_INSET}`}
       >
-        <div className="pointer-events-none crcle-nearby-modal-glass relative flex w-full max-w-[360px] flex-col items-center gap-4 overflow-hidden rounded-[52px] p-6 shadow-2xl">
+        <div
+          className={`pointer-events-none crcle-nearby-modal-glass relative flex w-full flex-col items-center gap-4 overflow-hidden rounded-[52px] p-6 shadow-2xl ${
+            isLight ? "crcle-nearby-modal-glass--light" : ""
+          }`}
+        >
           <div aria-hidden className="crcle-nearby-modal-glass-backdrop rounded-[inherit]">
             <img
               alt=""
@@ -146,6 +162,7 @@ export function AreaNearbyNotificationModal({
                   <NearbyPromptContent
                     variant={variant}
                     direction={direction}
+                    isLight={isLight}
                     onDismiss={onDismiss}
                     onConnect={handlePrimaryAction}
                     onPillDragEnd={onPillDragEnd}
@@ -163,12 +180,22 @@ export function AreaNearbyNotificationModal({
                   transition={SPRING}
                   className="flex w-full flex-col items-center gap-4"
                 >
-                  <NearbyPinBadge />
+                  <NearbyPinBadge isLight={isLight} />
 
                   {stage === "request_sent" ? (
                     <div className="flex w-full items-center justify-center pr-1">
-                      <div className="flex w-[67px] items-end rounded-[64px] border-[0.5px] border-[rgba(247,246,242,0.4)] bg-[rgba(255,255,255,0.5)] p-[2px]">
-                        <div className="-mr-3 size-16 shrink-0 overflow-hidden rounded-full border border-[rgba(247,246,242,0.3)]">
+                      <div
+                        className={`flex w-[67px] items-end rounded-[64px] border-[0.5px] p-[2px] ${
+                          isLight
+                            ? "border-[rgba(2,3,29,0.15)] bg-[rgba(255,255,255,0.65)]"
+                            : "border-[rgba(247,246,242,0.4)] bg-[rgba(255,255,255,0.5)]"
+                        }`}
+                      >
+                        <div
+                          className={`-mr-3 size-16 shrink-0 overflow-hidden rounded-full border ${
+                            isLight ? "border-[rgba(2,3,29,0.12)]" : "border-[rgba(247,246,242,0.3)]"
+                          }`}
+                        >
                           <img alt="" src={serenaPortrait} className="size-full object-cover" draggable={false} />
                         </div>
                         <span
@@ -180,12 +207,26 @@ export function AreaNearbyNotificationModal({
                   ) : (
                     <div className="flex w-full items-center justify-center pr-1">
                       <div className="flex items-center">
-                        <div className="-mr-3 flex w-[67px] items-end rounded-[64px] border-[0.5px] border-[rgba(15,201,80,0.15)] bg-[rgba(255,255,255,0.5)] p-[2px]">
-                          <div className="size-16 shrink-0 overflow-hidden rounded-full border border-[rgba(247,246,242,0.3)]">
+                        <div
+                          className={`-mr-3 flex w-[67px] items-end rounded-[64px] border-[0.5px] p-[2px] ${
+                            isLight
+                              ? "border-[rgba(15,201,80,0.2)] bg-[rgba(255,255,255,0.65)]"
+                              : "border-[rgba(15,201,80,0.15)] bg-[rgba(255,255,255,0.5)]"
+                          }`}
+                        >
+                          <div
+                            className={`size-16 shrink-0 overflow-hidden rounded-full border ${
+                              isLight ? "border-[rgba(2,3,29,0.12)]" : "border-[rgba(247,246,242,0.3)]"
+                            }`}
+                          >
                             <img alt="" src={serenaPortrait} className="size-full object-cover" draggable={false} />
                           </div>
                         </div>
-                        <div className="flex size-[67px] items-center justify-center rounded-[64px] border-[0.5px] border-[#0fc950] bg-[rgba(247,246,242,0.4)] p-[2px]">
+                        <div
+                          className={`flex size-[67px] items-center justify-center rounded-[64px] border-[0.5px] border-[#0fc950] p-[2px] ${
+                            isLight ? "bg-[rgba(247,246,242,0.65)]" : "bg-[rgba(247,246,242,0.4)]"
+                          }`}
+                        >
                           <div className="size-[62px] shrink-0 overflow-hidden rounded-full">
                             <img alt="" src={alexPortrait} className="size-full object-cover" draggable={false} />
                           </div>
@@ -195,24 +236,21 @@ export function AreaNearbyNotificationModal({
                   )}
 
                   <div className="flex w-full flex-col items-center gap-1.5 text-center">
-                    <p className="text-[18px] font-semibold leading-normal text-white" style={{ fontFamily: FONT }}>
+                    <p className={`text-[18px] font-semibold leading-normal ${titleInk}`} style={{ fontFamily: FONT }}>
                       {stage === "request_sent"
                         ? "Request sent to Serena Min"
                         : "You're connected with Alex!"}
                     </p>
-                    <p className="text-[13px] leading-normal text-[#9ca3af]" style={{ fontFamily: FONT }}>
+                    <p className={`text-[13px] leading-normal ${bodyInk}`} style={{ fontFamily: FONT }}>
                       {stage === "request_sent"
                         ? "You'll be notified immediately when they respond."
                         : "You can now message each other safely."}
                     </p>
                   </div>
 
-                  <NearbyDoneButton onClick={handlePrimaryAction} />
+                  <NearbyDoneButton isLight={isLight} onClick={handlePrimaryAction} />
 
-                  <p
-                    className="w-full text-center text-[10px] font-medium leading-normal text-[#9ca3af]"
-                    style={{ fontFamily: FONT }}
-                  >
+                  <p className={`w-full text-center text-[10px] font-medium leading-normal ${bodyInk}`} style={{ fontFamily: FONT }}>
                     No exact location shared · double opt-in required
                   </p>
                 </motion.div>
@@ -225,10 +263,14 @@ export function AreaNearbyNotificationModal({
   );
 }
 
-function NearbyPinBadge() {
+function NearbyPinBadge({ isLight }: { isLight: boolean }) {
   return (
     <div className="flex w-full flex-col items-start">
-      <span className="-mb-5 flex size-5 items-center justify-center self-start rounded-[64px] bg-[rgba(17,223,89,0.8)] p-1">
+      <span
+        className={`-mb-5 flex size-5 items-center justify-center self-start rounded-[64px] bg-[rgba(17,223,89,0.8)] p-1 ${
+          isLight ? "border border-[rgba(0,0,0,0.25)]" : ""
+        }`}
+      >
         <span className="relative h-3 w-[7px] overflow-hidden">
           <img alt="" src={areaPinIcon} className="absolute inset-0 size-full object-contain" draggable={false} />
         </span>
@@ -237,7 +279,7 @@ function NearbyPinBadge() {
   );
 }
 
-function NearbyDoneButton({ onClick }: { onClick: () => void }) {
+function NearbyDoneButton({ isLight, onClick }: { isLight: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
@@ -245,7 +287,11 @@ function NearbyDoneButton({ onClick }: { onClick: () => void }) {
         e.stopPropagation();
         onClick();
       }}
-      className="relative z-[1] flex h-12 w-full items-center justify-center rounded-[24px] border border-[rgba(255,255,255,0.15)] bg-[#f7f6f2] px-4 text-[14px] font-bold leading-normal text-[#02031d] transition hover:brightness-95"
+      className={`relative z-[1] flex h-12 w-full items-center justify-center rounded-[24px] px-4 text-[14px] font-bold leading-normal transition hover:brightness-95 ${
+        isLight
+          ? "border border-[rgba(2,3,29,0.12)] bg-[#02031d] text-[#f7f6f2]"
+          : "border border-[rgba(255,255,255,0.15)] bg-[#f7f6f2] text-[#02031d]"
+      }`}
       style={{ fontFamily: FONT }}
     >
       Done
@@ -256,6 +302,7 @@ function NearbyDoneButton({ onClick }: { onClick: () => void }) {
 function NearbyPromptContent({
   variant,
   direction,
+  isLight,
   onDismiss,
   onConnect,
   onPillDragEnd,
@@ -264,41 +311,65 @@ function NearbyPromptContent({
 }: {
   variant: NearbyVariant;
   direction: number;
+  isLight: boolean;
   onDismiss: () => void;
   onConnect: () => void;
   onPillDragEnd: (_: unknown, info: PanInfo) => void;
   goPrev: () => void;
   goNext: () => void;
 }) {
+  const titleInk = isLight ? "text-[#02031d]" : "text-white";
+  const bodyInk = "text-[#9ca3af]";
+  const promptInk = isLight ? "text-[#02031d]" : "text-white";
+  const dividerClass = isLight ? "bg-[rgba(2,3,29,0.12)]" : "bg-[rgba(247,246,242,0.25)]";
+  const iconInk = isLight ? "brightness-0" : "";
+
   return (
     <>
       <div className="flex w-full flex-col items-center gap-6">
-        <span className="flex size-5 items-center justify-center rounded-[64px] bg-[rgba(17,223,89,0.8)] p-1">
+        <span
+          className={`flex size-5 items-center justify-center rounded-[64px] bg-[rgba(17,223,89,0.8)] p-1 ${
+            isLight ? "border border-[rgba(0,0,0,0.25)]" : ""
+          }`}
+        >
           <span className="relative h-3 w-[7px] overflow-hidden">
             <img alt="" src={areaPinIcon} className="absolute inset-0 size-full object-contain" draggable={false} />
           </span>
         </span>
-        <div aria-hidden className="h-px w-full bg-[rgba(247,246,242,0.25)]" />
+        <div aria-hidden className={`h-px w-full ${dividerClass}`} />
       </div>
 
       <div className="flex w-full items-start justify-end gap-4 pr-1">
-        <div className="flex w-[46px] shrink-0 items-end rounded-[64px] border-[0.5px] border-[rgba(247,246,242,0.4)] p-[2px]">
-          <div className="-mr-2 size-[42px] shrink-0 overflow-hidden rounded-full border border-[rgba(247,246,242,0.3)]">
+        <div
+          className={`flex w-[46px] shrink-0 items-end rounded-[64px] border-[0.5px] p-[2px] ${
+            isLight ? "border-[rgba(2,3,29,0.15)]" : "border-[rgba(247,246,242,0.4)]"
+          }`}
+        >
+          <div
+            className={`-mr-2 size-[42px] shrink-0 overflow-hidden rounded-full border ${
+              isLight ? "border-[rgba(2,3,29,0.12)]" : "border-[rgba(247,246,242,0.3)]"
+            }`}
+          >
             <img alt="" src={serenaPortrait} className="size-full object-cover" draggable={false} />
           </div>
-          <span className="relative z-[1] size-3 shrink-0 rounded-full border-2 border-[#0fc950] bg-[#02031d]" aria-hidden />
+          <span
+            className={`relative z-[1] size-3 shrink-0 rounded-full border-2 border-[#0fc950] ${
+              isLight ? "bg-[#f7f6f2]" : "bg-[#02031d]"
+            }`}
+            aria-hidden
+          />
         </div>
 
         <div className="min-w-0 flex-1 self-stretch">
-          <p className="text-[18px] font-semibold leading-normal text-white" style={{ fontFamily: FONT }}>
+          <p className={`text-[18px] font-semibold leading-normal ${titleInk}`} style={{ fontFamily: FONT }}>
             Serena Min is nearby
           </p>
-          <p className="mt-1 text-[12px] leading-normal text-[#9ca3af]" style={{ fontFamily: FONT }}>
+          <p className={`mt-1 text-[12px] leading-normal ${bodyInk}`} style={{ fontFamily: FONT }}>
             Same venue detected · privacy protected
           </p>
         </div>
 
-        <span className="relative size-[22px] shrink-0 overflow-hidden pt-1">
+        <span className={`relative size-[22px] shrink-0 overflow-hidden pt-1 ${iconInk}`}>
           <img alt="" src={raindropIcon} className="absolute inset-0 size-full object-contain" draggable={false} />
         </span>
       </div>
@@ -308,7 +379,7 @@ function NearbyPromptContent({
           type="button"
           aria-label="Previous category"
           onClick={goPrev}
-          className="relative flex size-6 shrink-0 items-center justify-center"
+          className={`relative flex size-6 shrink-0 items-center justify-center ${iconInk}`}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.92 }}
         >
@@ -338,7 +409,7 @@ function NearbyPromptContent({
               transition={SPRING}
               className="absolute inset-x-0 flex min-w-0 items-center justify-center"
             >
-              <NearbyCategoryPills variant={variant} />
+              <NearbyCategoryPills variant={variant} isLight={isLight} />
             </motion.div>
           </AnimatePresence>
         </motion.div>
@@ -347,7 +418,7 @@ function NearbyPromptContent({
           type="button"
           aria-label="Next category"
           onClick={goNext}
-          className="relative flex size-6 shrink-0 items-center justify-center"
+          className={`relative flex size-6 shrink-0 items-center justify-center ${iconInk}`}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.92 }}
         >
@@ -360,7 +431,7 @@ function NearbyPromptContent({
         </motion.button>
       </div>
 
-      <p className="w-full text-center text-[14px] font-medium leading-normal text-white" style={{ fontFamily: FONT }}>
+      <p className={`w-full text-center text-[14px] font-medium leading-normal ${promptInk}`} style={{ fontFamily: FONT }}>
         Would you like to connect?
       </p>
 
@@ -371,7 +442,11 @@ function NearbyPromptContent({
             e.stopPropagation();
             onDismiss();
           }}
-          className="relative z-[1] flex h-12 min-w-0 flex-1 items-center justify-center rounded-[24px] bg-[rgba(255,255,255,0.2)] px-4 text-[14px] font-semibold leading-normal text-[#f7f6f2] transition hover:brightness-110"
+          className={`relative z-[1] flex h-12 min-w-0 flex-1 items-center justify-center rounded-[24px] px-4 text-[14px] font-semibold leading-normal transition hover:brightness-110 ${
+            isLight
+              ? "bg-[rgba(2,3,29,0.2)] text-[#f7f6f2]"
+              : "bg-[rgba(255,255,255,0.2)] text-[#f7f6f2]"
+          }`}
           style={{ fontFamily: FONT }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
@@ -384,7 +459,9 @@ function NearbyPromptContent({
             e.stopPropagation();
             onConnect();
           }}
-          className="relative z-[1] flex h-12 min-w-0 flex-1 items-center justify-center rounded-[24px] bg-[#f7f6f2] px-4 text-[14px] font-semibold leading-normal text-[#02031d] transition hover:brightness-95"
+          className={`relative z-[1] flex h-12 min-w-0 flex-1 items-center justify-center rounded-[24px] px-4 text-[14px] font-semibold leading-normal transition hover:brightness-95 ${
+            isLight ? "bg-[#02031d] text-[#f7f6f2]" : "bg-[#f7f6f2] text-[#02031d]"
+          }`}
           style={{ fontFamily: FONT }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
@@ -393,26 +470,44 @@ function NearbyPromptContent({
         </motion.button>
       </div>
 
-      <p className="w-full text-center text-[10px] font-medium leading-normal text-[#9ca3af]" style={{ fontFamily: FONT }}>
+      <p className={`w-full text-center text-[10px] font-medium leading-normal ${bodyInk}`} style={{ fontFamily: FONT }}>
         No exact location shared · double opt-in required
       </p>
     </>
   );
 }
 
-function NearbyCategoryPills({ variant }: { variant: NearbyVariant }) {
+function NearbyCategoryPills({ variant, isLight }: { variant: NearbyVariant; isLight: boolean }) {
   if (variant === "purpose") {
     return (
-      <div className="flex max-w-full min-w-0 items-center gap-3 rounded-[120px] bg-[rgba(247,246,242,0.1)] p-1.5">
-        <span className="inline-flex items-center gap-1 rounded-[120px] border border-[#f7f6f2] px-2 py-1.5">
-          <img alt="" src={lightbulbIcon} className="size-4 object-contain" draggable={false} />
-          <span className="text-[16px] leading-[1.4] text-white" style={{ fontFamily: FONT }}>
+      <div
+        className={`flex max-w-full min-w-0 items-center gap-3 rounded-[120px] p-1.5 ${
+          isLight ? "bg-[rgba(3,4,38,0.1)]" : "bg-[rgba(247,246,242,0.1)]"
+        }`}
+      >
+        <span
+          className={`inline-flex items-center gap-1 rounded-[120px] border px-2 py-1.5 ${
+            isLight ? "border-[#030426]" : "border-[#f7f6f2]"
+          }`}
+        >
+          <img alt="" src={lightbulbIcon} className={`size-4 object-contain ${isLight ? "brightness-0" : ""}`} draggable={false} />
+          <span
+            className={`text-[16px] leading-[1.4] ${isLight ? "text-[#02031d]" : "text-white"}`}
+            style={{ fontFamily: FONT }}
+          >
             Learn
           </span>
         </span>
-        <span className="inline-flex items-center gap-1 rounded-[120px] border border-[#f7f6f2] px-3 py-1.5">
-          <img alt="" src={brainIcon} className="h-3 w-4 object-contain" draggable={false} />
-          <span className="text-[16px] leading-[1.4] text-white" style={{ fontFamily: FONT }}>
+        <span
+          className={`inline-flex items-center gap-1 rounded-[120px] border px-3 py-1.5 ${
+            isLight ? "border-[#030426]" : "border-[#f7f6f2]"
+          }`}
+        >
+          <img alt="" src={brainIcon} className={`h-3 w-4 object-contain ${isLight ? "brightness-0" : ""}`} draggable={false} />
+          <span
+            className={`text-[16px] leading-[1.4] ${isLight ? "text-[#02031d]" : "text-white"}`}
+            style={{ fontFamily: FONT }}
+          >
             Mind
           </span>
         </span>
@@ -422,12 +517,21 @@ function NearbyCategoryPills({ variant }: { variant: NearbyVariant }) {
 
   if (variant === "soul") {
     return (
-      <div className="flex max-w-full min-w-0 items-center gap-3 rounded-[120px] bg-[rgba(247,246,242,0.1)] py-1.5 pl-4 pr-1.5">
-        <span className="min-w-0 truncate text-[13px] leading-[1.4] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
+      <div
+        className={`flex max-w-full min-w-0 items-center gap-3 rounded-[120px] py-1.5 pl-4 pr-1.5 ${
+          isLight ? "bg-[rgba(3,4,38,0.1)]" : "bg-[rgba(247,246,242,0.1)]"
+        }`}
+      >
+        <span
+          className={`min-w-0 truncate text-[13px] leading-[1.4] ${isLight ? "text-[#030426]" : "text-[#f7f6f2]"}`}
+          style={{ fontFamily: FONT }}
+        >
           Product Designer@Circle
         </span>
         <span
-          className="shrink-0 rounded-[120px] bg-[#f7f6f2] px-2 py-1 text-[13px] leading-[1.4] text-[#020426]"
+          className={`shrink-0 rounded-[120px] px-2 py-1 text-[13px] leading-[1.4] ${
+            isLight ? "bg-[#020426] text-[#f7f6f2]" : "bg-[#f7f6f2] text-[#020426]"
+          }`}
           style={{ fontFamily: FONT }}
         >
           Looking
@@ -437,17 +541,35 @@ function NearbyCategoryPills({ variant }: { variant: NearbyVariant }) {
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-[120px] bg-[rgba(247,246,242,0.1)] p-1.5">
-      <span className="inline-flex items-center gap-1 rounded-[120px] bg-[#f7f6f2] px-2 py-1.5">
+    <div
+      className={`flex items-center gap-3 rounded-[120px] p-1.5 ${
+        isLight ? "bg-[rgba(3,4,38,0.1)]" : "bg-[rgba(247,246,242,0.1)]"
+      }`}
+    >
+      <span
+        className={`inline-flex items-center gap-1 rounded-[120px] px-2 py-1.5 ${
+          isLight ? "bg-[#02031d]" : "bg-[#f7f6f2]"
+        }`}
+      >
         <span className="relative size-4 overflow-hidden">
-          <img alt="" src={unlockIcon} className="absolute inset-0 size-full object-contain" draggable={false} />
+          <img
+            alt=""
+            src={unlockIcon}
+            className={`absolute inset-0 size-full object-contain ${isLight ? "brightness-0 invert" : ""}`}
+            draggable={false}
+          />
         </span>
-        <span className="text-[16px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
+        <span
+          className={`text-[16px] leading-[1.4] ${isLight ? "text-[#f7f6f2]" : "text-[#030426]"}`}
+          style={{ fontFamily: FONT }}
+        >
           Single
         </span>
       </span>
       <span
-        className="rounded-[120px] border border-[#f7f6f2] px-3 py-1.5 text-[16px] leading-[1.4] text-white"
+        className={`rounded-[120px] border px-3 py-1.5 text-[16px] leading-[1.4] ${
+          isLight ? "border-[#030426] text-[#02031d]" : "border-[#f7f6f2] text-white"
+        }`}
         style={{ fontFamily: FONT }}
       >
         Hetero

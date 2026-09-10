@@ -468,6 +468,7 @@ export function CrcleMessaging({
                   <AreaNearbyNotificationModal
                     key="area-nearby-notification"
                     backdropUrl={avatarImg}
+                    isLight={light}
                     onDismiss={() => {
                       setAreaNotificationOpen(false);
                       clearAreaNotificationTimer();

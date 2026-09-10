@@ -1905,6 +1905,51 @@
   z-index: 1;
 }
 
+/* Light — Figma 1142:33118 / 1142:33288 bottom-sheet-modal */
+.crcle-nearby-modal-glass--light {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.65) inset;
+}
+
+.crcle-nearby-modal-glass--light .crcle-nearby-modal-glass-backdrop > img {
+  opacity: 0.28;
+  filter: blur(40px) saturate(0.75) brightness(1.08);
+}
+
+.crcle-nearby-modal-glass--light .crcle-nearby-modal-glass-backdrop > div {
+  background: rgba(247, 246, 242, 0.35) !important;
+}
+
+.crcle-nearby-modal-glass--light .crcle-nearby-modal-glass-plate {
+  background: linear-gradient(
+    172.75deg,
+    rgba(2, 3, 29, 0.08) 6.04%,
+    rgba(247, 246, 242, 0.2) 42.06%
+  );
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+}
+
+.crcle-nearby-modal-glass--light .crcle-nearby-modal-glass-plate::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 48%);
+  opacity: 0.55;
+}
+
+.crcle-nearby-modal-glass--light .crcle-nearby-modal-glass-frost {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, transparent 50%);
+  opacity: 0.35;
+}
+
+.crcle-nearby-modal-glass--light .crcle-nearby-modal-glass-lens {
+  opacity: 0.22;
+}
+
+.crcle-nearby-modal-glass--light .crcle-nearby-modal-glass-dispersion {
+  opacity: 0.28;
+}
+
 /* Profile — Location privacy info sheet (Figma 1010:51048) */
 @keyframes crcle-location-info-sheet-slide {
   from {
