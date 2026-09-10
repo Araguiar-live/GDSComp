@@ -1778,23 +1778,24 @@
   pointer-events: none;
 }
 
-/* Single backdrop sample — Figma blur 10px boosted for phone legibility */
+/* Single backdrop sample — heavy frost so profile/content beneath is illegible */
 .crcle-signal-panel-glass {
-  border: 1px solid rgba(247, 246, 242, 0.4);
-  background: rgba(253, 252, 251, 0.1);
-  backdrop-filter: blur(23px) saturate(160%);
-  -webkit-backdrop-filter: blur(23px) saturate(160%);
+  isolation: isolate;
+  border: 1px solid rgba(247, 246, 242, 0.42);
+  background: rgba(2, 3, 29, 0.58);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
   box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 10px 28px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
 .crcle-signal-panel-plate {
   background: linear-gradient(
     182deg,
-    rgba(255, 255, 255, 0.24) 12%,
-    rgba(247, 246, 242, 0.14) 58%,
-    rgba(255, 255, 255, 0.08) 100%
+    rgba(255, 255, 255, 0.18) 12%,
+    rgba(2, 3, 29, 0.22) 58%,
+    rgba(2, 3, 29, 0.32) 100%
   );
 }
 
@@ -1862,17 +1863,17 @@
 }
 
 .crcle-phone--light .crcle-signal-panel-glass {
-  background: rgba(253, 252, 251, 0.22);
-  backdrop-filter: blur(23px) saturate(170%);
-  -webkit-backdrop-filter: blur(23px) saturate(170%);
+  background: rgba(253, 252, 251, 0.72);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
 }
 
 .crcle-phone--light .crcle-signal-panel-plate {
   background: linear-gradient(
     182deg,
-    rgba(255, 255, 255, 0.48) 12%,
-    rgba(247, 246, 242, 0.32) 58%,
-    rgba(255, 255, 255, 0.2) 100%
+    rgba(255, 255, 255, 0.62) 12%,
+    rgba(247, 246, 242, 0.48) 58%,
+    rgba(255, 255, 255, 0.36) 100%
   );
 }
 
