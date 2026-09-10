@@ -23,6 +23,7 @@ import eyeWeekIcon from "@/assets/crcle/profile/eye-week.svg";
 import graduationIcon from "@/assets/crcle/profile/graduation.svg";
 import heartDatingIcon from "@/assets/crcle/profile/heart-dating.svg";
 import laptopWorkIcon from "@/assets/crcle/profile/laptop-work.svg";
+import locationCurrentIcon from "@/assets/crcle/profile/location-current.svg";
 import locationMapImg from "@/assets/crcle/profile/location-map-figma.png";
 import locationPinMarkerIcon from "@/assets/crcle/profile/location-pin-marker.svg";
 import locationProximityRingIcon from "@/assets/crcle/profile/location-proximity-ring.svg";
@@ -554,7 +555,7 @@ function ProfileMainView({
   onOpenWork,
   onOpenRelationship,
   onOpenLocation,
-  onOpenLocationInfo: _onOpenLocationInfo,
+  onOpenLocationInfo,
   onOpenSocials,
   onOpenVerify,
 }: {
@@ -820,7 +821,7 @@ function ProfileMainView({
                   type="button"
                   aria-label="Edit location"
                   onClick={onOpenLocation}
-                  className="absolute inset-x-0 top-0 bottom-[84px] z-[1] cursor-pointer border-0 bg-transparent p-0"
+                  className="absolute inset-x-0 top-8 bottom-[84px] z-[1] cursor-pointer border-0 bg-transparent p-0"
                 />
                 {showLocationDetails ? (
                   <>
@@ -880,14 +881,37 @@ function ProfileMainView({
                     </div>
                   </div>
                 ) : null}
-                <span className="relative z-[4] inline-flex w-fit items-center rounded-[24px] bg-[#030426] py-0.5 pl-2 pr-2.5">
+                {/* Location header — Figma 1005:49679 */}
+                <div className="relative z-[4] flex w-full items-center justify-between rounded-[24px] bg-[rgba(255,255,255,0.05)] py-1 pl-2 pr-1 backdrop-blur-[4px]">
+                  <img
+                    alt=""
+                    src={locationCurrentIcon}
+                    className="size-4 shrink-0 object-contain"
+                    draggable={false}
+                  />
                   <span
-                    className="text-[13px] leading-[1.4] text-[#fefefe]"
+                    className="min-w-0 flex-1 text-center text-[13px] leading-[1.1] text-[#030426]"
                     style={{ fontFamily: FONT }}
                   >
-                    Current Location
+                    Location
                   </span>
-                </span>
+                  <button
+                    type="button"
+                    aria-label="Location privacy information"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenLocationInfo();
+                    }}
+                    className="flex size-4 shrink-0 items-center justify-center border-0 bg-transparent p-0"
+                  >
+                    <img
+                      alt=""
+                      src={relInfoIcon}
+                      className="size-4 object-contain"
+                      draggable={false}
+                    />
+                  </button>
+                </div>
                 <div className="pointer-events-auto relative z-[4] flex w-[165px] items-center justify-between rounded-[24px] border border-[rgba(2,4,38,0.4)] py-1 pl-2 pr-1.5">
                   <button
                     type="button"
