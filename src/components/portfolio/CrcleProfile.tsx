@@ -282,13 +282,18 @@ export function CrcleProfile({
       <CrclePhoneFrame
         light={isLightMode}
         overlay={
-          overlay === "locationInfo" ? (
-            <LocationInfoSheet
-              onClose={() => setOverlay(null)}
-              backdropUrl={profile.user.avatarUrl}
-              isLight={isLightMode}
-            />
-          ) : null
+          <AnimatePresence mode="wait">
+            {overlay === "locationInfo" ? (
+              <LocationInfoSheet
+                key="location-info"
+                onClose={() => setOverlay(null)}
+                backdropUrl={profile.user.avatarUrl}
+                isLight={isLightMode}
+              />
+            ) : overlay === "verify" ? (
+              <VerificationSheet key="verify" onClose={() => setOverlay(null)} />
+            ) : null}
+          </AnimatePresence>
         }
         bottomChrome={
           overlay || onboardingOpen || moodOpen ? null : (
@@ -419,12 +424,6 @@ export function CrcleProfile({
                 }}
                 onClose={() => setOverlay(null)}
               />
-            ) : null}
-          </AnimatePresence>
-
-          <AnimatePresence>
-            {overlay === "verify" ? (
-              <VerificationSheet onClose={() => setOverlay(null)} />
             ) : null}
           </AnimatePresence>
 
@@ -1869,11 +1868,10 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.24, ease: EASE }}
-      className="absolute inset-0 z-[60] flex flex-col justify-end overflow-hidden rounded-[53px]"
+      className="pointer-events-auto absolute inset-0 z-[60] flex flex-col justify-end overflow-hidden rounded-[53px]"
       role="dialog"
       aria-modal="true"
       aria-label="Verify your identity"
-      style={{ clipPath: "inset(0 round 53px)" }}
     >
       <button
         type="button"
