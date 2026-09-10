@@ -21,6 +21,7 @@ import { FirstDesignComingSoon } from "@/components/portfolio/FirstDesignComingS
 import { WireframeStage } from "@/components/portfolio/SiteWireframe";
 import { PortfolioCalculatorCard } from "@/components/portfolio/PortfolioCalculatorCard";
 import { PortfolioPeekMouse } from "@/components/portfolio/PortfolioPeekMouse";
+import { useCrcleVerifyOpen } from "@/components/portfolio/crcleBroadcast";
 export const Route = createFileRoute("/")({
   component: Index,
 });
@@ -244,6 +245,7 @@ function Index() {
   const [designOn, setDesignOn] = useState(false);
   const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const isExpanded = openSlug !== null;
+  const verifyOpen = useCrcleVerifyOpen();
 
   const toggle = useCallback((slug: string) => {
     setOpenSlug((cur) => (cur === slug ? null : slug));
@@ -364,7 +366,9 @@ function Index() {
         />
       </div>
 
-      <Dock items={DOCK_ITEMS} onSelect={handleDockSelect} activeSlug={openSlug} />
+      {!verifyOpen ? (
+        <Dock items={DOCK_ITEMS} onSelect={handleDockSelect} activeSlug={openSlug} />
+      ) : null}
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
     </div>
   );

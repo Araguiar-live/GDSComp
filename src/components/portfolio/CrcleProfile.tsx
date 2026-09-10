@@ -1882,10 +1882,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
         onClick={(e) => e.stopPropagation()}
         className="crcle-verify-sheet crcle-verify-sheet-enter relative z-10 flex max-h-[88%] min-h-[420px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]"
       >
-        <div className="crcle-verify-sheet-frost rounded-[inherit]" aria-hidden />
-
         {/* Header — Figma 257:82968 */}
-        <div className="crcle-verify-sheet-header relative flex shrink-0 items-start gap-[25px] border border-[rgba(2,3,29,0.1)] border-b-0 bg-[#f7f6f2] px-3 pb-3 pt-4">
+        <div className="crcle-verify-sheet-header relative flex shrink-0 items-start gap-[25px] border border-[rgba(2,3,29,0.1)] border-b-0 px-3 pb-3 pt-4">
           <img
             alt=""
             src={verifyHandleIcon}

@@ -1644,19 +1644,7 @@
 .crcle-verify-sheet {
   position: relative;
   overflow: hidden;
-  background: rgba(247, 246, 242, 0.82);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-}
-
-.crcle-verify-sheet-frost {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: rgba(247, 246, 242, 0.48);
-  backdrop-filter: blur(32px) saturate(160%);
-  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  background: transparent;
 }
 
 .crcle-verify-sheet-header {
@@ -1670,8 +1658,9 @@
 .crcle-verify-sheet-body {
   position: relative;
   z-index: 1;
-  overflow: hidden;
-  background: rgba(247, 246, 242, 0.94);
+  isolation: isolate;
+  overflow-y: auto;
+  background: rgba(247, 246, 242, 0.5);
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
 }
