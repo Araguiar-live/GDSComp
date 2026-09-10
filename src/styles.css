@@ -37,37 +37,19 @@
   }
 }
 
-/* Hero peek mouse — 120px up/down in 600ms, then a quick shake. */
+/* Hero peek mouse — soft vertical bob, no shake. */
 @keyframes portfolio-peek-mouse-motion {
-  0% {
-    transform: translate(0, 0);
-  }
-  16.667% {
-    transform: translate(0, -120px);
-  }
-  33.333% {
-    transform: translate(0, 0);
-  }
-  41.667% {
-    transform: translate(3px, 0);
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translate(-3px, 0);
-  }
-  58.333% {
-    transform: translate(2px, 0);
-  }
-  66.667% {
-    transform: translate(-2px, 0);
-  }
-  75%,
-  100% {
-    transform: translate(0, 0);
+    transform: translate3d(0, -48px, 0);
   }
 }
 
 .portfolio-peek-mouse-motion {
-  animation: portfolio-peek-mouse-motion 900ms ease-in-out infinite;
+  animation: portfolio-peek-mouse-motion 2.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
