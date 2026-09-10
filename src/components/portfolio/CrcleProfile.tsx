@@ -327,7 +327,9 @@ export function CrcleProfile({
               />
             </div>
 
-            {!overlay && !onboardingOpen && !moodOpen ? <CrcleStickyMoreButton /> : null}
+            {!overlay && !verifySheetOpen && !onboardingOpen && !moodOpen ? (
+              <CrcleStickyMoreButton />
+            ) : null}
 
             {/* Status + wordmark float over content with a soft fade — no hard cutoff */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
@@ -607,6 +609,7 @@ function ProfileMainView({
             <button
               type="button"
               aria-label="Verify identity"
+              data-testid="crcle-verify-trigger"
               onClick={(e) => {
                 e.stopPropagation();
                 onOpenVerify();
@@ -1864,6 +1867,7 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label="Verify your identity"
+      data-testid="crcle-verify-drawer"
     >
       <button
         type="button"
