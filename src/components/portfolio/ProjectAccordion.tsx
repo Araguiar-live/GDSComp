@@ -203,17 +203,13 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                   <CaseStudyCopy project={project} tab={activeTab} content={tabContent} />
                 </div>
 
-                {/* RIGHT — prototype sized to the device / browser frame */}
-                <div
-                  className={`relative flex shrink-0 items-start justify-end ${
-                    project.slug === "odicci"
-                      ? "w-full min-w-0 max-w-[980px] md:w-[min(980px,46vw)]"
-                      : "w-max max-w-full"
-                  }`}
-                >
+                {/* RIGHT — prototype fills the grid column and hugs the right edge */}
+                <div className="relative flex w-full min-w-0 shrink-0 items-start justify-end">
                   <div
                     className={`flex items-start justify-end overflow-visible ${
-                      project.slug === "odicci" ? "w-full" : "w-max max-w-full"
+                      project.slug === "odicci"
+                        ? "ml-auto w-full min-w-0 max-w-[980px] md:w-[min(980px,46vw)]"
+                        : "w-full min-w-0"
                     }`}
                   >
                     {tabContent.customBody ? (
