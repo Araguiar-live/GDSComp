@@ -1607,10 +1607,12 @@
 }
 
 .crcle-verify-scrim-enter {
+  opacity: 1;
   animation: crcle-verify-scrim-fade 0.24s ease forwards;
 }
 
 .crcle-verify-sheet-enter {
+  transform: translateY(0);
   animation: crcle-verify-sheet-slide 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 

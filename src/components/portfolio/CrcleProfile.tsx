@@ -290,7 +290,13 @@ export function CrcleProfile({
               isLight={isLightMode}
             />
           ) : overlay === "verify" ? (
-            <VerificationSheet key="verify" onClose={() => setOverlay(null)} />
+            <VerificationSheet
+              key="verify"
+              onClose={() => {
+                setCrcleVerifyOpen(false);
+                setOverlay(null);
+              }}
+            />
           ) : null
         }
         bottomChrome={
@@ -328,6 +334,7 @@ export function CrcleProfile({
                   setIsLightMode(true);
                   setOnboardingOpen(false);
                   setMoodOpen(false);
+                  setCrcleVerifyOpen(true);
                   setOverlay("verify");
                 }}
               />
