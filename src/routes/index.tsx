@@ -20,6 +20,7 @@ import { CrcleSignalHome } from "@/components/portfolio/CrcleSignalHome";
 import { FirstDesignComingSoon } from "@/components/portfolio/FirstDesignComingSoon";
 import { WireframeStage } from "@/components/portfolio/SiteWireframe";
 import { PortfolioCalculatorCard } from "@/components/portfolio/PortfolioCalculatorCard";
+import { PortfolioPeekMouse } from "@/components/portfolio/PortfolioPeekMouse";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -333,6 +334,9 @@ function Index() {
           <div className="relative w-full shrink-0 overflow-visible">
             <div className="pointer-events-none absolute left-0 top-0 z-[5] hidden -translate-x-1/2 -translate-y-1/2 md:block">
               <PortfolioCalculatorCard />
+            </div>
+            <div className="pointer-events-none absolute right-0 top-0 z-[5] hidden -translate-y-1/2 translate-x-[calc(50%-40px)] md:block">
+              <PortfolioPeekMouse />
             </div>
             <ProjectBentoStack
               projects={PROJECTS}
