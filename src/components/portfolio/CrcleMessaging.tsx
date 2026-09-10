@@ -50,6 +50,9 @@ import {
   consumeMoodSwitchOnMessaging,
   consumeOpenMessaging,
   getCrcleBroadcast,
+  isAreaNearbyFlowComplete,
+  markAreaNearbyFlowComplete,
+  setAreaNearbyBadgeActive,
   setCrcleAreaInboxOpen,
   subscribeCrcleBroadcast,
 } from "@/components/portfolio/crcleBroadcast";
@@ -235,16 +238,20 @@ export function CrcleMessaging({
   const [areaNotificationOpen, setAreaNotificationOpen] = useState(false);
   const [areaInbox, setAreaInboxState] = useState<"off" | "screen" | "drawer">("off");
   const areaNotificationTimerRef = useRef<number | null>(null);
+  const areaNotificationScheduledRef = useRef(false);
 
   const clearAreaNotificationTimer = useCallback(() => {
     if (areaNotificationTimerRef.current != null) {
       window.clearTimeout(areaNotificationTimerRef.current);
       areaNotificationTimerRef.current = null;
     }
+    areaNotificationScheduledRef.current = false;
   }, []);
 
   const scheduleAreaNearbyNotification = useCallback(() => {
+    if (isAreaNearbyFlowComplete()) return;
     clearAreaNotificationTimer();
+    areaNotificationScheduledRef.current = true;
     setOnboardingOpen(false);
     setPhase("inbox");
     setMoodOpen(false);
@@ -253,6 +260,7 @@ export function CrcleMessaging({
     setTab("sent");
     areaNotificationTimerRef.current = window.setTimeout(() => {
       areaNotificationTimerRef.current = null;
+      setAreaNearbyBadgeActive(true);
       setAreaNotificationOpen(true);
     }, AREA_NEARBY_NOTIFICATION_DELAY_MS);
   }, [clearAreaNotificationTimer]);
@@ -299,7 +307,11 @@ export function CrcleMessaging({
         return;
       }
       /* Figma 1387:214097 — entered Messaging Hub with In The Area already active */
-      if (getCrcleBroadcast() === "in_the_area") {
+      if (
+        getCrcleBroadcast() === "in_the_area" &&
+        !isAreaNearbyFlowComplete() &&
+        !areaNotificationScheduledRef.current
+      ) {
         scheduleAreaNearbyNotification();
       }
     };
@@ -451,14 +463,20 @@ export function CrcleMessaging({
                   />
                 ) : null}
               </AnimatePresence>
-              <AnimatePresence>
+              <AnimatePresence mode="wait">
                 {areaNotificationOpen ? (
                   <AreaNearbyNotificationModal
                     key="area-nearby-notification"
                     backdropUrl={avatarImg}
-                    onDismiss={() => setAreaNotificationOpen(false)}
+                    onDismiss={() => {
+                      setAreaNotificationOpen(false);
+                      clearAreaNotificationTimer();
+                      setAreaNearbyBadgeActive(false);
+                    }}
                     onComplete={() => {
                       setAreaNotificationOpen(false);
+                      clearAreaNotificationTimer();
+                      markAreaNearbyFlowComplete();
                       openAreaInbox();
                     }}
                   />
@@ -626,7 +644,10 @@ export function CrcleMessaging({
 
         <AnimatePresence>
           {moodOpen ? (
-            <CrcleMoodSwitch onClose={() => setMoodOpen(false)} />
+            <CrcleMoodSwitch
+              onClose={() => setMoodOpen(false)}
+              onInTheAreaSelect={scheduleAreaNearbyNotification}
+            />
           ) : null}
         </AnimatePresence>
 

@@ -70,12 +70,15 @@ export function CrcleMoodSwitch({
   onClose,
   allowedMoods,
   closeOnInTheAreaSelect = true,
+  onInTheAreaSelect,
 }: {
   onClose: () => void;
   /** When set, only these moods appear in the dock (e.g. Profile: Night Owl + In The Area). */
   allowedMoods?: BroadcastState[];
   /** Messaging auto-dismisses after picking In The Area; Profile keeps the sheet open. */
   closeOnInTheAreaSelect?: boolean;
+  /** Direct hook for Messaging Hub to schedule the nearby notification sheet. */
+  onInTheAreaSelect?: () => void;
 }) {
   const [activeState, setActiveState] = useCrcleBroadcast();
   const [isIncognito, setIncognito] = useCrcleIncognito();
@@ -216,6 +219,7 @@ export function CrcleMoodSwitch({
                     setActiveState(m.id);
                     if (m.id === "in_the_area") {
                       requestAreaNearbyNotification();
+                      onInTheAreaSelect?.();
                       if (closeOnInTheAreaSelect) {
                         window.setTimeout(onClose, 280);
                       }
