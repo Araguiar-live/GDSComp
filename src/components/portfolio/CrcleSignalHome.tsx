@@ -78,6 +78,7 @@ export function CrcleSignalHome({
 
   const dismissOnboarding = useCallback(() => {
     setOnboardingOpen(false);
+    setIsLightMode(false);
   }, []);
 
   const showPrimaryDock = !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen;
@@ -353,6 +354,7 @@ export function CrcleSignalHome({
                       onClick={() => {
                         setScreen("photo");
                         setSignalStrength(33);
+                        setIsLightMode(false);
                       }}
                       className={`absolute inset-0 z-0 flex flex-col items-center justify-center gap-2 px-3 pt-24 transition active:scale-[0.995] ${
                         isLightMode ? "hover:bg-black/[0.03]" : "hover:bg-white/[0.03]"
