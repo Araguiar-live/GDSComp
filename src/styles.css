@@ -629,19 +629,11 @@
 }
 
 .crcle-phone--light .crcle-primary-dock-glass {
-  border: 1px solid rgba(255, 255, 255, 0.76);
-  background:
-    linear-gradient(
-      165deg,
-      rgba(255, 255, 255, 0.74) 0%,
-      rgba(255, 255, 255, 0.62) 48%,
-      rgba(247, 246, 242, 0.58) 100%
-    );
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  box-shadow:
-    0 8px 28px rgba(0, 0, 0, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: rgba(247, 246, 242, 0.4);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .crcle-phone--light .crcle-primary-dock-plate {
@@ -2378,9 +2370,9 @@
   --crcle-badge-fg: #ffffff;
   --crcle-list-hover: rgba(2, 4, 38, 0.04);
   --crcle-icon-filter: brightness(0);
-  --crcle-panel: rgba(255, 255, 255, 0.6);
-  --crcle-panel-border: rgba(0, 0, 0, 0.25);
-  --crcle-nc-header-bg: #f7f6f2;
+  --crcle-panel: rgba(255, 255, 255, 0.8);
+  --crcle-panel-border: #f7f6f2;
+  --crcle-nc-header-bg: transparent;
   --crcle-nc-title: #030426;
   --crcle-nc-badge: #030426;
   --crcle-toggle-idle: rgba(2, 3, 29, 0.4);

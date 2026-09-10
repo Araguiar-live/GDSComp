@@ -65,7 +65,7 @@ import {
 
 /**
  * CRCLE Messaging & Signal — multi-state interactive flow (Figma Messaging section).
- * Light inbox: Figma 257:63418. Dark inbox + chat: Figma 257:63596 / 769:205653.
+ * Light inbox: Figma 257:74236 / 257:63418. Dark inbox + chat: Figma 257:63596 / 769:205653.
  * inbox (notifications) → signal gate → active chat, with context menu overlay.
  */
 
@@ -1017,7 +1017,7 @@ function NotificationCenter({
       >
         {/* Header — Figma 257:63418 (Default / Variant2) */}
         <div
-          className={`relative flex w-full flex-col items-center overflow-hidden bg-[var(--crcle-nc-header-bg)] transition-colors duration-300 ${
+          className={`relative flex w-full flex-col items-center overflow-hidden bg-[var(--crcle-nc-header-bg)] transition-colors duration-300 [.crcle-phone--light_&]:bg-transparent ${
             expanded ? "rounded-tl-[16px] rounded-tr-[16px]" : "rounded-[16px]"
           }`}
         >
@@ -1025,7 +1025,7 @@ function NotificationCenter({
             <img
               alt=""
               src={notificationBg}
-              className="absolute left-[-8px] top-[-7px] h-[201px] w-[486px] max-w-none object-contain transition-opacity duration-300 [.crcle-phone--light_&]:opacity-[0.18]"
+              className="absolute left-[-8px] top-[-7px] h-[201px] w-[486px] max-w-none object-cover transition-opacity duration-300"
             />
           </div>
 
@@ -1084,7 +1084,7 @@ function NotificationCenter({
           aria-hidden={!expanded}
           style={{ pointerEvents: expanded ? "auto" : "none" }}
         >
-          <div className="relative flex w-full flex-col items-start gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[var(--crcle-panel-border)] bg-[var(--crcle-panel)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)] backdrop-blur-[14px] transition-all duration-300 hover:bg-[rgba(247,246,242,0.1)] [.crcle-phone--light_&]:shadow-[0_12px_32px_rgba(0,0,0,0.1)] [.crcle-phone--light_&]:hover:bg-white/80">
+          <div className="relative flex w-full flex-col items-start gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-t border-[var(--crcle-panel-border)] bg-[var(--crcle-panel)] px-[9px] pb-[10px] pt-[11px] shadow-[0_12px_40px_rgba(0,0,0,0.18)] backdrop-blur-[14px] transition-all duration-300 hover:bg-[rgba(247,246,242,0.1)] [.crcle-phone--light_&]:border-[#f7f6f2] [.crcle-phone--light_&]:bg-[rgba(255,255,255,0.8)] [.crcle-phone--light_&]:shadow-none [.crcle-phone--light_&]:backdrop-blur-[4px] [.crcle-phone--light_&]:hover:bg-[rgba(255,255,255,0.92)]">
             {tab === "received" ? <DailyDropBanner onView={onViewDailyDrop} /> : null}
             <div className="flex items-start gap-4">
               {profiles.map((profile) => (
@@ -1170,7 +1170,7 @@ function SentReceivedToggle({
             onClick={() => onChange(key)}
             className={`relative z-[1] flex flex-1 items-center justify-center whitespace-nowrap rounded-[20px] px-2.5 py-1 text-[13px] leading-[1.4] transition-colors duration-300 ${
               active
-                ? "bg-[#02031d] text-[#f7f6f2] [.crcle-phone:not(.crcle-phone--light)_&]:bg-[rgba(247,246,242,0.2)] [.crcle-phone:not(.crcle-phone--light)_&]:text-white"
+                ? "text-white [.crcle-phone--light_&]:bg-[rgba(2,3,29,0.2)] [.crcle-phone:not(.crcle-phone--light)_&]:bg-[rgba(247,246,242,0.2)]"
                 : "bg-transparent text-[var(--crcle-toggle-idle)]"
             }`}
             style={{ fontFamily: FONT }}
@@ -1526,7 +1526,7 @@ function ConnectionAvatar({
       type="button"
       onClick={onClick}
       aria-label={`Open signal for ${name}`}
-      className="group relative flex size-[53px] shrink-0 items-center justify-center rounded-[26.5px] border border-[#11df59] bg-[rgba(253,252,251,0.3)] p-0.5 aspect-square transition-transform duration-200 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#11df59]/40"
+      className="group relative flex size-[53px] shrink-0 items-center justify-center rounded-[26.5px] border border-[#11df59] bg-[rgba(253,252,251,0.3)] p-0.5 aspect-square transition-transform duration-200 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#11df59]/40 [.crcle-phone--light_&]:border-[#11df59] [.crcle-phone--light_&]:bg-[#fdfcfb]"
     >
       <div className="relative size-[46px] overflow-hidden rounded-full aspect-square">
         <img alt="" src={photoUrl} className="absolute inset-0 size-full object-cover object-center" />
@@ -1537,8 +1537,8 @@ function ConnectionAvatar({
         />
       </div>
       {/* Purpose badge — Figma 350:22979 stroke laptop */}
-      <div className="absolute -left-[3px] -top-[4px] z-[1] flex w-5 flex-col items-center justify-center rounded-[64px] border-[0.5px] border-[#f7f6f2] bg-[rgba(253,252,251,0.8)] p-1 backdrop-blur-[0.5px]">
-        <IconImg src={badgeSrc} className="h-3 w-3.5" />
+      <div className="absolute -left-[3px] -top-[4px] z-[1] flex w-5 flex-col items-center justify-center rounded-[64px] border-[0.5px] border-[#f7f6f2] bg-[rgba(253,252,251,0.8)] p-1 backdrop-blur-[0.5px] [.crcle-phone--light_&]:border-[#f7f6f2]">
+        <IconImg src={badgeSrc} className="crcle-theme-icon h-3 w-3.5" />
       </div>
       <div
         className={`pointer-events-none absolute inset-0 z-[1] flex items-center justify-center gap-[2.3px] transition-opacity duration-200 ease-out ${
