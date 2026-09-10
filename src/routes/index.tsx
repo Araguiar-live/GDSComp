@@ -168,7 +168,7 @@ const PROJECTS: Project[] = [
     slug: "odicci",
     title: "Odicci",
     role: "Product Team / Core UX",
-    year: "2023",
+    year: "2025-26",
     content: {
       "Create Workspace\u00a0": {
         label: "Odicci — Workspace",
