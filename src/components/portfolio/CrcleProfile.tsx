@@ -1876,7 +1876,7 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
       <button
         type="button"
         aria-label="Dismiss verification"
-        className="absolute inset-0 overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.18)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]"
+        className="crcle-verify-scrim absolute inset-0 z-0 overflow-hidden rounded-[53px]"
         onClick={onClose}
       />
 
@@ -1886,7 +1886,7 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
         exit={{ y: 32 }}
         transition={{ duration: 0.32, ease: EASE }}
         onClick={(e) => e.stopPropagation()}
-        className="crcle-verify-sheet relative z-[1] flex max-h-[88%] min-h-[420px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]"
+        className="crcle-verify-sheet relative z-10 flex max-h-[88%] min-h-[420px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]"
       >
         <div className="crcle-verify-sheet-frost rounded-[inherit]" aria-hidden />
 
@@ -1930,8 +1930,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Body — Figma 257:82978 + crcle KYC philosophy */}
-        <div className="crcle-verify-sheet-body flex min-h-0 flex-1 flex-col items-center justify-between overflow-y-auto border-t border-[rgba(2,3,29,0.1)] px-3 pb-4 pt-[46px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex w-full flex-col items-center gap-6">
+        <div className="crcle-verify-sheet-body flex min-h-0 flex-1 flex-col items-center justify-between gap-[16px] overflow-y-auto border-t border-[rgba(2,3,29,0.1)] px-3 pb-4 pt-[46px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex w-full flex-col items-center gap-[16px]">
             <span className="relative size-[46px] shrink-0 overflow-hidden">
               <img
                 alt=""
@@ -1940,7 +1940,7 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 draggable={false}
               />
             </span>
-            <div className="flex w-full flex-col items-center gap-3">
+            <div className="flex w-full flex-col items-center gap-[16px]">
               <p
                 className="w-full text-center text-[14px] font-normal leading-[1.2] tracking-[-0.15px] text-[#02031d]"
                 style={{ fontFamily: FONT }}
@@ -1990,7 +1990,7 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
             </span>
           </div>
 
-          <div className="flex w-full flex-col items-center gap-4">
+          <div className="flex w-full flex-col items-center gap-[16px]">
             <p
               className="w-full text-center text-[9px] leading-[1.1] tracking-[-0.15px] text-[rgba(2,3,29,0.4)]"
               style={{ fontFamily: FONT }}
@@ -2000,7 +2000,7 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex items-center justify-center rounded-full bg-[#02031d] px-9 py-3"
+              className="relative z-10 flex items-center justify-center rounded-full bg-[#02031d] px-9 py-3"
             >
               <span
                 className="text-center text-[16px] font-medium leading-[1.2] tracking-[-0.44px] text-[#f7f6f2]"

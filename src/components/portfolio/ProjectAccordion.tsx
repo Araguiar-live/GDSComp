@@ -108,6 +108,7 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
   const tabContent = project.content?.[activeTab] ?? {};
   const tabIndex = Math.max(0, tabs.indexOf(activeTab));
   const wasOpenRef = useRef(isOpen);
+  const verifyOpen = useCrcleVerifyOpen();
 
   useEffect(() => {
     if (isOpen && !wasOpenRef.current) {
@@ -178,7 +179,7 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                 </div>
               </div>
 
-              {tabs.length > 1 ? (
+              {tabs.length > 1 && !verifyOpen ? (
                 <>
                   <NavArrow
                     direction="prev"
