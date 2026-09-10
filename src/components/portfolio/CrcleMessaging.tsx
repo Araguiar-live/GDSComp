@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Sun } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import avatarImg from "@/assets/crcle/avatar.png";
 import batteryIcon from "@/assets/crcle/battery.svg";
@@ -35,6 +34,8 @@ import {
   CrcleBackButton,
   CrcleMoreButton,
   CrclePrimaryDock,
+  CrcleThemeToggle,
+  crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
 import {
   SignalInterceptModal,
@@ -64,12 +65,13 @@ import {
 
 /**
  * CRCLE Messaging & Signal — multi-state interactive flow (Figma Messaging section).
+ * Light inbox: Figma 257:63418. Dark inbox + chat: Figma 257:63596 / 769:205653.
  * inbox (notifications) → signal gate → active chat, with context menu overlay.
  */
 
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 const GLASS =
-  "backdrop-blur-xl bg-[rgba(2,3,29,0.55)] border border-[rgba(247,246,242,0.18)]";
+  "backdrop-blur-xl border transition-colors duration-300 bg-[rgba(2,3,29,0.55)] border-[rgba(247,246,242,0.18)] [.crcle-phone--light_&]:bg-[rgba(255,255,255,0.88)] [.crcle-phone--light_&]:border-[rgba(0,0,0,0.1)]";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 type Phase = "inbox" | "chat";
@@ -225,7 +227,8 @@ export function CrcleMessaging({
   const [activeConversation, setActiveConversation] = useState<ChatConversation | null>(null);
   const [tab, setTab] = useState<"sent" | "received">("received");
   const [draft, setDraft] = useState("");
-  const [isLightMode, setIsLightMode] = useState(false);
+  /** Light Figma 257:63418 · Dark Figma 257:63596 */
+  const [light, setLight] = useState(true);
   const [locusOpen, setLocusOpen] = useState(false);
   const [signalCard, setSignalCard] = useState<SignalCardModel | null>(null);
   const [moodOpen, setMoodOpen] = useState(false);
@@ -412,31 +415,20 @@ export function CrcleMessaging({
 
   return (
     <div className="relative ml-auto w-fit">
-      <motion.button
-        type="button"
-        aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
-        aria-pressed={isLightMode}
-        onClick={() => setIsLightMode((v) => !v)}
-        className="absolute left-1/2 -top-10 z-30 flex size-8 -translate-x-1/2 items-center justify-center border-0 bg-transparent p-0 shadow-none outline-none ring-0"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.92 }}
-      >
-        <Sun
-          strokeWidth={1.5}
-          className={`size-6 transition-colors duration-300 ${
-            isLightMode ? "fill-amber-400 text-amber-400" : "fill-none text-zinc-800"
-          }`}
-        />
-      </motion.button>
+      <CrcleThemeToggle
+        light={light}
+        onToggle={() => setLight((v) => !v)}
+        className={crcleThemeToggleAboveClass}
+      />
 
       <CrclePhoneFrame
-        light={isLightMode}
+        light={light}
         overlay={
           <>
             {areaInbox !== "off" ? (
               <CrcleInTheAreaInbox
                 phase={areaInbox === "drawer" ? "drawer" : "screen"}
-                isLight={isLightMode}
+                isLight={light}
                 backdropUrl={avatarImg}
                 onExpand={() => setAreaInbox("drawer")}
                 onCollapse={() => setAreaInbox("screen")}
@@ -452,7 +444,7 @@ export function CrcleMessaging({
                 <SignalInterceptModal
                   key={activeMatch.id}
                   user={activeMatch}
-                  isLight={isLightMode}
+                  isLight={light}
                   onDecline={declineSignal}
                   onAccept={acceptSignal}
                 />
@@ -535,7 +527,7 @@ export function CrcleMessaging({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
               transformTemplate={() => ""}
-              className="relative flex h-full min-h-0 flex-col"
+              className="relative flex h-full min-h-0 flex-col bg-[var(--crcle-bg-deep)] transition-colors duration-300"
             >
               {/* Active Chats under In The Area — flat z-stack so blur samples rows at panel top */}
               {areaInbox !== "off" ? (
@@ -829,7 +821,7 @@ function MessagingOnboarding({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.28, ease: EASE }}
-      className="absolute inset-0 z-[55] flex flex-col overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.82)] backdrop-blur-[12px]"
+      className="absolute inset-0 z-[55] flex flex-col overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.82)] backdrop-blur-[12px] transition-colors duration-300 [.crcle-phone--light_&]:bg-[rgba(247,246,242,0.92)]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="messaging-onboarding-title"
@@ -855,13 +847,13 @@ function MessagingOnboarding({
             <div className="flex w-full flex-col items-center gap-2 text-center">
               <p
                 id="messaging-onboarding-title"
-                className="w-full text-[14px] font-medium leading-[21px] text-[#f7f6f2]"
+                className="w-full text-[14px] font-medium leading-[21px] text-[var(--crcle-fg)] transition-colors duration-300"
                 style={{ fontFamily: FONT }}
               >
                 Your connection nerve center.
               </p>
               <p
-                className="w-full text-[13px] font-light leading-[1.4] text-[rgba(247,246,242,0.6)]"
+                className="w-full text-[13px] font-light leading-[1.4] text-[var(--crcle-fg-muted)] transition-colors duration-300"
                 style={{ fontFamily: FONT }}
               >
                 One simple list for everything. Your ongoing chats and your new invites live together here, so you
@@ -892,7 +884,7 @@ function MessagingOnboarding({
 
         <div className="mt-auto flex shrink-0 flex-col items-center gap-[18px] pt-6">
           <p
-            className="w-full text-center text-[14px] font-medium leading-[21px] text-[#f7f6f2]"
+            className="w-full text-center text-[14px] font-medium leading-[21px] text-[var(--crcle-fg)] transition-colors duration-300"
             style={{ fontFamily: FONT }}
           >
             Messaging Hub features
@@ -900,11 +892,11 @@ function MessagingOnboarding({
           <button
             type="button"
             onClick={onContinue}
-            className="flex w-[91px] flex-col items-center gap-[5px] rounded-xl transition hover:bg-white/5"
+            className="flex w-[91px] flex-col items-center gap-[5px] rounded-xl transition hover:bg-black/5 [.crcle-phone:not(.crcle-phone--light)_&]:hover:bg-white/5"
           >
-            <IconImg src={crcleLogo} className="h-[17px] w-[49px]" />
+            <IconImg src={crcleLogo} className="crcle-theme-icon h-[17px] w-[49px]" />
             <span
-              className="w-full text-center text-[11px] leading-[1.1] tracking-[-0.2px] text-[rgba(247,246,242,0.4)]"
+              className="w-full text-center text-[11px] leading-[1.1] tracking-[-0.2px] text-[var(--crcle-fg-faint)] transition-colors duration-300"
               style={{ fontFamily: FONT }}
             >
               Verified Social
@@ -932,19 +924,21 @@ function OnboardingFeature({
       <div className="flex items-center gap-2">
         <div className="flex size-4 shrink-0 items-center justify-center">{icon}</div>
         <p
-          className="min-w-0 text-[15px] font-normal leading-[1.2] text-[#f7f6f2]"
+          className="min-w-0 text-[15px] font-normal leading-[1.2] text-[var(--crcle-fg)] transition-colors duration-300"
           style={{ fontFamily: FONT }}
         >
           {title}
         </p>
       </div>
       <p
-        className="text-[13px] font-light leading-[1.35] text-[rgba(247,246,242,0.6)]"
+        className="text-[13px] font-light leading-[1.35] text-[var(--crcle-fg-muted)] transition-colors duration-300"
         style={{ fontFamily: FONT }}
       >
         {body}
       </p>
-      {showDivider ? <div className="h-px w-[168px] bg-[rgba(247,246,242,0.18)]" /> : null}
+      {showDivider ? (
+        <div className="h-px w-[168px] bg-[var(--crcle-border)] transition-colors duration-300" />
+      ) : null}
     </div>
   );
 }
@@ -1013,7 +1007,9 @@ function NotificationCenter({
       {/* Property 1=Closed: header only · Property 1=Opened: header + body */}
       <div
         className={`pointer-events-auto relative flex w-full flex-col items-start ${
-          expanded ? "" : "overflow-hidden rounded-[16px] shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+          expanded
+            ? ""
+            : "overflow-hidden rounded-[16px] shadow-[0_12px_40px_rgba(0,0,0,0.35)] [.crcle-phone--light_&]:shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
         }`}
       >
         {/* Header — Figma 257:63418 (Default / Variant2) */}
@@ -1026,7 +1022,7 @@ function NotificationCenter({
             <img
               alt=""
               src={notificationBg}
-              className="absolute left-[-8px] top-[-7px] h-[201px] w-[486px] max-w-none object-contain"
+              className="absolute left-[-8px] top-[-7px] h-[201px] w-[486px] max-w-none object-contain transition-opacity duration-300 [.crcle-phone--light_&]:opacity-[0.18]"
             />
           </div>
 
@@ -1085,7 +1081,7 @@ function NotificationCenter({
           aria-hidden={!expanded}
           style={{ pointerEvents: expanded ? "auto" : "none" }}
         >
-          <div className="relative flex w-full flex-col items-start gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[var(--crcle-panel-border)] bg-[var(--crcle-panel)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)] backdrop-blur-[14px] transition-all duration-300 hover:bg-[rgba(247,246,242,0.1)]">
+          <div className="relative flex w-full flex-col items-start gap-4 rounded-bl-[28px] rounded-br-[28px] border-x border-b border-[var(--crcle-panel-border)] bg-[var(--crcle-panel)] px-[9px] pb-[11px] pt-[10px] shadow-[0_12px_40px_rgba(0,0,0,0.18)] backdrop-blur-[14px] transition-all duration-300 hover:bg-[rgba(247,246,242,0.1)] [.crcle-phone--light_&]:shadow-[0_12px_32px_rgba(0,0,0,0.1)] [.crcle-phone--light_&]:hover:bg-white/80">
             {tab === "received" ? <DailyDropBanner onView={onViewDailyDrop} /> : null}
             <div className="flex items-start gap-4">
               {profiles.map((profile) => (
@@ -1170,7 +1166,9 @@ function SentReceivedToggle({
             aria-selected={active}
             onClick={() => onChange(key)}
             className={`relative z-[1] flex flex-1 items-center justify-center whitespace-nowrap rounded-[20px] px-2.5 py-1 text-[13px] leading-[1.4] transition-colors duration-300 ${
-              active ? "bg-[rgba(2,3,29,0.2)] text-white" : "bg-transparent text-[var(--crcle-toggle-idle)]"
+              active
+                ? "bg-[#02031d] text-[#f7f6f2] [.crcle-phone:not(.crcle-phone--light)_&]:bg-[rgba(247,246,242,0.2)] [.crcle-phone:not(.crcle-phone--light)_&]:text-white"
+                : "bg-transparent text-[var(--crcle-toggle-idle)]"
             }`}
             style={{ fontFamily: FONT }}
           >
@@ -1184,7 +1182,7 @@ function SentReceivedToggle({
 
 function DailyDropBanner({ onView }: { onView: () => void }) {
   return (
-    <div className="w-full rounded-[64px] bg-[rgba(222,221,218,0.6)] backdrop-blur-[13px] py-1.5 pl-4 pr-2">
+    <div className="w-full rounded-[64px] bg-[rgba(222,221,218,0.6)] py-1.5 pl-4 pr-2 backdrop-blur-[13px] transition-colors duration-300 [.crcle-phone--light_&]:bg-[rgba(2,3,29,0.08)]">
       <div className="flex items-center justify-center gap-2">
         <div className="min-w-0 flex-1">
           <p className="text-[13px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
@@ -1286,15 +1284,17 @@ function ContextMenu({
       >
         {items.map((item, i) => (
           <div key={item.label}>
-            {i === 2 || i === 4 ? <div className="mb-2 h-px bg-[rgba(247,246,242,0.15)]" /> : null}
+            {i === 2 || i === 4 ? (
+              <div className="mb-2 h-px bg-[var(--crcle-border)] transition-colors duration-300" />
+            ) : null}
             <button
               type="button"
               onClick={() => {
                 if (item.action) item.action();
                 else onClose();
               }}
-              className={`w-full text-left text-[11px] font-medium ${
-                item.danger ? "text-[#ff6b6b]" : "text-[#f7f6f2]"
+              className={`w-full text-left text-[11px] font-medium transition-colors duration-300 ${
+                item.danger ? "text-[#ff6b6b]" : "text-[var(--crcle-fg)]"
               }`}
               style={{ fontFamily: FONT }}
             >
