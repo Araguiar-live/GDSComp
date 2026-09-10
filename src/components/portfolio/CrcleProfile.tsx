@@ -657,9 +657,9 @@ function ProfileMainView({
         </button>
       </div>
 
-      {/* Top row: portrait + stats — Figma 1005:49883 / light 1005:49632 */}
-      <div className="mx-auto flex h-[255px] w-full items-stretch gap-4 [.crcle-phone--light_&]:h-[251px]">
-        <div className="relative min-w-0 flex-1 overflow-hidden rounded-[24px]">
+      {/* Top row: portrait + stats — match widget grid column widths below */}
+      <div className="mx-auto grid h-[255px] w-full grid-cols-2 gap-4 [.crcle-phone--light_&]:h-[251px]">
+        <div className="relative min-w-0 overflow-hidden rounded-[24px]">
           <img
             alt=""
             src={user.avatarUrl}
@@ -671,7 +671,7 @@ function ProfileMainView({
           </div>
         </div>
 
-        <div className="relative flex min-w-0 flex-1 flex-col gap-3 overflow-hidden rounded-2xl bg-[#1e2939] p-3 [.crcle-phone--light_&]:gap-2 [.crcle-phone--light_&]:bg-[#f7f6f2] [.crcle-phone--light_&]:p-2">
+        <div className="relative flex min-h-0 min-w-0 flex-col gap-3 overflow-hidden rounded-2xl bg-[#1e2939] p-3 [.crcle-phone--light_&]:gap-2 [.crcle-phone--light_&]:bg-[#f7f6f2] [.crcle-phone--light_&]:p-2">
           <img
             alt=""
             src={statsDecoIcon}
