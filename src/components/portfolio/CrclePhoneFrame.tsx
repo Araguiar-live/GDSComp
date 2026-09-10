@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import type { ReactNode } from "react";
 
 /**
@@ -82,9 +83,9 @@ export function CrclePhoneFrame({
           </div>
 
           {/* Modals/scrims — rounded clip only; clip-path breaks backdrop-filter */}
-          {overlay ? (
-            <div className="pointer-events-none absolute inset-0 z-[60] overflow-hidden rounded-[56px]">
-              {overlay}
+          {overlay != null ? (
+            <div className="absolute inset-0 z-[60] overflow-hidden rounded-[56px]">
+              <AnimatePresence initial={false}>{overlay}</AnimatePresence>
             </div>
           ) : null}
 

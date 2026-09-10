@@ -1606,6 +1606,39 @@
   -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
+@keyframes crcle-verify-scrim-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes crcle-verify-sheet-slide {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.crcle-verify-scrim-enter {
+  animation: crcle-verify-scrim-fade 0.24s ease forwards;
+}
+
+.crcle-verify-sheet-enter {
+  animation: crcle-verify-sheet-slide 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crcle-verify-scrim-enter,
+  .crcle-verify-sheet-enter {
+    animation: none;
+  }
+}
+
 /* Profile KYC drawer — Figma 257:83140 / 257:83150 Glass (radius 40, blur 40).
    Backdrop-filter on the panel root so profile frames beneath are illegible. */
 .crcle-verify-sheet {

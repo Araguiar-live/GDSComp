@@ -282,18 +282,16 @@ export function CrcleProfile({
       <CrclePhoneFrame
         light={isLightMode}
         overlay={
-          <AnimatePresence mode="wait">
-            {overlay === "locationInfo" ? (
-              <LocationInfoSheet
-                key="location-info"
-                onClose={() => setOverlay(null)}
-                backdropUrl={profile.user.avatarUrl}
-                isLight={isLightMode}
-              />
-            ) : overlay === "verify" ? (
-              <VerificationSheet key="verify" onClose={() => setOverlay(null)} />
-            ) : null}
-          </AnimatePresence>
+          overlay === "locationInfo" ? (
+            <LocationInfoSheet
+              key="location-info"
+              onClose={() => setOverlay(null)}
+              backdropUrl={profile.user.avatarUrl}
+              isLight={isLightMode}
+            />
+          ) : overlay === "verify" ? (
+            <VerificationSheet key="verify" onClose={() => setOverlay(null)} />
+          ) : null
         }
         bottomChrome={
           overlay || onboardingOpen || moodOpen ? null : (
@@ -615,7 +613,10 @@ function ProfileMainView({
             <button
               type="button"
               aria-label="Verify identity"
-              onClick={onOpenVerify}
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenVerify();
+              }}
               className="hidden items-center rounded-[24px] border border-[#030426] px-3 py-1 text-[11px] leading-[1.4] text-[#030426] [.crcle-phone--light_&]:inline-flex"
               style={{ fontFamily: FONT }}
             >
@@ -1864,11 +1865,7 @@ function LocationInfoSheet({
 /** Figma 257:82967 — Verify your identity (light KYC drawer). */
 function VerificationSheet({ onClose }: { onClose: () => void }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.24, ease: EASE }}
+    <div
       className="pointer-events-auto absolute inset-0 z-[60] flex flex-col justify-end overflow-hidden rounded-[53px]"
       role="dialog"
       aria-modal="true"
@@ -1877,17 +1874,13 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
       <button
         type="button"
         aria-label="Dismiss verification"
-        className="crcle-verify-scrim absolute inset-0 z-0 overflow-hidden rounded-[53px]"
+        className="crcle-verify-scrim crcle-verify-scrim-enter absolute inset-0 z-0 overflow-hidden rounded-[53px]"
         onClick={onClose}
       />
 
-      <motion.div
-        initial={{ y: 48 }}
-        animate={{ y: 0 }}
-        exit={{ y: 32 }}
-        transition={{ duration: 0.32, ease: EASE }}
+      <div
         onClick={(e) => e.stopPropagation()}
-        className="crcle-verify-sheet relative z-10 flex max-h-[88%] min-h-[420px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]"
+        className="crcle-verify-sheet crcle-verify-sheet-enter relative z-10 flex max-h-[88%] min-h-[420px] w-full flex-col overflow-hidden rounded-t-[16px] border border-[rgba(2,3,29,0.1)] border-b-0 shadow-[0_-12px_40px_rgba(2,3,29,0.12)]"
       >
         <div className="crcle-verify-sheet-frost rounded-[inherit]" aria-hidden />
 
@@ -2020,8 +2013,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
 

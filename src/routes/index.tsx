@@ -133,6 +133,7 @@ const PROJECTS: Project[] = [
         },
         customBody: ({ goToTab }) => (
           <CrcleProfile
+            key="crcle-profile-prototype"
             onGoToSignalHome={() => goToTab("Create Workspace\u00a0")}
             onGoToMessages={() => goToTab("Sign Up")}
             onGoToRadar={() => goToTab("Brand Personality")}
