@@ -478,8 +478,8 @@ function ProfileOnboarding({
             <IconImg src={closeAddIcon} className="relative z-[1] size-6" />
           </button>
 
-          <div className="w-full overflow-hidden rounded-[24px] border border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)]">
-            <div className="border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.2)] px-4 py-4 backdrop-blur-[12px]">
+          <div className="w-full overflow-hidden rounded-[24px] border border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.2)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]">
+            <div className="border-b border-[rgba(255,255,255,0.05)] px-4 py-4">
               <p
                 id="profile-onboarding-title"
                 className="text-center text-[18px] font-normal leading-[25px] text-white"
@@ -489,7 +489,7 @@ function ProfileOnboarding({
               </p>
             </div>
 
-            <div className="flex flex-col gap-5 bg-[rgba(255,255,255,0.2)] p-4 backdrop-blur-[12px]">
+            <div className="flex flex-col gap-5 p-4">
               <p
                 className="text-center text-[15px] font-normal leading-[22.5px] text-[rgba(255,255,255,0.6)]"
                 style={{ fontFamily: FONT }}
@@ -504,7 +504,7 @@ function ProfileOnboarding({
               </div>
             </div>
 
-            <div className="flex gap-2 border-t border-[rgba(230,230,233,0.1)] bg-[rgba(255,255,255,0.2)] p-4 backdrop-blur-[12px]">
+            <div className="flex gap-2 border-t border-[rgba(230,230,233,0.1)] p-4">
               <button
                 type="button"
                 onClick={onContinue}
