@@ -104,9 +104,14 @@ export function CrcleSignalMoreMenu({
                     className="flex-1 text-[11px] font-medium leading-none text-[#f7f6f2]"
                     style={{ fontFamily: FONT }}
                   >
-                    Turn radar off
+                    Incognito mode
                   </span>
-                  <MenuToggle active={radarOff} onChange={onToggleRadarOff} ariaLabel="Turn radar off" />
+                  <MenuToggle
+                    active={radarOff}
+                    onChange={onToggleRadarOff}
+                    ariaLabel="Incognito mode"
+                    disabled={signalOff}
+                  />
                 </div>
               </motion.div>
             ) : null}
@@ -129,10 +134,12 @@ function MenuToggle({
   active,
   onChange,
   ariaLabel,
+  disabled = false,
 }: {
   active: boolean;
   onChange: () => void;
   ariaLabel: string;
+  disabled?: boolean;
 }) {
   return (
     <button
@@ -140,13 +147,14 @@ function MenuToggle({
       role="switch"
       aria-checked={active}
       aria-label={ariaLabel}
+      disabled={disabled}
       onClick={(e) => {
         e.stopPropagation();
-        onChange();
+        if (!disabled) onChange();
       }}
       className={`relative flex h-4 w-9 shrink-0 items-center rounded-full p-0.5 transition ${
         active ? "bg-[#11df59]" : "bg-[rgba(247,246,242,0.25)]"
-      }`}
+      } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
     >
       <motion.span
         layout
@@ -186,6 +194,46 @@ function MenuRow({
 
 function MenuDivider() {
   return <div className="h-px w-full bg-[rgba(2,3,29,0.08)]" aria-hidden />;
+}
+
+/** Signal fully off — no broadcast and no incoming recommendations. */
+export function SignalOffBanner({ onUndo }: { onUndo: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8 }}
+      transition={{ duration: 0.28, ease: EASE }}
+      className="pointer-events-auto absolute inset-x-0 bottom-0 z-30 flex flex-col items-center gap-1 rounded-b-[28px] bg-[rgba(247,246,242,0.4)] px-2 pb-2 pt-1.5 backdrop-blur-[2px]"
+    >
+      <div className="h-[3px] w-[66px] shrink-0 rounded-full bg-[rgba(2,3,29,0.12)]" aria-hidden />
+      <div className="flex w-full items-center gap-2 p-1">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <IncognitoBannerSignalBars muted />
+          <div className="min-w-0 flex-1 leading-[1.2]">
+            <p className="text-[14px] font-medium text-[#f7f6f2]" style={{ fontFamily: FONT }}>
+              Signal off
+            </p>
+            <p
+              className="text-[11px] font-normal text-[rgba(247,246,242,0.7)]"
+              style={{ fontFamily: FONT }}
+            >
+              You won&apos;t send or receive recommendations until your signal is back on.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onUndo}
+          className="flex h-9 shrink-0 items-center justify-center rounded-[36px] bg-[#030426] px-4 py-2"
+        >
+          <span className="text-[13px] leading-[1.4] text-[#fefefe]" style={{ fontFamily: FONT }}>
+            Undo
+          </span>
+        </button>
+      </div>
+    </motion.div>
+  );
 }
 
 /** Figma 257:86850 — visible-on-map confirmation bar inside the photo frame. */
@@ -269,13 +317,14 @@ export function IncognitoModeBanner({ onUndo }: { onUndo: () => void }) {
   );
 }
 
-/** White signal bars inside the incognito banner — Figma 257:64910. */
-function IncognitoBannerSignalBars() {
+/** White signal bars inside status banners — Figma 257:64910. */
+function IncognitoBannerSignalBars({ muted = false }: { muted?: boolean }) {
+  const barClass = muted ? "bg-[rgba(247,246,242,0.45)]" : "bg-[#f7f6f2]";
   return (
     <div className="flex shrink-0 items-center gap-[2.7px]" aria-hidden>
-      <span className="h-[10px] w-[5px] rounded-[4.5px] bg-[#f7f6f2]" />
-      <span className="h-[17px] w-[5.5px] rounded-[4.5px] bg-[#f7f6f2]" />
-      <span className="h-[10px] w-[5px] rounded-[4.5px] bg-[#f7f6f2]" />
+      <span className={`h-[10px] w-[5px] rounded-[4.5px] ${barClass}`} />
+      <span className={`h-[17px] w-[5.5px] rounded-[4.5px] ${barClass}`} />
+      <span className={`h-[10px] w-[5px] rounded-[4.5px] ${barClass}`} />
     </div>
   );
 }

@@ -37,11 +37,13 @@ import {
   requestOpenMessaging,
   setCrcleVerifyOpen,
   useCrcleIncognito,
+  useCrcleSignalOff,
 } from "@/components/portfolio/crcleBroadcast";
 import {
   CrcleSignalMoreMenu,
   IncognitoModeBanner,
   OnTheMapBanner,
+  SignalOffBanner,
 } from "@/components/portfolio/CrcleSignalMoreMenu";
 import { CrcleUserSharecodeSheet } from "@/components/portfolio/CrcleUserSharecodeSheet";
 import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
@@ -81,7 +83,7 @@ export function CrcleSignalHome({
   const [sharecodeOpen, setSharecodeOpen] = useState(false);
   const [mapBannerOpen, setMapBannerOpen] = useState(false);
   const [signalPanelExpanded, setSignalPanelExpanded] = useState(true);
-  const [radarOff, setRadarOff] = useState(false);
+  const [signalOff, setSignalOff] = useCrcleSignalOff();
   const [isIncognito, setIncognito] = useCrcleIncognito();
   /** Light Figma 257:66247 · Dark Figma 257:90883 */
   const [light, setLight] = useState(true);
@@ -110,16 +112,26 @@ export function CrcleSignalHome({
     !sharecodeOpen;
 
   const enableIncognito = useCallback(() => {
+    if (signalOff) return;
     setIncognito(true);
-    setRadarOff(true);
     setMapBannerOpen(false);
-  }, [setIncognito]);
+  }, [setIncognito, signalOff]);
 
   const disableIncognito = useCallback(() => {
     setIncognito(false);
-    setRadarOff(false);
+    if (screen === "photo" && !signalOff) setMapBannerOpen(true);
+  }, [setIncognito, screen, signalOff]);
+
+  const enableSignalOff = useCallback(() => {
+    setSignalOff(true);
+    setIncognito(false);
+    setMapBannerOpen(false);
+  }, [setSignalOff, setIncognito]);
+
+  const disableSignalOff = useCallback(() => {
+    setSignalOff(false);
     if (screen === "photo") setMapBannerOpen(true);
-  }, [setIncognito, screen]);
+  }, [setSignalOff, screen]);
 
   return (
     <div className="relative ml-auto w-fit">
@@ -173,29 +185,29 @@ export function CrcleSignalHome({
           <AnimatePresence>
             {signalActivated ? (
               <SignalCompleteSheet
-                onGoToRecommendations={() => onGoToRadar?.()}
+                onGoToRecommendations={() => {
+                  if (!signalOff) onGoToRadar?.();
+                }}
                 onGoToProfile={() => onGoToProfile?.()}
                 onClose={() => setSignalActivated(false)}
+                recommendationsDisabled={signalOff}
               />
             ) : null}
           </AnimatePresence>
           <AnimatePresence>
             {menuOpen && !onboardingOpen ? (
               <CrcleSignalMoreMenu
-                signalOff={isIncognito}
-                radarOff={radarOff}
+                signalOff={signalOff}
+                radarOff={isIncognito}
                 panelExpanded={signalPanelExpanded}
                 onTogglePanel={() => setSignalPanelExpanded((v) => !v)}
                 onToggleSignalOff={() => {
-                  if (isIncognito) disableIncognito();
-                  else enableIncognito();
+                  if (signalOff) disableSignalOff();
+                  else enableSignalOff();
                 }}
                 onToggleRadarOff={() => {
-                  if (radarOff) {
-                    disableIncognito();
-                  } else {
-                    enableIncognito();
-                  }
+                  if (isIncognito) disableIncognito();
+                  else enableIncognito();
                 }}
                 onSetIntentDefault={() => {
                   setIntentDone(false);
@@ -493,22 +505,27 @@ export function CrcleSignalHome({
               ) : null}
 
               <AnimatePresence>
-                {screen === "photo" && isIncognito ? (
+                {screen === "photo" && signalOff ? (
+                  <SignalOffBanner onUndo={disableSignalOff} />
+                ) : null}
+                {screen === "photo" && !signalOff && isIncognito ? (
                   <IncognitoModeBanner onUndo={disableIncognito} />
                 ) : null}
-                {screen === "photo" && !isIncognito && mapBannerOpen ? (
+                {screen === "photo" && !signalOff && !isIncognito && mapBannerOpen ? (
                   <OnTheMapBanner onUndo={enableIncognito} />
                 ) : null}
               </AnimatePresence>
 
               <div
                 className={`relative z-[1] mt-auto flex w-full items-end justify-between ${
-                  screen === "photo" && (isIncognito || mapBannerOpen) ? "pb-[88px]" : "pb-0.5"
+                  screen === "photo" && (signalOff || isIncognito || mapBannerOpen)
+                    ? "pb-[88px]"
+                    : "pb-0.5"
                 }`}
               >
                 {screen === "photo" ? (
                   <>
-                    {!isIncognito && !mapBannerOpen ? (
+                    {!signalOff && !isIncognito && !mapBannerOpen ? (
                       <div className="flex w-full items-center justify-center gap-2">
                         <span className="h-1.5 w-6 rounded-full bg-white" />
                         <span className="size-1.5 rounded-full bg-white/40" />
@@ -518,16 +535,18 @@ export function CrcleSignalHome({
                       <div className="w-full" aria-hidden />
                     )}
                     <div
-                      className={`absolute right-0 ${isIncognito ? "bottom-[84px]" : "bottom-0"}`}
+                      className={`absolute right-0 ${
+                        signalOff || isIncognito || mapBannerOpen ? "bottom-[84px]" : "bottom-0"
+                      }`}
                     >
                       <OverlayToolButton
                         ariaLabel="Pulse"
                         size={36}
                         soft
-                        lit={signalLive}
-                        greenLit={signalLive}
+                        lit={signalLive && !signalOff}
+                        greenLit={signalLive && !signalOff}
                         onClick={() => {
-                          if (signalLive) setSignalActivated(true);
+                          if (signalLive && !signalOff) setSignalActivated(true);
                         }}
                       >
                         <IconImg src={pulseIcon} className="size-6" />
@@ -553,8 +572,9 @@ export function CrcleSignalHome({
                     activeBars={activeBars}
                     isLight={light}
                     glow={signalLive}
-                    incognito={isIncognito}
-                    onMap={screen === "photo" && !isIncognito}
+                    incognito={isIncognito && !signalOff}
+                    signalOff={signalOff}
+                    onMap={screen === "photo" && !isIncognito && !signalOff}
                   />
                 </motion.div>
               ) : null}
@@ -993,6 +1013,7 @@ function FooterSignal({
   isLight = false,
   glow = false,
   incognito = false,
+  signalOff = false,
   onMap = false,
 }: {
   tone: "neutral" | "live";
@@ -1000,6 +1021,7 @@ function FooterSignal({
   isLight?: boolean;
   glow?: boolean;
   incognito?: boolean;
+  signalOff?: boolean;
   onMap?: boolean;
 }) {
   return (
@@ -1010,8 +1032,9 @@ function FooterSignal({
         isLight={isLight}
         glow={glow}
         incognito={incognito}
+        signalOff={signalOff}
         onMap={onMap}
-        animateIdle={!incognito && !onMap}
+        animateIdle={!incognito && !onMap && !signalOff}
       />
       <p
         className="max-w-[392px] text-center text-[11px] leading-[1.4] text-[#b1b1bc]"
@@ -1073,7 +1096,11 @@ function signalBarClass(
   isLight: boolean,
   incognito = false,
   onMap = false,
+  signalOff = false,
 ) {
+  if (signalOff) {
+    return "bg-[rgba(0,0,0,0.3)]";
+  }
   if (incognito) {
     return index === 1 ? "bg-[rgba(15,201,80,0.8)]" : "bg-[rgba(0,0,0,0.3)]";
   }
@@ -1099,6 +1126,7 @@ function SignalBarsCore({
   isLight = false,
   incognito = false,
   onMap = false,
+  signalOff = false,
   className = "",
   "aria-hidden": ariaHidden,
 }: {
@@ -1109,13 +1137,14 @@ function SignalBarsCore({
   isLight?: boolean;
   incognito?: boolean;
   onMap?: boolean;
+  signalOff?: boolean;
   className?: string;
   "aria-hidden"?: boolean;
 }) {
   const allLit = glow && activeBars >= 3;
   const widths = variant === "footer" ? FOOTER_SIGNAL_BAR_WIDTHS : OVERLAY_SIGNAL_BAR_WIDTHS;
   const heights =
-    variant === "footer" && isLight && activeBars === 0 && !incognito && !onMap
+    variant === "footer" && isLight && activeBars === 0 && !incognito && !onMap && !signalOff
       ? FOOTER_SIGNAL_BAR_HEIGHTS_LIGHT
       : variant === "footer"
         ? FOOTER_SIGNAL_BAR_HEIGHTS
@@ -1136,13 +1165,13 @@ function SignalBarsCore({
             ? i === 1
               ? "bg-[#f7f6f2]"
               : "border border-[#f7f6f2] bg-[#f7f6f2]"
-            : signalBarClass(i, activeBars, allLit, isLight, incognito, onMap);
+            : signalBarClass(i, activeBars, allLit, isLight, incognito, onMap, signalOff);
         const barStyle =
-          variant === "footer" && onMap && i !== 1
+          variant === "footer" && onMap && i !== 1 && !signalOff
             ? { backgroundImage: ON_MAP_SIDE_GRADIENT }
             : undefined;
 
-        if (animate && !incognito && !onMap) {
+        if (animate && !incognito && !onMap && !signalOff) {
           const frames =
             allLit
               ? SIGNAL_GLOW_FRAMES
@@ -1206,6 +1235,7 @@ function SignalBars({
   isLight = false,
   glow = false,
   incognito = false,
+  signalOff = false,
   onMap = false,
   animateIdle = false,
 }: {
@@ -1214,12 +1244,14 @@ function SignalBars({
   isLight?: boolean;
   glow?: boolean;
   incognito?: boolean;
+  signalOff?: boolean;
   onMap?: boolean;
   /** Pulse idle bars in empty state — Figma 257:63722 / 257:66286. */
   animateIdle?: boolean;
 }) {
-  const allLit = glow && activeBars >= 3 && !incognito && !onMap;
-  const shouldAnimate = !incognito && !onMap && (animateIdle || activeBars > 0);
+  const allLit = glow && activeBars >= 3 && !incognito && !onMap && !signalOff;
+  const shouldAnimate =
+    !incognito && !onMap && !signalOff && (animateIdle || activeBars > 0);
 
   return (
     <div
@@ -1232,6 +1264,7 @@ function SignalBars({
         glow={glow}
         isLight={isLight}
         incognito={incognito}
+        signalOff={signalOff}
         onMap={onMap}
         animate={shouldAnimate}
         className={allLit ? "relative z-[1]" : ""}
@@ -1297,10 +1330,12 @@ function SignalCompleteSheet({
   onGoToRecommendations,
   onGoToProfile,
   onClose,
+  recommendationsDisabled = false,
 }: {
   onGoToRecommendations: () => void;
   onGoToProfile: () => void;
   onClose: () => void;
+  recommendationsDisabled?: boolean;
 }) {
   return (
     <motion.div
@@ -1350,7 +1385,8 @@ function SignalCompleteSheet({
             <button
               type="button"
               onClick={onGoToRecommendations}
-              className="flex w-full items-center justify-center rounded-full bg-[#020217] px-3 py-2"
+              disabled={recommendationsDisabled}
+              className="flex w-full items-center justify-center rounded-full bg-[#020217] px-3 py-2 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <span
                 className="text-center text-[15px] leading-[21px] text-[#f7f6f2]"

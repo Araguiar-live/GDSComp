@@ -8,6 +8,8 @@ export type BroadcastState = "open_day" | "night_owl" | "in_the_area";
  */
 let broadcastState: BroadcastState = "open_day";
 let incognitoState = false;
+/** Signal Home — fully off: no broadcast and no incoming recommendations. */
+let signalOffState = false;
 let pendingMoodSwitch = false;
 let pendingAreaInbox = false;
 let pendingOpenMessaging = false;
@@ -43,6 +45,26 @@ export function setCrcleIncognito(next: boolean) {
   if (next === incognitoState) return;
   incognitoState = next;
   emit();
+}
+
+export function getCrcleSignalOff(): boolean {
+  return signalOffState;
+}
+
+export function setCrcleSignalOff(next: boolean) {
+  if (next === signalOffState) return;
+  signalOffState = next;
+  if (next) incognitoState = false;
+  emit();
+}
+
+export function useCrcleSignalOff(): [boolean, (next: boolean) => void] {
+  const state = useSyncExternalStore(
+    subscribeCrcleBroadcast,
+    getCrcleSignalOff,
+    getCrcleSignalOff,
+  );
+  return [state, setCrcleSignalOff];
 }
 
 /** Explicit navigation to Messaging Hub — skips first-run onboarding on mount. */

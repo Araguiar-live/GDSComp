@@ -18,6 +18,15 @@ export type CrcleDockTab = "profile" | "signal" | "messages";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 
+type CrcleChromeTone = "default" | "light" | "dark";
+
+/** Light = black icons · dark = white icons · default follows phone theme class. */
+function crcleChromeIconClass(tone: CrcleChromeTone) {
+  if (tone === "light") return "brightness-0";
+  if (tone === "dark") return "brightness-0 invert";
+  return "brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert";
+}
+
 /**
  * Shared CRCLE dock — white frosted glass + Signal Panel (hover / tap waveform).
  * Primary row: Profile · Signal · Messages. Radar + Home live in the Signal Panel.
@@ -284,7 +293,7 @@ export function CrcleBackButton({
   onClick?: () => void;
   disabled?: boolean;
   /** Figma 257:67478 light · 257:86835 dark Signal Home glass */
-  tone?: "default" | "light" | "dark";
+  tone?: CrcleChromeTone;
 }) {
   return (
     <button
@@ -301,7 +310,7 @@ export function CrcleBackButton({
         <img
           alt=""
           src={arrowLeftIcon}
-          className="h-[13px] w-[8px] max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+          className={`h-[13px] w-[8px] max-w-none object-contain ${crcleChromeIconClass(tone)}`}
           draggable={false}
         />
       </span>
@@ -321,10 +330,11 @@ export function CrcleHeaderNavPill({
   onMessages?: () => void;
   onMore?: () => void;
   className?: string;
-  tone?: "default" | "light" | "dark";
+  tone?: CrcleChromeTone;
 }) {
   const spread = onMore != null;
   const groupedDark = spread && tone === "dark";
+  const iconClass = crcleChromeIconClass(tone);
 
   return (
     <div
@@ -352,7 +362,7 @@ export function CrcleHeaderNavPill({
               <img
                 alt=""
                 src={navRadarIcon}
-                className="crcle-dock-icon size-5 max-w-none object-contain brightness-0 invert"
+                className={`crcle-dock-icon size-5 max-w-none object-contain ${iconClass}`}
                 draggable={false}
               />
             </button>
@@ -368,7 +378,7 @@ export function CrcleHeaderNavPill({
               <img
                 alt=""
                 src={navMessageIcon}
-                className="crcle-dock-icon size-6 max-w-none object-contain brightness-0 invert"
+                className={`crcle-dock-icon size-6 max-w-none object-contain ${iconClass}`}
                 draggable={false}
               />
             </button>
@@ -385,7 +395,7 @@ export function CrcleHeaderNavPill({
             <img
               alt=""
               src={moreHorizIcon}
-              className="size-6 max-w-none object-contain brightness-0 invert"
+              className={`size-6 max-w-none object-contain ${iconClass}`}
               draggable={false}
             />
           </button>
@@ -404,7 +414,7 @@ export function CrcleHeaderNavPill({
             <img
               alt=""
               src={navRadarIcon}
-              className="crcle-dock-icon size-5 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+              className={`crcle-dock-icon size-5 max-w-none object-contain ${iconClass}`}
               draggable={false}
             />
           </button>
@@ -420,7 +430,7 @@ export function CrcleHeaderNavPill({
             <img
               alt=""
               src={navMessageIcon}
-              className="crcle-dock-icon size-6 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+              className={`crcle-dock-icon size-6 max-w-none object-contain ${iconClass}`}
               draggable={false}
             />
           </button>
@@ -437,7 +447,7 @@ export function CrcleHeaderNavPill({
               <img
                 alt=""
                 src={moreHorizIcon}
-                className="size-6 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+                className={`size-6 max-w-none object-contain ${iconClass}`}
                 draggable={false}
               />
             </button>
