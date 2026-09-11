@@ -558,7 +558,12 @@ export function SignalCard({
               className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
               title="I'm down"
             >
-              <img alt="" src={locusThumbsUpIcon} className="size-8 max-w-none object-contain" draggable={false} />
+              <img
+                alt=""
+                src={locusThumbsUpIcon}
+                className="crcle-signal-response-thumb size-8 max-w-none object-contain"
+                draggable={false}
+              />
             </button>
             <button
               type="button"
@@ -645,7 +650,7 @@ export function SignalCard({
                   if (canRespond) setResponseOpen((open) => !open);
                 }}
                 className={`crcle-glass-btn crcle-signal-card-plus relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 backdrop-blur-[12px] transition hover:brightness-110 disabled:opacity-50 ${
-                  responseOpen && canRespond ? "brightness-110" : ""
+                  responseOpen && canRespond ? "is-open brightness-110" : ""
                 }`}
               >
                 <div className="dock-glass-lens opacity-40" aria-hidden />
