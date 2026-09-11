@@ -545,9 +545,8 @@ export function SignalCard({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.98 }}
             transition={{ duration: 0.22, ease: EASE }}
-            className="crcle-signal-response-pill relative flex h-14 w-fit items-center gap-3 overflow-hidden rounded-[56px] px-3 py-3"
+            className="crcle-signal-response-pill relative flex h-[58px] w-fit items-center gap-3 overflow-hidden rounded-[56px] p-3"
           >
-            <div className="dock-glass-lens opacity-40" aria-hidden />
             <button
               type="button"
               aria-label="I'm down"
@@ -555,7 +554,7 @@ export function SignalCard({
                 setResponseOpen(false);
                 onAccept();
               }}
-              className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+              className="relative z-[1] flex size-8 shrink-0 items-center justify-center transition active:scale-95"
               title="I'm down"
             >
               <img
@@ -572,10 +571,15 @@ export function SignalCard({
                 setResponseOpen(false);
                 onRaincheck();
               }}
-              className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+              className="relative z-[1] flex size-8 shrink-0 items-center justify-center transition active:scale-95"
               title="Raincheck"
             >
-              <img alt="" src={locusRainFillIcon} className="size-8 max-w-none object-contain" draggable={false} />
+              <img
+                alt=""
+                src={locusRainFillIcon}
+                className="size-8 max-w-none object-contain"
+                draggable={false}
+              />
             </button>
           </motion.div>
         ) : null}

@@ -1407,36 +1407,14 @@
   z-index: 1;
 }
 
-/* Signal response pill — Figma 769:205337 dark blue gradient glass */
+/* Signal response pill — Figma 769:205338 light glass */
 .crcle-signal-response-pill {
   isolation: isolate;
-  background: linear-gradient(
-    180deg,
-    rgba(45, 48, 68, 0.58) 0%,
-    rgba(2, 3, 29, 0.68) 52%,
-    rgba(2, 3, 29, 0.78) 100%
-  );
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
   border: 1px solid rgba(0, 0, 0, 0.25);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.14) inset,
-    0 8px 24px rgba(2, 3, 29, 0.22);
-}
-
-.crcle-signal-response-pill::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.16) 0%,
-    rgba(255, 255, 255, 0.04) 28%,
-    transparent 52%
-  );
-  opacity: 0.85;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .crcle-signal-response-pill .crcle-signal-response-thumb {
