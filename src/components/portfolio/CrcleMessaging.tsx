@@ -1502,7 +1502,7 @@ function ChatComposer({
               </button>
               <button
                 type="button"
-                aria-label={locusOpen ? "Close The Locus" : "Open The Locus"}
+                aria-label={locusOpen ? "The Locus active" : "Signal an activity"}
                 aria-pressed={locusOpen}
                 onClick={onToggleLocus}
                 className={`box-border flex size-9 items-center justify-center rounded-[26px] p-[11px] transition ${
