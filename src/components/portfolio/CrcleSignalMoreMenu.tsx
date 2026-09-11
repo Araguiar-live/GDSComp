@@ -59,15 +59,15 @@ export function CrcleSignalMoreMenu({
         aria-label="Signal options"
       >
         <div className="flex flex-col gap-2 rounded-[12px] bg-[rgba(2,3,29,0.6)] p-2">
-          <div className="flex h-[22px] items-center justify-between gap-2">
+          <div className="flex h-[22px] flex-nowrap items-center justify-between gap-2">
             <MenuToggle active={signalOff} onChange={onToggleSignalOff} ariaLabel="Turn signal off" />
             <button
               type="button"
               onClick={onTogglePanel}
-              className="flex min-w-0 flex-1 items-center justify-between gap-1"
+              className="flex min-w-0 flex-1 flex-nowrap items-center justify-between gap-1"
             >
               <span
-                className="text-[11px] font-medium leading-none text-[#f7f6f2]"
+                className="whitespace-nowrap text-[11px] font-medium leading-none text-[#f7f6f2]"
                 style={{ fontFamily: FONT }}
               >
                 Turn signal off
@@ -93,15 +93,15 @@ export function CrcleSignalMoreMenu({
                 className="overflow-hidden"
               >
                 <div className="mb-2 h-px bg-[rgba(247,246,242,0.15)]" />
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-nowrap items-center gap-1.5">
                   <img
                     alt=""
                     src={navRadarIcon}
-                    className="size-4 max-w-none object-contain brightness-0 invert"
+                    className="size-4 max-w-none shrink-0 object-contain brightness-0 invert"
                     draggable={false}
                   />
                   <span
-                    className="flex-1 text-[11px] font-medium leading-none text-[#f7f6f2]"
+                    className="min-w-0 flex-1 whitespace-nowrap text-[11px] font-medium leading-none text-[#f7f6f2]"
                     style={{ fontFamily: FONT }}
                   >
                     Incognito mode
@@ -298,8 +298,7 @@ export function IncognitoModeBanner({ onUndo }: { onUndo: () => void }) {
               className="text-[11px] font-normal text-[rgba(247,246,242,0.7)]"
               style={{ fontFamily: FONT }}
             >
-              You can still see others, but your signal won&apos;t appear on the public radar
-              today.
+              You can still see others, but your signal won&apos;t appear on the public radar today.
             </p>
           </div>
         </div>
