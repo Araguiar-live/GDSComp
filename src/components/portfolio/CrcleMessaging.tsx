@@ -59,6 +59,19 @@ import {
 
 /** Figma 1387:214097 — nearby sheet appears 2s after entering Messaging Hub */
 const AREA_NEARBY_NOTIFICATION_DELAY_MS = 2000;
+/** Figma 769:204909 — received Locus signal card appears 3s after entering chat */
+const LOCUS_NOTIFICATION_DELAY_MS = 3000;
+
+const DEMO_RECEIVED_LOCUS_SIGNAL: SignalCardModel = {
+  id: "locus-demo-received",
+  activityId: "icecream",
+  activityLabel: "Ice cream",
+  when: "Tonight",
+  timeOfDay: "evening",
+  location: "Nearby café",
+  status: "pending",
+  direction: "received",
+};
 import {
   SignalCard,
   TheLocusDrawer,
@@ -233,12 +246,30 @@ export function CrcleMessaging({
   /** Light Figma 257:63418 · Dark Figma 257:63596 */
   const [light, setLight] = useState(true);
   const [locusOpen, setLocusOpen] = useState(false);
+  const [attachOpen, setAttachOpen] = useState(false);
   const [signalCard, setSignalCard] = useState<SignalCardModel | null>(null);
   const [moodOpen, setMoodOpen] = useState(false);
   const [areaNotificationOpen, setAreaNotificationOpen] = useState(false);
   const [areaInbox, setAreaInboxState] = useState<"off" | "screen" | "drawer">("off");
   const areaNotificationTimerRef = useRef<number | null>(null);
   const areaNotificationScheduledRef = useRef(false);
+  const locusNotificationTimerRef = useRef<number | null>(null);
+
+  const clearLocusNotificationTimer = useCallback(() => {
+    if (locusNotificationTimerRef.current != null) {
+      window.clearTimeout(locusNotificationTimerRef.current);
+      locusNotificationTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleLocusNotification = useCallback(() => {
+    clearLocusNotificationTimer();
+    locusNotificationTimerRef.current = window.setTimeout(() => {
+      locusNotificationTimerRef.current = null;
+      setSignalCard((current) => current ?? DEMO_RECEIVED_LOCUS_SIGNAL);
+      setAttachOpen(true);
+    }, LOCUS_NOTIFICATION_DELAY_MS);
+  }, [clearLocusNotificationTimer]);
 
   const clearAreaNotificationTimer = useCallback(() => {
     if (areaNotificationTimerRef.current != null) {
@@ -273,6 +304,16 @@ export function CrcleMessaging({
   useEffect(() => {
     return () => setCrcleAreaInboxOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (phase === "chat") {
+      scheduleLocusNotification();
+    } else {
+      clearLocusNotificationTimer();
+      setAttachOpen(false);
+    }
+    return () => clearLocusNotificationTimer();
+  }, [phase, activeConversation?.id, scheduleLocusNotification, clearLocusNotificationTimer]);
 
   const openAreaInbox = useCallback(() => {
     setMoodOpen(false);
@@ -354,6 +395,9 @@ export function CrcleMessaging({
       ) ?? MOCK_CONVERSATIONS[0];
     setActiveConversation(matched);
     setDraft("");
+    setLocusOpen(false);
+    setAttachOpen(false);
+    setSignalCard(null);
     setPhase("chat");
   }, []);
 
@@ -363,6 +407,7 @@ export function CrcleMessaging({
     setDraft("");
     setMenuOpen(false);
     setLocusOpen(false);
+    setAttachOpen(false);
     setSignalCard(null);
     setPhase("chat");
   }, []);
@@ -409,13 +454,16 @@ export function CrcleMessaging({
   }, [onGoToRadar, openInbox]);
 
   const handleSendSignal = useCallback((payload: LocusSignalPayload) => {
+    clearLocusNotificationTimer();
     setLocusOpen(false);
+    setAttachOpen(false);
     setSignalCard({
       ...payload,
       id: `signal-${Date.now()}`,
       status: "pending",
+      direction: "sent",
     });
-  }, []);
+  }, [clearLocusNotificationTimer]);
 
   const showPrimaryDock =
     phase === "inbox" &&
@@ -523,6 +571,7 @@ export function CrcleMessaging({
               <ChatThread
                 conversation={activeConversation}
                 signal={signalCard}
+                isLight={light}
                 onAcceptSignal={() =>
                   setSignalCard((s) => (s ? { ...s, status: "accepted" } : s))
                 }
@@ -550,6 +599,8 @@ export function CrcleMessaging({
               <ChatComposer
                 draft={draft}
                 onDraftChange={setDraft}
+                attachOpen={attachOpen}
+                onAttachOpenChange={setAttachOpen}
                 locusOpen={locusOpen}
                 onToggleLocus={() => setLocusOpen((v) => !v)}
               />
@@ -1338,12 +1389,14 @@ function ContextMenu({
 function ChatThread({
   conversation,
   signal,
+  isLight = false,
   onAcceptSignal,
   onRaincheckSignal,
   onCounterPropose,
 }: {
   conversation: ChatConversation | null;
   signal: SignalCardModel | null;
+  isLight?: boolean;
   onAcceptSignal: () => void;
   onRaincheckSignal: () => void;
   onCounterPropose: () => void;
@@ -1386,14 +1439,26 @@ function ChatThread({
         ),
       )}
 
-      {signal && (
-        <SignalCard
-          signal={signal}
-          onAccept={onAcceptSignal}
-          onRaincheck={onRaincheckSignal}
-          onCounterPropose={onCounterPropose}
-        />
-      )}
+      <AnimatePresence>
+        {signal ? (
+          <motion.div
+            key={signal.id}
+            initial={{ opacity: 0, y: 16, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+            transition={{ duration: 0.32, ease: EASE }}
+            className="flex w-full justify-start"
+          >
+            <SignalCard
+              signal={signal}
+              isLight={isLight}
+              onAccept={onAcceptSignal}
+              onRaincheck={onRaincheckSignal}
+              onCounterPropose={onCounterPropose}
+            />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <p className="text-center text-[11px] leading-[1.4] text-[#b1b1bc]" style={{ fontFamily: FONT }}>
         End-to-end encrypted
@@ -1405,16 +1470,18 @@ function ChatThread({
 function ChatComposer({
   draft,
   onDraftChange,
+  attachOpen,
+  onAttachOpenChange,
   locusOpen,
   onToggleLocus,
 }: {
   draft: string;
   onDraftChange: (v: string) => void;
+  attachOpen: boolean;
+  onAttachOpenChange: (open: boolean) => void;
   locusOpen: boolean;
   onToggleLocus: () => void;
 }) {
-  const [attachOpen, setAttachOpen] = useState(false);
-
   return (
     <div className="absolute inset-x-0 bottom-0 z-20">
       {/* Attach toolbar — Figma 769:207143 */}
@@ -1449,7 +1516,7 @@ function ChatComposer({
                 aria-pressed={locusOpen}
                 onClick={() => {
                   onToggleLocus();
-                  setAttachOpen(false);
+                  onAttachOpenChange(false);
                 }}
                 className={`box-border flex size-9 items-center justify-center rounded-[26px] p-[11px] transition ${
                   locusOpen
@@ -1477,7 +1544,7 @@ function ChatComposer({
             type="button"
             aria-label={attachOpen ? "Close attach menu" : "Open attach menu"}
             aria-pressed={attachOpen}
-            onClick={() => setAttachOpen((v) => !v)}
+            onClick={() => onAttachOpenChange(!attachOpen)}
             animate={{ rotate: attachOpen ? 45 : 0 }}
             transition={{ duration: 0.22, ease: EASE }}
             className={`flex size-9 shrink-0 items-center justify-center rounded-full transition ${
