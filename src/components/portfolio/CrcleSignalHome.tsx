@@ -31,14 +31,10 @@ import {
   CrcleBackButton,
   CrcleHeaderNavPill,
   CrcleMoreButton,
-  CrclePrimaryDock,
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
-import {
-  requestAreaInboxOnMessaging,
-  requestOpenMessaging,
-} from "@/components/portfolio/crcleBroadcast";
+import { requestOpenMessaging } from "@/components/portfolio/crcleBroadcast";
 import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
 import { SignalTuneDrawer } from "@/components/portfolio/SignalTuneDrawer";
 
@@ -90,7 +86,8 @@ export function CrcleSignalHome({
     onGoToMessages?.();
   }, [onGoToMessages]);
 
-  const showPrimaryDock = !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen;
+  const showFooterSignal =
+    !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen;
 
   return (
     <div className="relative ml-auto w-fit">
@@ -112,22 +109,6 @@ export function CrcleSignalHome({
               />
             </AnimatePresence>
           ) : undefined
-        }
-        bottomChrome={
-          showPrimaryDock ? (
-            <CrclePrimaryDock
-              embedded
-              active="signal"
-              onProfile={onGoToProfile}
-              onMessages={goMessages}
-              onRadar={onGoToRadar}
-              onSignalHome={() => {}}
-              onAreaRadar={() => {
-                requestAreaInboxOnMessaging();
-                goMessages();
-              }}
-            />
-          ) : null
         }
       >
         <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
@@ -209,7 +190,7 @@ export function CrcleSignalHome({
             </div>
           </div>
 
-          <div className="relative mt-[25px] flex min-h-0 w-full flex-1 flex-col items-center gap-2.5 px-3 pb-24">
+          <div className="relative mt-[25px] flex min-h-0 w-full flex-1 flex-col items-center gap-2.5 px-3 pb-3">
             <div
               className={`relative flex min-h-0 w-full flex-1 flex-col overflow-hidden p-3 transition-colors duration-300 ${
                 screen === "photo"
@@ -459,14 +440,25 @@ export function CrcleSignalHome({
               </div>
             </div>
 
-            {!onboardingOpen ? (
-              <FooterSignal
-                tone={screen === "photo" ? "live" : "neutral"}
-                activeBars={activeBars}
-                isLight={light}
-                glow={signalLive}
-              />
-            ) : null}
+            <AnimatePresence>
+              {showFooterSignal ? (
+                <motion.div
+                  key="footer-signal"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 4 }}
+                  transition={{ duration: 0.28, ease: EASE }}
+                  className="w-full"
+                >
+                  <FooterSignal
+                    tone={screen === "photo" ? "live" : "neutral"}
+                    activeBars={activeBars}
+                    isLight={light}
+                    glow={signalLive}
+                  />
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
           </div>
         </div>
       </CrclePhoneFrame>
@@ -1018,7 +1010,12 @@ function SignalBarsCore({
             : signalBarClass(i, activeBars, allLit, isLight);
 
         if (animate) {
-          const frames = allLit ? SIGNAL_GLOW_FRAMES : SIGNAL_FRAMES;
+          const frames =
+            allLit
+              ? SIGNAL_GLOW_FRAMES
+              : variant === "footer" && isLight && activeBars === 0
+                ? SIGNAL_FRAMES_LIGHT
+                : SIGNAL_FRAMES;
           const { heights: keyHeights, times, duration } = buildSignalKeyframes(i, frames);
           return (
             <motion.span
@@ -1113,6 +1110,16 @@ const SIGNAL_FRAMES: readonly [number, number, number][] = [
   [18.387, 30.645, 8],
   [7, 30.645, 15],
   [14, 30.645, 15],
+];
+/** Figma 257:66286 — light-mode idle bars (Variant7 pulse). */
+const SIGNAL_FRAMES_LIGHT: readonly [number, number, number][] = [
+  [14, 30.645, 15],
+  [10, 30.645, 15],
+  [14, 30.645, 11],
+  [12, 30.645, 15],
+  [14, 30.645, 9],
+  [8, 30.645, 13],
+  [13, 30.645, 14],
 ];
 const SIGNAL_GLOW_FRAMES: readonly [number, number, number][] = [
   [18.387, 30.645, 18.387],
