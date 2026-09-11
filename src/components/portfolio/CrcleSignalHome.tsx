@@ -230,7 +230,7 @@ export function CrcleSignalHome({
             {!onboardingOpen ? (
               <div className="relative z-[60] flex h-[42px] w-full items-center justify-between">
                 <CrcleBackButton
-                  tone={light ? "light" : "default"}
+                  tone={light ? "light" : "dark"}
                   onClick={() => {
                     setScreen("empty");
                     setSignalStrength(10);
@@ -243,7 +243,7 @@ export function CrcleSignalHome({
                   }}
                 />
                 <CrcleHeaderNavPill
-                  tone={light ? "light" : "default"}
+                  tone={light ? "light" : "dark"}
                   onRadar={onGoToRadar}
                   onMessages={goMessages}
                   onMore={() => setMenuOpen((v) => !v)}

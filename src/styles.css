@@ -1563,6 +1563,37 @@
   display: none;
 }
 
+/* Signal Home header — Figma 257:86835 / 257:87003 dark photo chrome */
+.crcle-back-btn--dark.crcle-glass-btn {
+  background: rgba(253, 252, 251, 0.05);
+  backdrop-filter: blur(2px) saturate(140%);
+  -webkit-backdrop-filter: blur(2px) saturate(140%);
+  border: 1px solid #f7f6f2;
+  box-shadow: none;
+}
+
+.crcle-back-btn--dark.crcle-glass-btn::before,
+.crcle-back-btn--dark.crcle-glass-btn::after {
+  display: none;
+}
+
+.crcle-header-nav-pill--dark.crcle-glass-btn {
+  background: rgba(253, 252, 251, 0.05);
+  backdrop-filter: blur(3px) saturate(140%);
+  -webkit-backdrop-filter: blur(3px) saturate(140%);
+  border: 1px solid #f7f6f2;
+  box-shadow: none;
+}
+
+.crcle-header-nav-pill--dark.crcle-glass-btn::before,
+.crcle-header-nav-pill--dark.crcle-glass-btn::after {
+  display: none;
+}
+
+.crcle-header-nav-pill--dark .dock-glass-lens {
+  display: none;
+}
+
 /* Radar portrait card — soft gradient rim that blends into dark chrome */
 .crcle-portrait-card {
   border: 0;

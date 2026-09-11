@@ -283,8 +283,8 @@ export function CrcleBackButton({
 }: {
   onClick?: () => void;
   disabled?: boolean;
-  /** Figma 257:67478 — light Signal Home glass */
-  tone?: "default" | "light";
+  /** Figma 257:67478 light · 257:86835 dark Signal Home glass */
+  tone?: "default" | "light" | "dark";
 }) {
   return (
     <button
@@ -293,7 +293,7 @@ export function CrcleBackButton({
       disabled={disabled || !onClick}
       aria-label="Back"
       className={`crcle-glass-btn relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 backdrop-blur-[12px] transition hover:brightness-110 ${
-        tone === "light" ? "crcle-back-btn--light" : ""
+        tone === "light" ? "crcle-back-btn--light" : tone === "dark" ? "crcle-back-btn--dark" : ""
       } ${onClick && !disabled ? "" : "opacity-40"}`}
     >
       <div className="dock-glass-lens opacity-40" aria-hidden />
@@ -321,67 +321,129 @@ export function CrcleHeaderNavPill({
   onMessages?: () => void;
   onMore?: () => void;
   className?: string;
-  tone?: "default" | "light";
+  tone?: "default" | "light" | "dark";
 }) {
   const spread = onMore != null;
+  const groupedDark = spread && tone === "dark";
 
   return (
     <div
       className={`crcle-header-nav-pill crcle-glass-btn relative flex shrink-0 items-center overflow-hidden rounded-[24px] backdrop-blur-[12px] ${
-        spread ? "h-[42px] min-w-[132px] justify-between px-2 py-0.5" : "h-10 gap-1 px-2 py-0.5"
-      } ${tone === "light" ? "crcle-header-nav-pill--light" : ""} ${className}`}
+        spread
+          ? groupedDark
+            ? "h-10 w-[128px] justify-between px-2 py-0.5"
+            : "h-[42px] min-w-[132px] justify-between px-2 py-0.5"
+          : "h-10 gap-1 px-2 py-0.5"
+      } ${tone === "light" ? "crcle-header-nav-pill--light" : tone === "dark" ? "crcle-header-nav-pill--dark" : ""} ${className}`}
     >
       <div className="dock-glass-lens opacity-40" aria-hidden />
-      <button
-        type="button"
-        aria-label="Open radar"
-        onClick={onRadar}
-        disabled={!onRadar}
-        className={`relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110 ${
-          onRadar ? "" : "opacity-40"
-        }`}
-      >
-        <img
-          alt=""
-          src={navRadarIcon}
-          className="crcle-dock-icon size-5 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
-          draggable={false}
-        />
-      </button>
-      <button
-        type="button"
-        aria-label="Open messages"
-        onClick={onMessages}
-        disabled={!onMessages}
-        className={`relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110 ${
-          onMessages ? "" : "opacity-40"
-        }`}
-      >
-        <img
-          alt=""
-          src={navMessageIcon}
-          className="crcle-dock-icon size-6 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
-          draggable={false}
-        />
-      </button>
-      {onMore ? (
-        <button
-          type="button"
-          aria-label="More options"
-          onClick={(e) => {
-            e.stopPropagation();
-            onMore();
-          }}
-          className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110"
-        >
-          <img
-            alt=""
-            src={moreHorizIcon}
-            className="size-6 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
-            draggable={false}
-          />
-        </button>
-      ) : null}
+      {groupedDark ? (
+        <>
+          <div className="relative z-[1] flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Open radar"
+              onClick={onRadar}
+              disabled={!onRadar}
+              className={`flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110 ${
+                onRadar ? "" : "opacity-40"
+              }`}
+            >
+              <img
+                alt=""
+                src={navRadarIcon}
+                className="crcle-dock-icon size-5 max-w-none object-contain brightness-0 invert"
+                draggable={false}
+              />
+            </button>
+            <button
+              type="button"
+              aria-label="Open messages"
+              onClick={onMessages}
+              disabled={!onMessages}
+              className={`flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110 ${
+                onMessages ? "" : "opacity-40"
+              }`}
+            >
+              <img
+                alt=""
+                src={navMessageIcon}
+                className="crcle-dock-icon size-6 max-w-none object-contain brightness-0 invert"
+                draggable={false}
+              />
+            </button>
+          </div>
+          <button
+            type="button"
+            aria-label="More options"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMore?.();
+            }}
+            className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110"
+          >
+            <img
+              alt=""
+              src={moreHorizIcon}
+              className="size-6 max-w-none object-contain brightness-0 invert"
+              draggable={false}
+            />
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            type="button"
+            aria-label="Open radar"
+            onClick={onRadar}
+            disabled={!onRadar}
+            className={`relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110 ${
+              onRadar ? "" : "opacity-40"
+            }`}
+          >
+            <img
+              alt=""
+              src={navRadarIcon}
+              className="crcle-dock-icon size-5 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+              draggable={false}
+            />
+          </button>
+          <button
+            type="button"
+            aria-label="Open messages"
+            onClick={onMessages}
+            disabled={!onMessages}
+            className={`relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110 ${
+              onMessages ? "" : "opacity-40"
+            }`}
+          >
+            <img
+              alt=""
+              src={navMessageIcon}
+              className="crcle-dock-icon size-6 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+              draggable={false}
+            />
+          </button>
+          {onMore ? (
+            <button
+              type="button"
+              aria-label="More options"
+              onClick={(e) => {
+                e.stopPropagation();
+                onMore();
+              }}
+              className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110"
+            >
+              <img
+                alt=""
+                src={moreHorizIcon}
+                className="size-6 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+                draggable={false}
+              />
+            </button>
+          ) : null}
+        </>
+      )}
     </div>
   );
 }
