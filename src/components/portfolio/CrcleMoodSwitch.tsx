@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import crcleLogo from "@/assets/crcle/crcle-logo.svg";
 import locusCloseIcon from "@/assets/crcle/locus/close-x.svg";
-import profileLaptopIcon from "@/assets/crcle/profile/laptop.svg";
 import dominoMaskOutlineIcon from "@/assets/crcle/profile/domino-mask-outline.svg";
 import masksTheaterIcon from "@/assets/crcle/profile/masks-theater.svg";
 import profileMoonCloudIcon from "@/assets/crcle/profile/moon-cloud.svg";
@@ -37,13 +36,6 @@ const MOODS: {
     icon: profileMoonCloudIcon,
     description:
       "Active during late hours; down for evening events, night calls, or late-night sessions.",
-  },
-  {
-    id: "collab",
-    label: "Collab",
-    icon: profileLaptopIcon,
-    description:
-      "Focused on co-working, side projects, brain-dumping ideas, or working together in real time.",
   },
   {
     id: "in_the_area",
@@ -91,6 +83,8 @@ export function CrcleMoodSwitch({
     : (visibleMoods[0]?.id ?? activeState);
   const activeMood = visibleMoods.find((m) => m.id === effectiveActive) ?? visibleMoods[0] ?? MOODS[0];
   const compactDock = visibleMoods.length <= 2;
+  /** Figma 949:30736 — three mood chips + 11px gaps */
+  const dockStackHeight = visibleMoods.length * 44 + Math.max(0, visibleMoods.length - 1) * 11;
 
   return (
     <motion.div
@@ -180,14 +174,12 @@ export function CrcleMoodSwitch({
 
         <div
           className={`pointer-events-none absolute right-3 z-[2] flex items-center gap-[11px] transition ${
-            compactDock ? "top-[320px]" : "top-[282px]"
+            compactDock ? "top-[320px]" : "top-[300px]"
           } ${isIncognito ? "opacity-30" : "opacity-100"}`}
         >
           <div
-            className={`flex flex-col justify-between text-right text-[13px] font-medium leading-[1.4] text-white ${
-              compactDock ? "h-[88px]" : "h-[170px]"
-            }`}
-            style={{ fontFamily: FONT }}
+            className="flex flex-col justify-between text-right text-[13px] font-medium leading-[1.4] text-white"
+            style={{ fontFamily: FONT, height: compactDock ? 88 : dockStackHeight }}
           >
             {visibleMoods.map((m) => {
               const show = activeState === m.id || hoveredMood === m.id;

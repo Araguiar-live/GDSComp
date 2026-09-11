@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 
-export type BroadcastState = "open_day" | "night_owl" | "collab" | "in_the_area";
+export type BroadcastState = "open_day" | "night_owl" | "in_the_area";
 
 /**
  * Shared CRCLE broadcast mood across Profile ↔ Radar ↔ Messaging (tabs remount).
