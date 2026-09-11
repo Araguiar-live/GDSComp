@@ -33,7 +33,15 @@ import {
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
-import { requestOpenMessaging } from "@/components/portfolio/crcleBroadcast";
+import {
+  requestOpenMessaging,
+  setCrcleVerifyOpen,
+  useCrcleIncognito,
+} from "@/components/portfolio/crcleBroadcast";
+import {
+  CrcleSignalMoreMenu,
+  IncognitoModeBanner,
+} from "@/components/portfolio/CrcleSignalMoreMenu";
 import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
 import { SignalTuneDrawer } from "@/components/portfolio/SignalTuneDrawer";
 
@@ -67,6 +75,10 @@ export function CrcleSignalHome({
   const [signalStrength, setSignalStrength] = useState(10);
   /* Figma 322:118233 — Signal Features overlay on light Daily 3 */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [signalPanelExpanded, setSignalPanelExpanded] = useState(true);
+  const [radarOff, setRadarOff] = useState(false);
+  const [isIncognito, setIncognito] = useCrcleIncognito();
   /** Light Figma 257:66247 · Dark Figma 257:90883 */
   const [light, setLight] = useState(true);
   /** Fine-tune drawer completed */
@@ -86,7 +98,17 @@ export function CrcleSignalHome({
   }, [onGoToMessages]);
 
   const showFooterSignal =
-    !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen;
+    !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen && !menuOpen;
+
+  const enableIncognito = useCallback(() => {
+    setIncognito(true);
+    setRadarOff(true);
+  }, [setIncognito]);
+
+  const disableIncognito = useCallback(() => {
+    setIncognito(false);
+    setRadarOff(false);
+  }, [setIncognito]);
 
   return (
     <div className="relative ml-auto w-fit">
@@ -146,6 +168,42 @@ export function CrcleSignalHome({
               />
             ) : null}
           </AnimatePresence>
+          <AnimatePresence>
+            {menuOpen && !onboardingOpen ? (
+              <CrcleSignalMoreMenu
+                signalOff={isIncognito}
+                radarOff={radarOff}
+                panelExpanded={signalPanelExpanded}
+                onTogglePanel={() => setSignalPanelExpanded((v) => !v)}
+                onToggleSignalOff={() => {
+                  if (isIncognito) disableIncognito();
+                  else enableIncognito();
+                }}
+                onToggleRadarOff={() => {
+                  if (radarOff) {
+                    disableIncognito();
+                  } else {
+                    enableIncognito();
+                  }
+                }}
+                onSetIntentDefault={() => {
+                  setIntentDone(false);
+                  setMenuOpen(false);
+                }}
+                onEditProfile={() => {
+                  setMenuOpen(false);
+                  onGoToProfile?.();
+                }}
+                onVerification={() => {
+                  setMenuOpen(false);
+                  setCrcleVerifyOpen(true);
+                }}
+                onSettings={() => setMenuOpen(false)}
+                onSharecode={() => setMenuOpen(false)}
+                onClose={() => setMenuOpen(false)}
+              />
+            ) : null}
+          </AnimatePresence>
           <StatusBar />
           <div className="mt-[5px] flex shrink-0 justify-center pb-[12px]">
             <IconImg src={crcleLogo} className="crcle-theme-icon h-[13px] w-[38px]" />
@@ -171,7 +229,7 @@ export function CrcleSignalHome({
                   tone={light ? "light" : "default"}
                   onRadar={onGoToRadar}
                   onMessages={goMessages}
-                  onMore={() => {}}
+                  onMore={() => setMenuOpen((v) => !v)}
                 />
               </div>
             ) : (
@@ -416,6 +474,12 @@ export function CrcleSignalHome({
                   </div>
                 </div>
               ) : null}
+
+              <AnimatePresence>
+                {screen === "photo" && isIncognito ? (
+                  <IncognitoModeBanner onUndo={disableIncognito} />
+                ) : null}
+              </AnimatePresence>
 
               <div className="relative z-[1] mt-auto flex w-full items-end justify-between pb-0.5">
                 {screen === "photo" ? (
