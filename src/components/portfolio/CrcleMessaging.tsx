@@ -33,6 +33,7 @@ import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
   CrcleBackButton,
   CrcleMoreButton,
+  CrclePrimaryDock,
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
@@ -473,6 +474,17 @@ export function CrcleMessaging({
     });
   }, [clearLocusNotificationTimer]);
 
+  const showPrimaryDock =
+    phase === "inbox" &&
+    !onboardingOpen &&
+    !activeMatch &&
+    areaInbox === "off" &&
+    !moodOpen &&
+    !areaNotificationOpen &&
+    !locusOpen;
+
+  const inboxBottomInset = showPrimaryDock ? "bottom-[100px]" : "bottom-6";
+
   return (
     <div className="relative ml-auto w-fit">
       <CrcleThemeToggle
@@ -533,6 +545,19 @@ export function CrcleMessaging({
               </AnimatePresence>
             </>
           ) : undefined
+        }
+        bottomChrome={
+          showPrimaryDock ? (
+            <CrclePrimaryDock
+              embedded
+              active="messages"
+              onProfile={goProfile}
+              onMessages={openInbox}
+              onRadar={goRadar}
+              onSignalHome={goHome}
+              onAreaRadar={openAreaInbox}
+            />
+          ) : null
         }
       >
         <AnimatePresence mode="wait">
@@ -605,7 +630,9 @@ export function CrcleMessaging({
             >
               {/* Active Chats under In The Area — flat z-stack so blur samples rows at panel top */}
               {areaInbox !== "off" ? (
-                <div className="absolute inset-x-3 top-0 bottom-6 z-[1] overflow-y-auto overflow-x-hidden pb-6 pt-[88px]">
+                <div
+                  className={`absolute inset-x-3 top-0 z-[1] overflow-y-auto overflow-x-hidden pb-6 pt-[88px] ${inboxBottomInset}`}
+                >
                   <ActiveChatList
                     conversations={MOCK_CONVERSATIONS}
                     onSelectConversation={openConversation}
@@ -643,7 +670,7 @@ export function CrcleMessaging({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.35, ease: EASE }}
                     transformTemplate={() => ""}
-                    className="absolute inset-x-3 top-0 bottom-6 overflow-hidden"
+                    className={`absolute inset-x-3 top-0 overflow-hidden ${inboxBottomInset}`}
                   >
                     <div className="absolute inset-0 z-0 overflow-y-auto overflow-x-hidden pb-6 pt-[155px]">
                       <ActiveChatList
