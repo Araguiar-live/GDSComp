@@ -279,9 +279,12 @@ function DockIconButton({
 export function CrcleBackButton({
   onClick,
   disabled,
+  tone = "default",
 }: {
   onClick?: () => void;
   disabled?: boolean;
+  /** Figma 257:67478 — light Signal Home glass */
+  tone?: "default" | "light";
 }) {
   return (
     <button
@@ -290,8 +293,8 @@ export function CrcleBackButton({
       disabled={disabled || !onClick}
       aria-label="Back"
       className={`crcle-glass-btn relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 backdrop-blur-[12px] transition hover:brightness-110 ${
-        onClick && !disabled ? "" : "opacity-40"
-      }`}
+        tone === "light" ? "crcle-back-btn--light" : ""
+      } ${onClick && !disabled ? "" : "opacity-40"}`}
     >
       <div className="dock-glass-lens opacity-40" aria-hidden />
       <span className="relative z-[1] flex size-8 items-center justify-center">
@@ -306,19 +309,27 @@ export function CrcleBackButton({
   );
 }
 
-/** Compact radar + messages pill — sits in screen headers above onboarding overlays. */
+/** Compact radar + messages (+ optional more) pill — Figma 257:67481 Signal Home header. */
 export function CrcleHeaderNavPill({
   onRadar,
   onMessages,
+  onMore,
   className = "",
+  tone = "default",
 }: {
   onRadar?: () => void;
   onMessages?: () => void;
+  onMore?: () => void;
   className?: string;
+  tone?: "default" | "light";
 }) {
+  const spread = onMore != null;
+
   return (
     <div
-      className={`crcle-glass-btn relative flex h-10 shrink-0 items-center gap-1 overflow-hidden rounded-[24px] px-2 py-0.5 backdrop-blur-[12px] ${className}`}
+      className={`crcle-header-nav-pill crcle-glass-btn relative flex shrink-0 items-center overflow-hidden rounded-[24px] backdrop-blur-[12px] ${
+        spread ? "h-[42px] min-w-[132px] justify-between px-2 py-0.5" : "h-10 gap-1 px-2 py-0.5"
+      } ${tone === "light" ? "crcle-header-nav-pill--light" : ""} ${className}`}
     >
       <div className="dock-glass-lens opacity-40" aria-hidden />
       <button
@@ -349,10 +360,28 @@ export function CrcleHeaderNavPill({
         <img
           alt=""
           src={navMessageIcon}
-          className="crcle-dock-icon size-5 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+          className="crcle-dock-icon size-6 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
           draggable={false}
         />
       </button>
+      {onMore ? (
+        <button
+          type="button"
+          aria-label="More options"
+          onClick={(e) => {
+            e.stopPropagation();
+            onMore();
+          }}
+          className="relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full transition hover:brightness-110"
+        >
+          <img
+            alt=""
+            src={moreHorizIcon}
+            className="size-6 max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
+            draggable={false}
+          />
+        </button>
+      ) : null}
     </div>
   );
 }

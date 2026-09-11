@@ -30,7 +30,6 @@ import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
   CrcleBackButton,
   CrcleHeaderNavPill,
-  CrcleMoreButton,
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
@@ -154,8 +153,9 @@ export function CrcleSignalHome({
 
           <div className="flex w-full shrink-0 flex-col items-center gap-px px-3">
             {!onboardingOpen ? (
-              <div className="relative z-[60] flex h-10 w-full items-center justify-between">
+              <div className="relative z-[60] flex h-[42px] w-full items-center justify-between">
                 <CrcleBackButton
+                  tone={light ? "light" : "default"}
                   onClick={() => {
                     setScreen("empty");
                     setSignalStrength(10);
@@ -167,11 +167,15 @@ export function CrcleSignalHome({
                     setTuneOpen(false);
                   }}
                 />
-                <CrcleHeaderNavPill onRadar={onGoToRadar} onMessages={goMessages} />
-                <CrcleMoreButton />
+                <CrcleHeaderNavPill
+                  tone={light ? "light" : "default"}
+                  onRadar={onGoToRadar}
+                  onMessages={goMessages}
+                  onMore={() => {}}
+                />
               </div>
             ) : (
-              <div className="h-10 w-full shrink-0" aria-hidden />
+              <div className="h-[42px] w-full shrink-0" aria-hidden />
             )}
 
             <div className="flex flex-col items-center justify-center rounded-[24px] bg-[rgba(1,2,17,0.01)] px-4 py-1 text-center">
