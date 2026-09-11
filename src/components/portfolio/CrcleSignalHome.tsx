@@ -41,7 +41,9 @@ import {
 import {
   CrcleSignalMoreMenu,
   IncognitoModeBanner,
+  OnTheMapBanner,
 } from "@/components/portfolio/CrcleSignalMoreMenu";
+import { CrcleUserSharecodeSheet } from "@/components/portfolio/CrcleUserSharecodeSheet";
 import { IntentTuneModal } from "@/components/portfolio/IntentTuneModal";
 import { SignalTuneDrawer } from "@/components/portfolio/SignalTuneDrawer";
 
@@ -76,6 +78,8 @@ export function CrcleSignalHome({
   /* Figma 322:118233 — Signal Features overlay on light Daily 3 */
   const [onboardingOpen, setOnboardingOpen] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [sharecodeOpen, setSharecodeOpen] = useState(false);
+  const [mapBannerOpen, setMapBannerOpen] = useState(false);
   const [signalPanelExpanded, setSignalPanelExpanded] = useState(true);
   const [radarOff, setRadarOff] = useState(false);
   const [isIncognito, setIncognito] = useCrcleIncognito();
@@ -98,17 +102,24 @@ export function CrcleSignalHome({
   }, [onGoToMessages]);
 
   const showFooterSignal =
-    !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen && !menuOpen;
+    !onboardingOpen &&
+    !tuneOpen &&
+    !intentOpen &&
+    !locationOpen &&
+    !menuOpen &&
+    !sharecodeOpen;
 
   const enableIncognito = useCallback(() => {
     setIncognito(true);
     setRadarOff(true);
+    setMapBannerOpen(false);
   }, [setIncognito]);
 
   const disableIncognito = useCallback(() => {
     setIncognito(false);
     setRadarOff(false);
-  }, [setIncognito]);
+    if (screen === "photo") setMapBannerOpen(true);
+  }, [setIncognito, screen]);
 
   return (
     <div className="relative ml-auto w-fit">
@@ -199,10 +210,16 @@ export function CrcleSignalHome({
                   setCrcleVerifyOpen(true);
                 }}
                 onSettings={() => setMenuOpen(false)}
-                onSharecode={() => setMenuOpen(false)}
+                onSharecode={() => {
+                  setMenuOpen(false);
+                  setSharecodeOpen(true);
+                }}
                 onClose={() => setMenuOpen(false)}
               />
             ) : null}
+          </AnimatePresence>
+          <AnimatePresence>
+            {sharecodeOpen ? <CrcleUserSharecodeSheet onClose={() => setSharecodeOpen(false)} /> : null}
           </AnimatePresence>
           <StatusBar />
           <div className="mt-[5px] flex shrink-0 justify-center pb-[12px]">
@@ -479,17 +496,30 @@ export function CrcleSignalHome({
                 {screen === "photo" && isIncognito ? (
                   <IncognitoModeBanner onUndo={disableIncognito} />
                 ) : null}
+                {screen === "photo" && !isIncognito && mapBannerOpen ? (
+                  <OnTheMapBanner onUndo={enableIncognito} />
+                ) : null}
               </AnimatePresence>
 
-              <div className="relative z-[1] mt-auto flex w-full items-end justify-between pb-0.5">
+              <div
+                className={`relative z-[1] mt-auto flex w-full items-end justify-between ${
+                  screen === "photo" && (isIncognito || mapBannerOpen) ? "pb-[88px]" : "pb-0.5"
+                }`}
+              >
                 {screen === "photo" ? (
                   <>
-                    <div className="flex w-full items-center justify-center gap-2">
-                      <span className="h-1.5 w-6 rounded-full bg-white" />
-                      <span className="size-1.5 rounded-full bg-white/40" />
-                      <span className="size-1.5 rounded-full bg-white/40" />
-                    </div>
-                    <div className="absolute bottom-0 right-0">
+                    {!isIncognito && !mapBannerOpen ? (
+                      <div className="flex w-full items-center justify-center gap-2">
+                        <span className="h-1.5 w-6 rounded-full bg-white" />
+                        <span className="size-1.5 rounded-full bg-white/40" />
+                        <span className="size-1.5 rounded-full bg-white/40" />
+                      </div>
+                    ) : (
+                      <div className="w-full" aria-hidden />
+                    )}
+                    <div
+                      className={`absolute right-0 ${isIncognito ? "bottom-[84px]" : "bottom-0"}`}
+                    >
                       <OverlayToolButton
                         ariaLabel="Pulse"
                         size={36}
@@ -523,6 +553,8 @@ export function CrcleSignalHome({
                     activeBars={activeBars}
                     isLight={light}
                     glow={signalLive}
+                    incognito={isIncognito}
+                    onMap={screen === "photo" && !isIncognito}
                   />
                 </motion.div>
               ) : null}
@@ -960,20 +992,32 @@ function FooterSignal({
   activeBars = 0,
   isLight = false,
   glow = false,
+  incognito = false,
+  onMap = false,
 }: {
   tone: "neutral" | "live";
   activeBars?: number;
   isLight?: boolean;
   glow?: boolean;
+  incognito?: boolean;
+  onMap?: boolean;
 }) {
   return (
     <div className="flex w-full flex-col items-center gap-4 px-3">
-      <SignalBars tone={tone} activeBars={activeBars} isLight={isLight} glow={glow} animateIdle />
+      <SignalBars
+        tone={tone}
+        activeBars={activeBars}
+        isLight={isLight}
+        glow={glow}
+        incognito={incognito}
+        onMap={onMap}
+        animateIdle={!incognito && !onMap}
+      />
       <p
         className="max-w-[392px] text-center text-[11px] leading-[1.4] text-[#b1b1bc]"
         style={{ fontFamily: FONT }}
       >
-        {tone === "live" || !isLight ? (
+        {incognito || tone === "live" || !isLight ? (
           <>Your signal will connect you with compatible users nearby when your drop goes live.</>
         ) : (
           <>
@@ -1019,12 +1063,25 @@ const OVERLAY_SIGNAL_BAR_HEIGHTS = [12.256, 20.427, 12.256] as const;
 const OVERLAY_SIGNAL_GAP = 2.904;
 const OVERLAY_SIGNAL_RADIUS = 4.73;
 
+const ON_MAP_SIDE_GRADIENT =
+  "linear-gradient(118.9deg, rgba(255, 255, 255, 0.03) 16.007%, rgba(255, 255, 255, 0.12) 86.317%)";
+
 function signalBarClass(
   index: number,
   activeBars: number,
   allLit: boolean,
   isLight: boolean,
+  incognito = false,
+  onMap = false,
 ) {
+  if (incognito) {
+    return index === 1 ? "bg-[rgba(15,201,80,0.8)]" : "bg-[rgba(0,0,0,0.3)]";
+  }
+  if (onMap) {
+    return index === 1
+      ? "border border-[rgba(255,255,255,0.15)] bg-[rgba(15,201,80,0.8)]"
+      : "border border-[rgba(247,246,242,0.6)]";
+  }
   if (index < activeBars) {
     return allLit ? "border border-[#e7fcee] bg-[#0fc950]" : "bg-[#0fc950]";
   }
@@ -1040,6 +1097,8 @@ function SignalBarsCore({
   glow = false,
   animate = false,
   isLight = false,
+  incognito = false,
+  onMap = false,
   className = "",
   "aria-hidden": ariaHidden,
 }: {
@@ -1048,13 +1107,15 @@ function SignalBarsCore({
   glow?: boolean;
   animate?: boolean;
   isLight?: boolean;
+  incognito?: boolean;
+  onMap?: boolean;
   className?: string;
   "aria-hidden"?: boolean;
 }) {
   const allLit = glow && activeBars >= 3;
   const widths = variant === "footer" ? FOOTER_SIGNAL_BAR_WIDTHS : OVERLAY_SIGNAL_BAR_WIDTHS;
   const heights =
-    variant === "footer" && isLight && activeBars === 0
+    variant === "footer" && isLight && activeBars === 0 && !incognito && !onMap
       ? FOOTER_SIGNAL_BAR_HEIGHTS_LIGHT
       : variant === "footer"
         ? FOOTER_SIGNAL_BAR_HEIGHTS
@@ -1075,9 +1136,13 @@ function SignalBarsCore({
             ? i === 1
               ? "bg-[#f7f6f2]"
               : "border border-[#f7f6f2] bg-[#f7f6f2]"
-            : signalBarClass(i, activeBars, allLit, isLight);
+            : signalBarClass(i, activeBars, allLit, isLight, incognito, onMap);
+        const barStyle =
+          variant === "footer" && onMap && i !== 1
+            ? { backgroundImage: ON_MAP_SIDE_GRADIENT }
+            : undefined;
 
-        if (animate) {
+        if (animate && !incognito && !onMap) {
           const frames =
             allLit
               ? SIGNAL_GLOW_FRAMES
@@ -1106,7 +1171,7 @@ function SignalBarsCore({
           <span
             key={i}
             className={`block shrink-0 transition-colors duration-300 ${barClass}`}
-            style={{ width, height: baseHeight, borderRadius: radius }}
+            style={{ width, height: baseHeight, borderRadius: radius, ...barStyle }}
           />
         );
       })}
@@ -1140,17 +1205,21 @@ function SignalBars({
   activeBars = 0,
   isLight = false,
   glow = false,
+  incognito = false,
+  onMap = false,
   animateIdle = false,
 }: {
   tone?: "neutral" | "live";
   activeBars?: number;
   isLight?: boolean;
   glow?: boolean;
+  incognito?: boolean;
+  onMap?: boolean;
   /** Pulse idle bars in empty state — Figma 257:63722 / 257:66286. */
   animateIdle?: boolean;
 }) {
-  const allLit = glow && activeBars >= 3;
-  const shouldAnimate = animateIdle || activeBars > 0;
+  const allLit = glow && activeBars >= 3 && !incognito && !onMap;
+  const shouldAnimate = !incognito && !onMap && (animateIdle || activeBars > 0);
 
   return (
     <div
@@ -1162,6 +1231,8 @@ function SignalBars({
         activeBars={activeBars}
         glow={glow}
         isLight={isLight}
+        incognito={incognito}
+        onMap={onMap}
         animate={shouldAnimate}
         className={allLit ? "relative z-[1]" : ""}
       />

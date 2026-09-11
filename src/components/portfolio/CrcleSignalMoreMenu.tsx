@@ -188,49 +188,94 @@ function MenuDivider() {
   return <div className="h-px w-full bg-[rgba(2,3,29,0.08)]" aria-hidden />;
 }
 
-/** Figma 257:64908 — incognito confirmation bar on the photo card. */
-export function IncognitoModeBanner({ onUndo }: { onUndo: () => void }) {
+/** Figma 257:86850 — visible-on-map confirmation bar inside the photo frame. */
+export function OnTheMapBanner({ onUndo }: { onUndo: () => void }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 6 }}
+      exit={{ opacity: 0, y: 8 }}
       transition={{ duration: 0.28, ease: EASE }}
-      className="pointer-events-auto absolute inset-x-0 bottom-2 z-20 flex items-center gap-2 rounded-[36px] bg-[rgba(247,246,242,0.4)] p-2 backdrop-blur-[2px]"
+      className="pointer-events-auto absolute inset-x-0 bottom-0 z-30 flex flex-col items-center gap-1 rounded-b-[28px] bg-[rgba(247,246,242,0.4)] px-2 pb-2 pl-2.5 pt-1.5 backdrop-blur-[2px]"
     >
-      <div className="flex min-w-0 flex-1 items-center gap-2">
-        <IncognitoSignalBars />
-        <div className="min-w-0 flex-1 leading-[1.2]">
-          <p className="text-[14px] font-medium text-[#f7f6f2]" style={{ fontFamily: FONT }}>
-            Incognito Mode on
-          </p>
-          <p
-            className="text-[11px] font-normal text-[rgba(247,246,242,0.7)]"
-            style={{ fontFamily: FONT }}
-          >
-            You can still see others, but your signal won&apos;t appear on the public radar today.
-          </p>
+      <div className="h-[3px] w-[66px] shrink-0 rounded-full bg-[rgba(2,3,29,0.12)]" aria-hidden />
+      <div className="flex w-full items-center gap-2 p-1">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <IncognitoBannerSignalBars />
+          <div className="min-w-0 flex-1 leading-[1.2]">
+            <p className="text-[14px] font-medium text-[#e6e6e9]" style={{ fontFamily: FONT }}>
+              You&apos;re on the map!
+            </p>
+            <p
+              className="text-[11px] font-normal text-[#e6e6e9]"
+              style={{ fontFamily: FONT }}
+            >
+              Other users nearby can now see your signal.
+            </p>
+          </div>
         </div>
+        <button
+          type="button"
+          onClick={onUndo}
+          className="flex h-9 shrink-0 items-center justify-center rounded-[36px] bg-[#030426] px-4 py-2"
+        >
+          <span className="text-[13px] leading-[1.4] text-[#fefefe]" style={{ fontFamily: FONT }}>
+            Undo
+          </span>
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={onUndo}
-        className="flex h-9 shrink-0 items-center justify-center rounded-[36px] bg-[#030426] px-4 py-2"
-      >
-        <span className="text-[13px] leading-[1.4] text-[#fefefe]" style={{ fontFamily: FONT }}>
-          Undo
-        </span>
-      </button>
     </motion.div>
   );
 }
 
-function IncognitoSignalBars() {
+/** Figma 257:64908 — incognito confirmation bar inside the photo frame. */
+export function IncognitoModeBanner({ onUndo }: { onUndo: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8 }}
+      transition={{ duration: 0.28, ease: EASE }}
+      className="pointer-events-auto absolute inset-x-0 bottom-0 z-30 flex flex-col items-center gap-1 rounded-b-[28px] bg-[rgba(247,246,242,0.4)] px-2 pb-2 pt-1.5 backdrop-blur-[2px]"
+    >
+      <div className="h-[3px] w-[66px] shrink-0 rounded-full bg-[rgba(2,3,29,0.12)]" aria-hidden />
+      <div className="flex w-full items-center gap-2 p-1">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <IncognitoBannerSignalBars />
+          <div className="min-w-0 flex-1 leading-[1.2]">
+            <p className="text-[14px] font-medium text-[#f7f6f2]" style={{ fontFamily: FONT }}>
+              Incognito Mode on
+            </p>
+            <p
+              className="text-[11px] font-normal text-[rgba(247,246,242,0.7)]"
+              style={{ fontFamily: FONT }}
+            >
+              You can still see others, but your signal won&apos;t appear on the public radar
+              today.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onUndo}
+          className="flex h-9 shrink-0 items-center justify-center rounded-[36px] bg-[#030426] px-4 py-2"
+        >
+          <span className="text-[13px] leading-[1.4] text-[#fefefe]" style={{ fontFamily: FONT }}>
+            Undo
+          </span>
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+/** White signal bars inside the incognito banner — Figma 257:64910. */
+function IncognitoBannerSignalBars() {
   return (
     <div className="flex shrink-0 items-center gap-[2.7px]" aria-hidden>
-      <span className="h-[10px] w-[5px] rounded-[4px] bg-[#f7f6f2]" />
-      <span className="h-[17px] w-[5px] rounded-[4px] bg-[#f7f6f2]" />
-      <span className="h-[10px] w-[5px] rounded-[4px] bg-[#f7f6f2]" />
+      <span className="h-[10px] w-[5px] rounded-[4.5px] bg-[#f7f6f2]" />
+      <span className="h-[17px] w-[5.5px] rounded-[4.5px] bg-[#f7f6f2]" />
+      <span className="h-[10px] w-[5px] rounded-[4.5px] bg-[#f7f6f2]" />
     </div>
   );
 }
