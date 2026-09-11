@@ -93,6 +93,9 @@ export function CrcleSignalHome({
   const activeBars =
     screen !== "photo" ? 0 : intentDone ? 3 : locationDone ? 2 : 1;
   const signalLive = intentDone;
+  /** On-map footer styling only while the confirmation banner is visible — not the default photo state. */
+  const onMapFooter =
+    mapBannerOpen && screen === "photo" && !isIncognito && !signalOff;
 
   const dismissOnboarding = useCallback(() => {
     setOnboardingOpen(false);
@@ -574,7 +577,7 @@ export function CrcleSignalHome({
                     glow={signalLive}
                     incognito={isIncognito && !signalOff}
                     signalOff={signalOff}
-                    onMap={screen === "photo" && !isIncognito && !signalOff}
+                    onMap={onMapFooter}
                   />
                 </motion.div>
               ) : null}
