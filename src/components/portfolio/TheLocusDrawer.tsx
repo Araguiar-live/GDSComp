@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import locusCinemaIcon from "@/assets/crcle/locus/cinema.svg";
 import locusCloseIcon from "@/assets/crcle/locus/close-x.svg";
 import locusCoffeeIcon from "@/assets/crcle/locus/coffee.svg";
@@ -182,14 +182,36 @@ type TheLocusDrawerProps = {
   open: boolean;
   onClose: () => void;
   onSendSignal: (payload: LocusSignalPayload) => void;
+  /** Figma 769:205283 — ice cream preselected when opening from chat plus */
+  presetActivityId?: LocusActivityId;
 };
 
-export function TheLocusDrawer({ open, onClose, onSendSignal }: TheLocusDrawerProps) {
+export function TheLocusDrawer({
+  open,
+  onClose,
+  onSendSignal,
+  presetActivityId,
+}: TheLocusDrawerProps) {
   const [tab, setTab] = useState<LocusTab>("intent");
   const [activityId, setActivityId] = useState<LocusActivityId | null>(null);
   const [when, setWhen] = useState<LocusWhen>("Tonight");
   const [timeOfDay, setTimeOfDay] = useState<LocusTimeOfDay>("evening");
   const [location, setLocation] = useState("Nearby café");
+
+  useEffect(() => {
+    if (!open) {
+      setTab("intent");
+      setActivityId(null);
+      setWhen("Tonight");
+      setTimeOfDay("evening");
+      setLocation("Nearby café");
+      return;
+    }
+    if (presetActivityId) {
+      setActivityId(presetActivityId);
+      setTab("venue");
+    }
+  }, [open, presetActivityId]);
 
   const selectActivity = (id: LocusActivityId) => {
     setActivityId(id);

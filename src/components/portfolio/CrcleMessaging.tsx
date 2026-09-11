@@ -33,7 +33,6 @@ import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
   CrcleBackButton,
   CrcleMoreButton,
-  CrclePrimaryDock,
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
@@ -65,7 +64,7 @@ const LOCUS_NOTIFICATION_DELAY_MS = 3000;
 const DEMO_RECEIVED_LOCUS_SIGNAL: SignalCardModel = {
   id: "locus-demo-received",
   activityId: "icecream",
-  activityLabel: "Ice cream",
+  activityLabel: "ice cream",
   when: "Tonight",
   timeOfDay: "evening",
   location: "Nearby café",
@@ -267,9 +266,18 @@ export function CrcleMessaging({
     locusNotificationTimerRef.current = window.setTimeout(() => {
       locusNotificationTimerRef.current = null;
       setSignalCard((current) => current ?? DEMO_RECEIVED_LOCUS_SIGNAL);
-      setAttachOpen(true);
     }, LOCUS_NOTIFICATION_DELAY_MS);
   }, [clearLocusNotificationTimer]);
+
+  const openLocusComposer = useCallback(() => {
+    setAttachOpen(true);
+    setLocusOpen(true);
+  }, []);
+
+  const closeLocusComposer = useCallback(() => {
+    setAttachOpen(false);
+    setLocusOpen(false);
+  }, []);
 
   const clearAreaNotificationTimer = useCallback(() => {
     if (areaNotificationTimerRef.current != null) {
@@ -465,15 +473,6 @@ export function CrcleMessaging({
     });
   }, [clearLocusNotificationTimer]);
 
-  const showPrimaryDock =
-    phase === "inbox" &&
-    !onboardingOpen &&
-    !activeMatch &&
-    areaInbox === "off" &&
-    !moodOpen &&
-    !areaNotificationOpen &&
-    !locusOpen;
-
   return (
     <div className="relative ml-auto w-fit">
       <CrcleThemeToggle
@@ -535,19 +534,6 @@ export function CrcleMessaging({
             </>
           ) : undefined
         }
-        bottomChrome={
-          showPrimaryDock ? (
-            <CrclePrimaryDock
-              embedded
-              active="messages"
-              onProfile={goProfile}
-              onMessages={openInbox}
-              onRadar={goRadar}
-              onSignalHome={goHome}
-              onAreaRadar={openAreaInbox}
-            />
-          ) : null
-        }
       >
         <AnimatePresence mode="wait">
           {phase === "chat" ? (
@@ -595,13 +581,15 @@ export function CrcleMessaging({
                 open={locusOpen}
                 onClose={() => setLocusOpen(false)}
                 onSendSignal={handleSendSignal}
+                presetActivityId="icecream"
               />
               <ChatComposer
                 draft={draft}
                 onDraftChange={setDraft}
                 attachOpen={attachOpen}
-                onAttachOpenChange={setAttachOpen}
                 locusOpen={locusOpen}
+                onOpenComposer={openLocusComposer}
+                onCloseComposer={closeLocusComposer}
                 onToggleLocus={() => setLocusOpen((v) => !v)}
               />
             </motion.div>
@@ -617,7 +605,7 @@ export function CrcleMessaging({
             >
               {/* Active Chats under In The Area — flat z-stack so blur samples rows at panel top */}
               {areaInbox !== "off" ? (
-                <div className="absolute inset-x-3 top-0 bottom-[100px] z-[1] overflow-y-auto overflow-x-hidden pb-6 pt-[88px]">
+                <div className="absolute inset-x-3 top-0 bottom-6 z-[1] overflow-y-auto overflow-x-hidden pb-6 pt-[88px]">
                   <ActiveChatList
                     conversations={MOCK_CONVERSATIONS}
                     onSelectConversation={openConversation}
@@ -655,7 +643,7 @@ export function CrcleMessaging({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.35, ease: EASE }}
                     transformTemplate={() => ""}
-                    className="absolute inset-x-3 top-0 bottom-[100px] overflow-hidden"
+                    className="absolute inset-x-3 top-0 bottom-6 overflow-hidden"
                   >
                     <div className="absolute inset-0 z-0 overflow-y-auto overflow-x-hidden pb-6 pt-[155px]">
                       <ActiveChatList
@@ -1471,15 +1459,17 @@ function ChatComposer({
   draft,
   onDraftChange,
   attachOpen,
-  onAttachOpenChange,
   locusOpen,
+  onOpenComposer,
+  onCloseComposer,
   onToggleLocus,
 }: {
   draft: string;
   onDraftChange: (v: string) => void;
   attachOpen: boolean;
-  onAttachOpenChange: (open: boolean) => void;
   locusOpen: boolean;
+  onOpenComposer: () => void;
+  onCloseComposer: () => void;
   onToggleLocus: () => void;
 }) {
   return (
@@ -1514,10 +1504,7 @@ function ChatComposer({
                 type="button"
                 aria-label={locusOpen ? "Close The Locus" : "Open The Locus"}
                 aria-pressed={locusOpen}
-                onClick={() => {
-                  onToggleLocus();
-                  onAttachOpenChange(false);
-                }}
+                onClick={onToggleLocus}
                 className={`box-border flex size-9 items-center justify-center rounded-[26px] p-[11px] transition ${
                   locusOpen
                     ? "bg-[#02031d] [.crcle-phone:not(.crcle-phone--light)_&]:bg-[#f7f6f2]"
@@ -1544,7 +1531,7 @@ function ChatComposer({
             type="button"
             aria-label={attachOpen ? "Close attach menu" : "Open attach menu"}
             aria-pressed={attachOpen}
-            onClick={() => onAttachOpenChange(!attachOpen)}
+            onClick={() => (attachOpen ? onCloseComposer() : onOpenComposer())}
             animate={{ rotate: attachOpen ? 45 : 0 }}
             transition={{ duration: 0.22, ease: EASE }}
             className={`flex size-9 shrink-0 items-center justify-center rounded-full transition ${
