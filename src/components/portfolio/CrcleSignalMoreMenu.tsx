@@ -4,7 +4,7 @@ import resetIcon from "@/assets/crcle/signal-home/menu/reset.svg";
 import settingsIcon from "@/assets/crcle/signal-home/menu/settings.svg";
 import sharecodeIcon from "@/assets/crcle/signal-home/menu/sharecode.svg";
 import userIcon from "@/assets/crcle/signal-home/menu/user.svg";
-import navRadarIcon from "@/assets/crcle/nav-radar.svg";
+import radarTwoIcon from "@/assets/crcle/mood/radar-two.svg";
 import securitySafeIcon from "@/assets/crcle/security-safe.svg";
 
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
@@ -54,28 +54,31 @@ export function CrcleSignalMoreMenu({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -6, scale: 0.97 }}
         transition={{ duration: 0.22, ease: EASE }}
-        className="absolute right-3 top-[148px] z-[70] flex w-[180px] flex-col gap-3 rounded-[24px] border border-[rgba(0,0,0,0.25)] bg-[rgba(247,246,242,0.6)] px-3 py-3.5 backdrop-blur-[6px]"
+        className="absolute right-3 top-[148px] z-[70] flex w-fit max-w-[calc(100%-24px)] flex-col items-stretch gap-3 rounded-[24px] border border-[rgba(0,0,0,0.25)] bg-[rgba(247,246,242,0.6)] px-3 py-3.5 backdrop-blur-[6px]"
         role="menu"
         aria-label="Signal options"
       >
         <div className="flex flex-col gap-2 rounded-[12px] bg-[rgba(2,3,29,0.6)] p-2">
-          <div className="flex h-[22px] flex-nowrap items-center justify-between gap-2">
+          <div className="flex h-[22px] w-full items-center justify-between gap-3">
             <MenuToggle active={signalOff} onChange={onToggleSignalOff} ariaLabel="Turn signal off" />
             <button
               type="button"
               onClick={onTogglePanel}
-              className="flex min-w-0 flex-1 flex-nowrap items-center justify-between gap-1"
+              className="shrink-0 whitespace-nowrap text-[11px] font-medium leading-none text-[#f7f6f2]"
+              style={{ fontFamily: FONT }}
             >
-              <span
-                className="whitespace-nowrap text-[11px] font-medium leading-none text-[#f7f6f2]"
-                style={{ fontFamily: FONT }}
-              >
-                Turn signal off
-              </span>
+              Turn signal off
+            </button>
+            <button
+              type="button"
+              aria-label={panelExpanded ? "Collapse signal options" : "Expand signal options"}
+              onClick={onTogglePanel}
+              className="flex size-3 shrink-0 items-center justify-center"
+            >
               <img
                 alt=""
                 src={chevronUpIcon}
-                className={`size-3 shrink-0 max-w-none object-contain transition-transform ${
+                className={`size-3 max-w-none object-contain transition-transform ${
                   panelExpanded ? "" : "rotate-180"
                 }`}
                 draggable={false}
@@ -92,26 +95,28 @@ export function CrcleSignalMoreMenu({
                 transition={{ duration: 0.2, ease: EASE }}
                 className="overflow-hidden"
               >
-                <div className="mb-2 h-px bg-[rgba(247,246,242,0.15)]" />
-                <div className="flex flex-nowrap items-center gap-1.5">
+                <div className="h-px w-full bg-[rgba(247,246,242,0.15)]" />
+                <div className="flex w-full items-center gap-1.5 pt-2">
                   <img
                     alt=""
-                    src={navRadarIcon}
+                    src={radarTwoIcon}
                     className="size-4 max-w-none shrink-0 object-contain brightness-0 invert"
                     draggable={false}
                   />
-                  <span
-                    className="min-w-0 flex-1 whitespace-nowrap text-[11px] font-medium leading-none text-[#f7f6f2]"
-                    style={{ fontFamily: FONT }}
-                  >
-                    Incognito mode
-                  </span>
-                  <MenuToggle
-                    active={radarOff}
-                    onChange={onToggleRadarOff}
-                    ariaLabel="Incognito mode"
-                    disabled={signalOff}
-                  />
+                  <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                    <span
+                      className="shrink-0 whitespace-nowrap text-[11px] font-medium leading-none text-[#f7f6f2]"
+                      style={{ fontFamily: FONT }}
+                    >
+                      Incognito mode
+                    </span>
+                    <MenuToggle
+                      active={radarOff}
+                      onChange={onToggleRadarOff}
+                      ariaLabel="Incognito mode"
+                      disabled={signalOff}
+                    />
+                  </div>
                 </div>
               </motion.div>
             ) : null}
@@ -153,13 +158,13 @@ function MenuToggle({
         if (!disabled) onChange();
       }}
       className={`relative flex h-4 w-9 shrink-0 items-center rounded-full p-0.5 transition ${
-        active ? "bg-[#11df59]" : "bg-[rgba(247,246,242,0.25)]"
+        active ? "justify-start bg-[#11df59]" : "justify-end bg-[#c9c9c4]"
       } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
     >
       <motion.span
         layout
         transition={{ type: "spring", stiffness: 520, damping: 32 }}
-        className={`h-3 w-3 rounded-full bg-[#f7f6f2] ${active ? "" : "ml-auto"}`}
+        className="h-3 w-3 rounded-full bg-[#f7f6f2]"
       />
     </button>
   );
@@ -183,7 +188,7 @@ function MenuRow({
     >
       <img alt="" src={icon} className="size-5 max-w-none shrink-0 object-contain" draggable={false} />
       <span
-        className="text-[11px] font-medium leading-none text-[#030422]"
+        className="whitespace-nowrap text-[11px] font-medium leading-none text-[#030422]"
         style={{ fontFamily: FONT }}
       >
         {label}

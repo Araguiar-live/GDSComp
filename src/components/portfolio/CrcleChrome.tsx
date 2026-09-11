@@ -396,6 +396,8 @@ export function CrcleHeaderNavPill({
               alt=""
               src={moreHorizIcon}
               className={`size-6 max-w-none object-contain ${iconClass}`}
+              width={24}
+              height={24}
               draggable={false}
             />
           </button>
@@ -448,6 +450,8 @@ export function CrcleHeaderNavPill({
                 alt=""
                 src={moreHorizIcon}
                 className={`size-6 max-w-none object-contain ${iconClass}`}
+                width={24}
+                height={24}
                 draggable={false}
               />
             </button>
