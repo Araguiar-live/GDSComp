@@ -75,7 +75,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
           className="graduate-work-overlay__blur pointer-events-none absolute inset-0 bg-white/20 backdrop-blur-[12px]"
         />
 
-        <div className="relative z-[1] flex flex-col gap-3 p-4">
+        <div className="graduate-work-overlay__content relative z-[1] flex flex-col gap-3 p-4">
           <header className="graduate-work-overlay__header shrink-0 bg-[rgba(9,14,21,0.5)] pr-10">
             <div className="min-w-0 leading-[1.2] tracking-[-0.41px] text-white">
               <p
@@ -208,7 +208,7 @@ function SearchArrowIcon({ className }: { className?: string }) {
 
 function ProjectEscalatorCard({ project }: { project: OverlayRailProject }) {
   return (
-    <div className="graduate-escalator-card relative mb-[clamp(10px,1.5vw,16px)] aspect-[584/634] shrink-0">
+    <div className="graduate-escalator-card relative aspect-[584/634] shrink-0">
       <img
         alt={project.title}
         src={project.image}
