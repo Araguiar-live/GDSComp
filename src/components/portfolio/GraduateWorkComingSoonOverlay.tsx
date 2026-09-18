@@ -113,31 +113,33 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
               intent with material craft. Case studies are being prepared for the portfolio.
             </p>
 
-            <div className="graduate-work-media gap-[clamp(8px,2vw,36px)]">
-              <div className="graduate-work-hero relative">
-                <img
-                  alt="Artaeka — featured graduate project"
-                  src={featuredHero}
-                  className="graduate-work-hero__image absolute inset-0 size-full"
-                  draggable={false}
-                />
-                <div className="pointer-events-none absolute inset-0 bg-black/10" />
-                <div className="graduate-work-hero__badge absolute right-3 top-3 bg-black/10 px-3 py-2 backdrop-blur-[4px]">
-                  <span
-                    className="whitespace-nowrap text-[clamp(10px,1.1vw,14px)] leading-[1.2] tracking-[-0.41px] text-white"
-                    style={{ fontFamily: FONT }}
-                  >
-                    Coming Soon
-                  </span>
+            <div className="graduate-work-media">
+              <div className="graduate-work-media-stage">
+                <div className="graduate-work-hero">
+                  <img
+                    alt="Artaeka — featured graduate project"
+                    src={featuredHero}
+                    className="graduate-work-hero__image absolute inset-0 size-full"
+                    draggable={false}
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-black/10" />
+                  <div className="graduate-work-hero__badge absolute right-3 top-3 bg-black/10 px-3 py-2 backdrop-blur-[4px]">
+                    <span
+                      className="whitespace-nowrap text-[clamp(10px,1.1vw,14px)] leading-[1.2] tracking-[-0.41px] text-white"
+                      style={{ fontFamily: FONT }}
+                    >
+                      Coming Soon
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="graduate-escalator-rail h-full min-h-0">
-                <EscalatorColumn
-                  projects={ESCALATOR_RAIL}
-                  direction="up"
-                  duration={ESCALATOR_DURATION}
-                />
+                <div className="graduate-escalator-rail">
+                  <EscalatorColumn
+                    projects={ESCALATOR_RAIL}
+                    direction="up"
+                    duration={ESCALATOR_DURATION}
+                  />
+                </div>
               </div>
             </div>
           </div>
