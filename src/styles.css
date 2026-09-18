@@ -15,7 +15,61 @@
   animation: marquee 40s linear infinite;
 }
 
-/* Graduate work overlay — vertical escalator rails (Figma 1659:207548) */
+/* Graduate work overlay — Figma 1659:207548 radius + escalator rails */
+.graduate-work-overlay {
+  --graduate-r-shell: 36px;
+  --graduate-r-surface: 32px;
+  --graduate-r-card: 24px;
+  --graduate-r-badge: 20px;
+  border-radius: var(--graduate-r-shell);
+}
+
+.graduate-work-overlay__blur {
+  border-radius: inherit;
+}
+
+.graduate-work-overlay__header {
+  border-radius: var(--graduate-r-surface);
+}
+
+.graduate-work-hero {
+  border-radius: var(--graduate-r-surface);
+  isolation: isolate;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.graduate-work-hero__image {
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.graduate-work-hero__badge {
+  border-radius: var(--graduate-r-badge);
+}
+
+.graduate-escalator-card {
+  border-radius: clamp(10px, 12%, var(--graduate-r-card));
+  isolation: isolate;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.graduate-escalator-card__image {
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.graduate-escalator-card__action {
+  border-radius: clamp(10px, 12%, var(--graduate-r-card));
+}
+
 @keyframes graduate-escalator-up {
   from {
     transform: translateY(0);
