@@ -284,7 +284,7 @@ export function CrcleSignalHome({
             </div>
           </div>
 
-          <div className="relative mt-[25px] flex min-h-0 w-full flex-1 flex-col items-center gap-2.5 px-3 pb-3">
+          <div className="relative mt-[25px] flex min-h-0 w-full flex-1 flex-col items-center gap-[18px] px-3 pb-[25px]">
             <div
               className={`relative flex min-h-0 w-full flex-1 flex-col overflow-hidden p-3 transition-colors duration-300 ${
                 screen === "photo"
@@ -1028,7 +1028,7 @@ function FooterSignal({
   onMap?: boolean;
 }) {
   return (
-    <div className="flex w-full flex-col items-center gap-4 px-3">
+    <div className="flex w-full flex-col items-center gap-[18px] px-3">
       <SignalBars
         tone={tone}
         activeBars={activeBars}
