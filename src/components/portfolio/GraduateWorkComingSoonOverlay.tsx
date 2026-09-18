@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
 import featuredHero from "@/assets/portfolio/graduate/overlay/featured-hero.png";
 import artaekaRail from "@/assets/portfolio/graduate/overlay/rail-artaeka.png";
 import beeseRail from "@/assets/portfolio/graduate/beese-synth.png";
@@ -27,8 +27,35 @@ const ESCALATOR_RAIL: OverlayRailProject[] = [
 /** Single-column loop — scaled from the original 3-up rail, 15% faster. */
 const ESCALATOR_DURATION = (28 / 1.15) * (ESCALATOR_RAIL.length / 3);
 
+const UNAVAILABLE_NOTICE = "Not available yet.";
+const UNAVAILABLE_NOTICE_MS = 2200;
+
 /** Figma 1659:207548 — industrial design graduate overlay + escalator project rail. */
 export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void }) {
+  const [unavailableNotice, setUnavailableNotice] = useState(false);
+  const noticeTimeoutRef = useRef<number | null>(null);
+
+  const showUnavailableNotice = useCallback(() => {
+    setUnavailableNotice(true);
+
+    if (noticeTimeoutRef.current !== null) {
+      window.clearTimeout(noticeTimeoutRef.current);
+    }
+
+    noticeTimeoutRef.current = window.setTimeout(() => {
+      setUnavailableNotice(false);
+      noticeTimeoutRef.current = null;
+    }, UNAVAILABLE_NOTICE_MS);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (noticeTimeoutRef.current !== null) {
+        window.clearTimeout(noticeTimeoutRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -74,6 +101,24 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
           aria-hidden
           className="graduate-work-overlay__blur pointer-events-none absolute inset-0 bg-white/20 backdrop-blur-[12px]"
         />
+
+        <AnimatePresence>
+          {unavailableNotice ? (
+            <motion.output
+              key="graduate-unavailable-notice"
+              role="status"
+              aria-live="polite"
+              initial={{ opacity: 0, y: 10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 6, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: EASE }}
+              className="graduate-work-overlay__notice pointer-events-none absolute bottom-4 left-1/2 z-[4] -translate-x-1/2 whitespace-nowrap rounded-full border border-white/35 bg-zinc-900/88 px-4 py-2 text-[clamp(11px,1.1vw,13px)] font-medium tracking-[-0.2px] text-white shadow-[0_10px_28px_rgba(11,14,20,0.28)] backdrop-blur-md"
+              style={{ fontFamily: FONT }}
+            >
+              {UNAVAILABLE_NOTICE}
+            </motion.output>
+          ) : null}
+        </AnimatePresence>
 
         <div className="graduate-work-overlay__content relative z-[1] flex flex-col gap-3 p-4">
           <header className="graduate-work-overlay__header shrink-0 bg-[rgba(9,14,21,0.5)] pr-10">
@@ -131,6 +176,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
                     projects={ESCALATOR_RAIL}
                     direction="up"
                     duration={ESCALATOR_DURATION}
+                    onProjectPress={showUnavailableNotice}
                   />
                 </div>
               </div>
@@ -146,10 +192,12 @@ function EscalatorColumn({
   projects,
   direction,
   duration,
+  onProjectPress,
 }: {
   projects: OverlayRailProject[];
   direction: "up" | "down";
   duration: number;
+  onProjectPress: () => void;
 }) {
   const loop = [...projects, ...projects];
 
@@ -160,7 +208,11 @@ function EscalatorColumn({
         style={{ animationDuration: `${duration}s` }}
       >
         {loop.map((project, index) => (
-          <ProjectEscalatorCard key={`${project.id}-${index}`} project={project} />
+          <ProjectEscalatorCard
+            key={`${project.id}-${index}`}
+            project={project}
+            onPress={onProjectPress}
+          />
         ))}
       </div>
     </div>
@@ -206,19 +258,30 @@ function SearchArrowIcon({ className }: { className?: string }) {
   );
 }
 
-function ProjectEscalatorCard({ project }: { project: OverlayRailProject }) {
+function ProjectEscalatorCard({
+  project,
+  onPress,
+}: {
+  project: OverlayRailProject;
+  onPress: () => void;
+}) {
   return (
-    <div className="graduate-escalator-card relative aspect-[584/634] shrink-0">
+    <button
+      type="button"
+      aria-label={`${project.title} — not available yet`}
+      onClick={onPress}
+      className="graduate-escalator-card group relative aspect-[584/634] shrink-0 cursor-pointer border-0 bg-transparent p-0 text-left"
+    >
       <img
-        alt={project.title}
+        alt=""
         src={project.image}
         className="graduate-escalator-card__image absolute inset-0 size-full"
         draggable={false}
       />
-      <div className="absolute inset-0 rounded-[inherit] bg-black/20" aria-hidden />
+      <div className="absolute inset-0 rounded-[inherit] bg-black/20 transition-colors duration-200 group-hover:bg-black/28" aria-hidden />
       <div className="graduate-escalator-card__action">
         <SearchArrowIcon className="graduate-escalator-card__action-icon" />
       </div>
-    </div>
+    </button>
   );
 }
