@@ -69,7 +69,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 12, scale: 0.98 }}
         transition={{ duration: 0.32, ease: EASE }}
-        className="graduate-work-overlay relative z-[1] flex max-h-[calc(100vh-1.5rem)] w-[min(98vw,1996px)] flex-col overflow-hidden shadow-[0_28px_80px_rgba(11,14,20,0.35)]"
+        className="graduate-work-overlay relative z-[1] flex flex-col overflow-hidden shadow-[0_28px_80px_rgba(11,14,20,0.35)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div
@@ -77,17 +77,17 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
           className="graduate-work-overlay__blur pointer-events-none absolute inset-0 bg-white/20 backdrop-blur-[12px]"
         />
 
-        <div className="relative z-[1] flex min-h-0 flex-1 flex-col gap-4 p-4">
-          <header className="graduate-work-overlay__header flex shrink-0 items-start justify-between gap-3 bg-[rgba(9,14,21,0.5)] p-4">
+        <div className="relative z-[1] flex flex-col gap-3 p-4">
+          <header className="graduate-work-overlay__header flex shrink-0 items-start justify-between gap-3 bg-[rgba(9,14,21,0.5)] p-3">
             <div className="min-w-0 flex-1 leading-[1.2] tracking-[-0.41px] text-white">
               <p
-                className="text-[clamp(13px,1.6vw,24px)] font-normal uppercase"
+                className="text-[clamp(10px,1.1vw,16px)] font-normal uppercase"
                 style={{ fontFamily: FONT }}
               >
                 Industrial Design Graduate Work
               </p>
               <h2
-                className="mt-2 text-[clamp(26px,4.2vw,64px)] font-medium"
+                className="mt-1 text-[clamp(18px,2.6vw,38px)] font-medium"
                 style={{ fontFamily: FONT }}
               >
                 Oh... I also do Industrial Design
@@ -99,13 +99,13 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
               onClick={onClose}
               className="shrink-0 transition hover:opacity-80"
             >
-              <img alt="" src={closeCircleIcon} className="size-9" draggable={false} />
+              <img alt="" src={closeCircleIcon} className="size-7" draggable={false} />
             </button>
           </header>
 
-          <div className="flex min-h-0 flex-1 flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <p
-              className="shrink-0 text-[clamp(13px,1.6vw,24px)] leading-[1.2] tracking-[-0.41px] text-white/60"
+              className="shrink-0 text-[clamp(10px,1.1vw,15px)] leading-[1.35] tracking-[-0.41px] text-white/60"
               style={{ fontFamily: FONT }}
             >
               Physical product explorations from my Industrial Design Technology degree at
@@ -113,8 +113,8 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
               intent with material craft. Case studies are being prepared for the portfolio.
             </p>
 
-            <div className="flex min-h-0 flex-1 w-full flex-row items-stretch gap-[clamp(12px,2.5vw,58px)]">
-              <div className="graduate-work-hero relative h-full min-h-[220px] min-w-0 flex-[1512]">
+            <div className="flex w-full flex-row items-stretch gap-[clamp(8px,2vw,36px)]">
+              <div className="graduate-work-hero relative aspect-[1512/832] min-w-0 flex-[1512]">
                 <img
                   alt="Artaeka — featured graduate project"
                   src={featuredHero}
@@ -122,17 +122,17 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
                   draggable={false}
                 />
                 <div className="pointer-events-none absolute inset-0 bg-black/10" />
-                <div className="graduate-work-hero__badge absolute right-[clamp(12px,2vw,38px)] top-[clamp(12px,2vw,38px)] bg-black/10 px-4 py-4 backdrop-blur-[4px]">
-                    <span
-                      className="whitespace-nowrap text-[clamp(13px,1.6vw,24px)] leading-[1.2] tracking-[-0.41px] text-white"
-                      style={{ fontFamily: FONT }}
-                    >
-                      Coming Soon
-                    </span>
-                  </div>
+                <div className="graduate-work-hero__badge absolute right-3 top-3 bg-black/10 px-3 py-2 backdrop-blur-[4px]">
+                  <span
+                    className="whitespace-nowrap text-[clamp(10px,1.1vw,14px)] leading-[1.2] tracking-[-0.41px] text-white"
+                    style={{ fontFamily: FONT }}
+                  >
+                    Coming Soon
+                  </span>
+                </div>
               </div>
 
-              <div className="graduate-escalator-rail h-full min-h-0 w-[clamp(88px,10.2%,200px)] shrink-0">
+              <div className="graduate-escalator-rail w-[clamp(64px,10.2%,120px)] shrink-0 self-stretch">
                 <EscalatorColumn
                   projects={ESCALATOR_RAIL}
                   direction="up"

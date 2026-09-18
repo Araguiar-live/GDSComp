@@ -22,6 +22,8 @@
   --graduate-r-card: 24px;
   --graduate-r-badge: 20px;
   border-radius: var(--graduate-r-shell);
+  max-height: min(52vh, 520px);
+  width: min(60vw, 820px);
 }
 
 .graduate-work-overlay__blur {
