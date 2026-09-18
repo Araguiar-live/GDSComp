@@ -18,22 +18,16 @@ type OverlayRailProject = {
   image: string;
 };
 
-const LEFT_RAIL: OverlayRailProject[] = [
+const ESCALATOR_RAIL: OverlayRailProject[] = [
   { id: "poqy", title: "Poqy", image: railPoqy },
   { id: "strolla", title: "Strolla", image: railStrolla },
-  { id: "artaeka", title: "Artaeka", image: railArtaeka },
-];
-
-const RIGHT_RAIL: OverlayRailProject[] = [
   { id: "roamer", title: "Roamer", image: railRoamer },
+  { id: "artaeka", title: "Artaeka", image: railArtaeka },
   { id: "beese", title: "Beese", image: railBeese },
 ];
 
-/** Base loop durations — 15% faster than the original 28s / 22s rails. */
-const ESCALATOR_DURATION = {
-  up: 28 / 1.15,
-  down: 22 / 1.15,
-} as const;
+/** Single-column loop — scaled from the original 3-up rail, 15% faster. */
+const ESCALATOR_DURATION = (28 / 1.15) * (ESCALATOR_RAIL.length / 3);
 
 /** Figma 1659:207548 — industrial design graduate overlay + escalator project rail. */
 export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void }) {
@@ -138,13 +132,11 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
                   </div>
               </div>
 
-              <div className="graduate-escalator-rail flex h-full min-h-0 min-w-0 flex-[442] shrink-0 flex-row gap-[clamp(8px,2vw,42px)]">
-                <EscalatorColumn projects={LEFT_RAIL} direction="up" duration={ESCALATOR_DURATION.up} />
+              <div className="graduate-escalator-rail h-full min-h-0 w-[clamp(88px,10.2%,200px)] shrink-0">
                 <EscalatorColumn
-                  projects={RIGHT_RAIL}
-                  direction="down"
-                  duration={ESCALATOR_DURATION.down}
-                  offset
+                  projects={ESCALATOR_RAIL}
+                  direction="up"
+                  duration={ESCALATOR_DURATION}
                 />
               </div>
             </div>
@@ -159,19 +151,15 @@ function EscalatorColumn({
   projects,
   direction,
   duration,
-  offset = false,
 }: {
   projects: OverlayRailProject[];
   direction: "up" | "down";
   duration: number;
-  offset?: boolean;
 }) {
   const loop = [...projects, ...projects];
 
   return (
-    <div
-      className={`graduate-escalator-column relative min-h-0 min-w-0 flex-1 overflow-hidden ${offset ? "graduate-escalator-column--offset" : ""}`}
-    >
+    <div className="graduate-escalator-column relative h-full min-h-0 w-full overflow-hidden">
       <div
         className={`graduate-escalator-track graduate-escalator-track--${direction}`}
         style={{ animationDuration: `${duration}s` }}
