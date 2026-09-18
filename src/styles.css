@@ -33,10 +33,12 @@
 
 .graduate-work-overlay__header {
   border-radius: var(--graduate-r-surface);
+  padding: clamp(16px, 2.4vw, 24px);
 }
 
 .graduate-work-media {
   align-items: stretch;
+  container-type: size;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   width: 100%;
@@ -133,6 +135,7 @@
   isolation: isolate;
   overflow: hidden;
   position: relative;
+  width: fit-content;
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0%,
@@ -182,12 +185,18 @@
 
 .graduate-escalator-column {
   height: 100%;
+  width: fit-content;
 }
 
 .graduate-escalator-track {
   display: flex;
   flex-direction: column;
+  width: fit-content;
   will-change: transform;
+}
+
+.graduate-escalator-card {
+  width: clamp(52px, 24cqh, 120px);
 }
 
 .graduate-escalator-track--up {

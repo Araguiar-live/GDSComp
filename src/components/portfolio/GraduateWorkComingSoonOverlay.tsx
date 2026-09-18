@@ -78,7 +78,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
         />
 
         <div className="relative z-[1] flex flex-col gap-3 p-4">
-          <header className="graduate-work-overlay__header flex shrink-0 items-start justify-between gap-3 bg-[rgba(9,14,21,0.5)] p-3">
+          <header className="graduate-work-overlay__header flex shrink-0 items-start justify-between gap-4 bg-[rgba(9,14,21,0.5)]">
             <div className="min-w-0 flex-1 leading-[1.2] tracking-[-0.41px] text-white">
               <p
                 className="text-[clamp(10px,1.1vw,16px)] font-normal uppercase"
@@ -132,7 +132,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
                 </div>
               </div>
 
-              <div className="graduate-escalator-rail h-full min-h-0 w-[clamp(64px,10.2%,120px)]">
+              <div className="graduate-escalator-rail h-full min-h-0">
                 <EscalatorColumn
                   projects={ESCALATOR_RAIL}
                   direction="up"
@@ -159,7 +159,7 @@ function EscalatorColumn({
   const loop = [...projects, ...projects];
 
   return (
-    <div className="graduate-escalator-column relative h-full min-h-0 w-full overflow-hidden">
+    <div className="graduate-escalator-column relative h-full min-h-0 overflow-hidden">
       <div
         className={`graduate-escalator-track graduate-escalator-track--${direction}`}
         style={{ animationDuration: `${duration}s` }}
@@ -174,7 +174,7 @@ function EscalatorColumn({
 
 function ProjectEscalatorCard({ project }: { project: OverlayRailProject }) {
   return (
-    <div className="graduate-escalator-card relative mb-[clamp(10px,1.5vw,16px)] aspect-[584/634] w-full shrink-0">
+    <div className="graduate-escalator-card relative mb-[clamp(10px,1.5vw,16px)] aspect-[584/634] shrink-0">
       <img
         alt={project.title}
         src={project.image}
