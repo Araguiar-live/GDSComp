@@ -69,7 +69,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 12, scale: 0.98 }}
         transition={{ duration: 0.32, ease: EASE }}
-        className="graduate-work-overlay relative z-[1] flex max-h-[min(calc(100vh-1.5rem),1200px)] w-[min(96vw,1996px)] flex-col overflow-hidden shadow-[0_28px_80px_rgba(11,14,20,0.35)]"
+        className="graduate-work-overlay relative z-[1] flex max-h-[calc(100vh-1.5rem)] w-[min(98vw,1996px)] flex-col overflow-hidden shadow-[0_28px_80px_rgba(11,14,20,0.35)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div
@@ -77,8 +77,8 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
           className="graduate-work-overlay__blur pointer-events-none absolute inset-0 bg-white/20 backdrop-blur-[12px]"
         />
 
-        <div className="relative z-[1] flex min-h-0 flex-1 flex-col gap-6 p-[clamp(20px,4vw,64px)]">
-          <header className="graduate-work-overlay__header flex shrink-0 items-start justify-between gap-4 bg-[rgba(9,14,21,0.5)] p-6">
+        <div className="relative z-[1] flex min-h-0 flex-1 flex-col gap-4 p-4">
+          <header className="graduate-work-overlay__header flex shrink-0 items-start justify-between gap-3 bg-[rgba(9,14,21,0.5)] p-4">
             <div className="min-w-0 flex-1 leading-[1.2] tracking-[-0.41px] text-white">
               <p
                 className="text-[clamp(13px,1.6vw,24px)] font-normal uppercase"
@@ -103,7 +103,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
             </button>
           </header>
 
-          <div className="flex min-h-0 flex-1 flex-col gap-9">
+          <div className="flex min-h-0 flex-1 flex-col gap-4">
             <p
               className="shrink-0 text-[clamp(13px,1.6vw,24px)] leading-[1.2] tracking-[-0.41px] text-white/60"
               style={{ fontFamily: FONT }}
@@ -113,8 +113,8 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
               intent with material craft. Case studies are being prepared for the portfolio.
             </p>
 
-            <div className="flex min-h-0 w-full flex-row items-stretch gap-[clamp(16px,3vw,58px)]">
-              <div className="graduate-work-hero relative aspect-[1512/832] min-w-0 flex-[1512]">
+            <div className="flex min-h-0 flex-1 w-full flex-row items-stretch gap-[clamp(12px,2.5vw,58px)]">
+              <div className="graduate-work-hero relative h-full min-h-[220px] min-w-0 flex-[1512]">
                 <img
                   alt="Artaeka — featured graduate project"
                   src={featuredHero}
@@ -132,7 +132,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
                   </div>
               </div>
 
-              <div className="graduate-escalator-rail flex min-h-0 min-w-0 flex-[442] shrink-0 flex-row gap-[clamp(10px,2.2vw,42px)]">
+              <div className="graduate-escalator-rail flex h-full min-h-0 min-w-0 flex-[442] shrink-0 flex-row gap-[clamp(8px,2vw,42px)]">
                 <EscalatorColumn projects={LEFT_RAIL} direction="up" duration={28} />
                 <EscalatorColumn projects={RIGHT_RAIL} direction="down" duration={22} offset />
               </div>
