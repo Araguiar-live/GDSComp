@@ -194,8 +194,8 @@ function ProjectEscalatorCard({ project }: { project: OverlayRailProject }) {
         draggable={false}
       />
       <div className="absolute inset-0 rounded-[inherit] bg-black/20" aria-hidden />
-      <div className="graduate-escalator-card__action absolute bottom-0 left-0 flex items-center bg-white/30 p-4 backdrop-blur-[2px]">
-        <img alt="" src={searchArrowIcon} className="size-8" draggable={false} />
+      <div className="graduate-escalator-card__action">
+        <img alt="" src={searchArrowIcon} className="graduate-escalator-card__action-icon" draggable={false} />
       </div>
     </div>
   );
