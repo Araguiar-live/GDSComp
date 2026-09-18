@@ -29,6 +29,12 @@ const RIGHT_RAIL: OverlayRailProject[] = [
   { id: "beese", title: "Beese", image: railBeese },
 ];
 
+/** Base loop durations — 15% faster than the original 28s / 22s rails. */
+const ESCALATOR_DURATION = {
+  up: 28 / 1.15,
+  down: 22 / 1.15,
+} as const;
+
 /** Figma 1659:207548 — industrial design graduate overlay + escalator project rail. */
 export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void }) {
   useEffect(() => {
@@ -133,8 +139,13 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
               </div>
 
               <div className="graduate-escalator-rail flex h-full min-h-0 min-w-0 flex-[442] shrink-0 flex-row gap-[clamp(8px,2vw,42px)]">
-                <EscalatorColumn projects={LEFT_RAIL} direction="up" duration={28} />
-                <EscalatorColumn projects={RIGHT_RAIL} direction="down" duration={22} offset />
+                <EscalatorColumn projects={LEFT_RAIL} direction="up" duration={ESCALATOR_DURATION.up} />
+                <EscalatorColumn
+                  projects={RIGHT_RAIL}
+                  direction="down"
+                  duration={ESCALATOR_DURATION.down}
+                  offset
+                />
               </div>
             </div>
           </div>

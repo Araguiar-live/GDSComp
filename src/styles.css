@@ -90,6 +90,54 @@
 
 .graduate-escalator-rail {
   align-self: stretch;
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 14%,
+    #000 86%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 14%,
+    #000 86%,
+    transparent 100%
+  );
+}
+
+.graduate-escalator-rail::before,
+.graduate-escalator-rail::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  height: 22%;
+}
+
+.graduate-escalator-rail::before {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.16) 55%,
+    transparent 100%
+  );
+}
+
+.graduate-escalator-rail::after {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.16) 55%,
+    transparent 100%
+  );
 }
 
 .graduate-escalator-column {
@@ -98,27 +146,6 @@
 
 .graduate-escalator-column--offset {
   padding-top: 10%;
-}
-
-.graduate-escalator-column::before,
-.graduate-escalator-column::after {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  height: 16%;
-}
-
-.graduate-escalator-column::before {
-  top: 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.28), transparent);
-}
-
-.graduate-escalator-column::after {
-  bottom: 0;
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.28), transparent);
 }
 
 .graduate-escalator-track {
