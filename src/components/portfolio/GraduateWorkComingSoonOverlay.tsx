@@ -113,8 +113,8 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
               intent with material craft. Case studies are being prepared for the portfolio.
             </p>
 
-            <div className="flex w-full flex-row items-stretch gap-[clamp(8px,2vw,36px)]">
-              <div className="graduate-work-hero relative aspect-[1512/832] min-w-0 flex-[1512]">
+            <div className="graduate-work-media gap-[clamp(8px,2vw,36px)]">
+              <div className="graduate-work-hero relative">
                 <img
                   alt="Artaeka — featured graduate project"
                   src={featuredHero}
@@ -132,7 +132,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
                 </div>
               </div>
 
-              <div className="graduate-escalator-rail w-[clamp(64px,10.2%,120px)] shrink-0 self-stretch">
+              <div className="graduate-escalator-rail h-full min-h-0 w-[clamp(64px,10.2%,120px)]">
                 <EscalatorColumn
                   projects={ESCALATOR_RAIL}
                   direction="up"

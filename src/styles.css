@@ -21,8 +21,9 @@
   --graduate-r-surface: 32px;
   --graduate-r-card: 24px;
   --graduate-r-badge: 20px;
+  --graduate-hero-ratio: 1512 / 832;
   border-radius: var(--graduate-r-shell);
-  max-height: min(52vh, 520px);
+  max-height: min(88vh, 680px);
   width: min(60vw, 820px);
 }
 
@@ -34,11 +35,22 @@
   border-radius: var(--graduate-r-surface);
 }
 
+.graduate-work-media {
+  align-items: stretch;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+}
+
 .graduate-work-hero {
+  aspect-ratio: var(--graduate-hero-ratio);
   border-radius: var(--graduate-r-surface);
+  height: auto;
   isolation: isolate;
+  min-height: 0;
   overflow: hidden;
   transform: translateZ(0);
+  width: 100%;
 }
 
 .graduate-work-hero__image {
@@ -46,6 +58,7 @@
   display: block;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   width: 100%;
 }
 
