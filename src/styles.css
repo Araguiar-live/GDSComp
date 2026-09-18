@@ -34,6 +34,30 @@
 .graduate-work-overlay__header {
   border-radius: var(--graduate-r-surface);
   padding: clamp(16px, 2.4vw, 24px);
+  position: relative;
+}
+
+.graduate-work-overlay__close {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  line-height: 0;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity 0.2s ease;
+}
+
+.graduate-work-overlay__close:hover {
+  opacity: 0.8;
+}
+
+.graduate-work-overlay__close-icon {
+  display: block;
+  height: 36px;
+  width: 36px;
 }
 
 .graduate-work-media {

@@ -77,8 +77,8 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
         />
 
         <div className="relative z-[1] flex flex-col gap-3 p-4">
-          <header className="graduate-work-overlay__header flex shrink-0 items-start justify-between gap-4 bg-[rgba(9,14,21,0.5)]">
-            <div className="min-w-0 flex-1 leading-[1.2] tracking-[-0.41px] text-white">
+          <header className="graduate-work-overlay__header shrink-0 bg-[rgba(9,14,21,0.5)] pr-10">
+            <div className="min-w-0 leading-[1.2] tracking-[-0.41px] text-white">
               <p
                 className="text-[clamp(10px,1.1vw,16px)] font-normal uppercase"
                 style={{ fontFamily: FONT }}
@@ -92,13 +92,8 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
                 Oh... I also do Industrial Design
               </h2>
             </div>
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={onClose}
-              className="shrink-0 transition hover:opacity-80"
-            >
-              <img alt="" src={closeCircleIcon} className="size-7" draggable={false} />
+            <button type="button" aria-label="Close" onClick={onClose} className="graduate-work-overlay__close">
+              <img alt="" src={closeCircleIcon} className="graduate-work-overlay__close-icon" draggable={false} />
             </button>
           </header>
 
