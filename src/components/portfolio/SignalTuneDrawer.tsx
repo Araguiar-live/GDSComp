@@ -88,7 +88,7 @@ export function SignalTuneDrawer({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2, ease: EASE }}
           transformTemplate={() => ""}
-          className="pointer-events-auto absolute inset-0 z-[60] flex flex-col justify-end overflow-hidden rounded-[53px]"
+          className="pointer-events-auto absolute inset-0 z-[62] flex flex-col justify-end overflow-hidden rounded-[53px]"
           style={{ clipPath: "inset(0 round 53px)" }}
           role="dialog"
           aria-modal="true"

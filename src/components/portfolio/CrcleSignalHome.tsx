@@ -106,13 +106,15 @@ export function CrcleSignalHome({
     onGoToMessages?.();
   }, [onGoToMessages]);
 
-  const showFooterSignal =
+  const showPhoneChrome =
     !onboardingOpen &&
     !tuneOpen &&
     !intentOpen &&
     !locationOpen &&
     !menuOpen &&
     !sharecodeOpen;
+
+  const showFooterSignal = showPhoneChrome;
 
   const enableIncognito = useCallback(() => {
     if (signalOff) return;
@@ -242,8 +244,8 @@ export function CrcleSignalHome({
           </div>
 
           <div className="flex w-full shrink-0 flex-col items-center gap-px px-3">
-            {!onboardingOpen ? (
-              <div className="relative z-[60] flex h-[42px] w-full items-center justify-between">
+            {showPhoneChrome ? (
+              <div className="relative flex h-[42px] w-full items-center justify-between">
                 <CrcleBackButton
                   tone={light ? "light" : "dark"}
                   onClick={() => {
