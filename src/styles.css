@@ -100,8 +100,10 @@
 }
 
 .graduate-escalator-card {
+  --graduate-action-r: clamp(7px, 1.5vw, 10px);
   --graduate-card-inset: clamp(8px, 2.75%, 16px);
-  border-radius: clamp(10px, 12%, var(--graduate-r-card));
+  --graduate-card-r: calc(var(--graduate-action-r) + 4px);
+  border-radius: var(--graduate-card-r);
   isolation: isolate;
   overflow: hidden;
   transform: translateZ(0);
@@ -122,24 +124,24 @@
   -webkit-backdrop-filter: blur(14px) saturate(190%) brightness(1.1);
   background: rgba(255, 255, 255, 0.24);
   border: 1px solid rgba(255, 255, 255, 0.48);
-  border-radius: 9999px;
+  border-radius: var(--graduate-action-r);
   bottom: var(--graduate-card-inset);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.62),
     inset 0 -1px 0 rgba(255, 255, 255, 0.14),
-    0 4px 14px rgba(9, 14, 21, 0.2);
+    0 3px 11px rgba(9, 14, 21, 0.2);
   display: flex;
   justify-content: center;
   left: var(--graduate-card-inset);
-  padding: clamp(10px, 2.4vw, 16px) clamp(7px, 1.4vw, 10px);
+  padding: clamp(8px, 1.9vw, 13px) clamp(6px, 1.1vw, 8px);
   position: absolute;
 }
 
 .graduate-escalator-card__action-icon {
   display: block;
   flex-shrink: 0;
-  height: clamp(14px, 3.6vw, 18px);
-  width: clamp(14px, 3.6vw, 18px);
+  height: clamp(11px, 2.9vw, 14px);
+  width: clamp(11px, 2.9vw, 14px);
 }
 
 @keyframes graduate-escalator-up {
