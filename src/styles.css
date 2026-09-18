@@ -15,6 +15,67 @@
   animation: marquee 40s linear infinite;
 }
 
+/* Graduate work overlay — vertical escalator rails (Figma 1659:207548) */
+@keyframes graduate-escalator-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes graduate-escalator-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.graduate-escalator-column::before,
+.graduate-escalator-column::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: 18%;
+}
+
+.graduate-escalator-column::before {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(9, 14, 21, 0.55), transparent);
+}
+
+.graduate-escalator-column::after {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(9, 14, 21, 0.55), transparent);
+}
+
+.graduate-escalator-track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.graduate-escalator-track--up {
+  animation: graduate-escalator-up linear infinite;
+}
+
+.graduate-escalator-track--down {
+  animation: graduate-escalator-down linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graduate-escalator-track--up,
+  .graduate-escalator-track--down {
+    animation: none;
+  }
+}
+
 @keyframes portfolio-logo-breathe {
   0%,
   100% {

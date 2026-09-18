@@ -1,14 +1,25 @@
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
 import { useEffect } from "react";
-import industrialDesignHero from "@/assets/portfolio/graduate/industrial-design-hero.png";
-import { GRADUATE_PROJECTS } from "@/components/portfolio/graduateProjects";
+import closeCircleIcon from "@/assets/portfolio/graduate/close-circle.svg";
+import searchArrowIcon from "@/assets/portfolio/graduate/search-arrow.svg";
+import {
+  GRADUATE_PROJECTS,
+  type GraduateProject,
+} from "@/components/portfolio/graduateProjects";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 
-/** Figma 1391:214737 — full-screen graduate folder with blurred portfolio frame. */
+/** Figma 1659:207548 — industrial design graduate overlay + escalator project rail. */
 export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void }) {
+  const featured = GRADUATE_PROJECTS.find((p) => p.id === "poqy") ?? GRADUATE_PROJECTS[1];
+  const leftRail = GRADUATE_PROJECTS.filter((p) =>
+    (["artaeka", "strolla", "roamer"] as const).includes(p.id),
+  );
+  const rightRail = GRADUATE_PROJECTS.filter((p) =>
+    (["poqy", "beese"] as const).includes(p.id),
+  );
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -33,126 +44,135 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.22, ease: EASE }}
-      className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-8"
+      className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-6 md:p-8"
     >
       <button
         type="button"
         aria-label="Close graduate work"
         onClick={onClose}
-        className="absolute inset-0 cursor-default border-0 bg-zinc-950/45 backdrop-blur-[6px]"
+        className="absolute inset-0 cursor-default border-0 bg-zinc-950/50 backdrop-blur-[8px]"
       />
 
       <motion.div
         initial={{ opacity: 0, y: 18, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 12, scale: 0.98 }}
-        transition={{ duration: 0.3, ease: EASE }}
-        className="relative z-[1] flex max-h-[min(860px,calc(100vh-2rem))] w-full max-w-[980px] flex-col overflow-hidden rounded-[28px] border border-white/30 bg-white/72 shadow-[0_28px_80px_rgba(11,14,20,0.22),inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-[18px] supports-[backdrop-filter]:bg-white/60"
+        transition={{ duration: 0.32, ease: EASE }}
+        className="graduate-work-overlay relative z-[1] flex max-h-[min(920px,calc(100vh-1.5rem))] w-full max-w-[1100px] flex-col gap-4 overflow-hidden rounded-[28px] bg-white/20 p-4 shadow-[0_28px_80px_rgba(11,14,20,0.35)] backdrop-blur-[12px] sm:gap-5 sm:rounded-[36px] sm:p-6 md:p-8"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex shrink-0 items-start justify-between gap-4 border-b border-zinc-900/8 px-5 py-4 sm:px-7 sm:py-5">
-          <div className="min-w-0">
+        <header className="flex shrink-0 items-start justify-between gap-3 rounded-[24px] bg-[rgba(9,14,21,0.5)] p-4 sm:gap-4 sm:rounded-[32px] sm:p-6">
+          <div className="min-w-0 flex-1 leading-[1.2] text-white">
             <p
-              className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500"
+              className="text-[10px] font-normal uppercase tracking-[0.12em] text-white/80 sm:text-[13px] sm:tracking-normal sm:normal-case"
               style={{ fontFamily: FONT }}
             >
-              Industrial Design
+              Industrial Design Graduate Work
             </p>
             <h2
-              className="text-[22px] font-semibold tracking-tight text-zinc-900 sm:text-[26px]"
+              className="mt-1 text-[22px] font-medium tracking-tight sm:mt-2 sm:text-[32px] md:text-[42px] lg:text-[52px]"
               style={{ fontFamily: FONT }}
             >
-              Graduate Work
+              Oh... I also do Industrial Design
             </h2>
-            <p
-              className="mt-2 max-w-xl text-[13px] leading-relaxed text-zinc-600 sm:text-[14px]"
-              style={{ fontFamily: FONT }}
-            >
-              Physical product explorations from my Industrial Design Technology degree at
-              Loughborough — tactile interfaces, street hardware, and objects that bridge
-              digital intent with material craft. Case studies are being prepared for the
-              portfolio.
-            </p>
           </div>
           <button
             type="button"
             aria-label="Close"
             onClick={onClose}
-            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-zinc-900/10 bg-white/80 text-zinc-700 shadow-sm transition hover:bg-white hover:text-zinc-900"
+            className="shrink-0 transition hover:opacity-80"
           >
-            <X className="size-4" strokeWidth={2} />
+            <img alt="" src={closeCircleIcon} className="size-8 sm:size-9" draggable={false} />
           </button>
         </header>
 
-        <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-          <div className="relative min-h-[220px] overflow-hidden bg-[#e8edf2] md:min-h-0">
+        <p
+          className="shrink-0 px-1 text-[12px] leading-[1.35] text-white/60 sm:text-[14px] md:text-[16px]"
+          style={{ fontFamily: FONT }}
+        >
+          Physical product explorations from my Industrial Design Technology degree at
+          Loughborough — tactile interfaces, street hardware, and objects that bridge digital
+          intent with material craft. Case studies are being prepared for the portfolio.
+        </p>
+
+        <div className="flex min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-6">
+          <div className="relative min-h-[200px] flex-1 overflow-hidden rounded-[24px] sm:min-h-[260px] sm:rounded-[32px] lg:min-h-0">
             <img
-              alt="Roamer — Transport for London busking hardware"
-              src={industrialDesignHero}
-              className="absolute inset-0 size-full object-cover object-left-center"
+              alt={`${featured.title} — featured graduate project`}
+              src={featured.hero}
+              className="absolute inset-0 size-full object-cover"
               draggable={false}
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/35 md:to-white/55" />
+            <div className="pointer-events-none absolute inset-0 bg-black/10 backdrop-blur-[1px]" />
+            <div className="absolute right-3 top-3 rounded-[16px] bg-black/10 px-3 py-2 backdrop-blur-[4px] sm:right-4 sm:top-4 sm:px-4 sm:py-3">
+              <span
+                className="text-[12px] text-white sm:text-[14px] md:text-[16px]"
+                style={{ fontFamily: FONT }}
+              >
+                Coming Soon
+              </span>
+            </div>
           </div>
 
-          <div className="flex min-h-0 flex-col overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
-            <p
-              className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500"
-              style={{ fontFamily: FONT }}
-            >
-              Projects · Coming soon
-            </p>
-
-            <ul className="flex flex-col gap-2">
-              {GRADUATE_PROJECTS.map((project) => (
-                <li
-                  key={project.id}
-                  className="flex items-center gap-3 rounded-[14px] border border-zinc-900/6 bg-white/50 px-3 py-2.5"
-                >
-                  <span className="relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full">
-                    <img
-                      src={project.dot}
-                      alt=""
-                      width={36}
-                      height={36}
-                      className="size-full object-contain blur-[3px] brightness-95 saturate-50"
-                      draggable={false}
-                    />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className="truncate text-[14px] font-semibold tracking-tight text-zinc-900"
-                      style={{ fontFamily: FONT }}
-                    >
-                      {project.title}
-                    </p>
-                    <p
-                      className="truncate text-[11px] text-zinc-500 blur-[2px] select-none"
-                      style={{ fontFamily: FONT }}
-                      aria-hidden
-                    >
-                      {project.tag}
-                    </p>
-                  </div>
-                  <span
-                    className="shrink-0 rounded-full bg-zinc-900/[0.06] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-zinc-500"
-                    style={{ fontFamily: FONT }}
-                  >
-                    Coming soon
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <p
-              className="mt-4 text-[11px] leading-relaxed text-zinc-500"
-              style={{ fontFamily: FONT }}
-            >
-              Press Esc to return to the portfolio.
-            </p>
+          <div className="graduate-escalator-rail relative flex h-[220px] shrink-0 gap-3 overflow-hidden sm:h-[280px] sm:gap-4 lg:h-auto lg:w-[min(42%,320px)] lg:min-w-[240px]">
+            <EscalatorColumn projects={leftRail} direction="up" duration={28} />
+            <EscalatorColumn projects={rightRail} direction="down" duration={22} offset />
           </div>
         </div>
+
+        <p
+          className="shrink-0 text-center text-[10px] text-white/45 sm:text-[11px]"
+          style={{ fontFamily: FONT }}
+        >
+          Press Esc to return to the portfolio
+        </p>
       </motion.div>
     </motion.div>
+  );
+}
+
+function EscalatorColumn({
+  projects,
+  direction,
+  duration,
+  offset = false,
+}: {
+  projects: GraduateProject[];
+  direction: "up" | "down";
+  duration: number;
+  offset?: boolean;
+}) {
+  const loop = [...projects, ...projects];
+
+  return (
+    <div
+      className={`graduate-escalator-column relative min-w-0 flex-1 overflow-hidden ${offset ? "pt-8 sm:pt-12" : ""}`}
+    >
+      <div
+        className={`graduate-escalator-track graduate-escalator-track--${direction}`}
+        style={{ animationDuration: `${duration}s` }}
+      >
+        {loop.map((project, index) => (
+          <ProjectEscalatorCard key={`${project.id}-${index}`} project={project} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProjectEscalatorCard({ project }: { project: GraduateProject }) {
+  return (
+    <div className="graduate-escalator-card relative mb-3 aspect-[584/634] w-full shrink-0 overflow-hidden rounded-[20px] sm:mb-4 sm:rounded-[24px]">
+      <img
+        alt={project.title}
+        src={project.hero}
+        className="absolute inset-0 size-full object-cover"
+        draggable={false}
+      />
+      <div className="absolute inset-0 bg-black/25" aria-hidden />
+      <div className="absolute bottom-2 left-2 flex items-center rounded-[20px] bg-white/30 px-2.5 py-3 backdrop-blur-[2px] sm:bottom-3 sm:left-3 sm:px-2.5 sm:py-4">
+        <img alt="" src={searchArrowIcon} className="size-5 sm:size-8" draggable={false} />
+      </div>
+    </div>
   );
 }
