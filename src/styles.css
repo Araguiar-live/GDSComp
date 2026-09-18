@@ -28,7 +28,6 @@
   --graduate-r-card: 24px;
   --graduate-r-badge: 20px;
   --graduate-hero-ratio: 1512 / 832;
-  --graduate-rail-gap: clamp(10px, 1.5vw, 16px);
   border-radius: var(--graduate-r-shell);
   isolation: isolate;
   max-height: min(88vh, 680px);
@@ -105,11 +104,13 @@
 }
 
 .graduate-work-media-stage {
+  --graduate-rail-gap: clamp(8px, min(2.4cqw, 3.2cqh), 14px);
   aspect-ratio: var(--graduate-hero-ratio);
   container-type: size;
+  column-gap: var(--graduate-rail-gap);
   display: grid;
-  gap: var(--graduate-rail-gap);
   grid-template-columns: minmax(0, 1fr) auto;
+  row-gap: 0;
   width: 100%;
 }
 
@@ -144,7 +145,6 @@
   --graduate-card-r: calc(var(--graduate-action-r) + 4px);
   border-radius: var(--graduate-card-r);
   isolation: isolate;
-  margin-bottom: var(--graduate-rail-gap);
   overflow: hidden;
   transform: translateZ(0);
   width: clamp(68px, 32cqh, 156px);
@@ -264,6 +264,7 @@
 .graduate-escalator-track {
   display: flex;
   flex-direction: column;
+  gap: var(--graduate-rail-gap);
   width: fit-content;
   will-change: transform;
 }
