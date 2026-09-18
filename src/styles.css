@@ -112,6 +112,7 @@
 
 .graduate-escalator-card__action-icon {
   display: block;
+  flex-shrink: 0;
   height: clamp(14px, 3.6vw, 18px);
   width: clamp(14px, 3.6vw, 18px);
 }

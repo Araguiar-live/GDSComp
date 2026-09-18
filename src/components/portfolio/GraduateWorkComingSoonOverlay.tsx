@@ -2,12 +2,11 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import closeCircleIcon from "@/assets/portfolio/graduate/close-circle.svg";
 import featuredHero from "@/assets/portfolio/graduate/overlay/featured-hero.png";
-import railArtaeka from "@/assets/portfolio/graduate/overlay/rail-artaeka.png";
-import railBeese from "@/assets/portfolio/graduate/overlay/rail-beese.png";
-import railPoqy from "@/assets/portfolio/graduate/overlay/rail-poqy.png";
-import railRoamer from "@/assets/portfolio/graduate/overlay/rail-roamer.png";
-import railStrolla from "@/assets/portfolio/graduate/overlay/rail-strolla.png";
-import searchArrowIcon from "@/assets/portfolio/graduate/search-arrow.svg";
+import artaekaRail from "@/assets/portfolio/graduate/overlay/rail-artaeka.png";
+import beeseRail from "@/assets/portfolio/graduate/beese-synth.png";
+import poqyRail from "@/assets/portfolio/graduate/poqy-device.png";
+import roamerRail from "@/assets/portfolio/graduate/roamer-nfc.png";
+import strollaRail from "@/assets/portfolio/graduate/strolla-hero.png";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
@@ -19,11 +18,11 @@ type OverlayRailProject = {
 };
 
 const ESCALATOR_RAIL: OverlayRailProject[] = [
-  { id: "poqy", title: "Poqy", image: railPoqy },
-  { id: "strolla", title: "Strolla", image: railStrolla },
-  { id: "roamer", title: "Roamer", image: railRoamer },
-  { id: "artaeka", title: "Artaeka", image: railArtaeka },
-  { id: "beese", title: "Beese", image: railBeese },
+  { id: "poqy", title: "Poqy", image: poqyRail },
+  { id: "strolla", title: "Strolla", image: strollaRail },
+  { id: "roamer", title: "Roamer", image: roamerRail },
+  { id: "artaeka", title: "Artaeka", image: artaekaRail },
+  { id: "beese", title: "Beese", image: beeseRail },
 ];
 
 /** Single-column loop — scaled from the original 3-up rail, 15% faster. */
@@ -174,6 +173,25 @@ function EscalatorColumn({
   );
 }
 
+function SearchArrowIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M11.8382 7.51472C11.8382 6.77834 12.4352 6.18138 13.1716 6.18138H24.4853C25.2217 6.18138 25.8186 6.77834 25.8186 7.51472V18.8284C25.8186 19.5648 25.2217 20.1618 24.4853 20.1618C23.7489 20.1618 23.1519 19.5648 23.1519 18.8284V10.7337L8.45753 25.4281C7.93683 25.9488 7.09261 25.9488 6.57191 25.4281C6.05121 24.9074 6.05121 24.0632 6.57191 23.5425L21.2663 8.84805H13.1716C12.4352 8.84805 11.8382 8.2511 11.8382 7.51472Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
 function ProjectEscalatorCard({ project }: { project: OverlayRailProject }) {
   return (
     <div className="graduate-escalator-card relative mb-[clamp(10px,1.5vw,16px)] aspect-[584/634] shrink-0">
@@ -185,7 +203,7 @@ function ProjectEscalatorCard({ project }: { project: OverlayRailProject }) {
       />
       <div className="absolute inset-0 rounded-[inherit] bg-black/20" aria-hidden />
       <div className="graduate-escalator-card__action">
-        <img alt="" src={searchArrowIcon} className="graduate-escalator-card__action-icon" draggable={false} />
+        <SearchArrowIcon className="graduate-escalator-card__action-icon" />
       </div>
     </div>
   );
