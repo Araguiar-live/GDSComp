@@ -1,28 +1,36 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import closeCircleIcon from "@/assets/portfolio/graduate/close-circle.svg";
+import featuredHero from "@/assets/portfolio/graduate/overlay/featured-hero.png";
+import railArtaeka from "@/assets/portfolio/graduate/overlay/rail-artaeka.png";
+import railBeese from "@/assets/portfolio/graduate/overlay/rail-beese.png";
+import railPoqy from "@/assets/portfolio/graduate/overlay/rail-poqy.png";
+import railRoamer from "@/assets/portfolio/graduate/overlay/rail-roamer.png";
+import railStrolla from "@/assets/portfolio/graduate/overlay/rail-strolla.png";
 import searchArrowIcon from "@/assets/portfolio/graduate/search-arrow.svg";
-import {
-  GRADUATE_PROJECTS,
-  type GraduateProject,
-  type GraduateProjectId,
-} from "@/components/portfolio/graduateProjects";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 
-const LEFT_RAIL_IDS = ["poqy", "strolla", "artaeka"] as const satisfies readonly GraduateProjectId[];
-const RIGHT_RAIL_IDS = ["roamer", "beese"] as const satisfies readonly GraduateProjectId[];
+type OverlayRailProject = {
+  id: string;
+  title: string;
+  image: string;
+};
 
-function projectById(id: GraduateProjectId) {
-  return GRADUATE_PROJECTS.find((p) => p.id === id)!;
-}
+const LEFT_RAIL: OverlayRailProject[] = [
+  { id: "poqy", title: "Poqy", image: railPoqy },
+  { id: "strolla", title: "Strolla", image: railStrolla },
+  { id: "artaeka", title: "Artaeka", image: railArtaeka },
+];
+
+const RIGHT_RAIL: OverlayRailProject[] = [
+  { id: "roamer", title: "Roamer", image: railRoamer },
+  { id: "beese", title: "Beese", image: railBeese },
+];
 
 /** Figma 1659:207548 — industrial design graduate overlay + escalator project rail. */
 export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void }) {
-  const featured = projectById("artaeka");
-  const leftRail = LEFT_RAIL_IDS.map(projectById);
-  const rightRail = RIGHT_RAIL_IDS.map(projectById);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -104,9 +112,9 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
             <div className="relative min-w-0 flex-[1512] overflow-hidden rounded-[32px]">
               <div className="relative aspect-[1512/832] w-full">
                 <img
-                  alt={`${featured.title} — featured graduate project`}
-                  src={featured.hero}
-                  className="absolute inset-0 size-full scale-110 object-cover object-[center_22%]"
+                  alt="Artaeka — featured graduate project"
+                  src={featuredHero}
+                  className="absolute inset-0 size-full object-cover"
                   draggable={false}
                 />
                 <div className="pointer-events-none absolute inset-0 bg-black/10" />
@@ -122,8 +130,8 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
             </div>
 
             <div className="graduate-escalator-rail flex min-h-0 min-w-0 flex-[442] shrink-0 flex-row gap-[clamp(10px,2.2vw,42px)]">
-              <EscalatorColumn projects={leftRail} direction="up" duration={28} />
-              <EscalatorColumn projects={rightRail} direction="down" duration={22} offset />
+              <EscalatorColumn projects={LEFT_RAIL} direction="up" duration={28} />
+              <EscalatorColumn projects={RIGHT_RAIL} direction="down" duration={22} offset />
             </div>
           </div>
         </div>
@@ -138,7 +146,7 @@ function EscalatorColumn({
   duration,
   offset = false,
 }: {
-  projects: GraduateProject[];
+  projects: OverlayRailProject[];
   direction: "up" | "down";
   duration: number;
   offset?: boolean;
@@ -161,12 +169,12 @@ function EscalatorColumn({
   );
 }
 
-function ProjectEscalatorCard({ project }: { project: GraduateProject }) {
+function ProjectEscalatorCard({ project }: { project: OverlayRailProject }) {
   return (
     <div className="graduate-escalator-card relative mb-[clamp(10px,1.5vw,16px)] aspect-[584/634] w-full shrink-0 overflow-hidden rounded-[24px]">
       <img
         alt={project.title}
-        src={project.hero}
+        src={project.image}
         className="absolute inset-0 size-full object-cover"
         draggable={false}
       />
