@@ -34,6 +34,18 @@
   }
 }
 
+.graduate-escalator-rail {
+  align-self: stretch;
+}
+
+.graduate-escalator-column {
+  height: 100%;
+}
+
+.graduate-escalator-column--offset {
+  padding-top: 10%;
+}
+
 .graduate-escalator-column::before,
 .graduate-escalator-column::after {
   content: "";
@@ -42,17 +54,17 @@
   left: 0;
   right: 0;
   z-index: 2;
-  height: 18%;
+  height: 16%;
 }
 
 .graduate-escalator-column::before {
   top: 0;
-  background: linear-gradient(to bottom, rgba(9, 14, 21, 0.55), transparent);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.28), transparent);
 }
 
 .graduate-escalator-column::after {
   bottom: 0;
-  background: linear-gradient(to top, rgba(9, 14, 21, 0.55), transparent);
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.28), transparent);
 }
 
 .graduate-escalator-track {
