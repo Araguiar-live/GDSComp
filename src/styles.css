@@ -58,6 +58,7 @@
   display: block;
   height: 36px;
   width: 36px;
+  flex-shrink: 0;
 }
 
 .graduate-work-media {

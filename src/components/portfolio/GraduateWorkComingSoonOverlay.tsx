@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import closeCircleIcon from "@/assets/portfolio/graduate/close-circle.svg";
 import featuredHero from "@/assets/portfolio/graduate/overlay/featured-hero.png";
 import artaekaRail from "@/assets/portfolio/graduate/overlay/rail-artaeka.png";
 import beeseRail from "@/assets/portfolio/graduate/beese-synth.png";
@@ -93,7 +92,7 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
               </h2>
             </div>
             <button type="button" aria-label="Close" onClick={onClose} className="graduate-work-overlay__close">
-              <img alt="" src={closeCircleIcon} className="graduate-work-overlay__close-icon" draggable={false} />
+              <CloseCircleIcon className="graduate-work-overlay__close-icon" />
             </button>
           </header>
 
@@ -165,6 +164,26 @@ function EscalatorColumn({
         ))}
       </div>
     </div>
+  );
+}
+
+function CloseCircleIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 36 36"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <circle cx="18" cy="18" r="18" fill="white" fillOpacity="0.15" />
+      <path
+        d="M14 14L22 22M22 14L14 22"
+        stroke="white"
+        strokeLinecap="round"
+        strokeWidth="2"
+      />
+    </svg>
   );
 }
 
