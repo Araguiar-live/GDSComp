@@ -114,8 +114,11 @@ export function SignalTuneDrawer({
                 : "crcle-tune-sheet--dark border-[rgba(247,246,242,0.4)]"
             }`}
           >
-            {isLight ? (
-              <div className="crcle-tune-frost" aria-hidden>
+            {isLight || backdropImage ? (
+              <div
+                className={`crcle-tune-frost ${isLight ? "" : "crcle-tune-frost--dark"}`}
+                aria-hidden
+              >
                 {backdropImage ? (
                   <img
                     alt=""
@@ -124,7 +127,11 @@ export function SignalTuneDrawer({
                     draggable={false}
                   />
                 ) : null}
-                <div className="absolute inset-0 bg-[rgba(247,246,242,0.35)]" />
+                <div
+                  className={`absolute inset-0 ${
+                    isLight ? "bg-[rgba(247,246,242,0.35)]" : "bg-[rgba(1,2,17,0.55)]"
+                  }`}
+                />
               </div>
             ) : null}
 
@@ -132,7 +139,7 @@ export function SignalTuneDrawer({
               className={`relative z-[1] flex shrink-0 items-start gap-2 px-3 pb-3 pt-4 ${
                 isLight
                   ? "border-b border-[rgba(2,3,29,0.1)] bg-[rgba(247,246,242,0.65)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]"
-                  : "border-b border-[rgba(247,246,242,0.4)] bg-[rgba(2,2,23,0.8)] backdrop-blur-[2px] [-webkit-backdrop-filter:blur(2px)]"
+                  : "crcle-tune-sheet__header--dark border-b border-[rgba(247,246,242,0.4)] backdrop-blur-[2px] [-webkit-backdrop-filter:blur(2px)]"
               }`}
             >
               <img
@@ -378,8 +385,10 @@ export function SignalTuneDrawer({
                 <div className={`relative h-1.5 flex-1 overflow-hidden rounded-full ${isLight ? "bg-[rgba(2,3,29,0.12)]" : "bg-[rgba(247,246,242,0.2)]"}`}>
                   <div className={`absolute inset-y-0 left-0 w-[32%] rounded-full ${isLight ? "bg-[#020426]" : "bg-[#f7f6f2]"}`} />
                   <span
-                    className={`absolute left-[32%] top-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-[0_0_0_2px_#020426] ${
-                      isLight ? "bg-[#f7f6f2]" : "bg-[#f7f6f2]"
+                    className={`absolute left-[32%] top-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full ${
+                      isLight
+                        ? "bg-[#f7f6f2] shadow-[0_0_0_2px_#020426]"
+                        : "bg-[#f7f6f2] shadow-[0_0_0_2px_rgba(247,246,242,0.35)]"
                     }`}
                   />
                 </div>
@@ -455,7 +464,7 @@ function Section({
 
 function SignalBarsMini({ compact = false, isLight = true }: { compact?: boolean; isLight?: boolean }) {
   const active = isLight ? "bg-[#020426]" : "bg-[#f7f6f2]";
-  const muted = isLight ? "bg-[rgba(2,4,38,0.2)]" : "bg-[rgba(2,4,38,0.2)]";
+  const muted = isLight ? "bg-[rgba(2,4,38,0.2)]" : "bg-[rgba(247,246,242,0.2)]";
 
   if (compact) {
     return (

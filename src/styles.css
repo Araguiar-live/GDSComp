@@ -2441,6 +2441,17 @@
   filter: blur(48px) saturate(0.85);
 }
 
+.crcle-tune-frost--dark > img {
+  opacity: 0.55;
+  filter: blur(56px) saturate(0.75) brightness(0.72);
+}
+
+.crcle-tune-sheet__header--dark {
+  background:
+    linear-gradient(90deg, rgba(247, 246, 242, 0.1) 0%, rgba(247, 246, 242, 0.1) 100%),
+    linear-gradient(90deg, rgba(2, 2, 23, 0.8) 0%, rgba(2, 2, 23, 0.8) 100%);
+}
+
 /* CRCLE primary dock — white frosted glass (Profile / Messaging / Signal Home)
    Backdrop-filter must sit on THIS node so content behind the pill is sampled. */
 .crcle-nav-glass-light {
