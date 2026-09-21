@@ -35,37 +35,10 @@ export function InteractiveHero() {
     const cursor = { x: -1000, y: -1000, active: false };
 
     const blobs: Blob[] = [
-      { homeX: 0.1, homeY: 0.16, x: 0, y: 0, r: 78, phase: 0 },
-      { homeX: 0.16, homeY: 0.1, x: 0, y: 0, r: 62, phase: 1.2 },
-      { homeX: 0.07, homeY: 0.26, x: 0, y: 0, r: 52, phase: 2.4 },
+      { homeX: 0.08, homeY: 0.12, x: 0, y: 0, r: 92, phase: 0 },
+      { homeX: 0.14, homeY: 0.07, x: 0, y: 0, r: 68, phase: 1.4 },
+      { homeX: 0.05, homeY: 0.22, x: 0, y: 0, r: 56, phase: 2.8 },
     ];
-
-    let gridCanvas: HTMLCanvasElement | null = null;
-
-    const buildGridLayer = () => {
-      gridCanvas = document.createElement("canvas");
-      gridCanvas.width = width * dpr;
-      gridCanvas.height = height * dpr;
-      const gctx = gridCanvas.getContext("2d");
-      if (!gctx) return;
-      gctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const cell = 90;
-      const gap = 2;
-      const radius = 12;
-
-      for (let y = gap; y < height; y += cell + gap) {
-        for (let x = gap; x < width; x += cell + gap) {
-          const w = Math.min(cell, width - x - gap);
-          const h = Math.min(cell, height - y - gap);
-          if (w <= 0 || h <= 0) continue;
-          gctx.fillStyle = "rgba(255,255,255,0.08)";
-          gctx.beginPath();
-          gctx.roundRect(x, y, w, h, radius);
-          gctx.fill();
-        }
-      }
-    };
 
     const syncBlobHomes = () => {
       blobs.forEach((blob) => {
@@ -84,7 +57,6 @@ export function InteractiveHero() {
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       syncBlobHomes();
-      buildGridLayer();
     };
 
     const onMove = (event: MouseEvent) => {
@@ -101,29 +73,63 @@ export function InteractiveHero() {
 
     let pulse = 0;
 
+    const drawMetaballs = () => {
+      ctx.save();
+      ctx.filter = "blur(28px)";
+      ctx.globalCompositeOperation = "screen";
+
+      blobs.forEach((blob) => {
+        const gradient = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.r);
+        const alpha = isMobile ? 0.14 + Math.sin(pulse + blob.phase) * 0.04 : 0.22;
+        gradient.addColorStop(0, `rgba(255,255,255,${alpha})`);
+        gradient.addColorStop(0.55, `rgba(255,255,255,${alpha * 0.35})`);
+        gradient.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(blob.x, blob.y, blob.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.restore();
+    };
+
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
-
-      if (gridCanvas) {
-        ctx.drawImage(gridCanvas, 0, 0, width, height);
-      }
+      ctx.fillStyle = "#0A0A0C";
+      ctx.fillRect(0, 0, width, height);
 
       pulse += 0.014;
-      const ambient = isMobile ? 0.06 + Math.sin(pulse) * 0.035 : 0;
-      const dotGap = 42;
+      const ambient = isMobile ? 0.04 + Math.sin(pulse) * 0.03 : 0;
 
-      for (let x = dotGap / 2; x < width; x += dotGap) {
-        for (let y = dotGap / 2; y < height; y += dotGap) {
-          let alpha = 0.1;
-          if (!isMobile && cursor.active) {
-            const dist = Math.hypot(x - cursor.x, y - cursor.y);
-            alpha = 0.1 + Math.max(0, 1 - dist / 190) * 0.5;
-          } else if (isMobile) {
-            alpha = 0.1 + ambient;
-          }
-          ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      const cell = 88;
+      const gap = 2;
+      const radius = 12;
+
+      for (let y = gap; y < height; y += cell + gap) {
+        for (let x = gap; x < width; x += cell + gap) {
+          const w = Math.min(cell, width - x - gap);
+          const h = Math.min(cell, height - y - gap);
+          if (w <= 0 || h <= 0) continue;
+
+          ctx.fillStyle = "rgba(255,255,255,0.1)";
           ctx.beginPath();
-          ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+          ctx.roundRect(x, y, w, h, radius);
+          ctx.fill();
+
+          const cx = x + w / 2;
+          const cy = y + h / 2;
+          let dotAlpha = 0.2;
+
+          if (!isMobile && cursor.active) {
+            const dist = Math.hypot(cx - cursor.x, cy - cursor.y);
+            dotAlpha = 0.2 + Math.max(0, 1 - dist / 220) * 0.55;
+          } else if (isMobile) {
+            dotAlpha = 0.2 + ambient;
+          }
+
+          ctx.fillStyle = `rgba(209,213,219,${dotAlpha})`;
+          ctx.beginPath();
+          ctx.arc(cx, cy, 2, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -136,29 +142,17 @@ export function InteractiveHero() {
           const dx = cursor.x - blob.x;
           const dy = cursor.y - blob.y;
           const dist = Math.hypot(dx, dy);
-          const pull = Math.max(0, 1 - dist / 440) * 0.04;
+          const pull = Math.max(0, 1 - dist / 480) * 0.045;
           blob.x += dx * pull;
           blob.y += dy * pull;
         }
 
-        const drift = isMobile ? Math.sin(pulse + blob.phase) * 8 : 0;
-        blob.x += (homeX + drift - blob.x) * 0.055;
-        blob.y += (homeY + drift * 0.45 - blob.y) * 0.055;
-
-        const blobAlpha = isMobile ? 0.18 + ambient : 0.26;
-        const gradient = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.r);
-        gradient.addColorStop(0, `rgba(255,255,255,${blobAlpha})`);
-        gradient.addColorStop(0.42, `rgba(255,255,255,${blobAlpha * 0.32})`);
-        gradient.addColorStop(1, "rgba(255,255,255,0)");
-
-        ctx.globalCompositeOperation = "screen";
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(blob.x, blob.y, blob.r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalCompositeOperation = "source-over";
+        const drift = isMobile ? Math.sin(pulse + blob.phase) * 10 : 0;
+        blob.x += (homeX + drift - blob.x) * 0.05;
+        blob.y += (homeY + drift * 0.4 - blob.y) * 0.05;
       });
 
+      drawMetaballs();
       raf = requestAnimationFrame(draw);
     };
 
@@ -212,12 +206,10 @@ export function InteractiveHero() {
 
       <div className="relative z-10 mx-auto flex min-h-[calc(100vh-220px)] max-w-[593px] flex-col items-center justify-center gap-10 px-6 pb-20 pt-10 text-center sm:pb-16">
         <div className="flex flex-col items-center gap-[42px]">
-          <h1 className="text-[clamp(32px,6vw,56px)] font-normal leading-[1.1] text-white/60">
+          <h1 className="text-[clamp(36px,6vw,56px)] font-normal leading-none text-white/60">
             {HEADLINE}
           </h1>
-          <p className="max-w-[540px] text-[14px] leading-[22px] text-white/45">
-            {SUBTITLE}
-          </p>
+          <p className="max-w-[540px] text-[14px] leading-[22px] text-white/45">{SUBTITLE}</p>
         </div>
 
         <button

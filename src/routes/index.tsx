@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useRef, useState } from "react";
+import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
 import girlPleaseLogo from "@/assets/girl-please.svg";
+import designToggleKnob from "@/assets/portfolio/design-toggle-knob.svg";
 import { InteractiveHero } from "@/components/portfolio/InteractiveHero";
 import { ProjectBentoStack, type Project } from "@/components/portfolio/ProjectAccordion";
 import { Dock } from "@/components/portfolio/Dock";
@@ -248,6 +250,7 @@ const DOCK_ITEMS = [
 function Index() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [designOn, setDesignOn] = useState(false);
   const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const isExpanded = openSlug !== null;
 
@@ -266,7 +269,7 @@ function Index() {
   }, []);
 
   return (
-    <div className="portfolio-hero-grid relative min-h-screen text-zinc-900 font-sans antialiased overflow-x-hidden">
+    <div className="portfolio-hero-grid relative text-zinc-900 font-sans antialiased overflow-x-hidden">
       {/* App-icon project dock — pinned top-left while scrolling */}
       <div className="fixed top-6 left-6 z-50 sm:left-8">
         <ProjectDock onPlus={() => setSidebarOpen(true)} />
@@ -300,8 +303,42 @@ function Index() {
       <InteractiveHero />
 
       <section id="work" className="relative z-10 scroll-mt-6">
+        {/*
+          Exact Figma auto-layout (530:151045 / 552:158232) — unchanged wireframe frame.
+          Stacked below InteractiveHero; scroll target for the dark hero CTA.
+        */}
         <WireframeStage expanded={isExpanded}>
-          <div className="mx-auto flex w-full max-w-[1690px] flex-col items-center overflow-visible px-6 pb-0 pt-10 sm:px-10">
+          <div
+            className={
+              isExpanded
+                ? "mx-auto flex w-full max-w-[1690px] flex-col items-center gap-[78px] overflow-visible px-6 pb-0 pt-10 sm:px-10"
+                : "absolute left-1/2 top-[calc(50%+18.5px)] flex h-[min(704px,83.1%)] w-[min(1690px,94%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[78px] overflow-visible"
+            }
+          >
+            <header className="flex w-full max-w-[720px] shrink-0 flex-col items-center gap-5 text-center">
+              <p className="text-[11px] font-bold uppercase tracking-[2px] text-[#76767a]">
+                Selected Work • Portfolio
+              </p>
+
+              <div className="flex items-end justify-center gap-[15px]">
+                <div className="hidden w-[87px] shrink-0 pb-2.5 sm:block" aria-hidden />
+
+                <h1 className="text-center text-[40px] font-medium leading-[48px] tracking-[-1.5px] text-[#111] sm:text-[48px] sm:leading-[56px]">
+                  <span className="block">Hi..</span>
+                  <span className="block">I do Design.</span>
+                </h1>
+
+                <div className="w-[72px] shrink-0 pb-2.5 sm:w-[87px]">
+                  <DesignToggle on={designOn} onToggle={() => setDesignOn((v) => !v)} />
+                </div>
+              </div>
+
+              <p className="max-w-[580px] text-[14px] leading-[22px] text-[#76767a]">
+                Product Designer &amp; Design Engineer. I build complex B2B platforms, design
+                systems, and code-backed prototypes from zero to one.
+              </p>
+            </header>
+
             <div className="relative w-full shrink-0 overflow-visible">
               <div
                 aria-hidden
@@ -340,5 +377,134 @@ function Index() {
       <Dock items={DOCK_ITEMS} onSelect={handleDockSelect} activeSlug={openSlug} />
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
     </div>
+  );
+}
+
+/** Figma Design toggle — mint ↔ purple. */
+function DesignToggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
+  const reduceMotion = useReducedMotion();
+  const shakeControls = useAnimationControls();
+  const flipControls = useAnimationControls();
+  const pauseUntilRef = useRef(0);
+  const onToggleRef = useRef(onToggle);
+  onToggleRef.current = onToggle;
+
+  const border = on ? "#bb9ffa" : "#01cd7f";
+  const gradient = on
+    ? "linear-gradient(131.4deg, rgba(139, 92, 247, 0.4) 19.75%, rgba(139, 92, 247, 0.08) 86.39%)"
+    : "linear-gradient(131.4deg, rgba(1, 228, 141, 0.4) 19.75%, rgba(1, 228, 141, 0.08) 86.39%)";
+
+  const playFlipBounce = useCallback(() => {
+    if (reduceMotion) return;
+    void flipControls.start({
+      scale: [1, 1.12, 0.94, 1.06, 1],
+      rotate: [0, -6, 5, -2, 0],
+      transition: { duration: 0.55, ease: "easeOut" },
+    });
+  }, [flipControls, reduceMotion]);
+
+  const handleToggle = useCallback(() => {
+    pauseUntilRef.current = Date.now() + 12_000;
+    playFlipBounce();
+    onToggleRef.current();
+  }, [playFlipBounce]);
+
+  useEffect(() => {
+    if (reduceMotion) return;
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+
+    const schedule = () => {
+      const delay = 9000 + Math.random() * 2000;
+      timer = setTimeout(() => {
+        if (cancelled) return;
+        if (Date.now() >= pauseUntilRef.current) {
+          playFlipBounce();
+          onToggleRef.current();
+        }
+        schedule();
+      }, delay);
+    };
+
+    schedule();
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [reduceMotion, playFlipBounce]);
+
+  useEffect(() => {
+    if (reduceMotion) return;
+
+    let cancelled = false;
+    const shake = () =>
+      shakeControls.start({
+        x: [0, -5, 5, -4, 4, -2, 0],
+        rotate: [0, -2.5, 2.5, -1.5, 1.5, 0],
+        transition: { duration: 0.55, ease: "easeInOut" },
+      });
+
+    const run = async () => {
+      await new Promise((r) => setTimeout(r, 300));
+      if (cancelled) return;
+      await shake();
+      while (!cancelled) {
+        await new Promise((r) => setTimeout(r, 25_000));
+        if (cancelled) return;
+        await shake();
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+      shakeControls.stop();
+    };
+  }, [reduceMotion, shakeControls]);
+
+  return (
+    <motion.div
+      className="w-full"
+      animate={reduceMotion ? undefined : { y: [0, -3, 0] }}
+      transition={
+        reduceMotion ? undefined : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }
+      }
+    >
+      <motion.button
+        type="button"
+        role="switch"
+        aria-checked={on}
+        aria-label={on ? "Design mode on" : "Design mode off"}
+        onClick={handleToggle}
+        animate={shakeControls}
+        whileHover={reduceMotion ? undefined : { scale: 1.06, rotate: 2 }}
+        whileTap={reduceMotion ? undefined : { scale: 0.9, rotate: -4 }}
+        transition={{ type: "spring", stiffness: 520, damping: 22, mass: 0.65 }}
+        className="relative w-full cursor-pointer rounded-[64px] border p-1 backdrop-blur-[4px]"
+        style={{ borderColor: border, backgroundImage: gradient }}
+      >
+        <motion.div animate={flipControls} className="relative block h-8 w-full">
+          <motion.img
+            src={designToggleKnob}
+            alt=""
+            width={32}
+            height={32}
+            className="absolute top-0 size-8 drop-shadow-sm"
+            initial={false}
+            animate={{
+              left: on ? "calc(100% - 32px)" : 0,
+              rotate: on ? 180 : 0,
+              scale: on ? 1.05 : 1,
+            }}
+            transition={
+              reduceMotion
+                ? { duration: 0.15 }
+                : { type: "spring", stiffness: 480, damping: 18, mass: 0.55 }
+            }
+          />
+        </motion.div>
+      </motion.button>
+    </motion.div>
   );
 }
