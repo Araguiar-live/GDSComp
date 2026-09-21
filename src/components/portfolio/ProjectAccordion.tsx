@@ -1,34 +1,31 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { forwardRef, useEffect, useState, type MutableRefObject } from "react";
-
-/** Figma 530:151835 — row hover gradients + play accent per project */
-const ROW_HOVER: Record<
-  string,
-  { gradient: string; playColor: string }
-> = {
-  crcle: {
-    gradient:
-      "linear-gradient(90deg, rgba(2, 3, 29, 0.62) 0%, rgba(255, 255, 255, 0.2) 100%)",
-    playColor: "#02031D",
-  },
-  "first-design": {
-    gradient:
-      "linear-gradient(90deg, rgba(139, 92, 247, 0.5) 0%, rgba(255, 255, 255, 0.2) 100%)",
-    playColor: "#8B5CF6",
-  },
-  odicci: {
-    gradient:
-      "linear-gradient(90deg, rgba(255, 81, 38, 0.5) 0%, rgba(255, 255, 255, 0.2) 100%)",
-    playColor: "#FF5126",
-  },
-};
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
 import {
   requestOpenMessaging,
   useCrcleAreaInboxOpen,
   useCrcleVerifyOpen,
 } from "@/components/portfolio/crcleBroadcast";
+
+/** Figma 530:151835 — row hover gradients + play accent per project */
+const ROW_HOVER: Record<string, { gradient: string; playColor: string }> = {
+  crcle: {
+    gradient:
+      "linear-gradient(90deg, rgba(2, 3, 29, 0.22) 0%, rgba(255, 255, 255, 0.28) 100%)",
+    playColor: "#02031D",
+  },
+  "first-design": {
+    gradient:
+      "linear-gradient(90deg, rgba(139, 92, 247, 0.32) 0%, rgba(255, 255, 255, 0.28) 100%)",
+    playColor: "#8B5CF6",
+  },
+  odicci: {
+    gradient:
+      "linear-gradient(90deg, rgba(255, 81, 38, 0.36) 0%, rgba(255, 255, 255, 0.28) 100%)",
+    playColor: "#FF5126",
+  },
+};
 
 // Default tabs for projects that don't set `project.tabs`.
 const DEFAULT_TABS = ["Create Workspace\u00a0", "Brand Personality", "Sign Up", "Template Library"] as const;
@@ -159,39 +156,39 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
         {rowHover && !isOpen ? (
           <div
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-1/2 z-[1] flex w-[78px] -translate-x-1/2 -translate-y-1/2 flex-col items-center opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           >
-            <Play
-              className="size-6 shrink-0"
-              fill={rowHover.playColor}
-              stroke={rowHover.playColor}
-              strokeWidth={0}
-            />
-            <span className="text-[24px] font-normal leading-normal tracking-[-0.5px] text-[#111]">
+            <span className="inline-flex items-center gap-2 whitespace-nowrap text-[14px] font-normal tracking-[-0.5px] text-[#111]">
+              <Play
+                className="size-4 shrink-0"
+                fill={rowHover.playColor}
+                stroke={rowHover.playColor}
+                strokeWidth={0}
+              />
               Play me
             </span>
           </div>
         ) : null}
 
-        <div className="relative z-[2] flex min-w-0 flex-1 items-center gap-8">
-          <span
-            className={
-              "shrink-0 text-[14px] font-medium tracking-[1px] tabular-nums transition-colors duration-300 " +
-              (rowHover && !isOpen
-                ? "text-[#a3a3a6] group-hover:text-white/50"
-                : "text-[#111]/70")
-            }
-          >
-            {project.id}
-          </span>
-          <span className="truncate text-[24px] font-normal tracking-[-0.5px] text-[#111] sm:text-[32px]">
-            {project.title}
-          </span>
-        </div>
-        <div className="relative z-[2] hidden shrink-0 items-center justify-end gap-4 text-[14px] text-[#76767a] sm:flex">
-          <span className="text-right">{project.role}</span>
-          <span className="font-light text-[#999]">|</span>
-          <span className="tabular-nums">{project.year}</span>
+        <div
+          className={
+            "relative z-[2] flex w-full min-w-0 flex-1 items-center justify-between gap-6 transition-opacity duration-300 " +
+            (rowHover && !isOpen ? "group-hover:opacity-0" : "")
+          }
+        >
+          <div className="flex min-w-0 flex-1 items-center gap-8">
+            <span className="shrink-0 text-[14px] font-medium tracking-[1px] text-[#111]/70 tabular-nums">
+              {project.id}
+            </span>
+            <span className="truncate text-[24px] font-normal tracking-[-0.5px] text-[#111] sm:text-[32px]">
+              {project.title}
+            </span>
+          </div>
+          <div className="hidden shrink-0 items-center justify-end gap-4 text-[14px] text-[#76767a] sm:flex">
+            <span className="text-right">{project.role}</span>
+            <span className="font-light text-[#999]">|</span>
+            <span className="tabular-nums">{project.year}</span>
+          </div>
         </div>
       </button>
 
