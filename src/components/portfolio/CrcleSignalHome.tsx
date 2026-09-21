@@ -293,8 +293,8 @@ export function CrcleSignalHome({
                 screen === "photo"
                   ? "rounded-[28px] border border-[#f7f6f2]"
                   : light
-                    ? "min-h-[580px] rounded-[16px] border-2 border-dashed border-[#b1b1bc] bg-[rgba(2,3,29,0.1)] px-3 py-[46px]"
-                    : "min-h-[648px] rounded-[16px] border border-dashed border-[rgba(177,177,188,0.4)] px-3 py-[46px]"
+                    ? "rounded-[16px] border-2 border-dashed border-[#b1b1bc] bg-[rgba(2,3,29,0.1)] px-3 py-[46px]"
+                    : "rounded-[16px] border border-dashed border-[rgba(177,177,188,0.4)] px-3 py-[46px]"
               }`}
               style={
                 screen === "empty" && !light
