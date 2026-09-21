@@ -4,6 +4,13 @@ import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
 
 const HEADLINE = "Are you looking for me?";
 
+/** WireframeStage jenga band — Figma 530:151045 @ 1258px */
+const FIGMA_BAND_W = 1258;
+const GRID_COLS = 14;
+const GRID_GAP = 2;
+const GRID_PAD = 2;
+const GRID_RADIUS = 12;
+
 type Blob = {
   homeX: number;
   homeY: number;
@@ -12,6 +19,27 @@ type Blob = {
   r: number;
   phase: number;
 };
+
+type GridMetrics = {
+  pad: number;
+  gap: number;
+  cell: number;
+  radius: number;
+  dotR: number;
+};
+
+function getGridMetrics(containerWidth: number): GridMetrics {
+  const bandW = containerWidth - GRID_PAD * 2;
+  const scale = bandW / FIGMA_BAND_W;
+  const cell = (bandW - (GRID_COLS - 1) * GRID_GAP) / GRID_COLS;
+  return {
+    pad: GRID_PAD,
+    gap: GRID_GAP,
+    cell,
+    radius: GRID_RADIUS * scale,
+    dotR: 2 * scale,
+  };
+}
 
 type InteractiveHeroProps = {
   onEnterWork?: () => void;
@@ -36,6 +64,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     let isMobile = window.innerWidth < 768;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cursor = { x: -1000, y: -1000, active: false };
+    let lensX = 0;
+    let lensY = 0;
 
     const blobs: Blob[] = [
       { homeX: 0.08, homeY: 0.12, x: 0, y: 0, r: 92, phase: 0 },
@@ -48,6 +78,34 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         blob.x = blob.homeX * width;
         blob.y = blob.homeY * height;
       });
+      lensX = width * 0.5;
+      lensY = height * 0.5;
+    };
+
+    const syncCursorVars = (blurPx: number) => {
+      container.style.setProperty("--hero-lens-x", `${lensX}px`);
+      container.style.setProperty("--hero-lens-y", `${lensY}px`);
+      container.style.setProperty("--hero-cursor-blur", `${blurPx}px`);
+      container.style.setProperty("--hero-cursor-active", cursor.active ? "1" : "0");
+      const frostShiftX = cursor.active ? (lensX / width - 0.5) * 14 : 0;
+      const frostShiftY = cursor.active ? (lensY / height - 0.5) * 10 : 0;
+      container.style.setProperty("--hero-frost-shift-x", `${frostShiftX}px`);
+      container.style.setProperty("--hero-frost-shift-y", `${frostShiftY}px`);
+
+      const logoEl = container.querySelector<HTMLElement>(".hero-logo-glass");
+      if (logoEl && cursor.active) {
+        const rect = logoEl.getBoundingClientRect();
+        const cRect = container.getBoundingClientRect();
+        const lx = rect.left + rect.width / 2 - cRect.left;
+        const ly = rect.top + rect.height / 2 - cRect.top;
+        const tiltX = ((cursor.x - lx) / rect.width) * 8;
+        const tiltY = ((cursor.y - ly) / rect.height) * -6;
+        logoEl.style.setProperty("--hero-logo-tilt-x", `${tiltX}deg`);
+        logoEl.style.setProperty("--hero-logo-tilt-y", `${tiltY}deg`);
+      } else if (logoEl) {
+        logoEl.style.setProperty("--hero-logo-tilt-x", "0deg");
+        logoEl.style.setProperty("--hero-logo-tilt-y", "0deg");
+      }
     };
 
     const updateScrollProgress = () => {
@@ -106,38 +164,75 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
     const draw = () => {
       const scroll = scrollProgressRef.current;
-      const parallax = scroll * 22;
+      const scrollParallax = scroll * 22;
+      const grid = getGridMetrics(width);
+
+      if (!isMobile && cursor.active) {
+        lensX += (cursor.x - lensX) * 0.11;
+        lensY += (cursor.y - lensY) * 0.11;
+      } else {
+        lensX += (width * 0.5 - lensX) * 0.04;
+        lensY += (height * 0.5 - lensY) * 0.04;
+      }
+
+      let cursorBlur = 0;
+      if (!isMobile && cursor.active) {
+        cursorBlur = 14;
+      }
+      syncCursorVars(cursorBlur);
 
       ctx.clearRect(0, 0, width, height);
       ctx.fillStyle = "#090e15";
       ctx.fillRect(0, 0, width, height);
 
-      if (scroll > 0) {
-        ctx.filter = `blur(${scroll * 5}px)`;
-      }
-
       pulse += 0.014;
       const ambient = isMobile ? 0.04 + Math.sin(pulse) * 0.03 : 0;
 
-      const cell = 88;
-      const gap = 2;
-      const radius = 12;
+      const { pad, gap, cell, radius, dotR } = grid;
+      const step = cell + gap;
 
-      for (let y = gap; y < height; y += cell + gap) {
-        for (let x = gap; x < width; x += cell + gap) {
-          const w = Math.min(cell, width - x - gap);
-          const h = Math.min(cell, height - y - gap);
-          if (w <= 0 || h <= 0) continue;
+      for (let row = 0; ; row++) {
+        const y = pad + row * step;
+        if (y + cell > height + pad) break;
 
-          const cx = x + w / 2;
-          const cy = y + h / 2;
-          const shiftX = ((cx / width - 0.5) * parallax) / dpr;
-          const shiftY = ((cy / height - 0.5) * parallax * 0.55) / dpr;
+        for (let col = 0; col < GRID_COLS; col++) {
+          const x = pad + col * step;
+          if (x + cell > width + pad) continue;
 
-          ctx.fillStyle = "rgba(255,255,255,0.1)";
+          const cx = x + cell / 2;
+          const cy = y + cell / 2;
+
+          let shiftX = ((cx / width - 0.5) * scrollParallax) / dpr;
+          let shiftY = ((cy / height - 0.5) * scrollParallax * 0.55) / dpr;
+
+          let glow = 0;
+          if (!isMobile && cursor.active) {
+            const dist = Math.hypot(cx - cursor.x, cy - cursor.y);
+            const influence = Math.max(0, 1 - dist / 240);
+            glow = influence;
+            const angle = Math.atan2(cy - cursor.y, cx - cursor.x);
+            const liquid = influence * 10;
+            shiftX += Math.cos(angle) * liquid;
+            shiftY += Math.sin(angle) * liquid;
+          }
+
+          const tileX = x + shiftX;
+          const tileY = y + shiftY;
+
+          ctx.fillStyle = `rgba(255,255,255,${0.1 + glow * 0.08})`;
           ctx.beginPath();
-          ctx.roundRect(x + shiftX, y + shiftY, w, h, radius);
+          ctx.roundRect(tileX, tileY, cell, cell, radius);
           ctx.fill();
+
+          if (glow > 0.05) {
+            ctx.save();
+            ctx.strokeStyle = `rgba(180, 210, 255, ${glow * 0.22})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(tileX + 0.5, tileY + 0.5, cell - 1, cell - 1, radius);
+            ctx.stroke();
+            ctx.restore();
+          }
 
           let dotAlpha = 0.2;
           if (!isMobile && cursor.active) {
@@ -147,14 +242,21 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
             dotAlpha = 0.2 + ambient;
           }
 
-          ctx.fillStyle = `rgba(209,213,219,${dotAlpha})`;
+          ctx.fillStyle = `rgba(209,213,219,${dotAlpha + glow * 0.15})`;
           ctx.beginPath();
-          ctx.arc(cx + shiftX, cy + shiftY, 2, 0, Math.PI * 2);
+          ctx.arc(cx + shiftX, cy + shiftY, dotR, 0, Math.PI * 2);
           ctx.fill();
         }
       }
 
-      ctx.filter = "none";
+      if (scroll > 0) {
+        ctx.save();
+        ctx.filter = `blur(${scroll * 4}px)`;
+        ctx.globalAlpha = 0.35;
+        ctx.fillStyle = "#090e15";
+        ctx.fillRect(0, 0, width, height);
+        ctx.restore();
+      }
 
       blobs.forEach((blob) => {
         const homeX = blob.homeX * width;
@@ -205,7 +307,15 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       ref={containerRef}
       className="interactive-hero relative min-h-screen w-full overflow-hidden bg-[#090e15] text-white"
       data-name="interactive-hero"
-      style={{ "--hero-scroll": 0 } as CSSProperties}
+      style={
+        {
+          "--hero-scroll": 0,
+          "--hero-lens-x": "50%",
+          "--hero-lens-y": "50%",
+          "--hero-cursor-blur": "0px",
+          "--hero-cursor-active": 0,
+        } as CSSProperties
+      }
     >
       <canvas
         ref={canvasRef}
@@ -215,21 +325,31 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
       <div
         aria-hidden
-        className="interactive-hero__frost pointer-events-none absolute left-1/2 top-1/2 z-[2] h-[min(1037px,100%)] w-[min(1447px,100%)] -translate-x-1/2 -translate-y-1/2 bg-[rgba(255,255,255,0.03)]"
+        className="interactive-hero__liquid-lens pointer-events-none absolute z-[2]"
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1106px] items-center justify-between px-6 pt-24 sm:px-10 sm:pt-[139px]">
-        <img
-          src={heroLogo}
-          alt=""
-          aria-hidden
-          className="h-[88px] w-[96px] object-contain sm:h-[110px] sm:w-[121px]"
-        />
-        <div className="text-right text-[rgba(255,255,255,0.6)]">
+      <div
+        aria-hidden
+        className="interactive-hero__frost pointer-events-none absolute left-1/2 top-1/2 z-[3] h-[min(1037px,100%)] w-[min(1447px,100%)] -translate-x-1/2 -translate-y-1/2 bg-[rgba(255,255,255,0.03)]"
+      />
+
+      <nav className="relative z-10 mx-auto flex w-full max-w-[1106px] items-center justify-between px-6 pt-24 sm:px-10 sm:pt-[139px]">
+        <div className="hero-logo-glass relative flex size-[88px] items-center justify-center sm:size-[110px]">
+          <div className="hero-logo-glass__plate" aria-hidden />
+          <div className="hero-logo-glass__lens" aria-hidden />
+          <div className="hero-logo-glass__dispersion" aria-hidden />
+          <img
+            src={heroLogo}
+            alt=""
+            aria-hidden
+            className="relative z-[1] h-[62%] w-[62%] object-contain sm:h-[68%] sm:w-[68%]"
+          />
+        </div>
+        <div className="hero-nav-chip text-right text-[rgba(255,255,255,0.6)]">
           <p className="text-base sm:text-[20px]">Ana.R Design</p>
           <p className="text-[11px] sm:text-[12px]">Product Designer</p>
         </div>
-      </div>
+      </nav>
 
       <div className="interactive-hero__content relative z-10 mx-auto flex min-h-[calc(100vh-220px)] max-w-[593px] flex-col items-center justify-center gap-[42px] px-6 pb-20 pt-10 text-center sm:pb-16">
         <h1 className="w-full text-[clamp(36px,6vw,56px)] font-normal leading-normal text-[rgba(255,255,255,0.6)]">
