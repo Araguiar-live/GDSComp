@@ -251,8 +251,28 @@ function Index() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [designOn, setDesignOn] = useState(false);
+  const [showWorkDock, setShowWorkDock] = useState(false);
   const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const isExpanded = openSlug !== null;
+
+  // Bottom project dock — only once the wireframe section enters view, not over the hero.
+  useEffect(() => {
+    const work = document.getElementById("work");
+    if (!work) return;
+
+    const sync = () => {
+      const { top } = work.getBoundingClientRect();
+      setShowWorkDock(top <= window.innerHeight * 0.92);
+    };
+
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    return () => {
+      window.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+    };
+  }, []);
 
   const toggle = useCallback((slug: string) => {
     setOpenSlug((cur) => (cur === slug ? null : slug));
@@ -380,7 +400,13 @@ function Index() {
         />
       </div>
 
-      <Dock items={DOCK_ITEMS} onSelect={handleDockSelect} activeSlug={openSlug} />
+      <div
+        className={`fixed bottom-8 left-1/2 z-[60] -translate-x-1/2 transition-opacity duration-300 ${
+          showWorkDock ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      >
+        <Dock items={DOCK_ITEMS} onSelect={handleDockSelect} activeSlug={openSlug} />
+      </div>
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
     </div>
   );

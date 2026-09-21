@@ -31,7 +31,7 @@ export function Dock({ items, onSelect, activeSlug }: Props) {
       initial={{ y: 72, opacity: 0, scale: 0.86 }}
       animate={{ y: 0, opacity: 1, scale: 1 }}
       transition={{ ...SPRING, delay: 0.1 }}
-      className="pointer-events-none fixed bottom-8 left-1/2 z-[60] -translate-x-1/2"
+      className="pointer-events-none relative"
     >
       <motion.div
         layout
