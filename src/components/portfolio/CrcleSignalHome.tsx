@@ -571,7 +571,7 @@ export function CrcleSignalHome({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 4 }}
                   transition={{ duration: 0.28, ease: EASE }}
-                  className="w-full"
+                  className="w-full shrink-0"
                 >
                   <FooterSignal
                     tone={screen === "photo" ? "live" : "neutral"}
@@ -1030,8 +1030,10 @@ function FooterSignal({
   signalOff?: boolean;
   onMap?: boolean;
 }) {
+  const showLiveCopy = incognito || tone === "live" || !isLight;
+
   return (
-    <div className="flex w-full flex-col items-center gap-[18px] px-3">
+    <div className="crcle-footer-signal">
       <SignalBars
         tone={tone}
         activeBars={activeBars}
@@ -1042,12 +1044,13 @@ function FooterSignal({
         onMap={onMap}
         animateIdle={!incognito && !onMap && !signalOff}
       />
-      <p
-        className="max-w-[392px] text-center text-[11px] leading-[1.4] text-[#b1b1bc]"
-        style={{ fontFamily: FONT }}
-      >
-        {incognito || tone === "live" || !isLight ? (
-          <>Your signal will connect you with compatible users nearby when your drop goes live.</>
+      <p className="crcle-footer-signal__copy" style={{ fontFamily: FONT }}>
+        {showLiveCopy ? (
+          <>
+            Your signal will connect you with compatible users nearby
+            <br />
+            when your drop goes live.
+          </>
         ) : (
           <>
             Your tuned signal will broadcast to compatible users.
