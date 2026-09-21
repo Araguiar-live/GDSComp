@@ -2995,3 +2995,19 @@
     color: var(--color-foreground);
   }
 }
+
+@keyframes interactive-hero-ambient {
+  0%,
+  100% {
+    opacity: 0.82;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .interactive-hero__frost {
+    animation: interactive-hero-ambient 4.5s ease-in-out infinite;
+  }
+}
