@@ -323,8 +323,7 @@ function Index() {
               <div className="hidden w-[87px] shrink-0 pb-2.5 sm:block" aria-hidden />
 
               <h1 className="text-center text-[40px] font-medium leading-[48px] tracking-[-1.5px] text-[#111] sm:text-[48px] sm:leading-[56px]">
-                <span className="block">Hi..</span>
-                <span className="block">I do Design.</span>
+                Product Designer &amp; Design Engineer.
               </h1>
 
               <div className="w-[72px] shrink-0 pb-2.5 sm:w-[87px]">
@@ -333,8 +332,8 @@ function Index() {
             </div>
 
             <p className="max-w-[580px] text-[14px] leading-[22px] text-[#76767a]">
-              A single, fluidly scrolling page. Expand any project to step through the exploration,
-              the iteration, and a live interactive prototype.
+              I build complex B2B platforms, design systems, and code-backed prototypes from zero
+              to one.
             </p>
           </header>
 
