@@ -13,7 +13,11 @@ type Blob = {
   phase: number;
 };
 
-export function InteractiveHero() {
+type InteractiveHeroProps = {
+  onEnterWork?: () => void;
+};
+
+export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollProgressRef = useRef(0);
@@ -193,7 +197,7 @@ export function InteractiveHero() {
   }, []);
 
   const scrollToWork = () => {
-    document.getElementById("work")?.scrollIntoView({ behavior: "smooth" });
+    onEnterWork?.();
   };
 
   return (

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { useWorkScrollGate } from "@/hooks/use-work-scroll-gate";
 import girlPleaseLogo from "@/assets/girl-please.svg";
 import designToggleKnob from "@/assets/portfolio/design-toggle-knob.svg";
 import { InteractiveHero } from "@/components/portfolio/InteractiveHero";
@@ -251,28 +252,9 @@ function Index() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [designOn, setDesignOn] = useState(false);
-  const [showWorkDock, setShowWorkDock] = useState(false);
   const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const isExpanded = openSlug !== null;
-
-  // Bottom project dock — only once the wireframe section enters view, not over the hero.
-  useEffect(() => {
-    const work = document.getElementById("work");
-    if (!work) return;
-
-    const sync = () => {
-      const { top } = work.getBoundingClientRect();
-      setShowWorkDock(top <= window.innerHeight * 0.92);
-    };
-
-    sync();
-    window.addEventListener("scroll", sync, { passive: true });
-    window.addEventListener("resize", sync);
-    return () => {
-      window.removeEventListener("scroll", sync);
-      window.removeEventListener("resize", sync);
-    };
-  }, []);
+  const { workCommitted, commitToWork } = useWorkScrollGate();
 
   const toggle = useCallback((slug: string) => {
     setOpenSlug((cur) => (cur === slug ? null : slug));
@@ -290,10 +272,11 @@ function Index() {
 
   return (
     <div className="portfolio-hero-grid relative text-zinc-900 font-sans antialiased overflow-x-hidden">
-      <InteractiveHero />
+      <InteractiveHero onEnterWork={() => commitToWork()} />
 
-      <section id="work" className="relative z-10">
-        {/* Wireframe chrome — sticky only within #work, not over the hero above */}
+      <section id="work" className="relative z-10 scroll-mt-0">
+        {/* Wireframe chrome — sticky once committed to main body; hidden during onboarding */}
+        {workCommitted ? (
         <div className="pointer-events-none absolute inset-x-0 top-0 z-50 h-0">
           <div className="sticky top-6 flex items-start justify-between px-6 sm:px-8">
             <div className="pointer-events-auto">
@@ -324,6 +307,7 @@ function Index() {
             </div>
           </div>
         </div>
+        ) : null}
 
         {/*
           Exact Figma auto-layout (530:151045 / 552:158232):
@@ -402,7 +386,7 @@ function Index() {
 
       <div
         className={`fixed bottom-8 left-1/2 z-[60] -translate-x-1/2 transition-opacity duration-300 ${
-          showWorkDock ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+          workCommitted ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
         <Dock items={DOCK_ITEMS} onSelect={handleDockSelect} activeSlug={openSlug} />
