@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import featuredHero from "@/assets/portfolio/graduate/overlay/featured-hero.png";
-import artaekaRail from "@/assets/portfolio/graduate/overlay/featured-hero.png";
 import beeseRail from "@/assets/portfolio/graduate/beese-synth.png";
 import poqyRail from "@/assets/portfolio/graduate/poqy-device.png";
 import roamerRail from "@/assets/portfolio/graduate/roamer-nfc.png";
@@ -20,7 +19,7 @@ const ESCALATOR_RAIL: OverlayRailProject[] = [
   { id: "poqy", title: "Poqy", image: poqyRail },
   { id: "strolla", title: "Strolla", image: strollaRail },
   { id: "roamer", title: "Roamer", image: roamerRail },
-  { id: "artaeka", title: "Artaeka", image: artaekaRail },
+  { id: "artaeka", title: "Artaeka", image: featuredHero },
   { id: "beese", title: "Beese", image: beeseRail },
 ];
 
