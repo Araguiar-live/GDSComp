@@ -177,6 +177,8 @@ export function Footer({
           <p className="text-[12px]">© 2026 Portfolio. All rights reserved.</p>
           <p className="text-[11px]">{clock}</p>
         </div>
+
+        <p className="text-center text-[10px] leading-none text-white/20">proverbs 3:5</p>
       </div>
     </footer>
   );
