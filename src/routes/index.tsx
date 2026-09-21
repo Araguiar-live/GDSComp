@@ -3,7 +3,6 @@ import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import girlPleaseLogo from "@/assets/girl-please.svg";
 import designToggleKnob from "@/assets/portfolio/design-toggle-knob.svg";
-import { InteractiveHero } from "@/components/portfolio/InteractiveHero";
 import { ProjectBentoStack, type Project } from "@/components/portfolio/ProjectAccordion";
 import { Dock } from "@/components/portfolio/Dock";
 import { ProjectDock } from "@/components/portfolio/ProjectDock";
@@ -269,7 +268,7 @@ function Index() {
   }, []);
 
   return (
-    <div className="portfolio-hero-grid relative text-zinc-900 font-sans antialiased overflow-x-hidden">
+    <div className="portfolio-hero-grid relative min-h-screen text-zinc-900 font-sans antialiased overflow-x-hidden">
       {/* App-icon project dock — pinned top-left while scrolling */}
       <div className="fixed top-6 left-6 z-50 sm:left-8">
         <ProjectDock onPlus={() => setSidebarOpen(true)} />
@@ -300,67 +299,67 @@ function Index() {
         </a>
       </div>
 
-      <InteractiveHero />
+      {/*
+        Exact Figma auto-layout (530:151045 / 552:158232):
+        cells → browser plate UNDER pattern → overlay on top.
+        Closed 1262×847 · Open 1262×1522 · overlay scrolls when open.
+        Content column is ~26.5% wider than the original 1336px cap (→ 1690)
+        so the accordion reads larger without changing the stage frame aspect.
+      */}
+      <WireframeStage expanded={isExpanded}>
+        <div
+          className={
+            isExpanded
+              ? "mx-auto flex w-full max-w-[1690px] flex-col items-center gap-[78px] overflow-visible px-6 pb-0 pt-10 sm:px-10"
+              : "absolute left-1/2 top-[calc(50%+18.5px)] flex h-[min(704px,83.1%)] w-[min(1690px,94%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[78px] overflow-visible"
+          }
+        >
+          <header className="flex w-full max-w-[720px] shrink-0 flex-col items-center gap-5 text-center">
+            <p className="text-[11px] font-bold uppercase tracking-[2px] text-[#76767a]">
+              Selected Work • Portfolio
+            </p>
 
-      <section id="work" className="relative z-10 scroll-mt-6">
-        {/*
-          Exact Figma auto-layout (530:151045 / 552:158232) — unchanged wireframe frame.
-          Stacked below InteractiveHero; scroll target for the dark hero CTA.
-        */}
-        <WireframeStage expanded={isExpanded}>
-          <div
-            className={
-              isExpanded
-                ? "mx-auto flex w-full max-w-[1690px] flex-col items-center gap-[78px] overflow-visible px-6 pb-0 pt-10 sm:px-10"
-                : "absolute left-1/2 top-[calc(50%+18.5px)] flex h-[min(704px,83.1%)] w-[min(1690px,94%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[78px] overflow-visible"
-            }
-          >
-            <header className="flex w-full max-w-[720px] shrink-0 flex-col items-center gap-5 text-center">
-              <p className="text-[11px] font-bold uppercase tracking-[2px] text-[#76767a]">
-                Selected Work • Portfolio
-              </p>
+            <div className="flex items-end justify-center gap-[15px]">
+              <div className="hidden w-[87px] shrink-0 pb-2.5 sm:block" aria-hidden />
 
-              <div className="flex items-end justify-center gap-[15px]">
-                <div className="hidden w-[87px] shrink-0 pb-2.5 sm:block" aria-hidden />
+              <h1 className="text-center text-[40px] font-medium leading-[48px] tracking-[-1.5px] text-[#111] sm:text-[48px] sm:leading-[56px]">
+                <span className="block">Hi..</span>
+                <span className="block">I do Design.</span>
+              </h1>
 
-                <h1 className="text-center text-[40px] font-medium leading-[48px] tracking-[-1.5px] text-[#111] sm:text-[48px] sm:leading-[56px]">
-                  <span className="block">Hi..</span>
-                  <span className="block">I do Design.</span>
-                </h1>
-
-                <div className="w-[72px] shrink-0 pb-2.5 sm:w-[87px]">
-                  <DesignToggle on={designOn} onToggle={() => setDesignOn((v) => !v)} />
-                </div>
+              <div className="w-[72px] shrink-0 pb-2.5 sm:w-[87px]">
+                <DesignToggle on={designOn} onToggle={() => setDesignOn((v) => !v)} />
               </div>
-
-              <p className="max-w-[580px] text-[14px] leading-[22px] text-[#76767a]">
-                Product Designer &amp; Design Engineer. I build complex B2B platforms, design
-                systems, and code-backed prototypes from zero to one.
-              </p>
-            </header>
-
-            <div className="relative w-full shrink-0 overflow-visible">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 z-[5] overflow-visible"
-              >
-                <div className="absolute left-0 top-0 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-                  <PortfolioCalculatorCard />
-                </div>
-                <div className="absolute top-4 right-4 hidden -translate-y-[70px] md:block">
-                  <PortfolioPeekMouse />
-                </div>
-              </div>
-              <ProjectBentoStack
-                projects={PROJECTS}
-                openSlug={openSlug}
-                onToggle={toggle}
-                rowRefs={rowRefs}
-              />
             </div>
+
+            <p className="max-w-[580px] text-[14px] leading-[22px] text-[#76767a]">
+              Product Designer &amp; Design Engineer. I build complex B2B platforms, design systems,
+              and code-backed prototypes from zero to one.
+            </p>
+          </header>
+
+          <div className="relative w-full shrink-0 overflow-visible">
+            {/* Decorative layer — beneath the accordion, peeking from the corners */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-[5] overflow-visible"
+            >
+              <div className="absolute left-0 top-0 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+                <PortfolioCalculatorCard />
+              </div>
+              <div className="absolute top-4 right-4 hidden -translate-y-[70px] md:block">
+                <PortfolioPeekMouse />
+              </div>
+            </div>
+            <ProjectBentoStack
+              projects={PROJECTS}
+              openSlug={openSlug}
+              onToggle={toggle}
+              rowRefs={rowRefs}
+            />
           </div>
-        </WireframeStage>
-      </section>
+        </div>
+      </WireframeStage>
 
       {/* Exactly 2px of #f3f4f6 between wireframe frame and marquee */}
       <div className="relative z-20 h-[2px] w-full shrink-0 bg-[#f3f4f6]" aria-hidden />
@@ -380,7 +379,10 @@ function Index() {
   );
 }
 
-/** Figma Design toggle — mint ↔ purple. */
+/**
+ * Figma Design toggle — mint ↔ purple.
+ * Auto-flips ~every 10s; click still works; bouncy spring + float + occasional shake.
+ */
 function DesignToggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
   const reduceMotion = useReducedMotion();
   const shakeControls = useAnimationControls();
@@ -409,6 +411,7 @@ function DesignToggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
     onToggleRef.current();
   }, [playFlipBounce]);
 
+  // Auto-flip every ~10s (jitter 9–11s). Skips briefly after a manual click.
   useEffect(() => {
     if (reduceMotion) return;
 
@@ -434,6 +437,7 @@ function DesignToggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
     };
   }, [reduceMotion, playFlipBounce]);
 
+  // Intro shake + occasional attention shake
   useEffect(() => {
     if (reduceMotion) return;
 
@@ -468,7 +472,9 @@ function DesignToggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
       className="w-full"
       animate={reduceMotion ? undefined : { y: [0, -3, 0] }}
       transition={
-        reduceMotion ? undefined : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }
+        reduceMotion
+          ? undefined
+          : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }
       }
     >
       <motion.button
