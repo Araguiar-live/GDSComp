@@ -2995,3 +2995,36 @@
     color: var(--color-foreground);
   }
 }
+
+/* Interactive hero — scroll-driven blur/parallax + mobile ambient pulse */
+.interactive-hero {
+  --hero-scroll: 0;
+}
+
+.interactive-hero__frost {
+  backdrop-filter: blur(calc(18px + var(--hero-scroll) * 28px));
+  -webkit-backdrop-filter: blur(calc(18px + var(--hero-scroll) * 28px));
+  opacity: calc(1 - var(--hero-scroll) * 0.35);
+}
+
+.interactive-hero__content {
+  opacity: calc(1 - var(--hero-scroll) * 0.5);
+  transform: translateY(calc(var(--hero-scroll) * -32px));
+  transition: opacity 0.08s linear, transform 0.08s linear;
+}
+
+@keyframes interactive-hero-ambient {
+  0%,
+  100% {
+    opacity: 0.82;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .interactive-hero__frost {
+    animation: interactive-hero-ambient 4.5s ease-in-out infinite;
+  }
+}
