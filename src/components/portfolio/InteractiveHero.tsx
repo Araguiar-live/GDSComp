@@ -91,21 +91,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       const frostShiftY = cursor.active ? (lensY / height - 0.5) * 10 : 0;
       container.style.setProperty("--hero-frost-shift-x", `${frostShiftX}px`);
       container.style.setProperty("--hero-frost-shift-y", `${frostShiftY}px`);
-
-      const logoEl = container.querySelector<HTMLElement>(".hero-logo-glass");
-      if (logoEl && cursor.active) {
-        const rect = logoEl.getBoundingClientRect();
-        const cRect = container.getBoundingClientRect();
-        const lx = rect.left + rect.width / 2 - cRect.left;
-        const ly = rect.top + rect.height / 2 - cRect.top;
-        const tiltX = ((cursor.x - lx) / rect.width) * 8;
-        const tiltY = ((cursor.y - ly) / rect.height) * -6;
-        logoEl.style.setProperty("--hero-logo-tilt-x", `${tiltX}deg`);
-        logoEl.style.setProperty("--hero-logo-tilt-y", `${tiltY}deg`);
-      } else if (logoEl) {
-        logoEl.style.setProperty("--hero-logo-tilt-x", "0deg");
-        logoEl.style.setProperty("--hero-logo-tilt-y", "0deg");
-      }
     };
 
     const updateScrollProgress = () => {
@@ -328,24 +313,20 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         className="interactive-hero__liquid-lens pointer-events-none absolute z-[2]"
       />
 
+      {/* Figma 1769:208015 — full-frame progressive background blur */}
       <div
         aria-hidden
-        className="interactive-hero__frost pointer-events-none absolute left-1/2 top-1/2 z-[3] h-[min(1037px,100%)] w-[min(1447px,100%)] -translate-x-1/2 -translate-y-1/2 bg-[rgba(255,255,255,0.03)]"
+        className="interactive-hero__frost pointer-events-none absolute inset-0 z-[3] bg-[rgba(255,255,255,0.03)] backdrop-blur-[18px]"
       />
 
       <nav className="relative z-10 mx-auto flex w-full max-w-[1106px] items-center justify-between px-6 pt-24 sm:px-10 sm:pt-[139px]">
-        <div className="hero-logo-glass relative flex size-[88px] items-center justify-center sm:size-[110px]">
-          <div className="hero-logo-glass__plate" aria-hidden />
-          <div className="hero-logo-glass__lens" aria-hidden />
-          <div className="hero-logo-glass__dispersion" aria-hidden />
-          <img
-            src={heroLogo}
-            alt=""
-            aria-hidden
-            className="relative z-[1] h-[62%] w-[62%] object-contain sm:h-[68%] sm:w-[68%]"
-          />
-        </div>
-        <div className="hero-nav-chip text-right text-[rgba(255,255,255,0.6)]">
+        <img
+          src={heroLogo}
+          alt=""
+          aria-hidden
+          className="h-[88px] w-[96px] shrink-0 object-contain sm:h-[110px] sm:w-[121px]"
+        />
+        <div className="text-right text-[rgba(255,255,255,0.6)]">
           <p className="text-base sm:text-[20px]">Ana.R Design</p>
           <p className="text-[11px] sm:text-[12px]">Product Designer</p>
         </div>

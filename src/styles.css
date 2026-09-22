@@ -2996,15 +2996,13 @@
   }
 }
 
-/* Interactive hero — liquid lens, scroll blur, glass nav logo */
+/* Interactive hero — liquid lens + Figma 1769:208015 progressive blur */
 .interactive-hero {
   --hero-scroll: 0;
   --hero-lens-x: 50%;
   --hero-lens-y: 50%;
   --hero-cursor-blur: 0px;
   --hero-cursor-active: 0;
-  --hero-logo-tilt-x: 0deg;
-  --hero-logo-tilt-y: 0deg;
 }
 
 /* Cursor-following liquid refraction disc */
@@ -3035,100 +3033,28 @@
   backdrop-filter: blur(calc(18px + var(--hero-scroll) * 28px + var(--hero-cursor-blur) * 0.45));
   -webkit-backdrop-filter: blur(calc(18px + var(--hero-scroll) * 28px + var(--hero-cursor-blur) * 0.45));
   opacity: calc(1 - var(--hero-scroll) * 0.35);
-  transform: translate(-50%, -50%) translate(var(--hero-frost-shift-x, 0px), var(--hero-frost-shift-y, 0px));
+  transform: translate(var(--hero-frost-shift-x, 0px), var(--hero-frost-shift-y, 0px));
   transition: transform 0.14s ease-out;
+  -webkit-mask-image: radial-gradient(
+    ellipse 92% 82% at 50% 46%,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.82) 38%,
+    rgba(0, 0, 0, 0.42) 62%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 92% 82% at 50% 46%,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.82) 38%,
+    rgba(0, 0, 0, 0.42) 62%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
 .interactive-hero__content {
   opacity: calc(1 - var(--hero-scroll) * 0.5);
   transform: translateY(calc(var(--hero-scroll) * -32px));
   transition: opacity 0.08s linear, transform 0.08s linear;
-}
-
-/* Navbar-style glass logo — refraction, dispersion, depth */
-.hero-logo-glass {
-  --hero-logo-tilt-x: 0deg;
-  --hero-logo-tilt-y: 0deg;
-  isolation: isolate;
-  border-radius: 28px;
-  transform: perspective(640px) rotateX(var(--hero-logo-tilt-y)) rotateY(var(--hero-logo-tilt-x));
-  transition: transform 0.18s ease-out;
-  will-change: transform;
-}
-
-.hero-logo-glass__plate,
-.hero-logo-glass__lens,
-.hero-logo-glass__dispersion {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-.hero-logo-glass__plate {
-  z-index: 0;
-  background: linear-gradient(
-    155deg,
-    rgba(255, 255, 255, 0.16) 0%,
-    rgba(255, 255, 255, 0.06) 48%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  backdrop-filter: blur(20px) saturate(180%) contrast(1.08);
-  -webkit-backdrop-filter: blur(20px) saturate(180%) contrast(1.08);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.35) inset,
-    0 -1px 0 rgba(255, 255, 255, 0.08) inset,
-    0 16px 36px rgba(0, 0, 0, 0.42),
-    -3px 0 14px rgba(255, 120, 80, 0.14),
-    3px 0 14px rgba(90, 160, 255, 0.12);
-}
-
-.hero-logo-glass__lens {
-  z-index: 1;
-  background: radial-gradient(
-    120% 90% at 42% 18%,
-    rgba(255, 255, 255, 0.42),
-    transparent 58%
-  );
-  mix-blend-mode: soft-light;
-  opacity: 0.72;
-}
-
-.hero-logo-glass__dispersion {
-  z-index: 2;
-  inset: -1px;
-  padding: 1px;
-  background: linear-gradient(
-    118deg,
-    rgba(255, 92, 92, 0.28) 0%,
-    rgba(255, 255, 255, 0.18) 42%,
-    rgba(92, 140, 255, 0.24) 100%
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0.65;
-}
-
-.hero-nav-chip {
-  position: relative;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: linear-gradient(
-    165deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
 @keyframes interactive-hero-ambient {
@@ -3149,18 +3075,9 @@
   .interactive-hero__liquid-lens {
     display: none;
   }
-
-  .hero-logo-glass {
-    transform: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-logo-glass {
-    transform: none;
-    transition: none;
-  }
-
   .interactive-hero__liquid-lens {
     display: none;
   }
