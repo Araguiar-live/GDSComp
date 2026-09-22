@@ -148,7 +148,7 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
         {rowHover && !isOpen ? (
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-80"
             style={{ background: rowHover.gradient }}
           />
         ) : null}
