@@ -130,6 +130,11 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var pad=2,gap=2,cols=14,w=document.documentElement.clientWidth,h=window.innerHeight,cell=(w-pad*2-gap*(cols-1))/cols,step=cell+gap,rows=Math.max(1,Math.round((h-pad*2+gap)/step));document.documentElement.style.setProperty("--hero-rows",String(rows));})();`,
+          }}
+        />
         <HeadContent />
       </head>
       <body>

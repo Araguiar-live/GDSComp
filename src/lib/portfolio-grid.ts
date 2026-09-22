@@ -35,6 +35,14 @@ export function gridBandHeight(width: number, rowCount: number): number {
   return pad + (rowCount - 1) * step + cell + pad;
 }
 
+/** Row count that keeps a 2px gap and fills the hero without clipping a square. */
+export function heroGridRows(width: number, height: number): number {
+  const cell = (width - GRID_PAD * 2 - GRID_GAP * (GRID_COLS - 1)) / GRID_COLS;
+  const step = cell + GRID_GAP;
+  if (step <= 0 || height <= 0) return 1;
+  return Math.max(1, Math.round((height - GRID_PAD * 2 + GRID_GAP) / step));
+}
+
 /** Smallest grid-aligned height that is at least minHeight. */
 export function snapHeightToGrid(width: number, minHeight: number): number {
   let rows = 1;

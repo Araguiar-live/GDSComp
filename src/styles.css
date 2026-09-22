@@ -3060,23 +3060,28 @@
   flex-shrink: 0;
 }
 
-/* Static grid — visible immediately, covered once the canvas fades in. */
+/* Static grid — same 2px gaps as the canvas, no clipped row. */
 .interactive-hero__grid {
   position: absolute;
   inset: 0;
   z-index: 0;
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(14, minmax(0, 1fr));
+  grid-template-rows: repeat(var(--hero-rows, 12), minmax(0, 1fr));
+  grid-auto-rows: 0;
   gap: 2px;
   padding: 2px;
   overflow: hidden;
   pointer-events: none;
   background-color: #090e15;
-  align-content: start;
 }
 
 .interactive-hero__grid > span {
-  aspect-ratio: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
   border-radius: min(12px, 18%);
   background: rgba(255, 255, 255, 0.1);
   position: relative;

@@ -1,7 +1,7 @@
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
-import { GRID_COLS, getGridMetrics } from "@/lib/portfolio-grid";
+import { heroGridRows } from "@/lib/portfolio-grid";
 
 /** Recompute per-cell cursor distances at most this often. */
 const DISTANCE_INTERVAL_MS = 32;
@@ -10,7 +10,7 @@ const DISTANCE_MOVE_PX = 12;
 const HEADLINE = "Are you looking for me?";
 const SUBTITLE =
   "Product Designer specialising in complex B2B platforms, design systems, and interactive prototypes.";
-const HERO_GRID_CELLS = 14 * 30;
+const HERO_GRID_CELLS = 14 * 48;
 
 type Blob = {
   homeX: number;
@@ -30,6 +30,20 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollProgressRef = useRef(0);
   const [canvasReady, setCanvasReady] = useState(false);
+
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const apply = () => {
+      el.style.setProperty("--hero-rows", String(heroGridRows(el.clientWidth, el.clientHeight)));
+    };
+
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -99,6 +113,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         syncBlobHomes();
         updateScrollProgress();
+        measureTiles();
       };
 
       const onMove = (event: MouseEvent) => {
@@ -120,6 +135,42 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       let sampledY = cursor.y;
       let glowByCell = new Float32Array(0);
       let dotByCell = new Float32Array(0);
+
+      type Tile = { x: number; y: number; w: number; h: number; cx: number; cy: number };
+      let tiles: Tile[] = [];
+      let tileRadius = 12;
+
+      const measureTiles = () => {
+        const gridEl = container.querySelector<HTMLElement>(".interactive-hero__grid");
+        if (!gridEl) return;
+        container.style.setProperty(
+          "--hero-rows",
+          String(heroGridRows(container.clientWidth, container.clientHeight)),
+        );
+        void gridEl.offsetHeight;
+        const origin = canvas.getBoundingClientRect();
+        const next: Tile[] = [];
+        gridEl.querySelectorAll("span").forEach((span) => {
+          const rect = span.getBoundingClientRect();
+          if (rect.width < 1 || rect.height < 1) return;
+          const x = rect.left - origin.left;
+          const y = rect.top - origin.top;
+          next.push({
+            x,
+            y,
+            w: rect.width,
+            h: rect.height,
+            cx: x + rect.width / 2,
+            cy: y + rect.height / 2,
+          });
+        });
+        tiles = next;
+        const first = gridEl.querySelector("span");
+        if (first) {
+          const radius = parseFloat(getComputedStyle(first).borderTopLeftRadius);
+          if (radius > 0) tileRadius = radius;
+        }
+      };
 
       const drawMetaballs = () => {
         ctx.save();
@@ -144,8 +195,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       const draw = () => {
         if (!loopActive) return;
         const scroll = scrollProgressRef.current;
-        const scrollParallax = scroll * 22;
-        const grid = getGridMetrics(width);
 
         if (!isMobile && cursor.active) {
           lensX += (cursor.x - lensX) * 0.11;
@@ -168,8 +217,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         pulse += 0.014;
         const ambient = isMobile ? 0.04 + Math.sin(pulse) * 0.03 : 0;
 
-        const { pad, gap, cell, radius, dotR } = grid;
-        const step = cell + gap;
+        if (tiles.length === 0) measureTiles();
+
         const now = performance.now();
         const cursorMoved = Math.hypot(cursor.x - sampledX, cursor.y - sampledY);
         const shouldSample =
@@ -183,83 +232,56 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           sampledY = cursor.y;
         }
 
-        const rowCount = Math.max(1, Math.ceil((height + pad) / step));
-        const cellCount = rowCount * GRID_COLS;
-        if (glowByCell.length < cellCount) {
-          glowByCell = new Float32Array(cellCount);
-          dotByCell = new Float32Array(cellCount);
+        if (glowByCell.length < tiles.length) {
+          glowByCell = new Float32Array(tiles.length);
+          dotByCell = new Float32Array(tiles.length);
         }
 
-        let index = 0;
-        for (let row = 0; ; row++) {
-          const y = pad + row * step;
-          if (y + cell > height + pad) break;
+        tiles.forEach((tile, index) => {
+          const { x, y, w, h, cx, cy } = tile;
 
-          for (let col = 0; col < GRID_COLS; col++) {
-            const x = pad + col * step;
-            if (x + cell > width + pad) {
-              index++;
-              continue;
+          let glow = 0;
+          let dotDist = 0;
+          if (!isMobile && cursor.active) {
+            if (shouldSample) {
+              const dist = Math.hypot(cx - cursor.x, cy - cursor.y);
+              glow = Math.max(0, 1 - dist / 240);
+              dotDist = dist;
+              glowByCell[index] = glow;
+              dotByCell[index] = dotDist;
+            } else {
+              glow = glowByCell[index] ?? 0;
+              dotDist = dotByCell[index] ?? 0;
             }
-
-            const cx = x + cell / 2;
-            const cy = y + cell / 2;
-
-            let shiftX = ((cx / width - 0.5) * scrollParallax) / dpr;
-            let shiftY = ((cy / height - 0.5) * scrollParallax * 0.55) / dpr;
-
-            let glow = 0;
-            let dotDist = 0;
-            if (!isMobile && cursor.active) {
-              if (shouldSample) {
-                const dist = Math.hypot(cx - cursor.x, cy - cursor.y);
-                glow = Math.max(0, 1 - dist / 240);
-                dotDist = dist;
-                glowByCell[index] = glow;
-                dotByCell[index] = dotDist;
-              } else {
-                glow = glowByCell[index] ?? 0;
-                dotDist = dotByCell[index] ?? 0;
-              }
-              const influence = glow;
-              const angle = Math.atan2(cy - cursor.y, cx - cursor.x);
-              const liquid = influence * 10;
-              shiftX += Math.cos(angle) * liquid;
-              shiftY += Math.sin(angle) * liquid;
-            }
-
-            const tileX = x + shiftX;
-            const tileY = y + shiftY;
-
-            ctx.fillStyle = `rgba(255,255,255,${0.1 + glow * 0.08})`;
-            ctx.beginPath();
-            ctx.roundRect(tileX, tileY, cell, cell, radius);
-            ctx.fill();
-
-            if (glow > 0.05) {
-              ctx.save();
-              ctx.strokeStyle = `rgba(180, 210, 255, ${glow * 0.22})`;
-              ctx.lineWidth = 1;
-              ctx.beginPath();
-              ctx.roundRect(tileX + 0.5, tileY + 0.5, cell - 1, cell - 1, radius);
-              ctx.stroke();
-              ctx.restore();
-            }
-
-            let dotAlpha = 0.2;
-            if (!isMobile && cursor.active) {
-              dotAlpha = 0.2 + Math.max(0, 1 - dotDist / 220) * 0.55;
-            } else if (isMobile) {
-              dotAlpha = 0.2 + ambient;
-            }
-
-            ctx.fillStyle = `rgba(209,213,219,${dotAlpha + glow * 0.15})`;
-            ctx.beginPath();
-            ctx.arc(cx + shiftX, cy + shiftY, dotR, 0, Math.PI * 2);
-            ctx.fill();
-            index++;
           }
-        }
+
+          ctx.fillStyle = `rgba(255,255,255,${0.1 + glow * 0.08})`;
+          ctx.beginPath();
+          ctx.roundRect(x, y, w, h, tileRadius);
+          ctx.fill();
+
+          if (glow > 0.05) {
+            ctx.save();
+            ctx.strokeStyle = `rgba(180, 210, 255, ${glow * 0.22})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(x + 0.5, y + 0.5, w - 1, h - 1, tileRadius);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          let dotAlpha = 0.2;
+          if (!isMobile && cursor.active) {
+            dotAlpha = 0.2 + Math.max(0, 1 - dotDist / 220) * 0.55;
+          } else if (isMobile) {
+            dotAlpha = 0.2 + ambient;
+          }
+
+          ctx.fillStyle = `rgba(209,213,219,${dotAlpha + glow * 0.15})`;
+          ctx.beginPath();
+          ctx.arc(cx, cy, 2, 0, Math.PI * 2);
+          ctx.fill();
+        });
 
         if (scroll > 0) {
           ctx.save();
