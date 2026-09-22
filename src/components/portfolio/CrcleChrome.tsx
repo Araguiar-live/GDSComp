@@ -27,6 +27,19 @@ function crcleChromeIconClass(tone: CrcleChromeTone) {
   return "brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert";
 }
 
+/** Frosted glass stack — matches portfolio Dock + CRCLE primary dock refraction. */
+function CrcleCompactGlassLayers() {
+  return (
+    <>
+      <div aria-hidden className="crcle-primary-dock-glass rounded-[inherit]" />
+      <div aria-hidden className="crcle-primary-dock-plate rounded-[inherit]" />
+      <div aria-hidden className="crcle-primary-dock-frost rounded-[inherit]" />
+      <div aria-hidden className="crcle-primary-dock-lens rounded-[inherit]" />
+      <div aria-hidden className="crcle-primary-dock-dispersion rounded-[inherit]" />
+    </>
+  );
+}
+
 /**
  * Shared CRCLE dock — white frosted glass + Signal Panel (hover / tap waveform).
  * Primary row: Profile · Signal · Messages. Radar + Home live in the Signal Panel.
@@ -313,11 +326,11 @@ export function CrcleBackButton({
       onClick={onClick}
       disabled={disabled || !onClick}
       aria-label="Back"
-      className={`crcle-glass-btn relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 backdrop-blur-[12px] transition hover:brightness-110 ${
-        tone === "light" ? "crcle-back-btn--light" : tone === "dark" ? "crcle-back-btn--dark" : ""
-      } ${onClick && !disabled ? "" : "opacity-40"}`}
+      className={`crcle-compact-glass relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 transition hover:brightness-110 ${
+        onClick && !disabled ? "" : "opacity-40"
+      }`}
     >
-      <div className="dock-glass-lens opacity-40" aria-hidden />
+      <CrcleCompactGlassLayers />
       <span className="relative z-[1] flex size-8 items-center justify-center">
         <img
           alt=""
@@ -352,15 +365,15 @@ export function CrcleHeaderNavPill({
 
   return (
     <div
-      className={`crcle-header-nav-pill crcle-glass-btn relative flex shrink-0 items-center overflow-hidden rounded-[24px] backdrop-blur-[12px] ${
+      className={`crcle-header-nav-pill crcle-compact-glass relative flex shrink-0 items-center overflow-hidden rounded-[24px] ${
         spread
           ? groupedDark
             ? "h-10 w-[128px] justify-between px-2 py-0.5"
             : "h-[42px] min-w-[132px] justify-between px-2 py-0.5"
           : "h-10 gap-1 px-2 py-0.5"
-      } ${tone === "light" ? "crcle-header-nav-pill--light" : tone === "dark" ? "crcle-header-nav-pill--dark" : ""} ${className}`}
+      } ${className}`}
     >
-      <div className="dock-glass-lens opacity-40" aria-hidden />
+      <CrcleCompactGlassLayers />
       {groupedDark ? (
         <>
           <div className="relative z-[1] flex items-center gap-2">

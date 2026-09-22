@@ -971,9 +971,69 @@
 .crcle-primary-dock
   > *:not(.crcle-primary-dock-glass):not(.crcle-primary-dock-plate):not(.crcle-primary-dock-frost):not(
     .crcle-primary-dock-lens
+  ):not(.crcle-primary-dock-dispersion),
+.crcle-compact-glass
+  > *:not(.crcle-primary-dock-glass):not(.crcle-primary-dock-plate):not(.crcle-primary-dock-frost):not(
+    .crcle-primary-dock-lens
   ):not(.crcle-primary-dock-dispersion) {
   position: relative;
   z-index: 1;
+}
+
+/* Header back / nav pills — same frosted stack as primary dock + portfolio Dock */
+.crcle-compact-glass {
+  position: relative;
+  isolation: isolate;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.crcle-compact-glass .crcle-primary-dock-glass {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.crcle-compact-glass .crcle-primary-dock-dispersion {
+  opacity: 0.52;
+}
+
+.crcle-phone--light .crcle-compact-glass .crcle-primary-dock-glass {
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.58) 0%,
+    rgba(255, 255, 255, 0.28) 48%,
+    rgba(255, 255, 255, 0.16) 100%
+  );
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset;
+}
+
+.crcle-phone--light .crcle-compact-glass .crcle-primary-dock-plate {
+  background: linear-gradient(
+    182deg,
+    rgba(255, 255, 255, 0.62) 12%,
+    rgba(247, 246, 242, 0.34) 58%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+}
+
+.crcle-phone--light .crcle-compact-glass .crcle-primary-dock-dispersion {
+  opacity: 0.68;
 }
 
 /* Compact glass control — CRCLE chrome pills (Apple Music–style splay + refraction) */
@@ -1879,68 +1939,6 @@
 
 .crcle-signal-card--received-light:hover {
   background: rgba(255, 255, 255, 0.08);
-}
-
-/* Signal Home header — Figma 257:67477 / 257:67478 / 257:67481 */
-.crcle-back-btn--light.crcle-glass-btn {
-  background: rgba(253, 252, 251, 0.4);
-  backdrop-filter: blur(2px) saturate(140%);
-  -webkit-backdrop-filter: blur(2px) saturate(140%);
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  box-shadow: none;
-}
-
-.crcle-back-btn--light.crcle-glass-btn::before,
-.crcle-back-btn--light.crcle-glass-btn::after {
-  display: none;
-}
-
-.crcle-header-nav-pill--light.crcle-glass-btn {
-  background: rgba(253, 252, 251, 0.2);
-  backdrop-filter: blur(3px) saturate(140%);
-  -webkit-backdrop-filter: blur(3px) saturate(140%);
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  box-shadow: none;
-}
-
-.crcle-header-nav-pill--light.crcle-glass-btn::before,
-.crcle-header-nav-pill--light.crcle-glass-btn::after {
-  display: none;
-}
-
-.crcle-header-nav-pill--light .dock-glass-lens {
-  display: none;
-}
-
-/* Signal Home header — Figma 257:86835 / 257:87003 dark photo chrome */
-.crcle-back-btn--dark.crcle-glass-btn {
-  background: rgba(253, 252, 251, 0.05);
-  backdrop-filter: blur(2px) saturate(140%);
-  -webkit-backdrop-filter: blur(2px) saturate(140%);
-  border: 1px solid #f7f6f2;
-  box-shadow: none;
-}
-
-.crcle-back-btn--dark.crcle-glass-btn::before,
-.crcle-back-btn--dark.crcle-glass-btn::after {
-  display: none;
-}
-
-.crcle-header-nav-pill--dark.crcle-glass-btn {
-  background: rgba(253, 252, 251, 0.05);
-  backdrop-filter: blur(3px) saturate(140%);
-  -webkit-backdrop-filter: blur(3px) saturate(140%);
-  border: 1px solid #f7f6f2;
-  box-shadow: none;
-}
-
-.crcle-header-nav-pill--dark.crcle-glass-btn::before,
-.crcle-header-nav-pill--dark.crcle-glass-btn::after {
-  display: none;
-}
-
-.crcle-header-nav-pill--dark .dock-glass-lens {
-  display: none;
 }
 
 /* Radar portrait card — soft gradient rim that blends into dark chrome */
