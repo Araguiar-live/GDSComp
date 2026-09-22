@@ -27,15 +27,15 @@ function crcleChromeIconClass(tone: CrcleChromeTone) {
   return "brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert";
 }
 
-/** Frosted glass stack — matches portfolio Dock + CRCLE primary dock refraction. */
+/** Frosted glass stack — matches portfolio Dock.tsx capsule refraction. */
 function CrcleCompactGlassLayers() {
   return (
     <>
-      <div aria-hidden className="crcle-primary-dock-glass rounded-[inherit]" />
-      <div aria-hidden className="crcle-primary-dock-plate rounded-[inherit]" />
-      <div aria-hidden className="crcle-primary-dock-frost rounded-[inherit]" />
-      <div aria-hidden className="crcle-primary-dock-lens rounded-[inherit]" />
-      <div aria-hidden className="crcle-primary-dock-dispersion rounded-[inherit]" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-b from-white/12 via-transparent to-transparent"
+      />
+      <div aria-hidden className="dock-glass-lens rounded-[inherit] opacity-25" />
     </>
   );
 }
@@ -326,7 +326,7 @@ export function CrcleBackButton({
       onClick={onClick}
       disabled={disabled || !onClick}
       aria-label="Back"
-      className={`crcle-compact-glass relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 transition hover:brightness-110 ${
+      className={`crcle-compact-glass dock-glass relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 shadow-2xl transition hover:brightness-110 ${
         onClick && !disabled ? "" : "opacity-40"
       }`}
     >
@@ -365,7 +365,7 @@ export function CrcleHeaderNavPill({
 
   return (
     <div
-      className={`crcle-header-nav-pill crcle-compact-glass relative flex shrink-0 items-center overflow-hidden rounded-[24px] ${
+      className={`crcle-header-nav-pill crcle-compact-glass dock-glass relative flex shrink-0 items-center overflow-hidden rounded-[24px] shadow-2xl ${
         spread
           ? groupedDark
             ? "h-10 w-[128px] justify-between px-2 py-0.5"

@@ -66,10 +66,7 @@ export function CrclePhoneFrame({
           </div>
 
           {/* Screen — clips all overlays (modals, blur) to the device curve */}
-          <div
-            className="relative flex h-full w-full flex-col overflow-hidden rounded-[53px] bg-[#020617] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]"
-            style={{ clipPath: "inset(0 round 53px)" }}
-          >
+          <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[53px] bg-[#020617] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
             {children}
 
             {/* Home indicator */}
