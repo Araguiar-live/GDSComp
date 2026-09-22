@@ -350,7 +350,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   return (
     <section
       ref={containerRef}
-      className="interactive-hero relative flex h-[70vh] min-h-[520px] w-full shrink-0 flex-col overflow-hidden bg-[#090e15] font-sans text-white"
+      className="interactive-hero relative flex h-dvh min-h-dvh w-full shrink-0 flex-col overflow-hidden bg-[#090e15] font-sans text-white"
       data-name="interactive-hero"
       style={
         {
