@@ -3,10 +3,6 @@ import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
 import { heroGridLayout } from "@/lib/portfolio-grid";
 
-/** Recompute per-cell cursor distances at most this often. */
-const DISTANCE_INTERVAL_MS = 32;
-const DISTANCE_MOVE_PX = 12;
-
 const HEADLINE = "Are you looking for me?";
 const SUBTITLE =
   "Product Designer specialising in complex B2B platforms, design systems, and interactive prototypes.";
@@ -134,11 +130,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
       let pulse = 0;
       let revealed = false;
-      let lastDistanceAt = -DISTANCE_INTERVAL_MS;
-      let sampledX = cursor.x;
-      let sampledY = cursor.y;
-      let glowByCell = new Float32Array(0);
-      let dotByCell = new Float32Array(0);
 
       type Tile = { x: number; y: number; w: number; h: number; cx: number; cy: number };
       let tiles: Tile[] = [];
@@ -222,45 +213,31 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
         if (tiles.length === 0) measureTiles();
 
-        const now = performance.now();
-        const cursorMoved = Math.hypot(cursor.x - sampledX, cursor.y - sampledY);
-        const shouldSample =
-          !isMobile &&
-          cursor.active &&
-          (now - lastDistanceAt >= DISTANCE_INTERVAL_MS || cursorMoved >= DISTANCE_MOVE_PX);
+        const scrollParallax = scroll * 22;
 
-        if (shouldSample) {
-          lastDistanceAt = now;
-          sampledX = cursor.x;
-          sampledY = cursor.y;
-        }
-
-        if (glowByCell.length < tiles.length) {
-          glowByCell = new Float32Array(tiles.length);
-          dotByCell = new Float32Array(tiles.length);
-        }
-
-        tiles.forEach((tile, index) => {
+        tiles.forEach((tile) => {
           const { x, y, w, h, cx, cy } = tile;
 
+          let shiftX = width ? ((cx / width - 0.5) * scrollParallax) / dpr : 0;
+          let shiftY = height ? ((cy / height - 0.5) * scrollParallax * 0.55) / dpr : 0;
           let glow = 0;
           let dotDist = 0;
           if (!isMobile && cursor.active) {
-            if (shouldSample) {
-              const dist = Math.hypot(cx - cursor.x, cy - cursor.y);
-              glow = Math.max(0, 1 - dist / 240);
-              dotDist = dist;
-              glowByCell[index] = glow;
-              dotByCell[index] = dotDist;
-            } else {
-              glow = glowByCell[index] ?? 0;
-              dotDist = dotByCell[index] ?? 0;
-            }
+            const dist = Math.hypot(cx - cursor.x, cy - cursor.y);
+            glow = Math.max(0, 1 - dist / 240);
+            dotDist = dist;
+            const angle = Math.atan2(cy - cursor.y, cx - cursor.x);
+            const liquid = glow * 10;
+            shiftX += Math.cos(angle) * liquid;
+            shiftY += Math.sin(angle) * liquid;
           }
+
+          const tileX = x + shiftX;
+          const tileY = y + shiftY;
 
           ctx.fillStyle = `rgba(255,255,255,${0.1 + glow * 0.08})`;
           ctx.beginPath();
-          ctx.roundRect(x, y, w, h, tileRadius);
+          ctx.roundRect(tileX, tileY, w, h, tileRadius);
           ctx.fill();
 
           if (glow > 0.05) {
@@ -268,7 +245,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
             ctx.strokeStyle = `rgba(180, 210, 255, ${glow * 0.22})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.roundRect(x + 0.5, y + 0.5, w - 1, h - 1, tileRadius);
+            ctx.roundRect(tileX + 0.5, tileY + 0.5, w - 1, h - 1, tileRadius);
             ctx.stroke();
             ctx.restore();
           }
@@ -282,7 +259,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
           ctx.fillStyle = `rgba(209,213,219,${dotAlpha + glow * 0.15})`;
           ctx.beginPath();
-          ctx.arc(cx, cy, 2, 0, Math.PI * 2);
+          ctx.arc(cx + shiftX, cy + shiftY, 2, 0, Math.PI * 2);
           ctx.fill();
         });
 
