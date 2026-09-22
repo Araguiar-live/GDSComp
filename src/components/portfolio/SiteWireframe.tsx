@@ -363,7 +363,7 @@ export function WireframeStage({
         Cell band + browser plate stay top-aligned; solid #f3f4f6 covers the rest.
       */}
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0 bg-[#f3f4f6]">
-        <div className="absolute inset-x-0 top-0 flex w-full flex-col gap-[2px] p-[2px]">
+        <div className="absolute inset-x-0 top-0 flex w-full flex-col gap-[2px] px-[2px] pb-[2px]">
           <JengaCellBand />
           <BrowserPlate />
         </div>

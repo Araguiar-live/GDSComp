@@ -1,15 +1,13 @@
-import { type CSSProperties, useEffect, useRef } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
+import {
+  GRID_COLS,
+  getGridMetrics,
+  snapHeightToGrid,
+} from "@/lib/portfolio-grid";
 
 const HEADLINE = "Are you looking for me?";
-
-/** WireframeStage jenga band — Figma 530:151045 @ 1258px */
-const FIGMA_BAND_W = 1258;
-const GRID_COLS = 14;
-const GRID_GAP = 2;
-const GRID_PAD = 2;
-const GRID_RADIUS = 12;
 
 type Blob = {
   homeX: number;
@@ -20,27 +18,6 @@ type Blob = {
   phase: number;
 };
 
-type GridMetrics = {
-  pad: number;
-  gap: number;
-  cell: number;
-  radius: number;
-  dotR: number;
-};
-
-function getGridMetrics(containerWidth: number): GridMetrics {
-  const bandW = containerWidth - GRID_PAD * 2;
-  const scale = bandW / FIGMA_BAND_W;
-  const cell = (bandW - (GRID_COLS - 1) * GRID_GAP) / GRID_COLS;
-  return {
-    pad: GRID_PAD,
-    gap: GRID_GAP,
-    cell,
-    radius: GRID_RADIUS * scale,
-    dotR: 2 * scale,
-  };
-}
-
 type InteractiveHeroProps = {
   onEnterWork?: () => void;
 };
@@ -49,6 +26,21 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollProgressRef = useRef(0);
+  const [heroHeight, setHeroHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const syncHeight = () => {
+      const width = container.clientWidth;
+      setHeroHeight(snapHeightToGrid(width, window.innerHeight));
+    };
+
+    syncHeight();
+    window.addEventListener("resize", syncHeight);
+    return () => window.removeEventListener("resize", syncHeight);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -268,6 +260,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     const onScroll = () => updateScrollProgress();
 
     resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(container);
     window.addEventListener("resize", resize);
     window.addEventListener("scroll", onScroll, { passive: true });
     container.addEventListener("mousemove", onMove);
@@ -276,12 +270,13 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
     return () => {
       cancelAnimationFrame(raf);
+      ro.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", onScroll);
       container.removeEventListener("mousemove", onMove);
       container.removeEventListener("mouseleave", onLeave);
     };
-  }, []);
+  }, [heroHeight]);
 
   const scrollToWork = () => {
     onEnterWork?.();
@@ -290,10 +285,11 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   return (
     <section
       ref={containerRef}
-      className="interactive-hero relative min-h-screen w-full overflow-hidden bg-[#090e15] text-white"
+      className="interactive-hero relative min-h-[100dvh] w-full overflow-hidden bg-[#090e15] text-white"
       data-name="interactive-hero"
       style={
         {
+          height: heroHeight ?? undefined,
           "--hero-scroll": 0,
           "--hero-lens-x": "50%",
           "--hero-lens-y": "50%",
