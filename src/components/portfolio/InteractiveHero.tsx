@@ -315,7 +315,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         className="interactive-hero__frost pointer-events-none absolute inset-0 z-[3] bg-[rgba(255,255,255,0.03)] backdrop-blur-[18px]"
       />
 
-      <nav className="relative z-10 mx-auto flex w-full max-w-[1106px] items-center justify-between px-6 pt-24 sm:px-10 sm:pt-[139px]">
+      <nav className="relative z-10 flex w-full items-center justify-between px-9 pt-24 sm:pt-[139px]">
         <img
           src={heroLogo}
           alt=""
