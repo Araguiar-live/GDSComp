@@ -345,8 +345,8 @@ function Index() {
             </div>
 
             <p className="max-w-[580px] text-[14px] leading-[22px] text-[#76767a]">
-              Product Designer &amp; Design Engineer. I build complex B2B platforms, design systems,
-              and code-backed prototypes from zero to one.
+              Multidisciplinary, self-sufficient designer. I build complex B2B platforms, design
+              systems, and code-backed prototypes from zero to one.
             </p>
           </header>
 
