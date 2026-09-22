@@ -386,11 +386,15 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       />
 
       <nav className="relative z-10 flex w-full items-center justify-between px-9 pt-24 sm:pt-[139px]">
-        <img
-          src={heroLogo}
-          alt=""
+        <span
           aria-hidden
-          className="h-[88px] w-[96px] shrink-0 object-contain sm:h-[110px] sm:w-[121px]"
+          className="interactive-hero__mark shrink-0"
+          style={
+            {
+              maskImage: `url("${heroLogo}")`,
+              WebkitMaskImage: `url("${heroLogo}")`,
+            } as CSSProperties
+          }
         />
         <div className="text-right text-[rgba(255,255,255,0.6)]">
           <p className="text-base sm:text-[20px]">Ana.R Design</p>
