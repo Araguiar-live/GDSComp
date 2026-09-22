@@ -1,7 +1,7 @@
 import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
-import { heroGridRows } from "@/lib/portfolio-grid";
+import { heroGridLayout } from "@/lib/portfolio-grid";
 
 /** Recompute per-cell cursor distances at most this often. */
 const DISTANCE_INTERVAL_MS = 32;
@@ -36,7 +36,11 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     if (!el) return;
 
     const apply = () => {
-      el.style.setProperty("--hero-rows", String(heroGridRows(el.clientWidth, el.clientHeight)));
+      const grid = el.querySelector<HTMLElement>(".interactive-hero__grid");
+      if (!grid) return;
+      const { rows, cols, cellW, cellH } = heroGridLayout(el.clientWidth, el.clientHeight);
+      grid.style.gridTemplateColumns = `repeat(${cols}, ${cellW}px)`;
+      grid.style.gridTemplateRows = `repeat(${rows}, ${cellH}px)`;
     };
 
     apply();
@@ -143,10 +147,9 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       const measureTiles = () => {
         const gridEl = container.querySelector<HTMLElement>(".interactive-hero__grid");
         if (!gridEl) return;
-        container.style.setProperty(
-          "--hero-rows",
-          String(heroGridRows(container.clientWidth, container.clientHeight)),
-        );
+        const layout = heroGridLayout(container.clientWidth, container.clientHeight);
+        gridEl.style.gridTemplateColumns = `repeat(${layout.cols}, ${layout.cellW}px)`;
+        gridEl.style.gridTemplateRows = `repeat(${layout.rows}, ${layout.cellH}px)`;
         void gridEl.offsetHeight;
         const origin = canvas.getBoundingClientRect();
         const next: Tile[] = [];

@@ -35,12 +35,23 @@ export function gridBandHeight(width: number, rowCount: number): number {
   return pad + (rowCount - 1) * step + cell + pad;
 }
 
+/** Square-like cells with a fixed 2px gap that fill both edges of the hero. */
+export function heroGridLayout(width: number, height: number) {
+  const pad = GRID_PAD;
+  const gap = GRID_GAP;
+  const cols = GRID_COLS;
+  const innerW = Math.max(0, width - pad * 2);
+  const innerH = Math.max(0, height - pad * 2);
+  const cellW = (innerW - gap * (cols - 1)) / cols;
+  const step = cellW + gap;
+  const rows = Math.max(1, Math.round((innerH + gap) / Math.max(step, 1)));
+  const cellH = (innerH - gap * (rows - 1)) / rows;
+  return { rows, cols, cellW, cellH, pad, gap };
+}
+
 /** Row count that keeps a 2px gap and fills the hero without clipping a square. */
 export function heroGridRows(width: number, height: number): number {
-  const cell = (width - GRID_PAD * 2 - GRID_GAP * (GRID_COLS - 1)) / GRID_COLS;
-  const step = cell + GRID_GAP;
-  if (step <= 0 || height <= 0) return 1;
-  return Math.max(1, Math.round((height - GRID_PAD * 2 + GRID_GAP) / step));
+  return heroGridLayout(width, height).rows;
 }
 
 /** Smallest grid-aligned height that is at least minHeight. */

@@ -132,7 +132,7 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var pad=2,gap=2,cols=14,w=document.documentElement.clientWidth,h=window.innerHeight,cell=(w-pad*2-gap*(cols-1))/cols,step=cell+gap,rows=Math.max(1,Math.round((h-pad*2+gap)/step));document.documentElement.style.setProperty("--hero-rows",String(rows));})();`,
+            __html: `(function(){var pad=2,gap=2,cols=14,w=document.documentElement.clientWidth,h=window.innerHeight,innerW=Math.max(0,w-pad*2),innerH=Math.max(0,h-pad*2),cellW=(innerW-gap*(cols-1))/cols,rows=Math.max(1,Math.round((innerH+gap)/(cellW+gap))),cellH=(innerH-gap*(rows-1))/rows,root=document.documentElement;root.style.setProperty("--hero-rows",String(rows));root.style.setProperty("--hero-cell-w",cellW+"px");root.style.setProperty("--hero-cell-h",cellH+"px");})();`,
           }}
         />
         <HeadContent />
