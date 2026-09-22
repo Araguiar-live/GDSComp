@@ -214,26 +214,124 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         if (tiles.length === 0) measureTiles();
 
         const scrollParallax = scroll * 22;
-
-        tiles.forEach((tile) => {
-          const { x, y, w, h, cx, cy } = tile;
-
-          let shiftX = width ? ((cx / width - 0.5) * scrollParallax) / dpr : 0;
-          let shiftY = height ? ((cy / height - 0.5) * scrollParallax * 0.55) / dpr : 0;
+        const minGap = 1;
+        const cols = 14;
+        const rowCount = Math.floor(tiles.length / cols);
+        const shifts = tiles.map((tile) => {
+          let shiftX = width ? ((tile.cx / width - 0.5) * scrollParallax) / dpr : 0;
+          let shiftY = height ? ((tile.cy / height - 0.5) * scrollParallax * 0.55) / dpr : 0;
           let glow = 0;
           let dotDist = 0;
           if (!isMobile && cursor.active) {
-            const dist = Math.hypot(cx - cursor.x, cy - cursor.y);
+            const dist = Math.hypot(tile.cx - cursor.x, tile.cy - cursor.y);
             glow = Math.max(0, 1 - dist / 240);
             dotDist = dist;
-            const angle = Math.atan2(cy - cursor.y, cx - cursor.x);
+            const angle = Math.atan2(tile.cy - cursor.y, tile.cx - cursor.x);
             const liquid = glow * 10;
             shiftX += Math.cos(angle) * liquid;
             shiftY += Math.sin(angle) * liquid;
           }
+          return { x: shiftX, y: shiftY, glow, dotDist };
+        });
 
-          const tileX = x + shiftX;
-          const tileY = y + shiftY;
+        const clampShift = (tile: Tile, shift: { x: number; y: number }) => {
+          const minX = -tile.x;
+          const minY = -tile.y;
+          const maxX = Math.max(minX, width - tile.w - tile.x);
+          const maxY = Math.max(minY, height - tile.h - tile.y);
+          shift.x = Math.min(Math.max(shift.x, minX), maxX);
+          shift.y = Math.min(Math.max(shift.y, minY), maxY);
+        };
+
+        for (let i = 0; i < tiles.length; i++) {
+          const tile = tiles[i];
+          const shift = shifts[i];
+          if (tile && shift) clampShift(tile, shift);
+        }
+
+        const separate = (i: number, j: number) => {
+          const a = tiles[i];
+          const b = tiles[j];
+          const sa = shifts[i];
+          const sb = shifts[j];
+          if (!a || !b || !sa || !sb) return;
+          const aL = a.x + sa.x;
+          const aT = a.y + sa.y;
+          const aR = aL + a.w;
+          const aB = aT + a.h;
+          const bL = b.x + sb.x;
+          const bT = b.y + sb.y;
+          const bR = bL + b.w;
+          const bB = bT + b.h;
+          const overlapX = Math.min(aR, bR) - Math.max(aL, bL);
+          const overlapY = Math.min(aB, bB) - Math.max(aT, bT);
+          const gapX = overlapX > 0 ? -overlapX : Math.max(aL, bL) - Math.min(aR, bR);
+          const gapY = overlapY > 0 ? -overlapY : Math.max(aT, bT) - Math.min(aB, bB);
+          if (gapX >= minGap || gapY >= minGap) return;
+
+          const needX = minGap - gapX;
+          const needY = minGap - gapY;
+          const key = needX <= needY ? "x" : "y";
+          const need = key === "x" ? needX : needY;
+          const aCenter = key === "x" ? (aL + aR) / 2 : (aT + aB) / 2;
+          const bCenter = key === "x" ? (bL + bR) / 2 : (bT + bB) / 2;
+          let sign = Math.sign(bCenter - aCenter);
+          if (sign === 0) {
+            sign = key === "x" ? (b.x >= a.x ? 1 : -1) : b.y >= a.y ? 1 : -1;
+          }
+
+          const minA = key === "x" ? -a.x : -a.y;
+          const maxA =
+            key === "x" ? Math.max(minA, width - a.w - a.x) : Math.max(minA, height - a.h - a.y);
+          const minB = key === "x" ? -b.x : -b.y;
+          const maxB =
+            key === "x" ? Math.max(minB, width - b.w - b.x) : Math.max(minB, height - b.h - b.y);
+          const beforeA = sa[key];
+          const beforeB = sb[key];
+          const clamp = (value: number, lo: number, hi: number) =>
+            Math.min(Math.max(value, lo), hi);
+          let nextA = clamp(beforeA - sign * (need / 2), minA, maxA);
+          let nextB = clamp(beforeB + sign * (need / 2), minB, maxB);
+          let short = need - sign * (nextB - beforeB - (nextA - beforeA));
+          if (short > 0) {
+            const pushedB = clamp(nextB + sign * short, minB, maxB);
+            short -= sign * (pushedB - nextB);
+            nextB = pushedB;
+          }
+          if (short > 0) nextA = clamp(nextA - sign * short, minA, maxA);
+          sa[key] = nextA;
+          sb[key] = nextB;
+        };
+
+        if (rowCount > 0 && tiles.length === rowCount * cols) {
+          for (let pass = 0; pass < 6; pass++) {
+            for (let row = 0; row < rowCount; row++) {
+              for (let col = 0; col < cols; col++) {
+                const i = row * cols + col;
+                if (col + 1 < cols) separate(i, i + 1);
+                if (row + 1 < rowCount) separate(i, i + cols);
+                if (col + 1 < cols && row + 1 < rowCount) separate(i, i + cols + 1);
+                if (col > 0 && row + 1 < rowCount) separate(i, i + cols - 1);
+              }
+            }
+            for (let i = 0; i < tiles.length; i++) {
+              const tile = tiles[i];
+              const shift = shifts[i];
+              if (tile && shift) clampShift(tile, shift);
+            }
+          }
+        }
+
+        tiles.forEach((tile, index) => {
+          const { w, h, cx, cy } = tile;
+          const shift = shifts[index];
+          const shiftX = shift?.x ?? 0;
+          const shiftY = shift?.y ?? 0;
+          const glow = shift?.glow ?? 0;
+          const dotDist = shift?.dotDist ?? 0;
+
+          const tileX = tile.x + shiftX;
+          const tileY = tile.y + shiftY;
 
           ctx.fillStyle = `rgba(255,255,255,${0.1 + glow * 0.08})`;
           ctx.beginPath();
