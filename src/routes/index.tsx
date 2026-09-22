@@ -276,8 +276,8 @@ function Index() {
 
       <section id="work" className="relative z-10 scroll-mt-0">
         {/*
-          Sticky chrome is in-flow inside #work-body so it pins only while the
-          wireframe stage scrolls — it releases before the footer/marquee band.
+          Sticky chrome lives in #work-body — pins from wireframe through footer,
+          then releases once the full main band scrolls off screen.
         */}
         <div id="work-body" className="relative">
           {workCommitted ? (
@@ -372,20 +372,20 @@ function Index() {
           </div>
         </div>
           </WireframeStage>
+
+          {/* Exactly 2px of #f3f4f6 between wireframe frame and marquee */}
+          <div className="relative z-20 h-[2px] w-full shrink-0 bg-[#f3f4f6]" aria-hidden />
+
+          {/* Marquee + footer — continuous black plane under the bento strip */}
+          <div id="site-dark-band" className="relative z-20 bg-black" data-dark-band>
+            <Marquee />
+            <Footer
+              onSelectProject={handleDockSelect}
+              onOpenSidebar={() => setSidebarOpen(true)}
+            />
+          </div>
         </div>
       </section>
-
-      {/* Exactly 2px of #f3f4f6 between wireframe frame and marquee */}
-      <div className="relative z-20 h-[2px] w-full shrink-0 bg-[#f3f4f6]" aria-hidden />
-
-      {/* Marquee + footer — continuous black plane under the bento strip */}
-      <div id="site-dark-band" className="relative z-20 bg-black" data-dark-band>
-        <Marquee />
-        <Footer
-          onSelectProject={handleDockSelect}
-          onOpenSidebar={() => setSidebarOpen(true)}
-        />
-      </div>
 
       <div
         className={`fixed bottom-8 left-1/2 z-[60] -translate-x-1/2 transition-opacity duration-300 ${
