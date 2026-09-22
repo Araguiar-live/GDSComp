@@ -9,7 +9,7 @@ const DISTANCE_MOVE_PX = 12;
 
 const HEADLINE = "Are you looking for me?";
 const SUBTITLE =
-  "Product Designer specializing in complex B2B platforms, design systems, and interactive prototypes.";
+  "Product Designer specialising in complex B2B platforms, design systems, and interactive prototypes.";
 const HERO_GRID_CELLS = 14 * 30;
 
 type Blob = {
@@ -403,7 +403,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           <h1 className="w-full text-[clamp(36px,6vw,56px)] font-normal leading-normal text-[rgba(255,255,255,0.6)]">
             {HEADLINE}
           </h1>
-          <p className="max-w-[34rem] text-balance text-[15px] font-normal leading-6 text-[rgba(255,255,255,0.6)] sm:text-base sm:leading-7">
+          <p className="max-w-[34rem] text-balance text-[15px] font-normal leading-6 text-[rgba(255,255,255,0.4)] sm:text-base sm:leading-7">
             {SUBTITLE}
           </p>
         </div>
