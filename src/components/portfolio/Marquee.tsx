@@ -54,10 +54,7 @@ export function Marquee() {
   const loop = [...MOCKUPS, ...MOCKUPS];
 
   return (
-    <div
-      className="relative w-full overflow-hidden bg-black"
-      style={{ aspectRatio: "1262 / 280" }}
-    >
+    <div className="relative w-full overflow-hidden bg-black" style={{ aspectRatio: "1262 / 280" }}>
       <div className="absolute inset-0 flex items-center overflow-hidden">
         <div className="relative flex w-max animate-marquee gap-6 px-6">
           {loop.map((src, i) => (
@@ -93,6 +90,7 @@ function MockupTile({ src, variant }: { src: string; variant: number }) {
           style={{ height: IMAGE_HEIGHT_PX, width: "auto" }}
           loading="lazy"
           draggable={false}
+          decoding="async"
         />
       </div>
     </MockupGradientRing>

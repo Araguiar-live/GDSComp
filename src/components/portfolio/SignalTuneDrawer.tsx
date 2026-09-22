@@ -32,13 +32,7 @@ const INTERESTS = [
   { id: "music", label: "Music", icon: Music2 },
 ] as const;
 
-const PRONOUNS = [
-  "He/Him",
-  "She/Her",
-  "They/Them",
-  "Custom",
-  "Prefer not to say",
-] as const;
+const PRONOUNS = ["He/Him", "She/Her", "They/Them", "Custom", "Prefer not to say"] as const;
 
 const PREFERENCES = ["Men", "Women", "Both", "None"] as const;
 
@@ -125,6 +119,8 @@ export function SignalTuneDrawer({
                     src={backdropImage}
                     className="absolute left-1/2 top-1/2 h-[140%] w-[140%] max-w-none -translate-x-1/2 -translate-y-1/2 scale-110 object-cover"
                     draggable={false}
+                    loading="lazy"
+                    decoding="async"
                   />
                 ) : null}
                 <div
@@ -149,6 +145,8 @@ export function SignalTuneDrawer({
                   isLight ? "" : "brightness-200"
                 }`}
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
               <div className="min-w-0 flex-1 pt-1">
                 <p
@@ -183,6 +181,8 @@ export function SignalTuneDrawer({
                   src={closeIcon}
                   className={`size-4 max-w-none ${isLight ? "" : "brightness-0 invert"}`}
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
               </button>
             </div>
@@ -206,7 +206,17 @@ export function SignalTuneDrawer({
                 </p>
               </div>
 
-              <Section isLight={isLight} icon={<Sparkles className={`size-5 ${isLight ? "text-[rgba(2,3,29,0.8)]" : "text-[rgba(247,246,242,0.6)]"}`} strokeWidth={1.6} />} title="Interests" meta={`${interests.length}/7 SELECTED`}>
+              <Section
+                isLight={isLight}
+                icon={
+                  <Sparkles
+                    className={`size-5 ${isLight ? "text-[rgba(2,3,29,0.8)]" : "text-[rgba(247,246,242,0.6)]"}`}
+                    strokeWidth={1.6}
+                  />
+                }
+                title="Interests"
+                meta={`${interests.length}/7 SELECTED`}
+              >
                 <div className="flex flex-wrap gap-2">
                   {INTERESTS.map(({ id, label, icon: Icon }) => {
                     const selected = interests.includes(id);
@@ -238,7 +248,10 @@ export function SignalTuneDrawer({
                           strokeWidth={1.75}
                           fill={selected && isLight ? "currentColor" : "none"}
                         />
-                        <span className="whitespace-nowrap text-[11px] leading-[1.4]" style={{ fontFamily: FONT }}>
+                        <span
+                          className="whitespace-nowrap text-[11px] leading-[1.4]"
+                          style={{ fontFamily: FONT }}
+                        >
                           {label}
                         </span>
                       </button>
@@ -247,7 +260,17 @@ export function SignalTuneDrawer({
                 </div>
               </Section>
 
-              <Section isLight={isLight} icon={<UserRound className={`size-3.5 ${isLight ? "text-[rgba(2,3,29,0.8)]" : "text-[rgba(247,246,242,0.6)]"}`} strokeWidth={1.75} />} title="Pronouns" meta="OPTIONAL">
+              <Section
+                isLight={isLight}
+                icon={
+                  <UserRound
+                    className={`size-3.5 ${isLight ? "text-[rgba(2,3,29,0.8)]" : "text-[rgba(247,246,242,0.6)]"}`}
+                    strokeWidth={1.75}
+                  />
+                }
+                title="Pronouns"
+                meta="OPTIONAL"
+              >
                 <div className="flex flex-wrap gap-2">
                   {PRONOUNS.map((p) => {
                     const selected = pronoun === p;
@@ -274,7 +297,17 @@ export function SignalTuneDrawer({
                 </div>
               </Section>
 
-              <Section isLight={isLight} icon={<Heart className={`size-3.5 ${isLight ? "text-[rgba(2,3,29,0.8)]" : "text-[rgba(247,246,242,0.6)]"}`} strokeWidth={1.75} />} title="Preference" meta="OPTIONAL">
+              <Section
+                isLight={isLight}
+                icon={
+                  <Heart
+                    className={`size-3.5 ${isLight ? "text-[rgba(2,3,29,0.8)]" : "text-[rgba(247,246,242,0.6)]"}`}
+                    strokeWidth={1.75}
+                  />
+                }
+                title="Preference"
+                meta="OPTIONAL"
+              >
                 <div className="flex w-full gap-2">
                   {PREFERENCES.map((pref) => {
                     const selected = preference === pref;
@@ -285,8 +318,12 @@ export function SignalTuneDrawer({
                         onClick={() => setPreference(pref)}
                         className="flex flex-1 flex-col items-center gap-2"
                       >
-                        <span className={`box-border flex h-9 w-full max-w-[80px] items-center justify-center rounded-full border-2 p-1 ${isLight ? "border-[#f7f6f2]" : "border-[#f7f6f2]"}`}>
-                          <span className={`size-full rounded-full transition ${selected ? "bg-[#f7f6f2]" : "bg-transparent"}`} />
+                        <span
+                          className={`box-border flex h-9 w-full max-w-[80px] items-center justify-center rounded-full border-2 p-1 ${isLight ? "border-[#f7f6f2]" : "border-[#f7f6f2]"}`}
+                        >
+                          <span
+                            className={`size-full rounded-full transition ${selected ? "bg-[#f7f6f2]" : "bg-transparent"}`}
+                          />
                         </span>
                         <span
                           className={`text-center text-[13px] font-medium leading-[19.5px] ${isLight ? "text-[#030426]" : "text-[#f7f6f2]"}`}
@@ -300,9 +337,13 @@ export function SignalTuneDrawer({
                 </div>
               </Section>
 
-              <div className={`flex w-full items-start justify-between rounded-xl p-2 ${isLight ? "bg-[rgba(2,3,29,0.05)]" : "bg-[rgba(247,246,242,0.1)]"}`}>
+              <div
+                className={`flex w-full items-start justify-between rounded-xl p-2 ${isLight ? "bg-[rgba(2,3,29,0.05)]" : "bg-[rgba(247,246,242,0.1)]"}`}
+              >
                 <div className="flex items-center gap-2">
-                  <span className={`flex size-3.5 items-center justify-center rounded-[3px] border ${isLight ? "border-[rgba(2,3,29,0.45)]" : "border-[rgba(247,246,242,0.45)]"}`} />
+                  <span
+                    className={`flex size-3.5 items-center justify-center rounded-[3px] border ${isLight ? "border-[rgba(2,3,29,0.45)]" : "border-[rgba(247,246,242,0.45)]"}`}
+                  />
                   <p
                     className={`whitespace-nowrap text-[13px] leading-[1.2] ${isLight ? "text-[rgba(2,3,29,0.8)]" : "text-[rgba(247,246,242,0.6)]"}`}
                     style={{ fontFamily: FONT }}
@@ -317,7 +358,10 @@ export function SignalTuneDrawer({
                     onClick={() => setGenderIndex((i) => (i + 1) % GENDERS.length)}
                     className={`flex size-7 items-center justify-center rounded-[36px] pb-1 pt-1.5 ${isLight ? "bg-[#f7f6f2]" : "bg-transparent"}`}
                   >
-                    <Venus className={`size-3.5 ${isLight ? "text-[#02031d]" : "text-[#f7f6f2]"}`} strokeWidth={2} />
+                    <Venus
+                      className={`size-3.5 ${isLight ? "text-[#02031d]" : "text-[#f7f6f2]"}`}
+                      strokeWidth={2}
+                    />
                   </button>
                   <p
                     className={`w-full text-center text-[13px] font-medium leading-[19.5px] ${isLight ? "text-[#030426]" : "text-[#f7f6f2]"}`}
@@ -348,10 +392,29 @@ export function SignalTuneDrawer({
                 </p>
               </div>
 
-              <Section isLight={isLight} icon={<Camera className={`size-4 ${isLight ? "text-[rgba(2,3,29,0.8)]" : "text-[rgba(247,246,242,0.6)]"}`} strokeWidth={1.6} />} title="Gallery" meta="1/6 ADDED">
+              <Section
+                isLight={isLight}
+                icon={
+                  <Camera
+                    className={`size-4 ${isLight ? "text-[rgba(2,3,29,0.8)]" : "text-[rgba(247,246,242,0.6)]"}`}
+                    strokeWidth={1.6}
+                  />
+                }
+                title="Gallery"
+                meta="1/6 ADDED"
+              >
                 <div className="flex gap-2 overflow-x-auto pb-0.5">
-                  <div className={`relative size-[60px] shrink-0 overflow-hidden rounded-xl border p-[2px] ${isLight ? "border-[#f7f6f2]" : "border-[#f7f6f2]"}`}>
-                    <img alt="" src={dropPhoto} className="absolute inset-0 size-full rounded-xl object-cover" draggable={false} />
+                  <div
+                    className={`relative size-[60px] shrink-0 overflow-hidden rounded-xl border p-[2px] ${isLight ? "border-[#f7f6f2]" : "border-[#f7f6f2]"}`}
+                  >
+                    <img
+                      alt=""
+                      src={dropPhoto}
+                      className="absolute inset-0 size-full rounded-xl object-cover"
+                      draggable={false}
+                      loading="lazy"
+                      decoding="async"
+                    />
                     <span className="absolute inset-0 rounded-xl bg-black/20" />
                   </div>
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -368,6 +431,8 @@ export function SignalTuneDrawer({
                         src={addIcon}
                         className={`size-5 max-w-none ${isLight ? "" : "brightness-0 invert opacity-80"}`}
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                     </button>
                   ))}
@@ -382,8 +447,12 @@ export function SignalTuneDrawer({
               </p>
 
               <div className="flex w-full items-center gap-2 px-1 pb-1">
-                <div className={`relative h-1.5 flex-1 overflow-hidden rounded-full ${isLight ? "bg-[rgba(2,3,29,0.12)]" : "bg-[rgba(247,246,242,0.2)]"}`}>
-                  <div className={`absolute inset-y-0 left-0 w-[32%] rounded-full ${isLight ? "bg-[#020426]" : "bg-[#f7f6f2]"}`} />
+                <div
+                  className={`relative h-1.5 flex-1 overflow-hidden rounded-full ${isLight ? "bg-[rgba(2,3,29,0.12)]" : "bg-[rgba(247,246,242,0.2)]"}`}
+                >
+                  <div
+                    className={`absolute inset-y-0 left-0 w-[32%] rounded-full ${isLight ? "bg-[#020426]" : "bg-[#f7f6f2]"}`}
+                  />
                   <span
                     className={`absolute left-[32%] top-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full ${
                       isLight
@@ -439,7 +508,9 @@ function Section({
   isLight: boolean;
 }) {
   return (
-    <div className={`flex w-full flex-col gap-3 rounded-xl p-2 ${isLight ? "bg-[rgba(2,3,29,0.05)]" : "bg-[rgba(247,246,242,0.1)]"}`}>
+    <div
+      className={`flex w-full flex-col gap-3 rounded-xl p-2 ${isLight ? "bg-[rgba(2,3,29,0.05)]" : "bg-[rgba(247,246,242,0.1)]"}`}
+    >
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           {icon}
@@ -462,7 +533,13 @@ function Section({
   );
 }
 
-function SignalBarsMini({ compact = false, isLight = true }: { compact?: boolean; isLight?: boolean }) {
+function SignalBarsMini({
+  compact = false,
+  isLight = true,
+}: {
+  compact?: boolean;
+  isLight?: boolean;
+}) {
   const active = isLight ? "bg-[#020426]" : "bg-[#f7f6f2]";
   const muted = isLight ? "bg-[rgba(2,4,38,0.2)]" : "bg-[rgba(247,246,242,0.2)]";
 

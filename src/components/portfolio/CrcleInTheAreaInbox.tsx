@@ -124,9 +124,7 @@ export function CrcleInTheAreaInbox({
         </filter>
       </svg>
       <div
-        className={`flex w-full flex-col items-center ${
-          isLight ? "bg-[#fdfcfb]" : "bg-[#02031d]"
-        }`}
+        className={`flex w-full flex-col items-center ${isLight ? "bg-[#fdfcfb]" : "bg-[#02031d]"}`}
       >
         <div className="flex w-full flex-col items-center gap-4 px-4 pb-[19px] pt-[21px]">
           <div className="flex w-full items-center justify-between text-[#f7f6f2] [.crcle-phone--light_&]:text-black">
@@ -156,6 +154,8 @@ export function CrcleInTheAreaInbox({
             src={backdropUrl}
             className="absolute left-1/2 top-0 h-[180%] w-[180%] max-w-none -translate-x-1/2 -translate-y-[12%] scale-110 object-cover object-[center_15%]"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
           <div
             className={`absolute inset-0 ${
@@ -174,7 +174,13 @@ export function CrcleInTheAreaInbox({
         >
           <span className="flex size-5 shrink-0 items-center justify-center rounded-[64px] border border-[rgba(0,0,0,0.25)] bg-[rgba(17,223,89,0.8)] p-1">
             <span className="relative h-3 w-[7px] overflow-hidden">
-              <img alt="" src={areaPinIcon} className="absolute inset-0 size-full object-contain" />
+              <img
+                alt=""
+                src={areaPinIcon}
+                className="absolute inset-0 size-full object-contain"
+                loading="lazy"
+                decoding="async"
+              />
             </span>
           </span>
           <p
@@ -260,6 +266,8 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
           alt=""
           src={emmaPortrait}
           className="absolute inset-0 size-full rounded-bl-[24px] rounded-br-[24px] object-cover"
+          loading="lazy"
+          decoding="async"
         />
         <div className="relative z-[1] flex items-start justify-between">
           <div className="flex items-center gap-2 rounded-[120px] bg-[rgba(247,246,242,0.1)] p-1">
@@ -268,22 +276,37 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
                 @SerenaMin
               </span>
               <span className="relative size-3 overflow-hidden">
-                <img alt="" src={shareIcon} className="absolute inset-0 size-full object-contain" />
+                <img
+                  alt=""
+                  src={shareIcon}
+                  className="absolute inset-0 size-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
               </span>
             </span>
-            <span className="rounded-[120px] bg-[#f7f6f2] px-3 py-1.5 text-[13px] leading-[1.4] text-black" style={{ fontFamily: FONT }}>
+            <span
+              className="rounded-[120px] bg-[#f7f6f2] px-3 py-1.5 text-[13px] leading-[1.4] text-black"
+              style={{ fontFamily: FONT }}
+            >
               24 Yrs
             </span>
           </div>
           <span className="flex size-8 items-center justify-center rounded-[120px] bg-[#f7f6f2] p-1">
             <span className="relative size-4 overflow-hidden">
-              <img alt="" src={linkIcon} className="absolute inset-0 size-full object-contain" />
+              <img
+                alt=""
+                src={linkIcon}
+                className="absolute inset-0 size-full object-contain"
+                loading="lazy"
+                decoding="async"
+              />
             </span>
           </span>
         </div>
         <div className="crcle-area-card-glass relative z-[1] flex w-full flex-col items-center gap-2 rounded-[20px] p-3">
           <span className="crcle-area-card-lens" aria-hidden>
-            <img alt="" src={emmaPortrait} draggable={false} />
+            <img alt="" src={emmaPortrait} draggable={false} loading="lazy" decoding="async" />
           </span>
           <div className="flex w-full items-start justify-between">
             <AnimatePresence mode="wait" initial={false}>
@@ -295,11 +318,23 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
                 transition={SWIPE_SPRING}
                 className="relative size-3.5 overflow-hidden"
               >
-                <img alt="" src={accentIcon} className="absolute inset-0 size-full object-contain" />
+                <img
+                  alt=""
+                  src={accentIcon}
+                  className="absolute inset-0 size-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
               </motion.span>
             </AnimatePresence>
             <span className="relative size-[22px] overflow-hidden">
-              <img alt="" src={raindropIcon} className="absolute inset-0 size-full object-contain" />
+              <img
+                alt=""
+                src={raindropIcon}
+                className="absolute inset-0 size-full object-contain"
+                loading="lazy"
+                decoding="async"
+              />
             </span>
           </div>
           <div className="flex h-[44px] w-full items-center justify-between gap-2">
@@ -312,9 +347,21 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
               whileTap={{ scale: 0.92 }}
             >
               <span className="relative size-6 -scale-y-100 rotate-180 overflow-hidden">
-                <img alt="" src={arrowRightIcon} className="absolute inset-0 size-full object-contain" />
+                <img
+                  alt=""
+                  src={arrowRightIcon}
+                  className="absolute inset-0 size-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <span className="absolute inset-[29.17%_37.5%]">
-                  <img alt="" src={arrowChevronIcon} className="size-full object-contain" />
+                  <img
+                    alt=""
+                    src={arrowChevronIcon}
+                    className="size-full object-contain"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </span>
               </span>
             </motion.button>
@@ -353,9 +400,21 @@ function FeaturedNearbyCard({ onConnect }: { onConnect: () => void }) {
               whileTap={{ scale: 0.92 }}
             >
               <span className="relative size-6 overflow-hidden">
-                <img alt="" src={arrowRightIcon} className="absolute inset-0 size-full object-contain" />
+                <img
+                  alt=""
+                  src={arrowRightIcon}
+                  className="absolute inset-0 size-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <span className="absolute inset-[29.17%_37.5%]">
-                  <img alt="" src={arrowChevronIcon} className="size-full object-contain" />
+                  <img
+                    alt=""
+                    src={arrowChevronIcon}
+                    className="size-full object-contain"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </span>
               </span>
             </motion.button>
@@ -371,13 +430,27 @@ function NearbyCategoryPills({ variant }: { variant: NearbyVariant }) {
     return (
       <div className="flex max-w-full min-w-0 items-center gap-3 rounded-[120px] bg-[rgba(247,246,242,0.1)] p-1.5">
         <span className="inline-flex items-center gap-1 rounded-[120px] border border-[#f7f6f2] px-2 py-1.5">
-          <img alt="" src={lightbulbIcon} className="size-3.5 object-contain" draggable={false} />
+          <img
+            alt=""
+            src={lightbulbIcon}
+            className="size-3.5 object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
           <span className="text-[16px] leading-[1.4] text-white" style={{ fontFamily: FONT }}>
             Learn
           </span>
         </span>
         <span className="inline-flex items-center gap-1 rounded-[120px] border border-[#f7f6f2] px-2 py-1.5">
-          <img alt="" src={brainIcon} className="h-3 w-3.5 object-contain" draggable={false} />
+          <img
+            alt=""
+            src={brainIcon}
+            className="h-3 w-3.5 object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
           <span className="text-[16px] leading-[1.4] text-white" style={{ fontFamily: FONT }}>
             Mind
           </span>
@@ -409,7 +482,13 @@ function NearbyCategoryPills({ variant }: { variant: NearbyVariant }) {
     <div className="flex items-center gap-3 rounded-[120px] bg-[rgba(247,246,242,0.1)] p-1.5">
       <span className="inline-flex items-center gap-1 rounded-[120px] bg-[#f7f6f2] px-2 py-1.5">
         <span className="relative size-4 overflow-hidden">
-          <img alt="" src={unlockIcon} className="absolute inset-0 size-full object-contain" />
+          <img
+            alt=""
+            src={unlockIcon}
+            className="absolute inset-0 size-full object-contain"
+            loading="lazy"
+            decoding="async"
+          />
         </span>
         <span className="text-[16px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
           Single
@@ -475,7 +554,13 @@ function NearbyIdentity({
 function IconBox({ src, className }: { src: string; className: string }) {
   return (
     <div className={`relative shrink-0 overflow-hidden ${className}`}>
-      <img alt="" src={src} className="absolute inset-0 size-full max-w-none object-contain" />
+      <img
+        alt=""
+        src={src}
+        className="absolute inset-0 size-full max-w-none object-contain"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 }

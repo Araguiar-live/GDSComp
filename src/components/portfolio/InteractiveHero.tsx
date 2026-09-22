@@ -1,11 +1,7 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
-import {
-  GRID_COLS,
-  getGridMetrics,
-  snapHeightToGrid,
-} from "@/lib/portfolio-grid";
+import { GRID_COLS, getGridMetrics, snapHeightToGrid } from "@/lib/portfolio-grid";
 
 const HEADLINE = "Are you looking for me?";
 
@@ -51,6 +47,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     if (!ctx) return;
 
     let raf = 0;
+    let loopActive = false;
     let width = 0;
     let height = 0;
     let isMobile = window.innerWidth < 768;
@@ -140,6 +137,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     };
 
     const draw = () => {
+      if (!loopActive) return;
       const scroll = scrollProgressRef.current;
       const scrollParallax = scroll * 22;
       const grid = getGridMetrics(width);
@@ -257,19 +255,36 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       raf = requestAnimationFrame(draw);
     };
 
+    const startLoop = () => {
+      if (loopActive) return;
+      loopActive = true;
+      raf = requestAnimationFrame(draw);
+    };
+
+    const stopLoop = () => {
+      loopActive = false;
+      cancelAnimationFrame(raf);
+    };
+
     const onScroll = () => updateScrollProgress();
+
+    const visibility = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) startLoop();
+      else stopLoop();
+    });
 
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(container);
+    visibility.observe(container);
     window.addEventListener("resize", resize);
     window.addEventListener("scroll", onScroll, { passive: true });
     container.addEventListener("mousemove", onMove);
     container.addEventListener("mouseleave", onLeave);
-    raf = requestAnimationFrame(draw);
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopLoop();
+      visibility.disconnect();
       ro.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", onScroll);
@@ -298,11 +313,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         } as CSSProperties
       }
     >
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none absolute inset-0 z-[1]"
-        aria-hidden
-      />
+      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-[1]" aria-hidden />
 
       <div
         aria-hidden

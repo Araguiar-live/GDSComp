@@ -49,10 +49,7 @@ type CreateCard = {
   figmaIcon?: string;
 };
 
-const FILTER_META: Record<
-  FilterKind,
-  { bg: string; icon: string; label: string }
-> = {
+const FILTER_META: Record<FilterKind, { bg: string; icon: string; label: string }> = {
   quiz: { bg: "#0090FF", icon: filterQuiz, label: "Quiz" },
   games: { bg: "#004074", icon: filterGames, label: "Games" },
   rewards: { bg: "#FF5126", icon: filterRewards, label: "Rewards" },
@@ -61,33 +58,136 @@ const FILTER_META: Record<
 
 /** Figma 393:140770 — Create Experiences module */
 const CREATE_CARDS: CreateCard[] = [
-  { id: "reflex", title: "Reflex game", category: "Game", filter: "quiz", tag: "New", icon: "figma", figmaIcon: iconReflex },
-  { id: "scratch", title: "Scratch to reveal", category: "Rewards", filter: "rewards", icon: "figma", figmaIcon: iconScratch },
-  { id: "swipe", title: "Swipe to enrich", category: "Rewards", filter: "rewards", icon: MoveHorizontal },
-  { id: "giftbox", title: "GiftBox", category: "Rewards", filter: "rewards", icon: "figma", figmaIcon: iconGift },
-  { id: "jackpot", title: "Jackpot", category: "Rewards", filter: "rewards", icon: "figma", figmaIcon: iconJackpot },
+  {
+    id: "reflex",
+    title: "Reflex game",
+    category: "Game",
+    filter: "quiz",
+    tag: "New",
+    icon: "figma",
+    figmaIcon: iconReflex,
+  },
+  {
+    id: "scratch",
+    title: "Scratch to reveal",
+    category: "Rewards",
+    filter: "rewards",
+    icon: "figma",
+    figmaIcon: iconScratch,
+  },
+  {
+    id: "swipe",
+    title: "Swipe to enrich",
+    category: "Rewards",
+    filter: "rewards",
+    icon: MoveHorizontal,
+  },
+  {
+    id: "giftbox",
+    title: "GiftBox",
+    category: "Rewards",
+    filter: "rewards",
+    icon: "figma",
+    figmaIcon: iconGift,
+  },
+  {
+    id: "jackpot",
+    title: "Jackpot",
+    category: "Rewards",
+    filter: "rewards",
+    icon: "figma",
+    figmaIcon: iconJackpot,
+  },
   { id: "nps", title: "NPS", category: "Advocacy", filter: "advocacy", icon: Smile },
-  { id: "shake", title: "Shake to reveal", category: "Rewards", filter: "rewards", icon: Smartphone },
+  {
+    id: "shake",
+    title: "Shake to reveal",
+    category: "Rewards",
+    filter: "rewards",
+    icon: Smartphone,
+  },
   { id: "letter", title: "Letter", category: "Rewards", filter: "rewards", icon: Mail },
-  { id: "peel", title: "Peel to reveal", category: "Rewards", filter: "rewards", icon: Fingerprint },
-  { id: "jump", title: "Jump Game", category: "Games", filter: "games", icon: "figma", figmaIcon: iconJump },
+  {
+    id: "peel",
+    title: "Peel to reveal",
+    category: "Rewards",
+    filter: "rewards",
+    icon: Fingerprint,
+  },
+  {
+    id: "jump",
+    title: "Jump Game",
+    category: "Games",
+    filter: "games",
+    icon: "figma",
+    figmaIcon: iconJump,
+  },
   { id: "snapshot", title: "Snapshot", category: "Rewards", filter: "rewards", icon: Camera },
   { id: "form", title: "Form", category: "Rewards", filter: "rewards", icon: FileText },
-  { id: "drop", title: "Drop game", category: "Rewards", filter: "games", tag: "Recommended", icon: "figma", figmaIcon: iconDrop },
+  {
+    id: "drop",
+    title: "Drop game",
+    category: "Rewards",
+    filter: "games",
+    tag: "Recommended",
+    icon: "figma",
+    figmaIcon: iconDrop,
+  },
   { id: "calendar", title: "Calendar", category: "Rewards", filter: "rewards", icon: Calendar },
-  { id: "logic", title: "Logic Quiz", category: "Quiz", filter: "quiz", tag: "Beta", icon: Lightbulb },
+  {
+    id: "logic",
+    title: "Logic Quiz",
+    category: "Quiz",
+    filter: "quiz",
+    tag: "Beta",
+    icon: Lightbulb,
+  },
   { id: "knowledge", title: "Knowledge", category: "Quiz", filter: "quiz", icon: BookOpen },
   { id: "memory", title: "Memory Game", category: "Rewards", filter: "games", icon: Brain },
   { id: "pinball", title: "Pinball", category: "Games", filter: "rewards", icon: CircleDot },
-  { id: "slide", title: "Slide to reveal", category: "Rewards", filter: "rewards", icon: MoveHorizontal },
+  {
+    id: "slide",
+    title: "Slide to reveal",
+    category: "Rewards",
+    filter: "rewards",
+    icon: MoveHorizontal,
+  },
   { id: "tap", title: "Tap to reveal", category: "Rewards", filter: "rewards", icon: Pointer },
-  { id: "wheel", title: "Wheel of fortune", category: "Rewards", filter: "rewards", tag: "Recommended", icon: "figma", figmaIcon: iconWheel },
+  {
+    id: "wheel",
+    title: "Wheel of fortune",
+    category: "Rewards",
+    filter: "rewards",
+    tag: "Recommended",
+    icon: "figma",
+    figmaIcon: iconWheel,
+  },
   { id: "prize", title: "Prize Draw", category: "Rewards", filter: "rewards", icon: Ticket },
   { id: "matching", title: "Matching Game", category: "Rewards", filter: "games", icon: Puzzle },
-  { id: "speed", title: "Speed tap", category: "Rewards", filter: "games", tag: "Beta", icon: Timer },
+  {
+    id: "speed",
+    title: "Speed tap",
+    category: "Rewards",
+    filter: "games",
+    tag: "Beta",
+    icon: Timer,
+  },
   { id: "refer", title: "Refer a friend", category: "Rewards", filter: "advocacy", icon: Users },
-  { id: "landing", title: "Landing Page", category: "Rewards", filter: "rewards", icon: LayoutTemplate },
-  { id: "product-quiz", title: "Product Quiz", category: "Quizzes", filter: "quiz", icon: "figma", figmaIcon: iconQuiz },
+  {
+    id: "landing",
+    title: "Landing Page",
+    category: "Rewards",
+    filter: "rewards",
+    icon: LayoutTemplate,
+  },
+  {
+    id: "product-quiz",
+    title: "Product Quiz",
+    category: "Quizzes",
+    filter: "quiz",
+    icon: "figma",
+    figmaIcon: iconQuiz,
+  },
 ];
 
 export function OdicciCreateExperiencesModal({
@@ -167,13 +267,7 @@ export function OdicciCreateExperiencesModal({
   );
 }
 
-function CreateExperienceCard({
-  card,
-  onPick,
-}: {
-  card: CreateCard;
-  onPick: () => void;
-}) {
+function CreateExperienceCard({ card, onPick }: { card: CreateCard; onPick: () => void }) {
   const filter = FILTER_META[card.filter];
   const Icon = card.icon === "figma" ? null : (card.icon as LucideIcon | undefined);
 
@@ -196,14 +290,20 @@ function CreateExperienceCard({
           style={{ backgroundColor: filter.bg }}
           title={filter.label}
         >
-          <img alt="" src={filter.icon} className="size-3.5" />
+          <img alt="" src={filter.icon} className="size-3.5" loading="lazy" decoding="async" />
         </span>
       </div>
 
       <div className="flex flex-col items-center gap-3 px-1">
         <div className="flex size-14 items-center justify-center rounded-full bg-black/[0.02]">
           {card.figmaIcon ? (
-            <img alt="" src={card.figmaIcon} className="size-9 object-contain" />
+            <img
+              alt=""
+              src={card.figmaIcon}
+              className="size-9 object-contain"
+              loading="lazy"
+              decoding="async"
+            />
           ) : Icon ? (
             <Icon className="size-8 text-[#1a1d21]" strokeWidth={1.5} />
           ) : (

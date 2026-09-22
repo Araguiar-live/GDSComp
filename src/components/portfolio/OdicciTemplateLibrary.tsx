@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, ChevronLeft, ChevronRight, Search, Share2, SlidersHorizontal } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  Share2,
+  SlidersHorizontal,
+} from "lucide-react";
 import { OdicciBrowserFrame } from "@/components/portfolio/OdicciBrowserFrame";
 import {
   PLAYABLE_THEMES,
@@ -207,7 +214,10 @@ export function OdicciTemplateLibrary() {
       canvasClassName="bg-[#f7f8fa]"
       showThemeToggle={false}
     >
-      <div className="relative flex size-full flex-col overflow-hidden bg-white text-[#1a1d21]" style={{ fontFamily: FONT }}>
+      <div
+        className="relative flex size-full flex-col overflow-hidden bg-white text-[#1a1d21]"
+        style={{ fontFamily: FONT }}
+      >
         <TemplateNavbar onCreateNew={() => setCreateOpen(true)} />
 
         <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
@@ -268,7 +278,13 @@ function TemplateNavbar({ onCreateNew }: { onCreateNew: () => void }) {
       {/* Logo sits over the app sidebar; nav aligns with the content column (search bar) */}
       <div className="flex min-w-0 items-center">
         <div className="flex w-[72px] shrink-0 items-center justify-center">
-          <img src={odicciBadge} alt="odicci" className="h-8 w-7 shrink-0 object-contain" />
+          <img
+            src={odicciBadge}
+            alt="odicci"
+            className="h-8 w-7 shrink-0 object-contain"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
         <nav className="ml-4 flex items-center gap-1 rounded-full bg-[#f4f6f8] p-1 text-[13px] font-medium tracking-tight">
           <span className="rounded-full bg-white px-4 py-1.5 text-[#1a1d21] shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-black/[0.04]">
@@ -341,22 +357,30 @@ function WelcomeBanner() {
             src={welcomeAtmosphere}
             className="odicci-welcome-atmosphere absolute inset-0 size-full object-cover"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
           <img
             alt=""
             src={welcomeMesh}
             className="odicci-welcome-mesh absolute -left-[10%] -top-[80%] h-[280%] w-[70%] max-w-none object-cover opacity-40 mix-blend-soft-light"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
           <img
             alt=""
             src={welcomeOrbs}
             className="odicci-welcome-orbs absolute -right-[5%] -top-[120%] h-[320%] w-[55%] max-w-none object-cover opacity-70 mix-blend-screen"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <div className="relative z-10 flex h-full flex-col justify-center gap-0.5 px-5">
-          <p className="text-[28px] font-medium leading-none tracking-tight text-white">Welcome User!</p>
+          <p className="text-[28px] font-medium leading-none tracking-tight text-white">
+            Welcome User!
+          </p>
           <p className="text-[15px] font-normal leading-snug tracking-tight text-white/90">
             There&apos;s nothing here yet...
           </p>
@@ -372,7 +396,13 @@ function WelcomeBanner() {
           >
             <div className="flex items-center justify-between gap-2 px-0.5">
               <span className="inline-flex h-6 max-w-[70%] items-center gap-1.5 truncate rounded-full bg-[#004074] px-2.5 text-[11px] font-medium text-white">
-                <img src={iconGameboyLight} alt="" className="size-3.5 shrink-0" />
+                <img
+                  src={iconGameboyLight}
+                  alt=""
+                  className="size-3.5 shrink-0"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <span className="truncate">{exp.label}</span>
               </span>
               <span className="shrink-0 text-[11px] text-[#838383]">{exp.when}</span>
@@ -383,6 +413,8 @@ function WelcomeBanner() {
                 src={exp.image}
                 className="absolute inset-0 size-full object-cover"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="flex items-center justify-between gap-2 px-1 pb-0.5">
@@ -521,6 +553,8 @@ function TemplateSection({
                 src={card.image}
                 className="absolute inset-0 size-full object-cover"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -535,12 +569,14 @@ function TemplateSection({
                   alt=""
                   src={card.badge === "light" ? iconGameboy : iconGameboyLight}
                   className="size-3.5"
+                  loading="lazy"
+                  decoding="async"
                 />
                 {card.label}
               </span>
               <span className="flex items-center gap-0.5 text-[14px] text-[#838383]">
                 {card.metric}
-                <img alt="" src={iconTrending} className="size-5" />
+                <img alt="" src={iconTrending} className="size-5" loading="lazy" decoding="async" />
               </span>
             </div>
           </button>
@@ -589,6 +625,8 @@ function PreviewSidebar({
           src={previewStage}
           className="pointer-events-none absolute inset-0 size-full rounded-3xl object-cover"
           draggable={false}
+          loading="lazy"
+          decoding="async"
         />
         <div className="relative z-[1] flex w-[248px] max-w-full flex-col items-center overflow-hidden rounded-[42px] border-[9px] border-black bg-black shadow-[inset_0_4px_4px_rgba(255,255,255,0.15)]">
           <div className="absolute left-1/2 top-2.5 z-[2] flex -translate-x-1/2 items-start gap-2.5">
@@ -603,7 +641,12 @@ function PreviewSidebar({
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ type: "spring", stiffness: 360, damping: 32, opacity: { duration: 0.16 } }}
+                transition={{
+                  type: "spring",
+                  stiffness: 360,
+                  damping: 32,
+                  opacity: { duration: 0.16 },
+                }}
               >
                 <PlayableTemplatePreview
                   theme={PLAYABLE_THEMES[card.id] ?? PLAYABLE_THEMES.summer}
@@ -615,7 +658,7 @@ function PreviewSidebar({
       </div>
 
       <div className="flex shrink-0 gap-2">
-        <img alt="" src={qrPreview} className="size-20 shrink-0" />
+        <img alt="" src={qrPreview} className="size-20 shrink-0" loading="lazy" decoding="async" />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <button
             type="button"

@@ -48,8 +48,18 @@ const VARIANT_ORDER: SignalVariant[] = ["purpose", "soul", "love"];
 
 const SIGNAL_SOCIAL_LINKS = [
   { id: "behance", label: "Behance", icon: socialBehanceIcon, href: "https://www.behance.net/" },
-  { id: "instagram", label: "Instagram", icon: socialInstagramIcon, href: "https://www.instagram.com/" },
-  { id: "linkedin", label: "LinkedIn", icon: socialLinkedinIcon, href: "https://www.linkedin.com/in/" },
+  {
+    id: "instagram",
+    label: "Instagram",
+    icon: socialInstagramIcon,
+    href: "https://www.instagram.com/",
+  },
+  {
+    id: "linkedin",
+    label: "LinkedIn",
+    icon: socialLinkedinIcon,
+    href: "https://www.linkedin.com/in/",
+  },
   { id: "dribbble", label: "Dribbble", icon: socialDribbbleIcon, href: "https://dribbble.com/" },
 ] as const;
 
@@ -112,9 +122,7 @@ export function SignalInterceptModal({
         type="button"
         aria-label="Dismiss"
         className={`absolute inset-0 ${
-          isLight
-            ? "bg-[rgba(2,3,29,0.28)] backdrop-blur-[8px]"
-            : "bg-black/50 backdrop-blur-[8px]"
+          isLight ? "bg-[rgba(2,3,29,0.28)] backdrop-blur-[8px]" : "bg-black/50 backdrop-blur-[8px]"
         }`}
         onClick={() => onDecline(user.id)}
       />
@@ -134,12 +142,17 @@ export function SignalInterceptModal({
       >
         {/* Soft blurred portrait wash (light wireframe 452:81989) */}
         {isLight ? (
-          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-t-[16px] rounded-b-[53px]" aria-hidden>
+          <div
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-t-[16px] rounded-b-[53px]"
+            aria-hidden
+          >
             <img
               alt=""
               src={user.photoUrl}
               className="absolute left-1/2 top-1/2 h-[140%] w-[140%] max-w-none -translate-x-1/2 -translate-y-1/2 scale-110 object-cover"
               style={{ filter: "blur(48px) saturate(0.85) hue-rotate(-6deg)" }}
+              loading="lazy"
+              decoding="async"
             />
             {/* Warm cream wash — cuts blue cast ~15% */}
             <div className="absolute inset-0 bg-[rgba(247,246,242,0.55)]" />
@@ -149,6 +162,8 @@ export function SignalInterceptModal({
             alt=""
             src={signalBg}
             className="pointer-events-none absolute inset-0 size-full rounded-t-[16px] rounded-b-[53px] object-cover"
+            loading="lazy"
+            decoding="async"
           />
         )}
 
@@ -173,6 +188,8 @@ export function SignalInterceptModal({
               alt=""
               src={dragHandleModal}
               className={`block size-full max-w-none ${isLight ? "opacity-40 brightness-0" : ""}`}
+              loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -339,6 +356,8 @@ export function SignalInterceptModal({
               alt=""
               src={user.photoUrl}
               className="pointer-events-none absolute inset-0 size-full rounded-[24px] object-cover"
+              loading="lazy"
+              decoding="async"
             />
 
             <div className="relative z-[1] flex w-full items-start justify-between">
@@ -351,6 +370,8 @@ export function SignalInterceptModal({
                         src={mapPinIcon}
                         className="absolute inset-0 size-full max-w-none"
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   </div>
@@ -398,6 +419,8 @@ export function SignalInterceptModal({
                           isLight ? "" : "brightness-0"
                         }`}
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   </div>
@@ -431,6 +454,8 @@ export function SignalInterceptModal({
                             src={social.icon}
                             className="size-full max-w-none object-contain"
                             draggable={false}
+                            loading="lazy"
+                            decoding="async"
                           />
                         </a>
                       ))}
@@ -470,10 +495,16 @@ export function SignalInterceptModal({
                       </div>
                     </div>
                     <div className="flex w-full flex-col items-center gap-1 text-center text-white">
-                      <p className="line-clamp-2 w-full text-[11px] leading-[1.4]" style={{ fontFamily: FONT }}>
+                      <p
+                        className="line-clamp-2 w-full text-[11px] leading-[1.4]"
+                        style={{ fontFamily: FONT }}
+                      >
                         {match.matchBio}
                       </p>
-                      <p className="text-[16px] font-medium leading-[1.4]" style={{ fontFamily: FONT }}>
+                      <p
+                        className="text-[16px] font-medium leading-[1.4]"
+                        style={{ fontFamily: FONT }}
+                      >
                         60%
                       </p>
                     </div>
@@ -508,9 +539,7 @@ export function SignalInterceptModal({
                 type="button"
                 onClick={() => onAccept(user.id)}
                 className={`rounded-full px-9 py-3 text-[16px] font-medium leading-[1.2] tracking-[-0.44px] whitespace-nowrap ${
-                  isLight
-                    ? "bg-[#02031d] text-[#f7f6f2]"
-                    : "bg-[#f7f6f2] text-[#02031d]"
+                  isLight ? "bg-[#02031d] text-[#f7f6f2]" : "bg-[#f7f6f2] text-[#02031d]"
                 }`}
                 style={{ fontFamily: FONT }}
                 whileHover={{ scale: 1.05 }}
@@ -548,10 +577,9 @@ function matchCopyFor(variant: SignalVariant, user: UserProfile) {
     case "purpose":
       return {
         matchType: "Purpose Match",
-        matchBio:
-          user.matchType.toLowerCase().includes("purpose")
-            ? user.matchBio
-            : "Building intentional communities and late-night design critiques",
+        matchBio: user.matchType.toLowerCase().includes("purpose")
+          ? user.matchBio
+          : "Building intentional communities and late-night design critiques",
       };
     case "soul":
       return {
@@ -586,7 +614,10 @@ function CategoryPills({
             isLight ? "border-[#02031d]" : "border-[#f7f6f2]"
           }`}
         >
-          <IconImg src={lightbulbIcon} className={`size-3.5 shrink-0 ${isLight ? "brightness-0" : ""}`} />
+          <IconImg
+            src={lightbulbIcon}
+            className={`size-3.5 shrink-0 ${isLight ? "brightness-0" : ""}`}
+          />
           <span
             className={`text-[16px] leading-[1.4] ${isLight ? "text-[#02031d]" : "text-[#f7f6f2]"}`}
             style={{ fontFamily: FONT }}
@@ -600,7 +631,10 @@ function CategoryPills({
             isLight ? "border-[#02031d]" : "border-[#f7f6f2]"
           }`}
         >
-          <IconImg src={brainIcon} className={`h-3 w-3.5 shrink-0 ${isLight ? "brightness-0" : ""}`} />
+          <IconImg
+            src={brainIcon}
+            className={`h-3 w-3.5 shrink-0 ${isLight ? "brightness-0" : ""}`}
+          />
           <span
             className={`text-[16px] leading-[1.4] ${isLight ? "text-[#02031d]" : "text-[#f7f6f2]"}`}
             style={{ fontFamily: FONT }}
@@ -740,7 +774,13 @@ const staggerPill = {
 function IconImg({ src, className = "size-6" }: { src: string; className?: string }) {
   return (
     <div className={`relative shrink-0 overflow-hidden ${className}`}>
-      <img alt="" src={src} className="absolute inset-0 size-full max-w-none object-contain" />
+      <img
+        alt=""
+        src={src}
+        className="absolute inset-0 size-full max-w-none object-contain"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 }

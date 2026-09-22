@@ -67,15 +67,35 @@ const TIMELINE: TimelineNode[] = [
 ];
 
 const DESIGN_STACK: ToolkitItem[] = [
-  { icon: Layers, iconColor: "#8B5CF6", label: "Figma", detail: "Systems, components, dev handoff" },
-  { icon: Sparkles, iconColor: "#EC4899", label: "Framer", detail: "Interactive prototypes & motion" },
+  {
+    icon: Layers,
+    iconColor: "#8B5CF6",
+    label: "Figma",
+    detail: "Systems, components, dev handoff",
+  },
+  {
+    icon: Sparkles,
+    iconColor: "#EC4899",
+    label: "Framer",
+    detail: "Interactive prototypes & motion",
+  },
   { icon: Palette, iconColor: "#3B82F6", label: "Webflow", detail: "Marketing & layout builds" },
   { icon: Wand2, iconColor: "#F97316", label: "Principle", detail: "Micro-interaction studies" },
 ];
 
 const TECH_WORKFLOW: ToolkitItem[] = [
-  { icon: Code2, iconColor: "#0D9488", label: "HTML / CSS", detail: "Solid front-end constraint literacy" },
-  { icon: Sparkles, iconColor: "#18181B", label: "Cursor & AI", detail: "Accelerated prototyping and handoff" },
+  {
+    icon: Code2,
+    iconColor: "#0D9488",
+    label: "HTML / CSS",
+    detail: "Solid front-end constraint literacy",
+  },
+  {
+    icon: Sparkles,
+    iconColor: "#18181B",
+    label: "Cursor & AI",
+    detail: "Accelerated prototyping and handoff",
+  },
 ];
 
 export function ProfileSidebar() {
@@ -124,6 +144,8 @@ export function ProfileSidebar() {
                       src={girlPleaseLogo}
                       alt="Personal logo"
                       className="w-[70%] h-[70%] object-contain opacity-90"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div className="min-w-0">
@@ -137,8 +159,8 @@ export function ProfileSidebar() {
                 </div>
 
                 <p className="mt-3 text-[11px] leading-relaxed text-zinc-600 pr-2">
-                  Experienced as a sole designer — owning visuals, systems, and shipping cadence from
-                  wireframe to production.
+                  Experienced as a sole designer — owning visuals, systems, and shipping cadence
+                  from wireframe to production.
                 </p>
 
                 <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -181,7 +203,9 @@ export function ProfileSidebar() {
                           <div className="text-[9.5px] font-semibold tracking-[0.12em] uppercase text-zinc-400 mt-1">
                             {n.date}
                           </div>
-                          <p className="text-[11.5px] leading-relaxed text-zinc-500 mt-2">{n.details}</p>
+                          <p className="text-[11.5px] leading-relaxed text-zinc-500 mt-2">
+                            {n.details}
+                          </p>
                         </li>
                       );
                     })}
@@ -191,9 +215,11 @@ export function ProfileSidebar() {
                 <SectionHeader icon={GraduationCap} label="Education" />
                 <p className="mt-4 text-[11.5px] leading-relaxed text-zinc-600">
                   Background in{" "}
-                  <span className="font-medium text-zinc-800">Industrial Design &amp; Technology</span> from
-                  Loughborough University — grounding product decisions in material, usability, and
-                  technical feasibility.
+                  <span className="font-medium text-zinc-800">
+                    Industrial Design &amp; Technology
+                  </span>{" "}
+                  from Loughborough University — grounding product decisions in material, usability,
+                  and technical feasibility.
                 </p>
 
                 <SectionHeader icon={SlidersHorizontal} label="Design stack" />
@@ -212,9 +238,9 @@ export function ProfileSidebar() {
 
                 <SectionHeader icon={Target} label="Product impact" />
                 <p className="mt-4 text-[11.5px] leading-relaxed text-zinc-600">
-                  Proven track record of reducing support friction to zero through workflow redesigns,
-                  managing complex location privacy and widget models, and executing under strict time
-                  constraints without sacrificing craft.
+                  Proven track record of reducing support friction to zero through workflow
+                  redesigns, managing complex location privacy and widget models, and executing
+                  under strict time constraints without sacrificing craft.
                 </p>
               </div>
             </div>
@@ -234,7 +260,13 @@ export function ProfileSidebar() {
           aria-label="Open profile panel"
         >
           <div className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden bg-transparent">
-            <img src={girlPleaseLogo} alt="Logo" className="w-[85%] h-[85%] object-contain" />
+            <img
+              src={girlPleaseLogo}
+              alt="Logo"
+              className="w-[85%] h-[85%] object-contain"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
           <ChevronRight className="w-4 h-4 text-black" strokeWidth={2} />
         </motion.button>
@@ -247,7 +279,9 @@ function SectionHeader({ icon: Icon, label }: { icon: LucideIcon; label: string 
   return (
     <div className="mt-6 flex items-center gap-2">
       <Icon className="w-3 h-3 text-black" strokeWidth={2} />
-      <span className="text-[9.5px] font-semibold tracking-[0.22em] uppercase text-zinc-400">{label}</span>
+      <span className="text-[9.5px] font-semibold tracking-[0.22em] uppercase text-zinc-400">
+        {label}
+      </span>
       <div className="flex-1 h-px bg-zinc-900/10" />
     </div>
   );

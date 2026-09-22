@@ -88,12 +88,10 @@ const PROJECTS: Project[] = [
         subtitle: "Conversation as the product core",
         overview:
           "The messaging hub is the daily loop — notifications, threads, and presence without noisy social chrome.",
-        challenge:
-          "Build intimacy at small scale without borrowing patterns from mass messengers.",
+        challenge: "Build intimacy at small scale without borrowing patterns from mass messengers.",
         approach:
           "Prioritize readable threads, the Sent/Received switch, and a dock that feels like a private tool.",
-        outcome:
-          "An interactive hub that demonstrates the product’s rhythm end-to-end.",
+        outcome: "An interactive hub that demonstrates the product’s rhythm end-to-end.",
         customBody: ({ goToTab }) => (
           <CrcleMessaging
             onGoToProfile={() => goToTab("Template Library")}
@@ -207,9 +205,7 @@ const PROJECTS: Project[] = [
           "Capture business profile first (Figma 713:199885), then brand vibe (727:200380), then live colour controls so every experience and suggested template feels on-brand.",
         outcome:
           "A three-beat Brand Personality flow: describe the business, set the vibe, dial the palette — feeding a tailored Template library next.",
-        customBody: ({ onPrevTab }) => (
-          <OdicciColourPalette onBackToWorkspace={onPrevTab} />
-        ),
+        customBody: ({ onPrevTab }) => <OdicciColourPalette onBackToWorkspace={onPrevTab} />,
       },
       "Sign Up": {
         label: "Odicci — Sign up",
@@ -220,8 +216,7 @@ const PROJECTS: Project[] = [
           "Sign-up is high drop-off. Visual polish has to support clarity, not distract from it.",
         approach:
           "Keep fields minimal, hierarchy loud, and the environment distinctive enough to remember.",
-        outcome:
-          "An onboarding beat that sells the brand while collecting only what’s needed.",
+        outcome: "An onboarding beat that sells the brand while collecting only what’s needed.",
         customBody: <OdicciSignUp />,
       },
       "Template Library": {
@@ -297,6 +292,8 @@ function Index() {
               alt=""
               aria-hidden
               className="h-[70%] w-[70%] object-contain invert transition-[filter] duration-200 group-hover:invert-0"
+              loading="lazy"
+              decoding="async"
             />
           </button>
           <a
@@ -318,58 +315,58 @@ function Index() {
             so the accordion reads larger without changing the stage frame aspect.
           */}
           <WireframeStage expanded={isExpanded}>
-        <div
-          className={
-            isExpanded
-              ? "mx-auto flex w-full max-w-[1690px] flex-col items-center gap-[78px] overflow-visible px-6 pb-0 pt-10 sm:px-10"
-              : "absolute left-1/2 top-[calc(50%+18.5px)] flex h-[min(704px,83.1%)] w-[min(1690px,94%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[78px] overflow-visible"
-          }
-        >
-          <header className="flex w-full max-w-[720px] shrink-0 flex-col items-center gap-5 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-[2px] text-[#76767a]">
-              Selected Work • Portfolio
-            </p>
-
-            <div className="flex items-end justify-center gap-[15px]">
-              <div className="hidden w-[87px] shrink-0 pb-2.5 sm:block" aria-hidden />
-
-              <h1 className="text-center text-[40px] font-medium leading-[48px] tracking-[-1.5px] text-[#111] sm:text-[48px] sm:leading-[56px]">
-                <span className="block">Hi..</span>
-                <span className="block">I do Design.</span>
-              </h1>
-
-              <div className="w-[72px] shrink-0 pb-2.5 sm:w-[87px]">
-                <DesignToggle on={designOn} onToggle={() => setDesignOn((v) => !v)} />
-              </div>
-            </div>
-
-            <p className="max-w-[580px] text-[14px] leading-[22px] text-[#76767a]">
-              Multidisciplinary, self-sufficient designer. I build complex B2B platforms, design
-              systems, and code-backed prototypes from zero to one.
-            </p>
-          </header>
-
-          <div className="relative w-full shrink-0 overflow-visible">
-            {/* Decorative layer — beneath the accordion, peeking from the corners */}
             <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 z-[5] overflow-visible"
+              className={
+                isExpanded
+                  ? "mx-auto flex w-full max-w-[1690px] flex-col items-center gap-[78px] overflow-visible px-6 pb-0 pt-10 sm:px-10"
+                  : "absolute left-1/2 top-[calc(50%+18.5px)] flex h-[min(704px,83.1%)] w-[min(1690px,94%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[78px] overflow-visible"
+              }
             >
-              <div className="absolute left-0 top-0 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-                <PortfolioCalculatorCard />
-              </div>
-              <div className="absolute top-4 right-4 hidden -translate-y-[70px] md:block">
-                <PortfolioPeekMouse />
+              <header className="flex w-full max-w-[720px] shrink-0 flex-col items-center gap-5 text-center">
+                <p className="text-[11px] font-bold uppercase tracking-[2px] text-[#76767a]">
+                  Selected Work • Portfolio
+                </p>
+
+                <div className="flex items-end justify-center gap-[15px]">
+                  <div className="hidden w-[87px] shrink-0 pb-2.5 sm:block" aria-hidden />
+
+                  <h1 className="text-center text-[40px] font-medium leading-[48px] tracking-[-1.5px] text-[#111] sm:text-[48px] sm:leading-[56px]">
+                    <span className="block">Hi..</span>
+                    <span className="block">I do Design.</span>
+                  </h1>
+
+                  <div className="w-[72px] shrink-0 pb-2.5 sm:w-[87px]">
+                    <DesignToggle on={designOn} onToggle={() => setDesignOn((v) => !v)} />
+                  </div>
+                </div>
+
+                <p className="max-w-[580px] text-[14px] leading-[22px] text-[#76767a]">
+                  Multidisciplinary, self-sufficient designer. I build complex B2B platforms, design
+                  systems, and code-backed prototypes from zero to one.
+                </p>
+              </header>
+
+              <div className="relative w-full shrink-0 overflow-visible">
+                {/* Decorative layer — beneath the accordion, peeking from the corners */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 z-[5] overflow-visible"
+                >
+                  <div className="absolute left-0 top-0 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+                    <PortfolioCalculatorCard />
+                  </div>
+                  <div className="absolute top-4 right-4 hidden -translate-y-[70px] md:block">
+                    <PortfolioPeekMouse />
+                  </div>
+                </div>
+                <ProjectBentoStack
+                  projects={PROJECTS}
+                  openSlug={openSlug}
+                  onToggle={toggle}
+                  rowRefs={rowRefs}
+                />
               </div>
             </div>
-            <ProjectBentoStack
-              projects={PROJECTS}
-              openSlug={openSlug}
-              onToggle={toggle}
-              rowRefs={rowRefs}
-            />
-          </div>
-        </div>
           </WireframeStage>
 
           {/* Exactly 2px of #f3f4f6 between wireframe frame and marquee */}
@@ -378,10 +375,7 @@ function Index() {
           {/* Marquee + footer — continuous black plane under the bento strip */}
           <div id="site-dark-band" className="relative z-20 bg-black" data-dark-band>
             <Marquee />
-            <Footer
-              onSelectProject={handleDockSelect}
-              onOpenSidebar={() => setSidebarOpen(true)}
-            />
+            <Footer onSelectProject={handleDockSelect} onOpenSidebar={() => setSidebarOpen(true)} />
           </div>
         </div>
       </section>
@@ -490,11 +484,7 @@ function DesignToggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
     <motion.div
       className="w-full"
       animate={reduceMotion ? undefined : { y: [0, -3, 0] }}
-      transition={
-        reduceMotion
-          ? undefined
-          : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }
-      }
+      transition={reduceMotion ? undefined : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
     >
       <motion.button
         type="button"

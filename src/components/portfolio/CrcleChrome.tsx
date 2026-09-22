@@ -111,6 +111,8 @@ export function CrclePrimaryDock({
                   src={radarTwoIcon}
                   className="absolute inset-0 size-full max-w-none object-contain"
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
               </span>
             </span>
@@ -121,6 +123,8 @@ export function CrclePrimaryDock({
                   src={areaPinIcon}
                   className="absolute inset-0 size-full max-w-none object-contain"
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
               </span>
             </span>
@@ -166,6 +170,8 @@ export function CrclePrimaryDock({
                   src={navRadarIcon}
                   className="crcle-dock-icon size-5 max-w-none object-contain"
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
               </button>
               <button
@@ -179,6 +185,8 @@ export function CrclePrimaryDock({
                   src={navHomeIcon}
                   className="crcle-dock-icon size-6 max-w-none object-contain"
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
               </button>
             </div>
@@ -207,6 +215,8 @@ export function CrclePrimaryDock({
             src={navUserIcon}
             className="crcle-dock-icon block size-6 max-w-none object-contain"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </DockIconButton>
 
@@ -231,6 +241,8 @@ export function CrclePrimaryDock({
             src={navMessageIcon}
             className="crcle-dock-icon block size-6 max-w-none object-contain"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </DockIconButton>
       </nav>
@@ -312,6 +324,8 @@ export function CrcleBackButton({
           src={arrowLeftIcon}
           className={`h-[13px] w-[8px] max-w-none object-contain ${crcleChromeIconClass(tone)}`}
           draggable={false}
+          loading="lazy"
+          decoding="async"
         />
       </span>
     </button>
@@ -364,6 +378,8 @@ export function CrcleHeaderNavPill({
                 src={navRadarIcon}
                 className={`crcle-dock-icon size-5 max-w-none object-contain ${iconClass}`}
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </button>
             <button
@@ -380,6 +396,8 @@ export function CrcleHeaderNavPill({
                 src={navMessageIcon}
                 className={`crcle-dock-icon size-6 max-w-none object-contain ${iconClass}`}
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </button>
           </div>
@@ -399,6 +417,8 @@ export function CrcleHeaderNavPill({
               width={24}
               height={24}
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
           </button>
         </>
@@ -418,6 +438,8 @@ export function CrcleHeaderNavPill({
               src={navRadarIcon}
               className={`crcle-dock-icon size-5 max-w-none object-contain ${iconClass}`}
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
           </button>
           <button
@@ -434,6 +456,8 @@ export function CrcleHeaderNavPill({
               src={navMessageIcon}
               className={`crcle-dock-icon size-6 max-w-none object-contain ${iconClass}`}
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
           </button>
           {onMore ? (
@@ -453,6 +477,8 @@ export function CrcleHeaderNavPill({
                 width={24}
                 height={24}
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </button>
           ) : null}
@@ -489,6 +515,8 @@ export function CrcleMoreButton({
             src={moreHorizIcon}
             className="absolute inset-0 size-full max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
           <span className="absolute inset-[41.67%_16.67%]">
             <img
@@ -496,6 +524,8 @@ export function CrcleMoreButton({
               src={moreDotsIcon}
               className="size-full max-w-none object-contain brightness-0 [.crcle-phone:not(.crcle-phone--light)_&]:invert"
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
           </span>
         </span>

@@ -58,13 +58,25 @@ export function OdicciBrandFonts({
         >
           <div className="absolute left-[-498px] top-[-233px] h-[1448px] w-[2508px]">
             <div className="absolute inset-[-24.52%_-10.37%_-8.43%_-4.78%]">
-              <img src={workspaceGradientPattern} alt="" className="block size-full max-w-none" />
+              <img
+                src={workspaceGradientPattern}
+                alt=""
+                className="block size-full max-w-none"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
           <div className="absolute inset-0 bg-[rgba(0,17,26,0.6)] backdrop-blur-[100px]" />
           <div className="absolute left-[-172px] top-[-156px] h-[588px] w-[1908px]">
             <div className="absolute inset-[-65.99%_-15.72%_-51.02%_-19.39%]">
-              <img src={workspaceGradient2} alt="" className="block size-full max-w-none" />
+              <img
+                src={workspaceGradient2}
+                alt=""
+                className="block size-full max-w-none"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
         </div>
@@ -83,6 +95,8 @@ export function OdicciBrandFonts({
         style={{ left: LOGO_LEFT, top: 48, width: LOGO_W, height: LOGO_H }}
         width={LOGO_W}
         height={LOGO_H}
+        loading="lazy"
+        decoding="async"
       />
 
       <motion.div
@@ -145,7 +159,8 @@ export function OdicciBrandFonts({
                       type="button"
                       onClick={() =>
                         setHeadingFont(
-                          (v) => HEADING_FONTS[(HEADING_FONTS.indexOf(v) + 1) % HEADING_FONTS.length],
+                          (v) =>
+                            HEADING_FONTS[(HEADING_FONTS.indexOf(v) + 1) % HEADING_FONTS.length],
                         )
                       }
                       className="flex h-9 w-full items-center justify-between rounded-lg border border-white/20 bg-white/25 px-[13px] text-left"
@@ -160,7 +175,9 @@ export function OdicciBrandFonts({
                     <button
                       type="button"
                       onClick={() =>
-                        setBodyFont((v) => BODY_FONTS[(BODY_FONTS.indexOf(v) + 1) % BODY_FONTS.length])
+                        setBodyFont(
+                          (v) => BODY_FONTS[(BODY_FONTS.indexOf(v) + 1) % BODY_FONTS.length],
+                        )
                       }
                       className="flex h-9 w-full items-center justify-between rounded-lg border border-white/20 bg-white/25 px-[13px] text-left"
                     >
@@ -172,14 +189,18 @@ export function OdicciBrandFonts({
                   <div className="flex w-full flex-col gap-1">
                     <div className="flex w-full items-start justify-between text-[10px] leading-[1.2]">
                       <span className="text-white">Upload Font</span>
-                      <span className="text-right text-[#bbc2cb]">Supports .ttf, .otf, .woff, .woff2</span>
+                      <span className="text-right text-[#bbc2cb]">
+                        Supports .ttf, .otf, .woff, .woff2
+                      </span>
                     </div>
                     <button
                       type="button"
                       className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#e0e0e0] bg-[#f5f7f9] px-3 py-2.5 transition hover:brightness-95"
                     >
                       <Upload className="size-4 text-[#090e15]" strokeWidth={2} />
-                      <span className="text-[16px] leading-[1.2] text-[#090e15]">Upload Custom Font</span>
+                      <span className="text-[16px] leading-[1.2] text-[#090e15]">
+                        Upload Custom Font
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -287,7 +308,13 @@ function WorkspacePreviewWindow({
   return (
     <div className="absolute left-0 top-[101.5px] flex h-[536px] w-[617px] flex-col">
       <div className="flex w-full items-center justify-between rounded-t-lg border border-[#dbe5ef] bg-white p-3">
-        <img src={workspaceMark} alt="" className="size-6 shrink-0 object-contain" />
+        <img
+          src={workspaceMark}
+          alt=""
+          className="size-6 shrink-0 object-contain"
+          loading="lazy"
+          decoding="async"
+        />
         <p className="min-w-0 flex-1 text-center text-[12px] leading-[1.2] text-[#111]">
           Workspace Name
         </p>
@@ -302,7 +329,10 @@ function WorkspacePreviewWindow({
         <div className="flex w-full flex-col items-center justify-center gap-2.5 rounded-xl bg-gradient-to-b from-[#fcdf3c] to-[#ffb326] px-6 pb-6 pt-9">
           <FigmaMark className="size-9 text-[#fb5a60]" />
           <div className="flex h-[257px] w-full max-w-[453px] flex-col items-center justify-between">
-            <div className="flex w-full flex-col items-start gap-6 text-center" style={{ color: fill || "#fb5a60" }}>
+            <div
+              className="flex w-full flex-col items-start gap-6 text-center"
+              style={{ color: fill || "#fb5a60" }}
+            >
               <p
                 className="w-full text-[24px] font-medium leading-[1.2]"
                 style={{ fontFamily: `${headingFont}, ui-sans-serif, system-ui, sans-serif` }}

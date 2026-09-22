@@ -60,7 +60,11 @@ export function CrcleSignalMoreMenu({
       >
         <div className="flex flex-col gap-2 rounded-[12px] bg-[rgba(2,3,29,0.6)] p-2">
           <div className="flex h-[22px] w-full items-center justify-between gap-3">
-            <MenuToggle active={signalOff} onChange={onToggleSignalOff} ariaLabel="Turn signal off" />
+            <MenuToggle
+              active={signalOff}
+              onChange={onToggleSignalOff}
+              ariaLabel="Turn signal off"
+            />
             <button
               type="button"
               onClick={onTogglePanel}
@@ -82,6 +86,8 @@ export function CrcleSignalMoreMenu({
                   panelExpanded ? "" : "rotate-180"
                 }`}
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </button>
           </div>
@@ -102,6 +108,8 @@ export function CrcleSignalMoreMenu({
                     src={radarTwoIcon}
                     className="size-4 max-w-none shrink-0 object-contain brightness-0 invert"
                     draggable={false}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
                     <span
@@ -170,15 +178,7 @@ function MenuToggle({
   );
 }
 
-function MenuRow({
-  icon,
-  label,
-  onClick,
-}: {
-  icon: string;
-  label: string;
-  onClick?: () => void;
-}) {
+function MenuRow({ icon, label, onClick }: { icon: string; label: string; onClick?: () => void }) {
   return (
     <button
       type="button"
@@ -186,7 +186,14 @@ function MenuRow({
       onClick={onClick}
       className="flex w-full items-center gap-1.5 text-left transition hover:opacity-80"
     >
-      <img alt="" src={icon} className="size-5 max-w-none shrink-0 object-contain" draggable={false} />
+      <img
+        alt=""
+        src={icon}
+        className="size-5 max-w-none shrink-0 object-contain"
+        draggable={false}
+        loading="lazy"
+        decoding="async"
+      />
       <span
         className="whitespace-nowrap text-[11px] font-medium leading-none text-[#030422]"
         style={{ fontFamily: FONT }}
@@ -259,10 +266,7 @@ export function OnTheMapBanner({ onUndo }: { onUndo: () => void }) {
             <p className="text-[14px] font-medium text-[#e6e6e9]" style={{ fontFamily: FONT }}>
               You&apos;re on the map!
             </p>
-            <p
-              className="text-[11px] font-normal text-[#e6e6e9]"
-              style={{ fontFamily: FONT }}
-            >
+            <p className="text-[11px] font-normal text-[#e6e6e9]" style={{ fontFamily: FONT }}>
               Other users nearby can now see your signal.
             </p>
           </div>

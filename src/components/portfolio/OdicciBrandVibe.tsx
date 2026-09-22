@@ -53,13 +53,25 @@ export function OdicciBrandVibe({
         >
           <div className="absolute left-[-498px] top-[-233px] h-[1448px] w-[2508px]">
             <div className="absolute inset-[-24.52%_-10.37%_-8.43%_-4.78%]">
-              <img src={workspaceGradientPattern} alt="" className="block size-full max-w-none" />
+              <img
+                src={workspaceGradientPattern}
+                alt=""
+                className="block size-full max-w-none"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
           <div className="absolute inset-0 bg-[rgba(0,17,26,0.6)] backdrop-blur-[100px]" />
           <div className="absolute left-[-172px] top-[-156px] h-[588px] w-[1908px]">
             <div className="absolute inset-[-65.99%_-15.72%_-51.02%_-19.39%]">
-              <img src={workspaceGradient2} alt="" className="block size-full max-w-none" />
+              <img
+                src={workspaceGradient2}
+                alt=""
+                className="block size-full max-w-none"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
         </div>
@@ -78,6 +90,8 @@ export function OdicciBrandVibe({
         style={{ left: LOGO_LEFT, top: 48, width: LOGO_W, height: LOGO_H }}
         width={LOGO_W}
         height={LOGO_H}
+        loading="lazy"
+        decoding="async"
       />
 
       <motion.div
@@ -134,9 +148,7 @@ export function OdicciBrandVibe({
                       <p className={`text-[12px] leading-[1.2] ${textMain}`}>Tone</p>
                       <button
                         type="button"
-                        onClick={() =>
-                          setTone((v) => TONES[(TONES.indexOf(v) + 1) % TONES.length])
-                        }
+                        onClick={() => setTone((v) => TONES[(TONES.indexOf(v) + 1) % TONES.length])}
                         className="flex h-[43px] w-full items-center justify-between rounded-lg border border-[#e0e0e0] bg-white p-3 text-left"
                       >
                         <span className="min-w-0 flex-1 truncate text-[16px] leading-[1.2] text-[#0a0a0a]">
@@ -195,7 +207,13 @@ function WorkspacePreviewWindow() {
   return (
     <div className="absolute left-0 top-[101.5px] flex h-[536px] w-[617px] flex-col">
       <div className="flex w-full items-center justify-between rounded-t-lg border border-[#dbe5ef] bg-white p-3">
-        <img src={workspaceMark} alt="" className="size-6 shrink-0 object-contain" />
+        <img
+          src={workspaceMark}
+          alt=""
+          className="size-6 shrink-0 object-contain"
+          loading="lazy"
+          decoding="async"
+        />
         <p className="min-w-0 flex-1 text-center text-[12px] leading-[1.2] text-[#111]">
           Workspace Name
         </p>

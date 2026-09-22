@@ -33,7 +33,14 @@ export function CrcleUserSharecodeSheet({ onClose }: { onClose: () => void }) {
         <div className="flex w-full flex-col items-center gap-4">
           <div className="flex w-full items-start gap-2.5">
             <div className="size-8 shrink-0 overflow-hidden rounded-full border border-[#f7f6f2]">
-              <img alt="" src={dropPhoto} className="size-full object-cover" draggable={false} />
+              <img
+                alt=""
+                src={dropPhoto}
+                className="size-full object-cover"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+              />
             </div>
             <div className="min-w-0 flex-1 pt-0.5">
               <p
@@ -64,6 +71,8 @@ export function CrcleUserSharecodeSheet({ onClose }: { onClose: () => void }) {
             src={qrCodeImg}
             className="size-[176px] max-w-none object-contain"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </div>
 
@@ -78,7 +87,14 @@ export function CrcleUserSharecodeSheet({ onClose }: { onClose: () => void }) {
             type="button"
             className="flex items-center gap-1.5 rounded-[64px] bg-[#030426] px-[46px] py-2.5 transition hover:brightness-110"
           >
-            <img alt="" src={shareAndroidIcon} className="size-4 max-w-none object-contain" draggable={false} />
+            <img
+              alt=""
+              src={shareAndroidIcon}
+              className="size-4 max-w-none object-contain"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
             <span
               className="text-[17px] leading-[25.5px] text-[#d9d9de]"
               style={{ fontFamily: FONT }}

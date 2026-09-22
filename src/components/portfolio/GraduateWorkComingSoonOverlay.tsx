@@ -135,7 +135,12 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
                 Oh... I also do Industrial Design
               </h2>
             </div>
-            <button type="button" aria-label="Close" onClick={onClose} className="graduate-work-overlay__close">
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={onClose}
+              className="graduate-work-overlay__close"
+            >
               <CloseCircleIcon className="graduate-work-overlay__close-icon" />
             </button>
           </header>
@@ -158,6 +163,8 @@ export function GraduateWorkComingSoonOverlay({ onClose }: { onClose: () => void
                     src={featuredHero}
                     className="graduate-work-hero__image absolute inset-0 size-full"
                     draggable={false}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-black/10" />
                   <div className="graduate-work-hero__badge absolute right-3 top-3 bg-black/10 px-3 py-2 backdrop-blur-[4px]">
@@ -228,12 +235,7 @@ function CloseCircleIcon({ className }: { className?: string }) {
       aria-hidden
     >
       <circle cx="18" cy="18" r="18" fill="white" fillOpacity="0.15" />
-      <path
-        d="M14 14L22 22M22 14L14 22"
-        stroke="white"
-        strokeLinecap="round"
-        strokeWidth="2"
-      />
+      <path d="M14 14L22 22M22 14L14 22" stroke="white" strokeLinecap="round" strokeWidth="2" />
     </svg>
   );
 }
@@ -276,8 +278,13 @@ function ProjectEscalatorCard({
         src={project.image}
         className="graduate-escalator-card__image absolute inset-0 size-full"
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
-      <div className="absolute inset-0 rounded-[inherit] bg-black/20 transition-colors duration-200 group-hover:bg-black/28" aria-hidden />
+      <div
+        className="absolute inset-0 rounded-[inherit] bg-black/20 transition-colors duration-200 group-hover:bg-black/28"
+        aria-hidden
+      />
       <div className="graduate-escalator-card__action">
         <SearchArrowIcon className="graduate-escalator-card__action-icon" />
       </div>

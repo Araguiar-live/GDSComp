@@ -90,12 +90,10 @@ export function CrcleSignalHome({
   /** Fine-tune drawer completed */
   const tuned = signalStrength >= 90;
   /** Stage 1 photo → 1 bar; stage 2 location → 2 bars; intent tune → 3 bars */
-  const activeBars =
-    screen !== "photo" ? 0 : intentDone ? 3 : locationDone ? 2 : 1;
+  const activeBars = screen !== "photo" ? 0 : intentDone ? 3 : locationDone ? 2 : 1;
   const signalLive = intentDone;
   /** On-map footer styling only while the confirmation banner is visible — not the default photo state. */
-  const onMapFooter =
-    mapBannerOpen && screen === "photo" && !isIncognito && !signalOff;
+  const onMapFooter = mapBannerOpen && screen === "photo" && !isIncognito && !signalOff;
 
   const dismissOnboarding = useCallback(() => {
     setOnboardingOpen(false);
@@ -107,12 +105,7 @@ export function CrcleSignalHome({
   }, [onGoToMessages]);
 
   const showPhoneChrome =
-    !onboardingOpen &&
-    !tuneOpen &&
-    !intentOpen &&
-    !locationOpen &&
-    !menuOpen &&
-    !sharecodeOpen;
+    !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen && !menuOpen && !sharecodeOpen;
 
   const showFooterSignal = showPhoneChrome;
 
@@ -237,7 +230,9 @@ export function CrcleSignalHome({
             ) : null}
           </AnimatePresence>
           <AnimatePresence>
-            {sharecodeOpen ? <CrcleUserSharecodeSheet onClose={() => setSharecodeOpen(false)} /> : null}
+            {sharecodeOpen ? (
+              <CrcleUserSharecodeSheet onClose={() => setSharecodeOpen(false)} />
+            ) : null}
           </AnimatePresence>
           <StatusBar />
           <div className="mt-[5px] flex shrink-0 justify-center pb-[12px]">
@@ -394,6 +389,8 @@ export function CrcleSignalHome({
                       src={dropPhoto}
                       className="absolute inset-0 size-full rounded-[28px] object-cover"
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 rounded-[28px] bg-black/20" />
                   </motion.div>
@@ -427,8 +424,8 @@ export function CrcleSignalHome({
                           style={{ fontFamily: FONT }}
                         >
                           No infinite scrolling. Just&nbsp;3 highly calibrated matches&nbsp;every 24
-                          hours. Each action you take trains your&nbsp;Signal&nbsp;for better matches
-                          tomorrow.
+                          hours. Each action you take trains your&nbsp;Signal&nbsp;for better
+                          matches tomorrow.
                         </p>
                         <img
                           alt=""
@@ -437,6 +434,8 @@ export function CrcleSignalHome({
                             light ? "" : "brightness-200"
                           }`}
                           draggable={false}
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                     </div>
@@ -468,9 +467,7 @@ export function CrcleSignalHome({
                         </p>
                         <p
                           className={`w-full text-[11px] leading-[1.4] transition-colors duration-300 ${
-                            light
-                              ? "text-[rgba(2,3,29,0.6)]"
-                              : "text-[rgba(247,246,242,0.8)]"
+                            light ? "text-[rgba(2,3,29,0.6)]" : "text-[rgba(247,246,242,0.8)]"
                           }`}
                           style={{ fontFamily: FONT }}
                         >
@@ -713,6 +710,8 @@ function SignalOnboardingFeature({
           src={signalDividerIcon}
           className="mt-1 h-px w-[168px] max-w-none object-contain opacity-80"
           draggable={false}
+          loading="lazy"
+          decoding="async"
         />
       ) : null}
     </div>
@@ -720,13 +719,7 @@ function SignalOnboardingFeature({
 }
 
 function MiniSignalBars() {
-  return (
-    <SignalBarsCore
-      variant="overlay"
-      activeBars={0}
-      aria-hidden
-    />
-  );
+  return <SignalBarsCore variant="overlay" activeBars={0} aria-hidden />;
 }
 
 function IntentGlyph() {
@@ -820,13 +813,7 @@ function OverlayToolButton({
 
 /* ——— Location Required (Figma 986:85539) — stage 2 → second signal bar ——— */
 
-function LocationRequiredModal({
-  onClose,
-  onSave,
-}: {
-  onClose: () => void;
-  onSave: () => void;
-}) {
+function LocationRequiredModal({ onClose, onSave }: { onClose: () => void; onSave: () => void }) {
   const [useCurrent, setUseCurrent] = useState(false);
   const [allowVisible, setAllowVisible] = useState(true);
 
@@ -887,6 +874,8 @@ function LocationRequiredModal({
                 src={locationMapImg}
                 className="absolute inset-0 size-full rounded-2xl object-cover"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 rounded-2xl bg-[rgba(2,4,38,0.1)]" />
               <span className="absolute left-[72px] top-[84px] z-[1] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
@@ -903,6 +892,8 @@ function LocationRequiredModal({
                 src={mapPinPreciseIcon}
                 className="absolute left-[72px] top-[107px] z-[1] size-2.5"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -924,7 +915,9 @@ function LocationRequiredModal({
                 </span>
                 <span
                   className={`relative flex h-6 w-[46px] shrink-0 items-center rounded-full p-0.5 transition-colors ${
-                    useCurrent ? "justify-end bg-[#0fc950]/80" : "justify-start bg-[rgba(255,255,255,0.2)]"
+                    useCurrent
+                      ? "justify-end bg-[#0fc950]/80"
+                      : "justify-start bg-[rgba(255,255,255,0.2)]"
                   }`}
                   aria-hidden
                 >
@@ -934,7 +927,10 @@ function LocationRequiredModal({
 
               <div className="flex w-full gap-2">
                 <div className="flex min-w-0 flex-1 items-center gap-2 rounded-bl-[24px] rounded-br-xl rounded-tl-[24px] rounded-tr-xl border border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.2)] py-[9px] pl-[13px] pr-[11px]">
-                  <IconImg src={locusPinIcon} className="size-[14px] brightness-0 invert opacity-70" />
+                  <IconImg
+                    src={locusPinIcon}
+                    className="size-[14px] brightness-0 invert opacity-70"
+                  />
                   <span
                     className="min-w-0 flex-1 text-[13px] leading-[1.4] text-[rgba(255,255,255,0.5)]"
                     style={{ fontFamily: FONT }}
@@ -972,9 +968,7 @@ function LocationRequiredModal({
                 }`}
                 aria-hidden
               >
-                {allowVisible ? (
-                  <span className="size-1.5 rounded-full bg-[#02031d]" />
-                ) : null}
+                {allowVisible ? <span className="size-1.5 rounded-full bg-[#02031d]" /> : null}
               </span>
               <span
                 className="min-w-0 flex-1 text-left text-[13px] leading-[1.4] text-white"
@@ -1181,12 +1175,11 @@ function SignalBarsCore({
             : undefined;
 
         if (animate && !incognito && !onMap && !signalOff) {
-          const frames =
-            allLit
-              ? SIGNAL_GLOW_FRAMES
-              : variant === "footer" && isLight && activeBars === 0
-                ? SIGNAL_FRAMES_LIGHT
-                : SIGNAL_FRAMES;
+          const frames = allLit
+            ? SIGNAL_GLOW_FRAMES
+            : variant === "footer" && isLight && activeBars === 0
+              ? SIGNAL_FRAMES_LIGHT
+              : SIGNAL_FRAMES;
           const { heights: keyHeights, times, duration } = buildSignalKeyframes(i, frames);
           return (
             <motion.span
@@ -1259,8 +1252,7 @@ function SignalBars({
   animateIdle?: boolean;
 }) {
   const allLit = glow && activeBars >= 3 && !incognito && !onMap && !signalOff;
-  const shouldAnimate =
-    !incognito && !onMap && !signalOff && (animateIdle || activeBars > 0);
+  const shouldAnimate = !incognito && !onMap && !signalOff && (animateIdle || activeBars > 0);
 
   return (
     <div
@@ -1413,7 +1405,14 @@ function SignalCompleteSheet({
               Go back to profile
             </button>
           </div>
-          <img alt="" src={handleIcon} className="h-[3px] w-[66px] max-w-none object-contain opacity-70" draggable={false} />
+          <img
+            alt=""
+            src={handleIcon}
+            className="h-[3px] w-[66px] max-w-none object-contain opacity-70"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </motion.div>
     </motion.div>
@@ -1423,7 +1422,14 @@ function SignalCompleteSheet({
 function IconImg({ src, className = "size-6" }: { src: string; className?: string }) {
   return (
     <div className={`relative shrink-0 overflow-hidden ${className}`}>
-      <img alt="" src={src} className="absolute inset-0 size-full max-w-none object-contain" draggable={false} />
+      <img
+        alt=""
+        src={src}
+        className="absolute inset-0 size-full max-w-none object-contain"
+        draggable={false}
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 }

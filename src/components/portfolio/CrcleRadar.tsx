@@ -48,7 +48,11 @@ import lightbulbIcon from "@/assets/crcle/signal/lightbulb.svg";
 import unlockIcon from "@/assets/crcle/unlock.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
-import { CrclePrimaryDock, CrcleThemeToggle, crcleThemeToggleAboveClass } from "@/components/portfolio/CrcleChrome";
+import {
+  CrclePrimaryDock,
+  CrcleThemeToggle,
+  crcleThemeToggleAboveClass,
+} from "@/components/portfolio/CrcleChrome";
 import {
   requestAreaNearbyNotification,
   requestOpenMessaging,
@@ -261,13 +265,7 @@ export function CrcleRadar({
   const goNext = useCallback(() => goTo(categoryIndex + 1, 1), [goTo, categoryIndex]);
 
   const goNextRecommendation = useCallback(() => {
-    if (
-      caughtUp ||
-      onboardingOpen ||
-      isPushBusy ||
-      state.isIntentOverlayOpen ||
-      showSignalModal
-    ) {
+    if (caughtUp || onboardingOpen || isPushBusy || state.isIntentOverlayOpen || showSignalModal) {
       return;
     }
 
@@ -286,13 +284,7 @@ export function CrcleRadar({
         pushPhase: "idle",
       };
     });
-  }, [
-    caughtUp,
-    onboardingOpen,
-    isPushBusy,
-    state.isIntentOverlayOpen,
-    showSignalModal,
-  ]);
+  }, [caughtUp, onboardingOpen, isPushBusy, state.isIntentOverlayOpen, showSignalModal]);
 
   const onSwipeDragEnd = (_: unknown, info: PanInfo) => {
     if (state.isIntentOverlayOpen || isPushBusy || caughtUp) return;
@@ -310,8 +302,7 @@ export function CrcleRadar({
     }));
   };
 
-  const selectIntent = (intent: RadarIntent) =>
-    setState((s) => ({ ...s, selectedIntent: intent }));
+  const selectIntent = (intent: RadarIntent) => setState((s) => ({ ...s, selectedIntent: intent }));
 
   const undoPush = useCallback(() => {
     clearPushTimers();
@@ -416,6 +407,8 @@ export function CrcleRadar({
                   light ? "brightness-0" : ""
                 }`}
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </button>
             <p
@@ -479,9 +472,21 @@ export function CrcleRadar({
                       {user.handle}
                     </span>
                     <span className="relative size-3 shrink-0 overflow-hidden">
-                      <img alt="" src={shareIcon} className="absolute inset-0 size-full" />
+                      <img
+                        alt=""
+                        src={shareIcon}
+                        className="absolute inset-0 size-full"
+                        loading="lazy"
+                        decoding="async"
+                      />
                       <span className="absolute inset-[8.33%_12.5%_8.67%_12.5%]">
-                        <img alt="" src={shareInnerIcon} className="absolute inset-0 size-full" />
+                        <img
+                          alt=""
+                          src={shareInnerIcon}
+                          className="absolute inset-0 size-full"
+                          loading="lazy"
+                          decoding="async"
+                        />
                       </span>
                     </span>
                   </div>
@@ -497,6 +502,8 @@ export function CrcleRadar({
                         src={arrowForwardIcon}
                         className="size-4 object-contain"
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                     </button>
                   ) : (
@@ -509,6 +516,8 @@ export function CrcleRadar({
                         src={arrowForwardIcon}
                         className="size-4 object-contain"
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   )}
@@ -626,80 +635,82 @@ export function CrcleRadar({
                     : "border border-[rgba(247,246,242,0.4)] bg-[rgba(2,3,29,0.2)] backdrop-blur-[12px]"
                 }`}
               >
-              <div className="absolute left-1/2 top-[7px] h-0 w-[58px] -translate-x-1/2">
-                <img
-                  alt=""
-                  src={dragHandleModal}
-                  className="block size-full max-w-none opacity-90"
-                  draggable={false}
-                />
+                <div className="absolute left-1/2 top-[7px] h-0 w-[58px] -translate-x-1/2">
+                  <img
+                    alt=""
+                    src={dragHandleModal}
+                    className="block size-full max-w-none opacity-90"
+                    draggable={false}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+
+                <motion.button
+                  type="button"
+                  aria-label="Previous category"
+                  onClick={goPrev}
+                  className="relative z-[1] mb-2 flex size-8 shrink-0 items-center justify-center"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.92 }}
+                  transition={SPRING}
+                >
+                  <div className="relative size-6 -scale-y-100 rotate-180 overflow-hidden">
+                    <IconImg src={arrowRightIcon} className="size-6" />
+                    <div className="absolute inset-[29.17%_37.5%]">
+                      <IconImg src={arrowChevronIcon} className="size-full" />
+                    </div>
+                  </div>
+                </motion.button>
+
+                <motion.div
+                  className="relative mr-[-24px] ml-[-24px] flex h-full min-w-0 flex-1 touch-pan-y flex-col"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.25}
+                  dragTransition={SPRING}
+                  onDragEnd={onSwipeDragEnd}
+                >
+                  <AnimatePresence mode="wait" custom={direction} initial={false}>
+                    <motion.div
+                      key={state.activeCategory}
+                      custom={direction}
+                      variants={pillSlideVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={SPRING}
+                      className="absolute inset-0 flex flex-col items-center justify-between"
+                    >
+                      <SwipeFeatureContent
+                        category={state.activeCategory}
+                        user={user}
+                        onIntercept={openIntent}
+                        hideIntercept={state.isIntentOverlayOpen}
+                        pushPhase={state.pushPhase}
+                        isNoc={isNoc}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </motion.div>
+
+                <motion.button
+                  type="button"
+                  aria-label="Next category"
+                  onClick={goNext}
+                  className="relative z-[1] mb-2 flex size-8 shrink-0 items-center justify-center"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.92 }}
+                  transition={SPRING}
+                >
+                  <div className="relative size-6 overflow-hidden">
+                    <IconImg src={arrowRightIcon} className="size-6" />
+                    <div className="absolute inset-[29.17%_37.5%]">
+                      <IconImg src={arrowChevronIcon} className="size-full" />
+                    </div>
+                  </div>
+                </motion.button>
               </div>
-
-              <motion.button
-                type="button"
-                aria-label="Previous category"
-                onClick={goPrev}
-                className="relative z-[1] mb-2 flex size-8 shrink-0 items-center justify-center"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.92 }}
-                transition={SPRING}
-              >
-                <div className="relative size-6 -scale-y-100 rotate-180 overflow-hidden">
-                  <IconImg src={arrowRightIcon} className="size-6" />
-                  <div className="absolute inset-[29.17%_37.5%]">
-                    <IconImg src={arrowChevronIcon} className="size-full" />
-                  </div>
-                </div>
-              </motion.button>
-
-              <motion.div
-                className="relative mr-[-24px] ml-[-24px] flex h-full min-w-0 flex-1 touch-pan-y flex-col"
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.25}
-                dragTransition={SPRING}
-                onDragEnd={onSwipeDragEnd}
-              >
-                <AnimatePresence mode="wait" custom={direction} initial={false}>
-                  <motion.div
-                    key={state.activeCategory}
-                    custom={direction}
-                    variants={pillSlideVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={SPRING}
-                    className="absolute inset-0 flex flex-col items-center justify-between"
-                  >
-                    <SwipeFeatureContent
-                      category={state.activeCategory}
-                      user={user}
-                      onIntercept={openIntent}
-                      hideIntercept={state.isIntentOverlayOpen}
-                      pushPhase={state.pushPhase}
-                      isNoc={isNoc}
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              </motion.div>
-
-              <motion.button
-                type="button"
-                aria-label="Next category"
-                onClick={goNext}
-                className="relative z-[1] mb-2 flex size-8 shrink-0 items-center justify-center"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.92 }}
-                transition={SPRING}
-              >
-                <div className="relative size-6 overflow-hidden">
-                  <IconImg src={arrowRightIcon} className="size-6" />
-                  <div className="absolute inset-[29.17%_37.5%]">
-                    <IconImg src={arrowChevronIcon} className="size-full" />
-                  </div>
-                </div>
-              </motion.button>
-            </div>
             </div>
 
             <p
@@ -710,20 +721,22 @@ export function CrcleRadar({
             >
               {isNoc ? (
                 <>
-                  Noc signal unlocks every night at{" "}
-                  <span className="font-medium">10PM</span>. Act before they fade.
+                  Noc signal unlocks every night at <span className="font-medium">10PM</span>. Act
+                  before they fade.
                 </>
               ) : (
                 <>
-                  New signals arrive every day at{" "}
-                  <span className="font-medium">7 PM</span>. Act before they fade.
+                  New signals arrive every day at <span className="font-medium">7 PM</span>. Act
+                  before they fade.
                 </>
               )}
             </p>
           </div>
 
           <div className="absolute bottom-5 left-0 right-0 z-20 flex flex-col items-center gap-2 px-2">
-            <div className={`flex w-full items-center ${isNoc ? "justify-between px-3" : "justify-center"}`}>
+            <div
+              className={`flex w-full items-center ${isNoc ? "justify-between px-3" : "justify-center"}`}
+            >
               {isNoc ? (
                 <div
                   className="relative size-9 shrink-0 backdrop-blur-[10px]"
@@ -769,13 +782,7 @@ export function CrcleRadar({
 
 /* ——— Radar Onboarding (Figma 322:118007 / overlay 322:118087) ——— */
 
-function RadarOnboarding({
-  onClose,
-  onContinue,
-}: {
-  onClose: () => void;
-  onContinue: () => void;
-}) {
+function RadarOnboarding({ onClose, onContinue }: { onClose: () => void; onContinue: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -816,11 +823,12 @@ function RadarOnboarding({
                 className="w-full text-[13px] font-light leading-[1.4] text-[rgba(247,246,242,0.7)]"
                 style={{ fontFamily: FONT }}
               >
-                Driven by intent.&nbsp;Your active signal constantly feeds the radar behind the scenes. The
-                moment the countdown hits{" "}
-                <span className="font-semibold text-[rgba(247,246,242,0.7)]">00:00</span>, the frost clears to
-                reveal your curated matches. Every single connection unlocked is filtered entirely on the basis
-                of mutual intent—matching you only with those who choose to be perceived exactly the way you do.
+                Driven by intent.&nbsp;Your active signal constantly feeds the radar behind the
+                scenes. The moment the countdown hits{" "}
+                <span className="font-semibold text-[rgba(247,246,242,0.7)]">00:00</span>, the frost
+                clears to reveal your curated matches. Every single connection unlocked is filtered
+                entirely on the basis of mutual intent—matching you only with those who choose to be
+                perceived exactly the way you do.
               </p>
             </div>
           </div>
@@ -906,9 +914,21 @@ function SwipeFeatureContent({
             </div>
             <div className="flex size-10 items-center justify-center rounded-full bg-[#02031d] p-1">
               <span className="relative size-6 overflow-hidden rounded-sm">
-                <img alt="" src={linkIcon} className="absolute inset-0 size-full" />
+                <img
+                  alt=""
+                  src={linkIcon}
+                  className="absolute inset-0 size-full"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <span className="absolute inset-[29.17%_8.33%]">
-                  <img alt="" src={linkInnerIcon} className="absolute inset-0 size-full" />
+                  <img
+                    alt=""
+                    src={linkInnerIcon}
+                    className="absolute inset-0 size-full"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </span>
               </span>
             </div>
@@ -942,7 +962,14 @@ function SwipeFeatureContent({
                 whileTap={{ scale: 0.92 }}
                 transition={SPRING}
               >
-                <img alt="" src={locusPlusIcon} className="size-6 object-contain" draggable={false} />
+                <img
+                  alt=""
+                  src={locusPlusIcon}
+                  className="size-6 object-contain"
+                  draggable={false}
+                  loading="lazy"
+                  decoding="async"
+                />
               </motion.button>
             )}
           </div>
@@ -965,13 +992,7 @@ function SwipeFeatureContent({
   );
 }
 
-function CategoryPills({
-  category,
-  user,
-}: {
-  category: RadarCategory;
-  user: RecommendedUser;
-}) {
+function CategoryPills({ category, user }: { category: RadarCategory; user: RecommendedUser }) {
   if (category === "signal") {
     return (
       <motion.div
@@ -1146,6 +1167,8 @@ function IntentPushOverlay({
             className="h-[19px] w-[5px] shrink-0 object-contain"
             draggable={false}
             aria-hidden
+            loading="lazy"
+            decoding="async"
           />
 
           <div className="flex h-full flex-col items-center justify-between">
@@ -1195,6 +1218,8 @@ function IntentPushOverlay({
             src={locusPlusIcon}
             className="crcle-intent-chip__icon relative size-4 object-contain"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </button>
       </div>
@@ -1223,7 +1248,14 @@ function IntentLargeButton({
       onClick={() => onSelect(intent)}
       className={`relative transition ${active ? "scale-110 drop-shadow-[0_0_12px_rgba(247,246,242,0.45)]" : "opacity-80 hover:opacity-100"}`}
     >
-      <img alt="" src={src} className={`${className} object-contain`} draggable={false} />
+      <img
+        alt=""
+        src={src}
+        className={`${className} object-contain`}
+        draggable={false}
+        loading="lazy"
+        decoding="async"
+      />
     </button>
   );
 }
@@ -1538,7 +1570,14 @@ function SignalSentSuccessModal({
           onClick={onClose}
           className="flex size-6 items-center justify-center rounded-full bg-white/10"
         >
-          <img alt="" src={locusCloseIcon} className="size-3.5 object-contain" draggable={false} />
+          <img
+            alt=""
+            src={locusCloseIcon}
+            className="size-3.5 object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
         </button>
       </div>
 
@@ -1610,6 +1649,8 @@ function NocDotField() {
                 src={nocDotIcon}
                 className="size-9 max-w-none shrink-0"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             ))}
           </div>
@@ -1651,7 +1692,13 @@ const staggerPill = {
 function IconImg({ src, className = "size-6" }: { src: string; className?: string }) {
   return (
     <div className={`relative shrink-0 overflow-hidden ${className}`}>
-      <img alt="" src={src} className="absolute inset-0 size-full max-w-none object-contain" />
+      <img
+        alt=""
+        src={src}
+        className="absolute inset-0 size-full max-w-none object-contain"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 }

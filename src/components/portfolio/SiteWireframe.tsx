@@ -50,9 +50,7 @@ function ModulesMark({ tall = false, soft = false }: { tall?: boolean; soft?: bo
   return (
     <div
       className={
-        tall
-          ? "inline-grid grid-cols-2 grid-rows-3 gap-0.5"
-          : "grid size-3.5 grid-cols-2 gap-0.5"
+        tall ? "inline-grid grid-cols-2 grid-rows-3 gap-0.5" : "grid size-3.5 grid-cols-2 gap-0.5"
       }
       aria-hidden
     >
@@ -137,11 +135,7 @@ function TileRow({
   return (
     <div className={"flex min-h-0 w-full flex-1 gap-[2px] " + className}>
       {Array.from({ length: count }, (_, i) => (
-        <Tile
-          key={i}
-          mark={marks?.[i] ?? "dot"}
-          className="min-h-0 min-w-0 flex-1 self-stretch"
-        />
+        <Tile key={i} mark={marks?.[i] ?? "dot"} className="min-h-0 min-w-0 flex-1 self-stretch" />
       ))}
     </div>
   );
@@ -182,10 +176,7 @@ function JengaCellBand() {
             {/* Lower 90: 4 | wide(178) | 7 */}
             <div className="flex min-h-0 flex-[90] gap-[2px]">
               <div className="flex min-h-0 min-w-0 flex-[358] gap-[2px]">
-                <TileRow
-                  count={4}
-                  marks={{ 0: "none", 1: "none", 2: "none", 3: "none" }}
-                />
+                <TileRow count={4} marks={{ 0: "none", 1: "none", 2: "none", 3: "none" }} />
               </div>
               <Tile className="min-h-0 min-w-0 flex-[178] self-stretch" mark="none" />
               <div className="flex min-h-0 min-w-0 flex-[628] gap-[2px]">
@@ -224,7 +215,15 @@ function WireframeBrowserShell() {
   return (
     <div className="flex size-full flex-col overflow-hidden rounded-[12px] border border-[#d1d5db] bg-white">
       <div className="flex h-[7.22%] min-h-[36px] shrink-0 items-center justify-between border-b border-[#e5e7eb] px-5">
-        <img src={windowControls} alt="" className="h-2.5 w-[42px]" width={42} height={10} />
+        <img
+          src={windowControls}
+          alt=""
+          className="h-2.5 w-[42px]"
+          width={42}
+          height={10}
+          loading="lazy"
+          decoding="async"
+        />
         <div className="mx-4 hidden max-w-[480px] flex-1 items-center justify-center rounded-md border border-[#e5e7eb] bg-[#f3f4f6] px-4 py-1.5 sm:flex">
           <span className="truncate font-mono text-[11px] text-[#9ca3af]">
             https://scraping-wireframe-tool.internal
@@ -235,7 +234,15 @@ function WireframeBrowserShell() {
 
       <div className="flex h-[8.47%] min-h-[40px] shrink-0 items-center justify-between border-b border-[#e5e7eb] px-8">
         <div className="flex items-center gap-2 rounded-md border border-[#d1d5db] px-3 py-1.5">
-          <img src={logoIcon} alt="" className="size-3.5" width={14} height={14} />
+          <img
+            src={logoIcon}
+            alt=""
+            className="size-3.5"
+            width={14}
+            height={14}
+            loading="lazy"
+            decoding="async"
+          />
           <span className="text-xs font-bold text-[#1f2937]">Logo</span>
         </div>
         <div className="hidden rounded-md border border-[#e5e7eb] bg-[#f3f4f6] px-4 py-1.5 sm:block">
@@ -285,7 +292,15 @@ function WireframeBrowserShell() {
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-[12px] border border-[#d1d5db] bg-[#f3f4f6]">
           <div className="flex h-10 shrink-0 items-center justify-between border-b border-[#e5e7eb] bg-white px-5">
-            <img src={windowControls} alt="" className="h-2.5 w-[42px]" width={42} height={10} />
+            <img
+              src={windowControls}
+              alt=""
+              className="h-2.5 w-[42px]"
+              width={42}
+              height={10}
+              loading="lazy"
+              decoding="async"
+            />
             <span className="font-mono text-[11px] font-bold text-[#6b7280]">[ ..JSON ]</span>
           </div>
           <div className="flex min-h-0 flex-1 gap-4 overflow-hidden bg-white p-6 font-mono text-xs leading-relaxed">
@@ -304,7 +319,15 @@ function WireframeBrowserShell() {
             </div>
           </div>
           <div className="flex h-[68px] shrink-0 items-center justify-between border-t border-[#e5e7eb] bg-[#f3f4f6] px-6">
-            <img src={statusInfo} alt="" className="h-2 w-[136px]" width={136} height={8} />
+            <img
+              src={statusInfo}
+              alt=""
+              className="h-2 w-[136px]"
+              width={136}
+              height={8}
+              loading="lazy"
+              decoding="async"
+            />
             <div className="rounded-lg border border-[#d1d5db] bg-white px-4 py-2.5">
               <span className="font-mono text-[11px] font-bold text-[#1f2937]">Sc*ping...</span>
             </div>
@@ -338,13 +361,7 @@ function BrowserPlate() {
  * Open: height follows accordion content; bottom seam to marquee is a sibling
  * 2px spacer in index (not padding here — padding was visually collapsing).
  */
-export function WireframeStage({
-  expanded,
-  children,
-}: {
-  expanded: boolean;
-  children: ReactNode;
-}) {
+export function WireframeStage({ expanded, children }: { expanded: boolean; children: ReactNode }) {
   return (
     <div
       className={

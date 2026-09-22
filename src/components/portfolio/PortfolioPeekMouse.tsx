@@ -14,6 +14,8 @@ export function PortfolioPeekMouse() {
           alt=""
           draggable={false}
           className="block h-[99px] w-[74px] max-w-none object-contain"
+          loading="lazy"
+          decoding="async"
         />
       </div>
     </div>

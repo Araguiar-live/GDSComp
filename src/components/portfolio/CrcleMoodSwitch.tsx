@@ -49,7 +49,13 @@ const MOODS: {
 function IconImg({ src, className = "size-6" }: { src: string; className?: string }) {
   return (
     <div className={`relative shrink-0 overflow-hidden ${className}`}>
-      <img alt="" src={src} className="absolute inset-0 size-full max-w-none object-contain" />
+      <img
+        alt=""
+        src={src}
+        className="absolute inset-0 size-full max-w-none object-contain"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 }
@@ -81,7 +87,8 @@ export function CrcleMoodSwitch({
   const effectiveActive = visibleMoods.some((m) => m.id === activeState)
     ? activeState
     : (visibleMoods[0]?.id ?? activeState);
-  const activeMood = visibleMoods.find((m) => m.id === effectiveActive) ?? visibleMoods[0] ?? MOODS[0];
+  const activeMood =
+    visibleMoods.find((m) => m.id === effectiveActive) ?? visibleMoods[0] ?? MOODS[0];
   const compactDock = visibleMoods.length <= 2;
   /** Figma 949:30736 — three mood chips + 11px gaps */
   const dockStackHeight = visibleMoods.length * 44 + Math.max(0, visibleMoods.length - 1) * 11;
@@ -108,7 +115,14 @@ export function CrcleMoodSwitch({
           onClick={onClose}
           className="absolute right-5 top-5 z-10 flex size-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition hover:bg-white/15"
         >
-          <img alt="" src={locusCloseIcon} className="size-[14px] object-contain opacity-70" draggable={false} />
+          <img
+            alt=""
+            src={locusCloseIcon}
+            className="size-[14px] object-contain opacity-70"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
         </button>
 
         <div className="mt-6 flex flex-col items-center gap-[42px]">
@@ -283,6 +297,8 @@ export function CrcleMoodSwitch({
                       src={m.icon}
                       className={`size-6 max-w-none object-contain ${active ? "brightness-0" : ""}`}
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </span>
                 </motion.button>

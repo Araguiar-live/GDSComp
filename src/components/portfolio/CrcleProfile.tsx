@@ -200,14 +200,7 @@ export type ProfileState = {
 };
 
 type Overlay =
-  | null
-  | "education"
-  | "work"
-  | "relationship"
-  | "location"
-  | "locationInfo"
-  | "socials"
-  | "verify";
+  null | "education" | "work" | "relationship" | "location" | "locationInfo" | "socials" | "verify";
 
 const INITIAL: ProfileState = {
   user: {
@@ -360,7 +353,6 @@ export function CrcleProfile({
               aria-hidden
               className="pointer-events-none absolute inset-x-2 bottom-2 z-20 h-[6rem] bg-gradient-to-t from-[#010211] from-45% via-[#010211]/92 to-transparent transition-colors duration-300 [.crcle-phone--light_&]:from-[var(--crcle-bg)] [.crcle-phone--light_&]:via-[var(--crcle-bg)]/92"
             />
-
           </div>
 
           <AnimatePresence>
@@ -504,13 +496,23 @@ function ProfileOnboarding({
                 className="text-center text-[15px] font-normal leading-[22.5px] text-[rgba(255,255,255,0.6)]"
                 style={{ fontFamily: FONT }}
               >
-                Let&apos;s personalize your dashboard! Add widgets to make your profile uniquely yours.
+                Let&apos;s personalize your dashboard! Add widgets to make your profile uniquely
+                yours.
               </p>
               <div className="flex h-2 items-center justify-center gap-2">
                 <span className="h-2 w-8 shrink-0 rounded-full bg-[#010211]" aria-hidden />
-                <span className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]" aria-hidden />
-                <span className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]" aria-hidden />
-                <span className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]" aria-hidden />
+                <span
+                  className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]"
+                  aria-hidden
+                />
+                <span
+                  className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]"
+                  aria-hidden
+                />
+                <span
+                  className="size-2 shrink-0 rounded-full bg-[rgba(217,217,222,0.5)]"
+                  aria-hidden
+                />
               </div>
             </div>
 
@@ -587,8 +589,7 @@ function ProfileMainView({
   const { user, widgets } = profile;
   const [broadcastMood] = useCrcleBroadcast();
   const [isIncognito] = useCrcleIncognito();
-  const moodChipIcon =
-    broadcastMood === "in_the_area" ? profilePinIcon : profileMoonCloudIcon;
+  const moodChipIcon = broadcastMood === "in_the_area" ? profilePinIcon : profileMoonCloudIcon;
   const signalLiveLabel = broadcastMood === "in_the_area" ? "In The Area" : "Signal Live";
   const [locationEnabled, setLocationEnabled] = useState(true);
   const [lookingForWork, setLookingForWork] = useState(false);
@@ -609,7 +610,10 @@ function ProfileMainView({
       <div className="flex w-full items-end justify-between px-0">
         <div className="flex flex-col items-start justify-center">
           <div className="flex items-center gap-2">
-            <p className="text-[16px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-black" style={{ fontFamily: FONT }}>
+            <p
+              className="text-[16px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-black"
+              style={{ fontFamily: FONT }}
+            >
               {user.name}
             </p>
             <span className="flex h-[22px] w-[22px] items-center justify-center rounded-[36px] bg-[#f7f6f2] p-1 [.crcle-phone--light_&]:hidden">
@@ -618,6 +622,8 @@ function ProfileMainView({
                 src={raindropBadgeIcon}
                 className="h-[11px] w-2.5 object-contain"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </span>
             <button
@@ -667,7 +673,10 @@ function ProfileMainView({
           className="crcle-glass-btn crcle-glass-btn--signal-live relative flex shrink-0 items-center justify-center gap-0.5 overflow-hidden rounded-[24px] py-1 pl-2 pr-1.5 backdrop-blur-[12px] transition hover:brightness-110"
         >
           <div className="dock-glass-lens opacity-40" aria-hidden />
-          <IconImg src={moodChipIcon} className="crcle-profile-mood-icon relative z-[1] size-[20px] shrink-0" />
+          <IconImg
+            src={moodChipIcon}
+            className="crcle-profile-mood-icon relative z-[1] size-[20px] shrink-0"
+          />
           <ChevronDown
             className="relative z-[1] size-6 shrink-0 text-[rgba(247,246,242,0.4)] [.crcle-phone--light_&]:text-[rgba(2,3,29,0.45)]"
             strokeWidth={1.5}
@@ -683,9 +692,18 @@ function ProfileMainView({
             src={user.avatarUrl}
             className="absolute inset-0 size-full object-cover object-[center_35%]"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute right-0 top-0 flex items-start justify-end rounded-bl-[24px] rounded-tr-[24px] bg-white/20 p-3 backdrop-blur-[2px]">
-            <img alt="" src={cameraIcon} className="size-3.5 object-contain" draggable={false} />
+            <img
+              alt=""
+              src={cameraIcon}
+              className="size-3.5 object-contain"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
 
@@ -695,6 +713,8 @@ function ProfileMainView({
             src={statsDecoIcon}
             className="pointer-events-none absolute -left-2 -top-2 h-[270px] w-[225px] max-w-none opacity-90"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
           <div className="relative z-[1] flex h-[16.5px] shrink-0 items-center gap-1.5">
             <img
@@ -702,8 +722,13 @@ function ProfileMainView({
               src={eyeWeekIcon}
               className="size-3.5 object-contain [.crcle-phone--light_&]:brightness-0"
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
-            <span className="text-[11px] leading-[16.5px] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]" style={{ fontFamily: FONT }}>
+            <span
+              className="text-[11px] leading-[16.5px] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]"
+              style={{ fontFamily: FONT }}
+            >
               This week
             </span>
           </div>
@@ -724,7 +749,10 @@ function ProfileMainView({
                 </p>
               </div>
               <div>
-                <p className="text-[19px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]" style={{ fontFamily: FONT }}>
+                <p
+                  className="text-[19px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]"
+                  style={{ fontFamily: FONT }}
+                >
                   {user.connections}
                 </p>
                 <p
@@ -740,6 +768,8 @@ function ProfileMainView({
                   src={trendingUpIcon}
                   className="size-3.5 object-contain [.crcle-phone--light_&]:brightness-0"
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
                 <span
                   className="text-[11px] font-light leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030426]"
@@ -755,7 +785,10 @@ function ProfileMainView({
                   <p className="leading-[1.2]">PROFILE STRENGTH</p>
                   <p className="font-medium leading-[1.2]">Intermediate</p>
                 </div>
-                <p className="font-light leading-[1.2] [.crcle-phone--light_&]:text-[#030426]" style={{ fontFamily: FONT }}>
+                <p
+                  className="font-light leading-[1.2] [.crcle-phone--light_&]:text-[#030426]"
+                  style={{ fontFamily: FONT }}
+                >
                   {user.strengthPct}%
                 </p>
               </div>
@@ -765,6 +798,8 @@ function ProfileMainView({
                   src={strengthTrackIcon}
                   className="absolute inset-x-0.5 top-1/2 h-1 w-[calc(100%-4px)] -translate-y-1/2 object-fill [.crcle-phone--light_&]:brightness-0 [.crcle-phone--light_&]:opacity-25"
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
                 <img
                   alt=""
@@ -772,6 +807,8 @@ function ProfileMainView({
                   className="absolute left-0.5 top-1/2 h-1 -translate-y-1/2 object-fill [.crcle-phone--light_&]:brightness-0"
                   style={{ width: `${user.strengthPct}%` }}
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <button
@@ -827,12 +864,16 @@ function ProfileMainView({
           <div className="flex flex-col gap-4">
             {/* Location + Work */}
             <div className="grid grid-cols-2 items-start gap-4">
-              <div className={`relative flex ${PROFILE_WIDGET_H} min-w-0 flex-col justify-between overflow-hidden rounded-2xl p-2 text-left`}>
+              <div
+                className={`relative flex ${PROFILE_WIDGET_H} min-w-0 flex-col justify-between overflow-hidden rounded-2xl p-2 text-left`}
+              >
                 <img
                   alt=""
                   src={locationMapImg}
                   className="absolute inset-0 size-full rounded-2xl object-cover"
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div aria-hidden className="absolute inset-0 rounded-2xl bg-[rgba(2,4,38,0.1)]" />
                 <button
@@ -852,6 +893,8 @@ function ProfileMainView({
                         src={locationProximityRingIcon}
                         className="absolute left-[5px] top-4 size-[88px]"
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <span className="absolute left-11 top-[31px] flex items-center gap-1 rounded-bl-[4px] rounded-br-[24px] rounded-tl-xl rounded-tr-[24px] bg-[#05f] py-0.5 pl-1.5 pr-2">
                         <span
@@ -874,6 +917,8 @@ function ProfileMainView({
                       src={locationPinMarkerIcon}
                       className="pointer-events-none absolute left-[78px] top-[108px] z-[2] size-2.5"
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </>
                 ) : null}
@@ -887,6 +932,8 @@ function ProfileMainView({
                             src={lockFilledIcon}
                             className="block size-full max-w-none"
                             draggable={false}
+                            loading="lazy"
+                            decoding="async"
                           />
                         </span>
                       </span>
@@ -906,6 +953,8 @@ function ProfileMainView({
                     src={locationCurrentIcon}
                     className="size-4 shrink-0 object-contain"
                     draggable={false}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <span
                     className="min-w-0 flex-1 text-center text-[13px] leading-[1.1] text-[#030426]"
@@ -927,18 +976,26 @@ function ProfileMainView({
                       src={relInfoIcon}
                       className="size-4 object-contain"
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </button>
                 </div>
                 <div className="pointer-events-auto relative z-[4] flex w-[165px] items-center justify-between overflow-hidden rounded-[24px] border border-[rgba(2,4,38,0.4)] bg-[rgba(254,254,254,0.42)] py-1 pl-2 pr-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.38)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]">
-                  <div className="dock-glass-lens pointer-events-none absolute inset-0 opacity-35" aria-hidden />
+                  <div
+                    className="dock-glass-lens pointer-events-none absolute inset-0 opacity-35"
+                    aria-hidden
+                  />
                   <button
                     type="button"
                     onClick={() => setLocationEnabled((v) => !v)}
                     className="relative z-[1] flex w-full items-center justify-between"
                     aria-pressed={locationEnabled}
                   >
-                    <span className="text-[11px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
+                    <span
+                      className="text-[11px] leading-[1.4] text-[#030426]"
+                      style={{ fontFamily: FONT }}
+                    >
                       Shared location
                     </span>
                     <span
@@ -967,6 +1024,8 @@ function ProfileMainView({
                         src={laptopWorkIcon}
                         className="size-4 object-contain brightness-0 invert [.crcle-phone--light_&]:invert-0"
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <span
                         className="text-[12px] leading-[18px] text-[rgba(247,246,242,0.6)] [.crcle-phone--light_&]:text-[#6b7280]"
@@ -980,6 +1039,8 @@ function ProfileMainView({
                       src={workMarkIcon}
                       className="size-12 object-contain"
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="text-center">
                       <p
@@ -1003,12 +1064,17 @@ function ProfileMainView({
                       setLookingForWork((v) => !v);
                     }}
                   >
-                    <span className="text-[11px] leading-[1.4] text-[#02031d]" style={{ fontFamily: FONT }}>
+                    <span
+                      className="text-[11px] leading-[1.4] text-[#02031d]"
+                      style={{ fontFamily: FONT }}
+                    >
                       Looking for work
                     </span>
                     <span
                       className={`flex w-6 items-center rounded-[24px] p-0.5 ${
-                        lookingForWork ? "justify-end bg-[#0fc950]" : "justify-start bg-[rgba(2,3,29,0.4)]"
+                        lookingForWork
+                          ? "justify-end bg-[#0fc950]"
+                          : "justify-start bg-[rgba(2,3,29,0.4)]"
                       }`}
                     >
                       <span className="size-2 rounded bg-[#fdfcfb]" />
@@ -1060,6 +1126,8 @@ function ProfileMainView({
                         src={graduationIcon}
                         className="size-4 object-contain"
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <span
                         className="text-[12px] leading-[18px] text-[#6b7280]"
@@ -1074,6 +1142,8 @@ function ProfileMainView({
                         src={loughboroughCrest}
                         className="size-[52px] object-contain"
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="w-full text-center">
                         <p
@@ -1117,9 +1187,23 @@ function ProfileMainView({
         <div className="flex w-full items-start justify-between">
           <div className="flex items-center gap-1 pl-1 pt-0.5">
             <span className="relative size-3 overflow-hidden">
-              <img alt="" src={shareIcon} className="absolute inset-0 size-full" draggable={false} />
+              <img
+                alt=""
+                src={shareIcon}
+                className="absolute inset-0 size-full"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+              />
               <span className="absolute inset-[8.33%_12.5%_8.67%_12.5%]">
-                <img alt="" src={shareInnerIcon} className="absolute inset-0 size-full" draggable={false} />
+                <img
+                  alt=""
+                  src={shareInnerIcon}
+                  className="absolute inset-0 size-full"
+                  draggable={false}
+                  loading="lazy"
+                  decoding="async"
+                />
               </span>
             </span>
             <span className="text-[13px] leading-[1.4] text-[#fefefe]" style={{ fontFamily: FONT }}>
@@ -1134,10 +1218,38 @@ function ProfileMainView({
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <img alt="" src={socialBehanceIcon} className="size-9 object-contain" draggable={false} />
-          <img alt="" src={socialInstagramIcon} className="size-9 object-contain" draggable={false} />
-          <img alt="" src={socialLinkedinIcon} className="size-9 object-contain" draggable={false} />
-          <img alt="" src={socialDribbbleIcon} className="size-9 object-contain" draggable={false} />
+          <img
+            alt=""
+            src={socialBehanceIcon}
+            className="size-9 object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            alt=""
+            src={socialInstagramIcon}
+            className="size-9 object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            alt=""
+            src={socialLinkedinIcon}
+            className="size-9 object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            alt=""
+            src={socialDribbbleIcon}
+            className="size-9 object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </button>
 
@@ -1147,9 +1259,19 @@ function ProfileMainView({
         className="relative mx-auto flex w-full items-center justify-center rounded-[24px] border border-[#f7f6f2] p-3 [.crcle-phone--light_&]:border-[#030426] [.crcle-phone--light_&]:bg-[#fefefe]"
       >
         <span className="absolute left-[7px] top-1/2 flex -translate-y-1/2 items-center justify-center rounded-[36px] bg-[rgba(247,246,242,0.4)] px-3 py-1 [.crcle-phone--light_&]:bg-[#030426]">
-          <img alt="" src={locusPlusIcon} className="size-4 object-contain" draggable={false} />
+          <img
+            alt=""
+            src={locusPlusIcon}
+            className="size-4 object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
         </span>
-        <span className="w-full text-center text-[13px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030422]" style={{ fontFamily: FONT }}>
+        <span
+          className="w-full text-center text-[13px] leading-[1.4] text-[#f7f6f2] [.crcle-phone--light_&]:text-[#030422]"
+          style={{ fontFamily: FONT }}
+        >
           Add widget
         </span>
       </button>
@@ -1193,7 +1315,14 @@ function DatingWidget({
       style={{ backgroundColor: option.cardBg }}
     >
       <div className="flex items-center gap-1 pl-0.5 pt-0.5">
-        <img alt="" src={heartDatingIcon} className="size-4 object-contain" draggable={false} />
+        <img
+          alt=""
+          src={heartDatingIcon}
+          className="size-4 object-contain"
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+        />
         <span
           className={`text-[13px] leading-[1.4] ${option.labelColor}`}
           style={{ fontFamily: FONT }}
@@ -1236,7 +1365,10 @@ function DatingWidget({
           onToggleShare();
         }}
       >
-        <div className="dock-glass-lens pointer-events-none absolute inset-0 opacity-35" aria-hidden />
+        <div
+          className="dock-glass-lens pointer-events-none absolute inset-0 opacity-35"
+          aria-hidden
+        />
         <span
           className="relative z-[1] text-[11px] leading-[1.4] text-[#030426]"
           style={{ fontFamily: FONT }}
@@ -1297,6 +1429,8 @@ function EmptyWidgetCard({
               src={icon}
               className="absolute inset-0 size-full max-w-none object-contain [.crcle-phone--light_&]:brightness-0"
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
           </span>
           <span className="relative size-6 shrink-0">
@@ -1305,6 +1439,8 @@ function EmptyWidgetCard({
               src={emptyPlusIcon}
               className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert [.crcle-phone--light_&]:invert-0"
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
           </span>
         </div>
@@ -1338,19 +1474,29 @@ function EmptyWidgetCard({
   );
 }
 
-function DatingWidgetGlyph({
-  type,
-}: {
-  type: (typeof RELATIONSHIP_OPTIONS)[number]["icon"];
-}) {
+function DatingWidgetGlyph({ type }: { type: (typeof RELATIONSHIP_OPTIONS)[number]["icon"] }) {
   if (type === "single") {
     return (
-      <img alt="" src={datingHeartWhiteIcon} className="size-9 object-contain" draggable={false} />
+      <img
+        alt=""
+        src={datingHeartWhiteIcon}
+        className="size-9 object-contain"
+        draggable={false}
+        loading="lazy"
+        decoding="async"
+      />
     );
   }
   if (type === "relationship") {
     return (
-      <img alt="" src={datingLoveSeatIcon} className="size-8 object-contain" draggable={false} />
+      <img
+        alt=""
+        src={datingLoveSeatIcon}
+        className="size-8 object-contain"
+        draggable={false}
+        loading="lazy"
+        decoding="async"
+      />
     );
   }
   if (type === "friends") {
@@ -1360,11 +1506,20 @@ function DatingWidgetGlyph({
         src={datingGroupWhiteIcon}
         className="h-8 w-[31px] object-contain"
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
     );
   }
   return (
-    <img alt="" src={datingCoffeeIcon} className="h-9 w-6 object-contain" draggable={false} />
+    <img
+      alt=""
+      src={datingCoffeeIcon}
+      className="h-9 w-6 object-contain"
+      draggable={false}
+      loading="lazy"
+      decoding="async"
+    />
   );
 }
 
@@ -1401,10 +1556,7 @@ function RelationshipStatusSheet({
       >
         {/* Header — Figma 862:242953 */}
         <div className="flex h-[62px] items-center justify-between border-b border-[rgba(255,255,255,0.1)] bg-[rgba(1,2,17,0.5)] px-3">
-          <p
-            className="text-[18px] leading-[27px] text-white"
-            style={{ fontFamily: FONT }}
-          >
+          <p className="text-[18px] leading-[27px] text-white" style={{ fontFamily: FONT }}>
             Edit Relationship status
           </p>
           <button
@@ -1424,10 +1576,7 @@ function RelationshipStatusSheet({
         {/* Body — Figma 862:242958 */}
         <div className="flex flex-col gap-4 bg-[rgba(247,246,242,0.2)] p-3">
           <div className="flex flex-col gap-3">
-            <p
-              className="text-[11px] leading-[1.4] text-[#9ca3af]"
-              style={{ fontFamily: FONT }}
-            >
+            <p className="text-[11px] leading-[1.4] text-[#9ca3af]" style={{ fontFamily: FONT }}>
               UPDATE RELATIONSHIP STATUS
             </p>
             <div className="flex flex-col gap-2">
@@ -1449,10 +1598,7 @@ function RelationshipStatusSheet({
                   >
                     <RelationshipOptionIcon type={option.icon} />
                     <div className="flex min-w-0 flex-col items-start leading-[1.4]">
-                      <span
-                        className="text-[13px] text-white"
-                        style={{ fontFamily: FONT }}
-                      >
+                      <span className="text-[13px] text-white" style={{ fontFamily: FONT }}>
                         {option.id}
                       </span>
                       <span
@@ -1483,14 +1629,27 @@ function RelationshipStatusSheet({
               </span>
               <span
                 className={`flex w-6 items-center rounded-[24px] p-0.5 transition ${
-                  locationEnabled ? "justify-end bg-[#0fc950]" : "justify-start bg-[rgba(247,246,242,0.35)]"
+                  locationEnabled
+                    ? "justify-end bg-[#0fc950]"
+                    : "justify-start bg-[rgba(247,246,242,0.35)]"
                 }`}
               >
                 <span className="size-2 rounded bg-[#fefefe]" />
               </span>
             </button>
-            <button type="button" aria-label="More info" className="flex size-5 items-center justify-center">
-              <img alt="" src={relInfoIcon} className="size-5 object-contain" draggable={false} />
+            <button
+              type="button"
+              aria-label="More info"
+              className="flex size-5 items-center justify-center"
+            >
+              <img
+                alt=""
+                src={relInfoIcon}
+                className="size-5 object-contain"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+              />
             </button>
           </div>
         </div>
@@ -1499,11 +1658,7 @@ function RelationshipStatusSheet({
   );
 }
 
-function RelationshipOptionIcon({
-  type,
-}: {
-  type: (typeof RELATIONSHIP_OPTIONS)[number]["icon"];
-}) {
+function RelationshipOptionIcon({ type }: { type: (typeof RELATIONSHIP_OPTIONS)[number]["icon"] }) {
   if (type === "single") {
     return (
       <img
@@ -1511,6 +1666,8 @@ function RelationshipOptionIcon({
         src={relSingleIcon}
         className="size-8 shrink-0 object-contain"
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
     );
   }
@@ -1518,7 +1675,14 @@ function RelationshipOptionIcon({
   if (type === "relationship") {
     return (
       <span className="flex size-8 shrink-0 items-center justify-center rounded-[40px] bg-[#ffe6e6] p-2">
-        <img alt="" src={datingLoveSeatIcon} className="size-4 object-contain" draggable={false} />
+        <img
+          alt=""
+          src={datingLoveSeatIcon}
+          className="size-4 object-contain"
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+        />
       </span>
     );
   }
@@ -1526,7 +1690,14 @@ function RelationshipOptionIcon({
   if (type === "friends") {
     return (
       <span className="flex size-8 shrink-0 items-center justify-center rounded-[40px] bg-[#e6eeff] p-2">
-        <img alt="" src={relFriendsIcon} className="h-[11px] w-[13px] object-contain" draggable={false} />
+        <img
+          alt=""
+          src={relFriendsIcon}
+          className="h-[11px] w-[13px] object-contain"
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+        />
       </span>
     );
   }
@@ -1538,6 +1709,8 @@ function RelationshipOptionIcon({
         src={relComplicatedIcon}
         className="h-[13px] w-[11px] object-contain"
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
     </span>
   );
@@ -1634,6 +1807,8 @@ function WorkEditSheet({
             src={eduDragHandleIcon}
             className="pointer-events-none absolute left-1/2 top-[7px] h-1 w-9 -translate-x-1/2 object-contain"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
           <div className="flex items-center gap-2">
             <img
@@ -1641,6 +1816,8 @@ function WorkEditSheet({
               src={workBriefcaseIcon}
               className="size-5 object-contain"
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
             <p
               className="whitespace-nowrap text-[18px] leading-[27px] text-[#f7f6f2]"
@@ -1666,10 +1843,7 @@ function WorkEditSheet({
         {/* Body */}
         <div className="flex min-h-0 flex-col gap-4 overflow-y-auto p-3 pb-6">
           <label className="flex w-full flex-col gap-1 rounded-[14px] bg-[rgba(247,246,242,0.2)] p-3">
-            <span
-              className="text-[11px] leading-[1.4] text-[#b1b1bc]"
-              style={{ fontFamily: FONT }}
-            >
+            <span className="text-[11px] leading-[1.4] text-[#b1b1bc]" style={{ fontFamily: FONT }}>
               COMPANY NAME
             </span>
             <input
@@ -1682,10 +1856,7 @@ function WorkEditSheet({
           </label>
 
           <label className="flex w-full flex-col gap-1 rounded-[14px] bg-[rgba(247,246,242,0.2)] p-3">
-            <span
-              className="text-[11px] leading-[1.4] text-[#b1b1bc]"
-              style={{ fontFamily: FONT }}
-            >
+            <span className="text-[11px] leading-[1.4] text-[#b1b1bc]" style={{ fontFamily: FONT }}>
               ROLE/TITLE
             </span>
             <input
@@ -1698,10 +1869,7 @@ function WorkEditSheet({
           </label>
 
           <label className="flex w-full flex-col gap-1 rounded-[14px] bg-[rgba(247,246,242,0.2)] p-3">
-            <span
-              className="text-[11px] leading-[1.4] text-[#b1b1bc]"
-              style={{ fontFamily: FONT }}
-            >
+            <span className="text-[11px] leading-[1.4] text-[#b1b1bc]" style={{ fontFamily: FONT }}>
               COMPANY WEBSITE (OPTIONAL)
             </span>
             <input
@@ -1727,7 +1895,14 @@ function WorkEditSheet({
                 onClick={clearLogo}
                 className="flex size-4 shrink-0 items-center justify-center"
               >
-                <img alt="" src={trashIcon} className="size-4 object-contain" draggable={false} />
+                <img
+                  alt=""
+                  src={trashIcon}
+                  className="size-4 object-contain"
+                  draggable={false}
+                  loading="lazy"
+                  decoding="async"
+                />
               </button>
             </div>
 
@@ -1740,6 +1915,8 @@ function WorkEditSheet({
                       src={workMarkIcon}
                       className="size-6 object-contain"
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <img
@@ -1747,6 +1924,8 @@ function WorkEditSheet({
                       src={workLogoPreviewIcon}
                       className="h-[17px] w-4 object-contain opacity-70"
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                     />
                   )}
                 </div>
@@ -1770,6 +1949,8 @@ function WorkEditSheet({
                     src={logoRadioDotIcon}
                     className="size-5 object-contain"
                     draggable={false}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <span
                     className="text-[11px] leading-[1.4] text-[#f7f6f2]"
@@ -1846,11 +2027,16 @@ function LocationInfoSheet({
                 src={backdropUrl}
                 className="absolute left-1/2 top-0 h-[160%] w-[160%] max-w-none -translate-x-1/2 -translate-y-[18%] scale-110 object-cover object-[center_20%]"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
               <div className="crcle-location-info-sheet-backdrop-tint rounded-[inherit]" />
             </div>
 
-            <IconImg src={crcleLogo} className="crcle-theme-icon relative z-[1] h-[13px] w-[38px]" />
+            <IconImg
+              src={crcleLogo}
+              className="crcle-theme-icon relative z-[1] h-[13px] w-[38px]"
+            />
 
             <div className="relative z-[1] flex w-full flex-col gap-3">
               <p
@@ -1930,6 +2116,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
             src={verifyHandleIcon}
             className="pointer-events-none absolute left-1/2 top-[5px] h-[3px] w-[56px] -translate-x-1/2 max-w-none"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
           <div className="min-w-0 flex-1 flex flex-col gap-[3px]">
             <p
@@ -1957,6 +2145,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 src={verifyCloseIcon}
                 className="absolute inset-0 size-full max-w-none object-contain"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </span>
           </button>
@@ -1971,6 +2161,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 src={verifySecuritySafeIcon}
                 className="absolute inset-0 size-full max-w-none object-contain"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </span>
             <div className="flex w-full flex-col items-center gap-[16px]">
@@ -1992,8 +2184,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
               >
                 CRCLE is a small, high-trust graph: dating, work, and location shared with people
                 you might actually meet. KYC adds friction on purpose — one verified person per
-                profile, not a borrowed photo or a bot — so intimacy stays real before Radar, In
-                The Area, or messaging deepen.
+                profile, not a borrowed photo or a bot — so intimacy stays real before Radar, In The
+                Area, or messaging deepen.
               </p>
             </div>
           </div>
@@ -2005,6 +2197,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 src={verifyFourthlineLogo}
                 className="absolute inset-0 size-full max-w-none object-contain object-left"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </span>
             <span
@@ -2019,6 +2213,8 @@ function VerificationSheet({ onClose }: { onClose: () => void }) {
                 src={verifyCrcleWordmark}
                 className="absolute inset-0 size-full max-w-none object-contain"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </span>
           </div>
@@ -2088,7 +2284,8 @@ function EducationHistorySheet({
   const buildEntryFromForm = (): EducationEntry | null => {
     const school = university.trim();
     if (!school) return null;
-    const degreeLabel = [degree.trim(), fieldOfStudy.trim()].filter(Boolean).join(" · ") || degree.trim();
+    const degreeLabel =
+      [degree.trim(), fieldOfStudy.trim()].filter(Boolean).join(" · ") || degree.trim();
     return {
       school,
       degree: degreeLabel,
@@ -2135,6 +2332,8 @@ function EducationHistorySheet({
             src={eduDragHandleIcon}
             className="pointer-events-none absolute left-1/2 top-[7px] h-1 w-9 -translate-x-1/2 object-contain"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
           <div className="flex items-center gap-2">
             <img
@@ -2142,6 +2341,8 @@ function EducationHistorySheet({
               src={eduGraduationIcon}
               className="size-5 object-contain"
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
             <p
               className="whitespace-nowrap text-[18px] leading-[27px] text-[#f7f6f2]"
@@ -2179,6 +2380,8 @@ function EducationHistorySheet({
                       src={loughboroughCrest}
                       className="size-6 object-contain"
                       draggable={false}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col items-start leading-[1.4]">
@@ -2188,16 +2391,10 @@ function EducationHistorySheet({
                     >
                       {entry.school}
                     </p>
-                    <p
-                      className="w-full text-[11px] text-[#f7f6f2]"
-                      style={{ fontFamily: FONT }}
-                    >
+                    <p className="w-full text-[11px] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
                       {entry.degree}
                     </p>
-                    <p
-                      className="w-full text-[11px] text-[#99a1af]"
-                      style={{ fontFamily: FONT }}
-                    >
+                    <p className="w-full text-[11px] text-[#99a1af]" style={{ fontFamily: FONT }}>
                       {entry.years}
                     </p>
                   </div>
@@ -2208,7 +2405,14 @@ function EducationHistorySheet({
                   onClick={() => setEntries((prev) => prev.filter((_, i) => i !== index))}
                   className="mt-0.5 flex size-4 shrink-0 items-center justify-center"
                 >
-                  <img alt="" src={trashIcon} className="size-4 object-contain" draggable={false} />
+                  <img
+                    alt=""
+                    src={trashIcon}
+                    className="size-4 object-contain"
+                    draggable={false}
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </button>
               </div>
             ))}
@@ -2219,11 +2423,15 @@ function EducationHistorySheet({
             onClick={handleAddEducation}
             className="flex items-center gap-2 self-start"
           >
-            <img alt="" src={eduPlusIcon} className="size-4 object-contain" draggable={false} />
-            <span
-              className="text-[13px] leading-[1.4] text-[#f7f6f2]"
-              style={{ fontFamily: FONT }}
-            >
+            <img
+              alt=""
+              src={eduPlusIcon}
+              className="size-4 object-contain"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
+            <span className="text-[13px] leading-[1.4] text-[#f7f6f2]" style={{ fontFamily: FONT }}>
               Add Education
             </span>
           </button>
@@ -2333,9 +2541,7 @@ function EducationHistorySheet({
                     : "border-[#b1b1bc] bg-transparent"
                 }`}
               >
-                {currentlyStudying ? (
-                  <span className="size-2 rounded-[1px] bg-[#f7f6f2]" />
-                ) : null}
+                {currentlyStudying ? <span className="size-2 rounded-[1px] bg-[#f7f6f2]" /> : null}
               </span>
               <span
                 className="text-[13px] leading-[1.4] text-[#f7f6f2]"
@@ -2463,7 +2669,10 @@ function SocialLinksSheet({
         >
           Save Link
         </button>
-        <p className="text-center text-[11px] text-[rgba(247,246,242,0.4)]" style={{ fontFamily: FONT }}>
+        <p
+          className="text-center text-[11px] text-[rgba(247,246,242,0.4)]"
+          style={{ fontFamily: FONT }}
+        >
           This helps put your work out there.
         </p>
       </div>
@@ -2509,7 +2718,10 @@ function SheetShell({
               {title}
             </p>
             {subtitle ? (
-              <p className="mt-0.5 text-[12px] text-[rgba(247,246,242,0.5)]" style={{ fontFamily: FONT }}>
+              <p
+                className="mt-0.5 text-[12px] text-[rgba(247,246,242,0.5)]"
+                style={{ fontFamily: FONT }}
+              >
                 {subtitle}
               </p>
             ) : null}
@@ -2525,7 +2737,14 @@ function SheetShell({
             </button>
           ) : (
             <button type="button" aria-label="Close" onClick={onClose}>
-              <img alt="" src={locusCloseIcon} className="size-5 object-contain" draggable={false} />
+              <img
+                alt=""
+                src={locusCloseIcon}
+                className="size-5 object-contain"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+              />
             </button>
           )}
         </div>
@@ -2542,6 +2761,8 @@ function SheetShell({
             src={locusCloseIcon}
             className="relative z-[1] size-6 object-contain"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </button>
       </motion.div>
@@ -2570,7 +2791,13 @@ function StatusBar() {
 function IconImg({ src, className = "size-6" }: { src: string; className?: string }) {
   return (
     <div className={`relative shrink-0 overflow-hidden ${className}`}>
-      <img alt="" src={src} className="absolute inset-0 size-full max-w-none object-contain" />
+      <img
+        alt=""
+        src={src}
+        className="absolute inset-0 size-full max-w-none object-contain"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 }

@@ -102,6 +102,8 @@ export function Footer({
                 width={33}
                 height={30}
                 className="mt-0.5 h-[30px] w-[33px] object-contain"
+                loading="lazy"
+                decoding="async"
               />
               <p className="text-[24px] font-medium leading-none tracking-tight text-white">
                 Portfolio.
@@ -122,6 +124,8 @@ export function Footer({
                 width={16}
                 height={16}
                 className="size-4 object-contain opacity-70"
+                loading="lazy"
+                decoding="async"
               />
             </a>
           </div>
@@ -280,10 +284,7 @@ function JengaPattern() {
             style={{ ["--outline-delay" as string]: "0.7s" }}
             {...splay(4, -3, 0.55)}
           >
-            <span
-              aria-hidden
-              className="relative z-[1] block size-[11px]"
-            >
+            <span aria-hidden className="relative z-[1] block size-[11px]">
               <span className="absolute left-1/2 top-0 h-full w-[1.5px] -translate-x-1/2 rounded-full bg-[#d1d5db]/90" />
               <span className="absolute left-0 top-1/2 h-[1.5px] w-full -translate-y-1/2 rounded-full bg-[#d1d5db]/90" />
             </span>

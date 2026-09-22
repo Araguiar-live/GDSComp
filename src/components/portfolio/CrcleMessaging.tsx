@@ -462,17 +462,20 @@ export function CrcleMessaging({
     openInbox();
   }, [onGoToRadar, openInbox]);
 
-  const handleSendSignal = useCallback((payload: LocusSignalPayload) => {
-    clearLocusNotificationTimer();
-    setLocusOpen(false);
-    setAttachOpen(false);
-    setSignalCard({
-      ...payload,
-      id: `signal-${Date.now()}`,
-      status: "pending",
-      direction: "sent",
-    });
-  }, [clearLocusNotificationTimer]);
+  const handleSendSignal = useCallback(
+    (payload: LocusSignalPayload) => {
+      clearLocusNotificationTimer();
+      setLocusOpen(false);
+      setAttachOpen(false);
+      setSignalCard({
+        ...payload,
+        id: `signal-${Date.now()}`,
+        status: "pending",
+        direction: "sent",
+      });
+    },
+    [clearLocusNotificationTimer],
+  );
 
   const showPrimaryDock =
     phase === "inbox" &&
@@ -583,9 +586,7 @@ export function CrcleMessaging({
                 conversation={activeConversation}
                 signal={signalCard}
                 isLight={light}
-                onAcceptSignal={() =>
-                  setSignalCard((s) => (s ? { ...s, status: "accepted" } : s))
-                }
+                onAcceptSignal={() => setSignalCard((s) => (s ? { ...s, status: "accepted" } : s))}
                 onRaincheckSignal={() =>
                   setSignalCard((s) => (s ? { ...s, status: "raincheck" } : s))
                 }
@@ -642,9 +643,7 @@ export function CrcleMessaging({
 
               {/* Header stack — status → Messages row (never overlapped) */}
               <div
-                className={`relative z-30 shrink-0 ${
-                  areaInbox !== "off" ? "hidden" : ""
-                }`}
+                className={`relative z-30 shrink-0 ${areaInbox !== "off" ? "hidden" : ""}`}
                 aria-hidden={areaInbox !== "off"}
               >
                 <StatusBar />
@@ -691,7 +690,6 @@ export function CrcleMessaging({
                   </motion.div>
                 ) : null}
               </div>
-
             </motion.div>
           )}
         </AnimatePresence>
@@ -802,6 +800,8 @@ function ChatHeader({
           alt=""
           src={chatHeaderPattern}
           className="absolute inset-0 size-full max-w-none object-cover object-center"
+          loading="lazy"
+          decoding="async"
         />
       </div>
 
@@ -816,6 +816,8 @@ function ChatHeader({
             alt=""
             src={chatHeaderBlobA}
             className="h-[89px] w-[84px] max-w-none rotate-[120deg] opacity-70 blur-[8px]"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <div className="absolute left-[110.42px] top-[107.58px] flex h-[75.513px] w-[76.759px] items-center justify-center">
@@ -823,6 +825,8 @@ function ChatHeader({
             alt=""
             src={chatHeaderBlobB}
             className="h-[57.438px] w-[54.033px] max-w-none rotate-[120deg] opacity-65 blur-[7px]"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <div className="absolute left-[14px] top-[-36px] flex h-[134.936px] w-[137.163px] items-center justify-center">
@@ -830,12 +834,16 @@ function ChatHeader({
             alt=""
             src={chatHeaderBlobC}
             className="h-[102.638px] w-[96.553px] max-w-none rotate-[120deg] opacity-70 blur-[8px]"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <img
           alt=""
           src={chatHeaderBlobD}
           className="absolute left-[-10px] top-[52px] h-[89px] w-[84px] max-w-none opacity-65 blur-[7px]"
+          loading="lazy"
+          decoding="async"
         />
 
         {/* Ellipse rings → soft bokeh */}
@@ -843,16 +851,22 @@ function ChatHeader({
           alt=""
           src={chatHeaderOrbSm}
           className="absolute left-[206px] top-[83px] size-[50px] max-w-none opacity-70 blur-[6px]"
+          loading="lazy"
+          decoding="async"
         />
         <img
           alt=""
           src={chatHeaderOrbSm}
           className="absolute left-[115px] top-[-18px] size-[50px] max-w-none opacity-70 blur-[6px]"
+          loading="lazy"
+          decoding="async"
         />
         <img
           alt=""
           src={chatHeaderOrbLg}
           className="absolute left-[303px] top-[-19px] size-[132px] max-w-none opacity-75 blur-[8px]"
+          loading="lazy"
+          decoding="async"
         />
 
         {/* Cyan wash + top-right highlight */}
@@ -860,6 +874,8 @@ function ChatHeader({
           alt=""
           src={chatHeaderGlowDark}
           className="absolute left-[-8px] top-[-7px] h-[201px] w-[486px] max-w-none opacity-85 blur-[4px]"
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute right-[-12px] top-[-8px] size-[120px] rounded-full bg-[radial-gradient(circle,rgba(254,254,254,0.22)_0%,transparent_70%)] blur-[8px]" />
       </div>
@@ -870,7 +886,13 @@ function ChatHeader({
           {/* Centered avatar + name (overlaps action row) — Figma 769:205669 */}
           <div className="pointer-events-none relative z-[1] mb-[-40px] flex h-[42px] w-[141px] items-center gap-3">
             <div className="relative size-[42px] shrink-0 overflow-hidden rounded-full border border-[rgba(2,3,29,0.2)] [.crcle-phone:not(.crcle-phone--light)_&]:border-[#f7f6f2]">
-              <img alt="" src={avatar} className="absolute inset-0 size-full object-cover object-center" />
+              <img
+                alt=""
+                src={avatar}
+                className="absolute inset-0 size-full object-cover object-center"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
             <div className="flex min-w-0 flex-1 flex-col items-start">
               <p
@@ -948,8 +970,8 @@ function MessagingOnboarding({
                 className="w-full text-[13px] font-light leading-[1.4] text-[var(--crcle-fg-muted)] transition-colors duration-300"
                 style={{ fontFamily: FONT }}
               >
-                One simple list for everything. Your ongoing chats and your new invites live together here, so you
-                never miss a connection.
+                One simple list for everything. Your ongoing chats and your new invites live
+                together here, so you never miss a connection.
               </p>
             </div>
           </div>
@@ -1115,6 +1137,8 @@ function NotificationCenter({
               alt=""
               src={notificationBg}
               className="absolute left-[-8px] top-[-7px] h-[201px] w-[486px] max-w-none object-cover transition-opacity duration-300"
+              loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -1154,7 +1178,10 @@ function NotificationCenter({
               </div>
             </div>
             <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[var(--crcle-nc-badge)] transition-colors duration-300">
-              <span className="text-[13px] leading-[18.2px] text-white" style={{ fontFamily: FONT }}>
+              <span
+                className="text-[13px] leading-[18.2px] text-white"
+                style={{ fontFamily: FONT }}
+              >
                 {profiles.length}
               </span>
             </div>
@@ -1280,7 +1307,10 @@ function DailyDropBanner({ onView }: { onView: () => void }) {
           <p className="text-[13px] leading-[1.4] text-[#030426]" style={{ fontFamily: FONT }}>
             Daily Drop is ready
           </p>
-          <p className="truncate text-[13px] font-light leading-[1.4] text-[#6b7280]" style={{ fontFamily: FONT }}>
+          <p
+            className="truncate text-[13px] font-light leading-[1.4] text-[#6b7280]"
+            style={{ fontFamily: FONT }}
+          >
             3 new people to discover.
           </p>
         </div>
@@ -1289,7 +1319,10 @@ function DailyDropBanner({ onView }: { onView: () => void }) {
           onClick={onView}
           className="flex h-full shrink-0 items-center justify-center overflow-hidden rounded-[36px] bg-[#02031d] px-4 py-2"
         >
-          <span className="text-[11px] leading-[1.4] whitespace-nowrap text-[#fefefe]" style={{ fontFamily: FONT }}>
+          <span
+            className="text-[11px] leading-[1.4] whitespace-nowrap text-[#fefefe]"
+            style={{ fontFamily: FONT }}
+          >
             View
           </span>
         </button>
@@ -1422,7 +1455,10 @@ function ChatThread({
     <div className="relative flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto bg-[var(--crcle-bg-deep)] px-4 pb-24 pt-6 transition-colors duration-300">
       <div className="flex items-center justify-center gap-3">
         <span className="h-px w-12 bg-[#d9d9de]" />
-        <p className="shrink-0 text-[11px] leading-[1.4] text-[#d9d9de]" style={{ fontFamily: FONT }}>
+        <p
+          className="shrink-0 text-[11px] leading-[1.4] text-[#d9d9de]"
+          style={{ fontFamily: FONT }}
+        >
           Connected via Purpose
         </p>
         <span className="h-px w-12 bg-[#d9d9de]" />
@@ -1435,7 +1471,10 @@ function ChatThread({
               <p className="text-[13px] leading-[1.4] text-[#02031d]" style={{ fontFamily: FONT }}>
                 {message.text}
               </p>
-              <p className="text-[11px] leading-[1.4] text-[rgba(3,4,38,0.3)]" style={{ fontFamily: FONT }}>
+              <p
+                className="text-[11px] leading-[1.4] text-[rgba(3,4,38,0.3)]"
+                style={{ fontFamily: FONT }}
+              >
                 {message.sentAt}
               </p>
             </div>
@@ -1443,10 +1482,16 @@ function ChatThread({
         ) : (
           <div key={message.id} className="flex w-full justify-start">
             <div className="flex max-w-[278px] flex-col gap-1 rounded-tl-[4px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[20px] border-[0.5px] border-[var(--crcle-border)] bg-[rgba(255,255,255,0.1)] px-4 pb-3 pt-3 transition-colors duration-300 [.crcle-phone--light_&]:bg-white [.crcle-phone--light_&]:shadow-sm">
-              <p className="text-[13px] leading-[1.4] text-[var(--crcle-fg)] transition-colors duration-300" style={{ fontFamily: FONT }}>
+              <p
+                className="text-[13px] leading-[1.4] text-[var(--crcle-fg)] transition-colors duration-300"
+                style={{ fontFamily: FONT }}
+              >
                 {message.text}
               </p>
-              <p className="text-[11px] leading-[1.4] text-[var(--crcle-fg-ghost)] transition-colors duration-300" style={{ fontFamily: FONT }}>
+              <p
+                className="text-[11px] leading-[1.4] text-[var(--crcle-fg-ghost)] transition-colors duration-300"
+                style={{ fontFamily: FONT }}
+              >
                 {message.sentAt}
               </p>
             </div>
@@ -1475,7 +1520,10 @@ function ChatThread({
         ) : null}
       </AnimatePresence>
 
-      <p className="text-center text-[11px] leading-[1.4] text-[#b1b1bc]" style={{ fontFamily: FONT }}>
+      <p
+        className="text-center text-[11px] leading-[1.4] text-[#b1b1bc]"
+        style={{ fontFamily: FONT }}
+      >
         End-to-end encrypted
       </p>
     </div>
@@ -1582,7 +1630,11 @@ function ChatComposer({
               style={{ fontFamily: FONT }}
             />
           </div>
-          <button type="button" aria-label="Voice message" className="flex size-9 shrink-0 items-center justify-center">
+          <button
+            type="button"
+            aria-label="Voice message"
+            className="flex size-9 shrink-0 items-center justify-center"
+          >
             <IconImg src={chatMicIcon} className="crcle-theme-icon size-5" />
           </button>
         </div>
@@ -1604,7 +1656,13 @@ function IconImg({
 }) {
   return (
     <div className={`relative shrink-0 overflow-hidden ${className}`}>
-      <img alt="" src={src} className="absolute inset-0 size-full max-w-none object-contain" />
+      <img
+        alt=""
+        src={src}
+        className="absolute inset-0 size-full max-w-none object-contain"
+        loading="lazy"
+        decoding="async"
+      />
       {children}
     </div>
   );
@@ -1633,10 +1691,18 @@ function ConnectionAvatar({
       className="group relative flex size-[53px] shrink-0 items-center justify-center rounded-[26.5px] border border-[#11df59] bg-[rgba(253,252,251,0.3)] p-0.5 aspect-square transition-transform duration-200 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#11df59]/40 [.crcle-phone--light_&]:border-[#11df59] [.crcle-phone--light_&]:bg-[#fdfcfb]"
     >
       <div className="relative size-[46px] overflow-hidden rounded-full aspect-square">
-        <img alt="" src={photoUrl} className="absolute inset-0 size-full object-cover object-center" />
+        <img
+          alt=""
+          src={photoUrl}
+          className="absolute inset-0 size-full object-cover object-center"
+          loading="lazy"
+          decoding="async"
+        />
         <div
           className={`absolute inset-0 bg-black/60 transition-opacity duration-200 ease-out ${
-            showWaveform ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+            showWaveform
+              ? "opacity-100"
+              : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
           }`}
         />
       </div>
@@ -1646,7 +1712,9 @@ function ConnectionAvatar({
       </div>
       <div
         className={`pointer-events-none absolute inset-0 z-[1] flex items-center justify-center gap-[2.3px] transition-opacity duration-200 ease-out ${
-          showWaveform ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+          showWaveform
+            ? "opacity-100"
+            : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
         }`}
       >
         <span className="h-[9px] w-[4.5px] rounded-full bg-[#f7f6f2]" />

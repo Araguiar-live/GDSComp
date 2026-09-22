@@ -53,6 +53,8 @@ const ACTIVITIES: {
             src={locusCinemaIcon}
             className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </span>
       </span>
@@ -69,6 +71,8 @@ const ACTIVITIES: {
             src={locusIcecreamAIcon}
             className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </span>
         <span className="absolute inset-[56.55%_32.02%_3.13%_38.63%]">
@@ -77,6 +81,8 @@ const ACTIVITIES: {
             src={locusIcecreamBIcon}
             className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </span>
       </span>
@@ -93,6 +99,8 @@ const ACTIVITIES: {
             src={locusPizzaIcon}
             className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </span>
       </span>
@@ -109,6 +117,8 @@ const ACTIVITIES: {
             src={locusCoffeeIcon}
             className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </span>
       </span>
@@ -125,6 +135,8 @@ const ACTIVITIES: {
             src={locusDinnerAIcon}
             className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </span>
         <span className="absolute inset-[61.24%_55.79%_3.12%_3.14%]">
@@ -133,6 +145,8 @@ const ACTIVITIES: {
             src={locusDinnerBIcon}
             className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </span>
       </span>
@@ -140,15 +154,7 @@ const ACTIVITIES: {
   },
 ];
 
-const WHEN_OPTIONS: LocusWhen[] = [
-  "Today",
-  "Tonight",
-  "Tomorrow",
-  "Fri",
-  "Sat",
-  "Sun",
-  "Later…",
-];
+const WHEN_OPTIONS: LocusWhen[] = ["Today", "Tonight", "Tomorrow", "Fri", "Sat", "Sun", "Later…"];
 
 const TIME_OPTIONS: {
   id: LocusTimeOfDay;
@@ -256,6 +262,8 @@ export function TheLocusDrawer({
                     src={locusCrosshairIcon}
                     className="absolute inset-[-5.56%] size-[111.12%] max-w-none"
                     draggable={false}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </span>
               </span>
@@ -287,9 +295,7 @@ export function TheLocusDrawer({
                       type="button"
                       onClick={() => setTab("venue")}
                       className={`relative z-[1] flex flex-1 items-center justify-center gap-1 rounded-[20px] p-1 text-center text-[11px] leading-[1.4] transition ${
-                        tab === "venue"
-                          ? "bg-[rgba(247,246,242,0.2)] text-white"
-                          : "text-white"
+                        tab === "venue" ? "bg-[rgba(247,246,242,0.2)] text-white" : "text-white"
                       }`}
                       style={{ fontFamily: FONT }}
                     >
@@ -299,6 +305,8 @@ export function TheLocusDrawer({
                           src={locusPinSmIcon}
                           className="size-2.5 shrink-0 object-contain"
                           draggable={false}
+                          loading="lazy"
+                          decoding="async"
                         />
                       ) : null}
                       Venue
@@ -320,7 +328,9 @@ export function TheLocusDrawer({
                             type="button"
                             onClick={() => selectActivity(a.id)}
                             className={`w-full text-left transition ${
-                              activityId === a.id ? "text-[#f7f6f2]" : "text-white hover:text-[#f7f6f2]"
+                              activityId === a.id
+                                ? "text-[#f7f6f2]"
+                                : "text-white hover:text-[#f7f6f2]"
                             }`}
                             style={{ fontFamily: FONT }}
                           >
@@ -409,6 +419,8 @@ export function TheLocusDrawer({
                                   src={option.icon}
                                   className={option.leafClass}
                                   draggable={false}
+                                  loading="lazy"
+                                  decoding="async"
                                 />
                               </span>
                             </button>
@@ -430,6 +442,8 @@ export function TheLocusDrawer({
                           src={locusPinIcon}
                           className="size-4 shrink-0 object-contain"
                           draggable={false}
+                          loading="lazy"
+                          decoding="async"
                         />
                         <input
                           value={location}
@@ -450,6 +464,8 @@ export function TheLocusDrawer({
                             src={locusSendLightIcon}
                             className="relative z-[1] size-7 max-w-none -translate-x-[1.5px] translate-y-[1.5px] object-contain"
                             draggable={false}
+                            loading="lazy"
+                            decoding="async"
                           />
                         </button>
                       </div>
@@ -469,7 +485,14 @@ export function TheLocusDrawer({
           >
             <div className="dock-glass-lens opacity-40" aria-hidden />
             <span className="relative z-[1] flex size-8 items-center justify-center">
-              <img alt="" src={locusCloseIcon} className="size-6 max-w-none object-contain" draggable={false} />
+              <img
+                alt=""
+                src={locusCloseIcon}
+                className="size-6 max-w-none object-contain"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+              />
             </span>
           </button>
         </motion.div>
@@ -487,10 +510,7 @@ export type SignalCardModel = LocusSignalPayload & {
   direction: "received" | "sent";
 };
 
-const TIME_GLYPH: Record<
-  LocusTimeOfDay,
-  { icon: string; leafClass: string }
-> = {
+const TIME_GLYPH: Record<LocusTimeOfDay, { icon: string; leafClass: string }> = {
   morning: {
     icon: locusSunDuotoneIcon,
     leafClass: "absolute inset-[4.17%] size-[91.66%] max-w-none",
@@ -562,6 +582,8 @@ export function SignalCard({
                 src={locusThumbsUpIcon}
                 className="crcle-signal-response-thumb size-8 max-w-none object-contain"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </button>
             <button
@@ -579,6 +601,8 @@ export function SignalCard({
                 src={locusRainFillIcon}
                 className="size-8 max-w-none object-contain"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </button>
           </motion.div>
@@ -594,7 +618,9 @@ export function SignalCard({
         } ${isLight && !isSent ? "crcle-signal-card--received-light" : ""}`}
       >
         <div className="flex w-full items-start justify-between">
-          <span className="crcle-signal-card-icon relative block size-6 shrink-0">{activity.icon}</span>
+          <span className="crcle-signal-card-icon relative block size-6 shrink-0">
+            {activity.icon}
+          </span>
           <span className="crcle-signal-card-crosshair relative block size-6 shrink-0">
             <span className="absolute inset-[12.5%]">
               <img
@@ -602,6 +628,8 @@ export function SignalCard({
                 src={locusCrosshairIcon}
                 className="absolute inset-[-5.56%] size-[111.12%] max-w-none"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </span>
           </span>
@@ -628,6 +656,8 @@ export function SignalCard({
                   signal.timeOfDay === "evening" ? "-translate-x-0.5 -translate-y-px" : ""
                 }`}
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </span>
 
@@ -637,6 +667,8 @@ export function SignalCard({
                 src={locusPinRedIcon}
                 className="size-4 shrink-0 object-contain"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
               <span
                 className="crcle-signal-card-venue-text min-w-0 flex-1 truncate text-[13px] leading-[1.4]"
@@ -663,6 +695,8 @@ export function SignalCard({
                   src={locusPlusIcon}
                   className="relative z-[1] size-5 max-w-none"
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                 />
               </button>
             </div>
@@ -683,6 +717,8 @@ export function SignalCard({
                     src={locusThumbsUpIcon}
                     className="absolute inset-0 size-full max-w-none brightness-0 invert"
                     draggable={false}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </span>
               </span>
@@ -719,6 +755,8 @@ export function SignalCard({
                 src={locusSendLightIcon}
                 className="size-5 max-w-none -translate-x-[1.5px] translate-y-[1.5px] object-contain"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
             </button>
           </div>

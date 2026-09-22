@@ -94,7 +94,14 @@ export function IntentTuneModal({ open, onClose, onSave }: IntentTuneModalProps)
                 onClick={onClose}
                 className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[rgba(255,255,255,0.1)]"
               >
-                <img alt="" src={locusCloseIcon} className="size-3 brightness-0 invert" draggable={false} />
+                <img
+                  alt=""
+                  src={locusCloseIcon}
+                  className="size-3 brightness-0 invert"
+                  draggable={false}
+                  loading="lazy"
+                  decoding="async"
+                />
               </button>
             </div>
 
@@ -104,6 +111,8 @@ export function IntentTuneModal({ open, onClose, onSave }: IntentTuneModalProps)
                 src={signalDividerIcon}
                 className="h-2 w-[17px] max-w-none object-contain opacity-80"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
               <p
                 className="w-full text-center text-[11px] leading-[1.4] text-[#b1b1bc]"
@@ -129,6 +138,8 @@ export function IntentTuneModal({ open, onClose, onSave }: IntentTuneModalProps)
                         src={intent.icon}
                         className="size-6 shrink-0 object-contain brightness-0 invert"
                         draggable={false}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="mt-2 w-full text-center leading-[1.2] text-[#f7f6f2]">
                         <p
@@ -137,10 +148,7 @@ export function IntentTuneModal({ open, onClose, onSave }: IntentTuneModalProps)
                         >
                           {intent.title}
                         </p>
-                        <p
-                          className="text-[10px] tracking-[-0.15px]"
-                          style={{ fontFamily: FONT }}
-                        >
+                        <p className="text-[10px] tracking-[-0.15px]" style={{ fontFamily: FONT }}>
                           {intent.subtitle}
                         </p>
                       </div>

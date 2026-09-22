@@ -108,7 +108,13 @@ function AuthArtboard({
   return (
     <div className="relative size-full overflow-hidden">
       <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <img alt="" src={signupBg} className="absolute inset-0 size-full object-cover" />
+        <img
+          alt=""
+          src={signupBg}
+          className="absolute inset-0 size-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
         {!isDark && <div className="absolute inset-0 bg-white/25" />}
       </div>
 
@@ -130,6 +136,8 @@ function AuthArtboard({
                 src={odicciLogo}
                 alt="odicci"
                 className="absolute left-[-61.1%] top-0 h-full w-[194.87%] max-w-none object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="flex w-full flex-col gap-[36px]">
@@ -142,8 +150,8 @@ function AuthArtboard({
                 className="text-[28px] font-normal leading-[1.2]"
                 style={{ color: isDark ? heroSub : "#4a6b8a" }}
               >
-                Odicci is the gamification platform that helps brands turn engagement into measurable
-                growth.
+                Odicci is the gamification platform that helps brands turn engagement into
+                measurable growth.
               </p>
             </div>
           </div>
@@ -173,6 +181,8 @@ function AuthArtboard({
                   alt=""
                   className="absolute left-1/2 top-0 h-[71.27px] w-[56px] max-w-none -translate-x-1/2"
                   style={{ clipPath: "inset(0 0 45% 0)" }}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             ) : (
@@ -180,6 +190,8 @@ function AuthArtboard({
                 src={odicciBadgeMark}
                 alt=""
                 className="h-[71.27px] w-[56px] object-contain"
+                loading="lazy"
+                decoding="async"
               />
             )}
           </div>
@@ -265,7 +277,13 @@ function LoginModalBody({
               type="button"
               className="inline-flex items-center justify-center gap-2.5 rounded-[64px] bg-white px-[46px] py-1.5 text-[12px] font-normal text-[#9CA2AA]"
             >
-              <img src={googleG} alt="" className="size-6 shrink-0" />
+              <img
+                src={googleG}
+                alt=""
+                className="size-6 shrink-0"
+                loading="lazy"
+                decoding="async"
+              />
               Login with Google
             </button>
             <div className="flex w-full items-center gap-2">
@@ -307,7 +325,9 @@ function LoginModalBody({
       </div>
 
       <p className="w-full text-center text-[12px] font-normal leading-[1.2]">
-        <span className={isDark ? "text-white" : "text-zinc-600"}>Don&apos;t have an account? </span>
+        <span className={isDark ? "text-white" : "text-zinc-600"}>
+          Don&apos;t have an account?{" "}
+        </span>
         <button
           type="button"
           onClick={onSignUp}
@@ -367,7 +387,7 @@ function SignupModalBody({
             type="button"
             className="inline-flex items-center justify-center gap-2.5 rounded-[64px] bg-white px-[46px] py-1.5 text-[12px] font-normal text-[#9CA2AA]"
           >
-            <img src={googleG} alt="" className="size-6 shrink-0" />
+            <img src={googleG} alt="" className="size-6 shrink-0" loading="lazy" decoding="async" />
             Sign up with Google
           </button>
           <div className="flex w-full items-center gap-2">

@@ -136,6 +136,8 @@ export function AreaNearbyNotificationModal({
               src={backdropUrl}
               className="absolute left-1/2 top-1/2 h-[220%] w-[220%] max-w-none -translate-x-1/2 -translate-y-[58%] scale-110 object-cover object-[center_20%]"
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-[rgba(2,3,29,0.52)]" />
           </div>
@@ -190,10 +192,19 @@ export function AreaNearbyNotificationModal({
                       >
                         <div
                           className={`-mr-3 size-16 shrink-0 overflow-hidden rounded-full border ${
-                            isLight ? "border-[rgba(2,3,29,0.12)]" : "border-[rgba(247,246,242,0.3)]"
+                            isLight
+                              ? "border-[rgba(2,3,29,0.12)]"
+                              : "border-[rgba(247,246,242,0.3)]"
                           }`}
                         >
-                          <img alt="" src={serenaPortrait} className="size-full object-cover" draggable={false} />
+                          <img
+                            alt=""
+                            src={serenaPortrait}
+                            className="size-full object-cover"
+                            draggable={false}
+                            loading="lazy"
+                            decoding="async"
+                          />
                         </div>
                         <span
                           className="relative z-[1] size-3 shrink-0 rounded-full border-2 border-[#0fc950] bg-[rgba(15,201,80,0.2)]"
@@ -213,10 +224,19 @@ export function AreaNearbyNotificationModal({
                         >
                           <div
                             className={`size-16 shrink-0 overflow-hidden rounded-full border ${
-                              isLight ? "border-[rgba(2,3,29,0.12)]" : "border-[rgba(247,246,242,0.3)]"
+                              isLight
+                                ? "border-[rgba(2,3,29,0.12)]"
+                                : "border-[rgba(247,246,242,0.3)]"
                             }`}
                           >
-                            <img alt="" src={serenaPortrait} className="size-full object-cover" draggable={false} />
+                            <img
+                              alt=""
+                              src={serenaPortrait}
+                              className="size-full object-cover"
+                              draggable={false}
+                              loading="lazy"
+                              decoding="async"
+                            />
                           </div>
                         </div>
                         <div
@@ -225,7 +245,14 @@ export function AreaNearbyNotificationModal({
                           }`}
                         >
                           <div className="size-[62px] shrink-0 overflow-hidden rounded-full">
-                            <img alt="" src={alexPortrait} className="size-full object-cover" draggable={false} />
+                            <img
+                              alt=""
+                              src={alexPortrait}
+                              className="size-full object-cover"
+                              draggable={false}
+                              loading="lazy"
+                              decoding="async"
+                            />
                           </div>
                         </div>
                       </div>
@@ -233,12 +260,18 @@ export function AreaNearbyNotificationModal({
                   )}
 
                   <div className="flex w-full flex-col items-center gap-1.5 text-center">
-                    <p className={`text-[18px] font-semibold leading-normal ${titleInk}`} style={{ fontFamily: FONT }}>
+                    <p
+                      className={`text-[18px] font-semibold leading-normal ${titleInk}`}
+                      style={{ fontFamily: FONT }}
+                    >
                       {stage === "request_sent"
                         ? "Request sent to Serena Min"
                         : "You're connected with Alex!"}
                     </p>
-                    <p className={`text-[13px] leading-normal ${bodyInk}`} style={{ fontFamily: FONT }}>
+                    <p
+                      className={`text-[13px] leading-normal ${bodyInk}`}
+                      style={{ fontFamily: FONT }}
+                    >
                       {stage === "request_sent"
                         ? "You'll be notified immediately when they respond."
                         : "You can now message each other safely."}
@@ -247,7 +280,10 @@ export function AreaNearbyNotificationModal({
 
                   <NearbyDoneButton isLight={isLight} onClick={handlePrimaryAction} />
 
-                  <p className={`w-full text-center text-[10px] font-medium leading-normal ${bodyInk}`} style={{ fontFamily: FONT }}>
+                  <p
+                    className={`w-full text-center text-[10px] font-medium leading-normal ${bodyInk}`}
+                    style={{ fontFamily: FONT }}
+                  >
                     No exact location shared · double opt-in required
                   </p>
                 </motion.div>
@@ -269,7 +305,14 @@ function NearbyPinBadge({ isLight }: { isLight: boolean }) {
         }`}
       >
         <span className="relative h-3 w-[7px] overflow-hidden">
-          <img alt="" src={areaPinIcon} className="absolute inset-0 size-full object-contain" draggable={false} />
+          <img
+            alt=""
+            src={areaPinIcon}
+            className="absolute inset-0 size-full object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
         </span>
       </span>
     </div>
@@ -330,7 +373,14 @@ function NearbyPromptContent({
           }`}
         >
           <span className="relative h-3 w-[7px] overflow-hidden">
-            <img alt="" src={areaPinIcon} className="absolute inset-0 size-full object-contain" draggable={false} />
+            <img
+              alt=""
+              src={areaPinIcon}
+              className="absolute inset-0 size-full object-contain"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
           </span>
         </span>
         <div aria-hidden className={`h-px w-full ${dividerClass}`} />
@@ -347,7 +397,14 @@ function NearbyPromptContent({
               isLight ? "border-[rgba(2,3,29,0.12)]" : "border-[rgba(247,246,242,0.3)]"
             }`}
           >
-            <img alt="" src={serenaPortrait} className="size-full object-cover" draggable={false} />
+            <img
+              alt=""
+              src={serenaPortrait}
+              className="size-full object-cover"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
           <span
             className={`relative z-[1] size-3 shrink-0 rounded-full border-2 border-[#0fc950] ${
@@ -358,7 +415,10 @@ function NearbyPromptContent({
         </div>
 
         <div className="min-w-0 flex-1 self-stretch">
-          <p className={`text-[18px] font-semibold leading-normal ${titleInk}`} style={{ fontFamily: FONT }}>
+          <p
+            className={`text-[18px] font-semibold leading-normal ${titleInk}`}
+            style={{ fontFamily: FONT }}
+          >
             Serena Min is nearby
           </p>
           <p className={`mt-1 text-[12px] leading-normal ${bodyInk}`} style={{ fontFamily: FONT }}>
@@ -367,7 +427,14 @@ function NearbyPromptContent({
         </div>
 
         <span className={`relative size-[22px] shrink-0 overflow-hidden pt-1 ${iconInk}`}>
-          <img alt="" src={raindropIcon} className="absolute inset-0 size-full object-contain" draggable={false} />
+          <img
+            alt=""
+            src={raindropIcon}
+            className="absolute inset-0 size-full object-contain"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
         </span>
       </div>
 
@@ -381,9 +448,23 @@ function NearbyPromptContent({
           whileTap={{ scale: 0.92 }}
         >
           <span className="relative size-6 -scale-y-100 rotate-180 overflow-hidden">
-            <img alt="" src={arrowRightIcon} className="absolute inset-0 size-full object-contain" draggable={false} />
+            <img
+              alt=""
+              src={arrowRightIcon}
+              className="absolute inset-0 size-full object-contain"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
             <span className="absolute inset-[29.17%_37.5%]">
-              <img alt="" src={arrowChevronIcon} className="size-full object-contain" draggable={false} />
+              <img
+                alt=""
+                src={arrowChevronIcon}
+                className="size-full object-contain"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+              />
             </span>
           </span>
         </motion.button>
@@ -420,15 +501,32 @@ function NearbyPromptContent({
           whileTap={{ scale: 0.92 }}
         >
           <span className="relative size-6 overflow-hidden">
-            <img alt="" src={arrowRightIcon} className="absolute inset-0 size-full object-contain" draggable={false} />
+            <img
+              alt=""
+              src={arrowRightIcon}
+              className="absolute inset-0 size-full object-contain"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
             <span className="absolute inset-[29.17%_37.5%]">
-              <img alt="" src={arrowChevronIcon} className="size-full object-contain" draggable={false} />
+              <img
+                alt=""
+                src={arrowChevronIcon}
+                className="size-full object-contain"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+              />
             </span>
           </span>
         </motion.button>
       </div>
 
-      <p className={`w-full text-center text-[14px] font-medium leading-normal ${promptInk}`} style={{ fontFamily: FONT }}>
+      <p
+        className={`w-full text-center text-[14px] font-medium leading-normal ${promptInk}`}
+        style={{ fontFamily: FONT }}
+      >
         Would you like to connect?
       </p>
 
@@ -467,7 +565,10 @@ function NearbyPromptContent({
         </motion.button>
       </div>
 
-      <p className={`w-full text-center text-[10px] font-medium leading-normal ${bodyInk}`} style={{ fontFamily: FONT }}>
+      <p
+        className={`w-full text-center text-[10px] font-medium leading-normal ${bodyInk}`}
+        style={{ fontFamily: FONT }}
+      >
         No exact location shared · double opt-in required
       </p>
     </>
@@ -487,7 +588,14 @@ function NearbyCategoryPills({ variant, isLight }: { variant: NearbyVariant; isL
             isLight ? "border-[#030426]" : "border-[#f7f6f2]"
           }`}
         >
-          <img alt="" src={lightbulbIcon} className={`size-4 object-contain ${isLight ? "brightness-0" : ""}`} draggable={false} />
+          <img
+            alt=""
+            src={lightbulbIcon}
+            className={`size-4 object-contain ${isLight ? "brightness-0" : ""}`}
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
           <span
             className={`text-[16px] leading-[1.4] ${isLight ? "text-[#02031d]" : "text-white"}`}
             style={{ fontFamily: FONT }}
@@ -500,7 +608,14 @@ function NearbyCategoryPills({ variant, isLight }: { variant: NearbyVariant; isL
             isLight ? "border-[#030426]" : "border-[#f7f6f2]"
           }`}
         >
-          <img alt="" src={brainIcon} className={`h-3 w-4 object-contain ${isLight ? "brightness-0" : ""}`} draggable={false} />
+          <img
+            alt=""
+            src={brainIcon}
+            className={`h-3 w-4 object-contain ${isLight ? "brightness-0" : ""}`}
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
           <span
             className={`text-[16px] leading-[1.4] ${isLight ? "text-[#02031d]" : "text-white"}`}
             style={{ fontFamily: FONT }}
@@ -554,6 +669,8 @@ function NearbyCategoryPills({ variant, isLight }: { variant: NearbyVariant; isL
             src={unlockIcon}
             className={`absolute inset-0 size-full object-contain ${isLight ? "brightness-0 invert" : ""}`}
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         </span>
         <span

@@ -54,13 +54,7 @@ export function FirstDesignComingSoon() {
   );
 }
 
-function GhostFrame({
-  className,
-  featured = false,
-}: {
-  className?: string;
-  featured?: boolean;
-}) {
+function GhostFrame({ className, featured = false }: { className?: string; featured?: boolean }) {
   return (
     <div
       className={`flex flex-col items-center justify-center overflow-hidden rounded-[28px] shadow-[0_18px_40px_rgba(0,0,0,0.35)] ${
@@ -86,9 +80,30 @@ function FirstDesignMark({ className }: { className: string }) {
   return (
     <div className={`relative overflow-hidden rounded-[22%] bg-[#292e38] ${className}`}>
       <div className="absolute inset-[15%_14%] flex flex-col justify-between">
-        <img alt="" src={logoRow1} className="h-[22%] w-full object-contain" draggable={false} />
-        <img alt="" src={logoRow2} className="h-[22%] w-full object-contain" draggable={false} />
-        <img alt="" src={logoRow3} className="h-[22%] w-full object-contain" draggable={false} />
+        <img
+          alt=""
+          src={logoRow1}
+          className="h-[22%] w-full object-contain"
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+        />
+        <img
+          alt=""
+          src={logoRow2}
+          className="h-[22%] w-full object-contain"
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+        />
+        <img
+          alt=""
+          src={logoRow3}
+          className="h-[22%] w-full object-contain"
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
     </div>
   );
@@ -120,6 +135,8 @@ function StatusIcon({ src, className }: { src: string; className: string }) {
         src={src}
         className="absolute inset-0 size-full max-w-none object-contain brightness-0 invert"
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
     </div>
   );

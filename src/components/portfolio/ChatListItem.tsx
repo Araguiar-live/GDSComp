@@ -28,16 +28,8 @@ type ChatListItemProps = {
 };
 
 export function ChatListItem({ conversation, onSelect }: ChatListItemProps) {
-  const {
-    id,
-    userName,
-    userAvatarUrl,
-    lastMessage,
-    timestamp,
-    unreadCount,
-    isOnline,
-    showFlame,
-  } = conversation;
+  const { id, userName, userAvatarUrl, lastMessage, timestamp, unreadCount, isOnline, showFlame } =
+    conversation;
 
   return (
     <button
@@ -52,6 +44,8 @@ export function ChatListItem({ conversation, onSelect }: ChatListItemProps) {
               alt=""
               src={userAvatarUrl}
               className="absolute inset-0 size-full object-cover object-center"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           {isOnline ? (
@@ -74,7 +68,13 @@ export function ChatListItem({ conversation, onSelect }: ChatListItemProps) {
             </span>
             {showFlame ? (
               <span className="relative size-4 shrink-0 overflow-hidden rounded-[2px]" aria-hidden>
-                <img alt="" src={fireIcon} className="absolute inset-0 size-full object-contain" />
+                <img
+                  alt=""
+                  src={fireIcon}
+                  className="absolute inset-0 size-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
               </span>
             ) : null}
           </div>
