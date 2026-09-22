@@ -275,48 +275,50 @@ function Index() {
       <InteractiveHero onEnterWork={() => commitToWork()} />
 
       <section id="work" className="relative z-10 scroll-mt-0">
-        {/* Wireframe chrome — sticky once committed to main body; hidden during onboarding */}
-        {workCommitted ? (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-50 h-0">
-          <div className="sticky top-6 flex items-start justify-between px-6 sm:px-8">
-            <div className="pointer-events-auto">
-              <ProjectDock onPlus={() => setSidebarOpen(true)} />
-            </div>
-            <div className="pointer-events-auto flex items-center gap-[4px] rounded-[16px] border border-zinc-200/40 bg-black/[0.08] p-[4px] shadow-lg shadow-black/5 backdrop-blur-md">
-              <button
-                type="button"
-                onClick={() => setSidebarOpen((v) => !v)}
-                aria-expanded={sidebarOpen}
-                aria-controls={SIDEBAR_PANEL_ID}
-                aria-label={sidebarOpen ? "Close profile menu" : "Open profile menu"}
-                className="group flex size-9 shrink-0 items-center justify-center rounded-[12px] bg-zinc-950 transition-all duration-200 hover:bg-white/50 hover:backdrop-blur-md active:scale-[0.97]"
-              >
-                <img
-                  src={girlPleaseLogo}
-                  alt=""
-                  aria-hidden
-                  className="h-[70%] w-[70%] object-contain invert transition-[filter] duration-200 group-hover:invert-0"
-                />
-              </button>
-              <a
-                href="mailto:A.rafaela.aguiar@outlook.com"
-                className="flex h-9 cursor-pointer items-center justify-center rounded-[12px] bg-[#E9582C] px-5 text-xs font-semibold tracking-tight text-zinc-950 transition-all duration-200 hover:scale-[1.02] hover:opacity-95 active:scale-[0.98]"
-              >
-                Contact Me
-              </a>
-            </div>
-          </div>
-        </div>
-        ) : null}
-
         {/*
-          Exact Figma auto-layout (530:151045 / 552:158232):
-          cells → browser plate UNDER pattern → overlay on top.
-          Closed 1262×847 · Open 1262×1522 · overlay scrolls when open.
-          Content column is ~26.5% wider than the original 1336px cap (→ 1690)
-          so the accordion reads larger without changing the stage frame aspect.
+          Sticky chrome is in-flow inside #work-body so it pins only while the
+          wireframe stage scrolls — it releases before the footer/marquee band.
         */}
-        <WireframeStage expanded={isExpanded}>
+        <div id="work-body" className="relative">
+          {workCommitted ? (
+            <div className="pointer-events-none sticky top-6 z-50 -mb-[148px] flex h-0 w-full items-start justify-between overflow-visible px-6 sm:px-8">
+              <div className="pointer-events-auto">
+                <ProjectDock onPlus={() => setSidebarOpen(true)} />
+              </div>
+              <div className="pointer-events-auto flex items-center gap-[4px] rounded-[16px] border border-zinc-200/40 bg-black/[0.08] p-[4px] shadow-lg shadow-black/5 backdrop-blur-md">
+                <button
+                  type="button"
+                  onClick={() => setSidebarOpen((v) => !v)}
+                  aria-expanded={sidebarOpen}
+                  aria-controls={SIDEBAR_PANEL_ID}
+                  aria-label={sidebarOpen ? "Close profile menu" : "Open profile menu"}
+                  className="group flex size-9 shrink-0 items-center justify-center rounded-[12px] bg-zinc-950 transition-all duration-200 hover:bg-white/50 hover:backdrop-blur-md active:scale-[0.97]"
+                >
+                  <img
+                    src={girlPleaseLogo}
+                    alt=""
+                    aria-hidden
+                    className="h-[70%] w-[70%] object-contain invert transition-[filter] duration-200 group-hover:invert-0"
+                  />
+                </button>
+                <a
+                  href="mailto:A.rafaela.aguiar@outlook.com"
+                  className="flex h-9 cursor-pointer items-center justify-center rounded-[12px] bg-[#E9582C] px-5 text-xs font-semibold tracking-tight text-zinc-950 transition-all duration-200 hover:scale-[1.02] hover:opacity-95 active:scale-[0.98]"
+                >
+                  Contact Me
+                </a>
+              </div>
+            </div>
+          ) : null}
+
+          {/*
+            Exact Figma auto-layout (530:151045 / 552:158232):
+            cells → browser plate UNDER pattern → overlay on top.
+            Closed 1262×847 · Open 1262×1522 · overlay scrolls when open.
+            Content column is ~26.5% wider than the original 1336px cap (→ 1690)
+            so the accordion reads larger without changing the stage frame aspect.
+          */}
+          <WireframeStage expanded={isExpanded}>
         <div
           className={
             isExpanded
@@ -369,7 +371,8 @@ function Index() {
             />
           </div>
         </div>
-        </WireframeStage>
+          </WireframeStage>
+        </div>
       </section>
 
       {/* Exactly 2px of #f3f4f6 between wireframe frame and marquee */}
