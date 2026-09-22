@@ -8,6 +8,9 @@ const DISTANCE_INTERVAL_MS = 32;
 const DISTANCE_MOVE_PX = 12;
 
 const HEADLINE = "Are you looking for me?";
+const SUBTITLE =
+  "Product Designer specializing in complex B2B platforms, design systems, and interactive prototypes.";
+const HERO_GRID_CELLS = 14 * 30;
 
 type Blob = {
   homeX: number;
@@ -347,7 +350,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   return (
     <section
       ref={containerRef}
-      className="interactive-hero relative flex h-[70vh] min-h-[520px] w-full flex-col overflow-hidden bg-[#090e15] text-white"
+      className="interactive-hero relative flex h-[70vh] min-h-[520px] w-full shrink-0 flex-col overflow-hidden bg-[#090e15] font-sans text-white"
       data-name="interactive-hero"
       style={
         {
@@ -359,6 +362,11 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         } as CSSProperties
       }
     >
+      <div aria-hidden className="interactive-hero__grid">
+        {Array.from({ length: HERO_GRID_CELLS }, (_, index) => (
+          <span key={index} />
+        ))}
+      </div>
       <canvas
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 z-[1]"
@@ -391,9 +399,14 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       </nav>
 
       <div className="interactive-hero__content relative z-10 mx-auto flex min-h-0 w-full max-w-[593px] flex-1 flex-col items-center justify-center gap-[42px] px-6 pb-16 pt-6 text-center sm:pb-12">
-        <h1 className="w-full text-[clamp(36px,6vw,56px)] font-normal leading-normal text-[rgba(255,255,255,0.6)]">
-          {HEADLINE}
-        </h1>
+        <div className="flex w-full flex-col items-center gap-5">
+          <h1 className="w-full text-[clamp(36px,6vw,56px)] font-normal leading-normal text-[rgba(255,255,255,0.6)]">
+            {HEADLINE}
+          </h1>
+          <p className="max-w-[34rem] text-balance text-[15px] font-normal leading-6 text-[rgba(255,255,255,0.6)] sm:text-base sm:leading-7">
+            {SUBTITLE}
+          </p>
+        </div>
 
         <button
           type="button"

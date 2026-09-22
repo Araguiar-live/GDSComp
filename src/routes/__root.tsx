@@ -78,9 +78,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Selected Work — Portfolio" },
-      { name: "description", content: "A single, fluidly scrolling portfolio of deliberate case studies in engineering and design." },
+      {
+        name: "description",
+        content:
+          "A single, fluidly scrolling portfolio of deliberate case studies in engineering and design.",
+      },
       { property: "og:title", content: "Selected Work — Portfolio" },
-      { property: "og:description", content: "A single, fluidly scrolling portfolio of deliberate case studies in engineering and design." },
+      {
+        property: "og:description",
+        content:
+          "A single, fluidly scrolling portfolio of deliberate case studies in engineering and design.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:image", content: "/logo.png" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -91,11 +99,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
+      {
+        rel: "preload",
+        href: "/fonts/inter-latin.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", sizes: "32x32" },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
