@@ -274,43 +274,42 @@ function Index() {
     <div className="portfolio-hero-grid relative text-zinc-900 font-sans antialiased overflow-x-hidden">
       <InteractiveHero onEnterWork={() => commitToWork()} />
 
-      <section id="work" className="relative z-10 scroll-mt-0">
-        {/*
-          Sticky chrome lives in #work-body — pins from wireframe through footer,
-          then releases once the full main band scrolls off screen.
-        */}
-        <div id="work-body" className="relative">
-          {workCommitted ? (
-            <div className="pointer-events-none sticky top-6 z-50 -mb-[148px] flex h-0 w-full items-start justify-between overflow-visible px-6 sm:px-8">
-              <div className="pointer-events-auto">
-                <ProjectDock onPlus={() => setSidebarOpen(true)} />
-              </div>
-              <div className="pointer-events-auto flex items-center gap-[4px] rounded-[16px] border border-zinc-200/40 bg-black/[0.08] p-[4px] shadow-lg shadow-black/5 backdrop-blur-md">
-                <button
-                  type="button"
-                  onClick={() => setSidebarOpen((v) => !v)}
-                  aria-expanded={sidebarOpen}
-                  aria-controls={SIDEBAR_PANEL_ID}
-                  aria-label={sidebarOpen ? "Close profile menu" : "Open profile menu"}
-                  className="group flex size-9 shrink-0 items-center justify-center rounded-[12px] bg-zinc-950 transition-all duration-200 hover:bg-white/50 hover:backdrop-blur-md active:scale-[0.97]"
-                >
-                  <img
-                    src={girlPleaseLogo}
-                    alt=""
-                    aria-hidden
-                    className="h-[70%] w-[70%] object-contain invert transition-[filter] duration-200 group-hover:invert-0"
-                  />
-                </button>
-                <a
-                  href="mailto:A.rafaela.aguiar@outlook.com"
-                  className="flex h-9 cursor-pointer items-center justify-center rounded-[12px] bg-[#E9582C] px-5 text-xs font-semibold tracking-tight text-zinc-950 transition-all duration-200 hover:scale-[1.02] hover:opacity-95 active:scale-[0.98]"
-                >
-                  Contact Me
-                </a>
-              </div>
-            </div>
-          ) : null}
+      {/* Fixed top chrome — same pattern as bottom dock; hidden until work is committed */}
+      <div
+        className={`pointer-events-none fixed inset-x-0 top-6 z-[110] flex items-start justify-between px-6 transition-opacity duration-300 sm:px-8 ${
+          workCommitted ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      >
+        <div className="pointer-events-auto">
+          <ProjectDock onPlus={() => setSidebarOpen(true)} />
+        </div>
+        <div className="pointer-events-auto flex items-center gap-[4px] rounded-[16px] border border-zinc-200/40 bg-black/[0.08] p-[4px] shadow-lg shadow-black/5 backdrop-blur-md">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen((v) => !v)}
+            aria-expanded={sidebarOpen}
+            aria-controls={SIDEBAR_PANEL_ID}
+            aria-label={sidebarOpen ? "Close profile menu" : "Open profile menu"}
+            className="group flex size-9 shrink-0 items-center justify-center rounded-[12px] bg-zinc-950 transition-all duration-200 hover:bg-white/50 hover:backdrop-blur-md active:scale-[0.97]"
+          >
+            <img
+              src={girlPleaseLogo}
+              alt=""
+              aria-hidden
+              className="h-[70%] w-[70%] object-contain invert transition-[filter] duration-200 group-hover:invert-0"
+            />
+          </button>
+          <a
+            href="mailto:A.rafaela.aguiar@outlook.com"
+            className="flex h-9 cursor-pointer items-center justify-center rounded-[12px] bg-[#E9582C] px-5 text-xs font-semibold tracking-tight text-zinc-950 transition-all duration-200 hover:scale-[1.02] hover:opacity-95 active:scale-[0.98]"
+          >
+            Contact Me
+          </a>
+        </div>
+      </div>
 
+      <section id="work" className="relative z-10 scroll-mt-0">
+        <div id="work-body" className="relative">
           {/*
             Exact Figma auto-layout (530:151045 / 552:158232):
             cells → browser plate UNDER pattern → overlay on top.
