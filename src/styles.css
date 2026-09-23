@@ -3179,6 +3179,21 @@
   transition: opacity 0.08s linear, transform 0.08s linear;
 }
 
+.interactive-hero__toggle-press {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+@media (hover: hover) {
+  .interactive-hero__toggle:hover .interactive-hero__toggle-rest {
+    opacity: 0;
+  }
+
+  .interactive-hero__toggle:hover .interactive-hero__toggle-press {
+    opacity: 1;
+  }
+}
+
 @keyframes interactive-hero-ambient {
   0%,
   100% {

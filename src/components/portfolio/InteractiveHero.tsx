@@ -27,6 +27,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollProgressRef = useRef(0);
   const [canvasReady, setCanvasReady] = useState(false);
+  const [toggleHover, setToggleHover] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -508,21 +509,28 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           type="button"
           onClick={scrollToWork}
           aria-label="Scroll to selected work"
-          className="interactive-hero__toggle group inline-flex h-[42px] shrink-0 cursor-pointer items-center transition-transform duration-300 active:scale-[0.94]"
+          className="interactive-hero__toggle relative z-20 inline-flex h-[42px] shrink-0 cursor-pointer items-center justify-center transition-transform duration-300 active:scale-[0.94]"
+          onMouseEnter={() => setToggleHover(true)}
+          onMouseLeave={() => setToggleHover(false)}
+          onFocus={() => setToggleHover(true)}
+          onBlur={() => setToggleHover(false)}
         >
-          <img
-            src={heroToggle}
-            alt=""
-            aria-hidden
-            className="h-[42px] w-[87px] max-w-none transition-opacity duration-200 group-hover:absolute group-hover:opacity-0"
-          />
-          <span
-            aria-hidden
-            className="hidden h-[42px] items-center gap-2 rounded-[64px] border border-[rgba(250,131,46,0.2)] bg-[rgba(255,81,38,0.4)] p-1 backdrop-blur-[4px] group-hover:inline-flex"
-          >
-            <img src={heroToggleKnob} alt="" className="size-8 shrink-0" />
-            <span className="pr-2 text-xs text-[#ff5126]">Press</span>
-          </span>
+          {toggleHover ? (
+            <span
+              aria-hidden
+              className="interactive-hero__toggle-press inline-flex h-[42px] items-center gap-2 rounded-[64px] border border-[rgba(250,131,46,0.2)] bg-[rgba(255,81,38,0.4)] p-1 backdrop-blur-[4px]"
+            >
+              <img src={heroToggleKnob} alt="" className="size-8 shrink-0" />
+              <span className="pr-2 text-xs text-[#ff5126]">Press</span>
+            </span>
+          ) : (
+            <img
+              src={heroToggle}
+              alt=""
+              aria-hidden
+              className="interactive-hero__toggle-rest h-[42px] w-[87px] max-w-none"
+            />
+          )}
         </button>
       </div>
     </section>
