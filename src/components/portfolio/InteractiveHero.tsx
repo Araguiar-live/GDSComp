@@ -5,7 +5,6 @@ import heroToggleKnob from "@/assets/portfolio/hero/toggle-knob-hover.svg";
 import {
   bandTilesToViewport,
   buildJengaBandTiles,
-  buildTileNeighbors,
   jengaScaleForViewport,
   type ViewportTile,
 } from "@/lib/hero-jenga-layout";
@@ -124,16 +123,29 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       let revealed = false;
 
       let tiles: ViewportTile[] = [];
-      let tileNeighbors: number[][] = [];
       let tileRadius = 12;
 
       const syncTilesFromLayout = () => {
         tiles = bandTilesToViewport(JENGA_BAND_TILES, width, height);
-        tileNeighbors = buildTileNeighbors(tiles);
         const unit = tiles.find((tile) => tile.w > 0 && tile.h > 0 && !tile.soft);
         if (unit) {
           tileRadius = Math.min(12, Math.min(unit.w, unit.h) * 0.14);
         }
+      };
+
+      const shiftedOverlap = (i: number, j: number, shifts: { x: number; y: number }[]) => {
+        const a = tiles[i];
+        const b = tiles[j];
+        const sa = shifts[i];
+        const sb = shifts[j];
+        if (!a || !b || !sa || !sb) return false;
+        const aL = a.x + sa.x;
+        const aT = a.y + sa.y;
+        const bL = b.x + sb.x;
+        const bT = b.y + sb.y;
+        const overlapX = Math.min(aL + a.w, bL + b.w) - Math.max(aL, bL);
+        const overlapY = Math.min(aT + a.h, bT + b.h) - Math.max(aT, bT);
+        return overlapX > 0 && overlapY > 0;
       };
 
       const drawMetaballs = () => {
@@ -183,11 +195,10 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
         if (tiles.length === 0) syncTilesFromLayout();
 
-        const scrollParallax = scroll * 22;
         const minGap = 1;
         const shifts = tiles.map((tile) => {
-          let shiftX = width ? (tile.cx / width - 0.5) * scrollParallax : 0;
-          let shiftY = height ? (tile.cy / height - 0.5) * scrollParallax * 0.55 : 0;
+          let shiftX = 0;
+          let shiftY = 0;
           let glow = 0;
           let dotDist = 0;
           if (!isMobile && cursor.active) {
@@ -274,20 +285,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         for (let pass = 0; pass < 6; pass++) {
           let hits = 0;
           for (let i = 0; i < tiles.length; i++) {
-            for (const j of tileNeighbors[i] ?? []) {
-              if (j <= i) continue;
-              const a = tiles[i];
-              const b = tiles[j];
-              const sa = shifts[i];
-              const sb = shifts[j];
-              if (!a || !b || !sa || !sb) continue;
-              const aL = a.x + sa.x;
-              const aT = a.y + sa.y;
-              const bL = b.x + sb.x;
-              const bT = b.y + sb.y;
-              const overlapX = Math.min(aL + a.w, bL + b.w) - Math.max(aL, bL);
-              const overlapY = Math.min(aT + a.h, bT + b.h) - Math.max(aT, bT);
-              if (overlapX <= 0 || overlapY <= 0) continue;
+            for (let j = i + 1; j < tiles.length; j++) {
+              if (!shiftedOverlap(i, j, shifts)) continue;
               separate(i, j);
               hits++;
             }
