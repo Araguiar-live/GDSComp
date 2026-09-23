@@ -3100,48 +3100,134 @@
 
 /* Cursor-following liquid refraction disc */
 .interactive-hero__liquid-lens {
-  width: min(320px, 42vw);
-  height: min(320px, 42vw);
+  width: min(380px, 48vw);
+  height: min(380px, 48vw);
   left: var(--hero-lens-x);
   top: var(--hero-lens-y);
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 38% 32%,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(140, 200, 255, 0.06) 28%,
-    rgba(255, 120, 80, 0.04) 52%,
-    transparent 72%
-  );
-  backdrop-filter: blur(calc(8px + var(--hero-cursor-blur))) saturate(160%) contrast(1.06);
-  -webkit-backdrop-filter: blur(calc(8px + var(--hero-cursor-blur))) saturate(160%) contrast(1.06);
-  mask-image: radial-gradient(circle, #000 0%, #000 38%, transparent 72%);
-  -webkit-mask-image: radial-gradient(circle, #000 0%, #000 38%, transparent 72%);
-  opacity: calc(0.35 + var(--hero-cursor-active) * 0.55);
-  mix-blend-mode: screen;
+  opacity: calc(0.42 + var(--hero-cursor-active) * 0.48);
   will-change: left, top, opacity;
 }
 
-.interactive-hero__frost {
-  backdrop-filter: blur(calc(18px + var(--hero-scroll) * 28px + var(--hero-cursor-blur) * 0.45));
-  -webkit-backdrop-filter: blur(calc(18px + var(--hero-scroll) * 28px + var(--hero-cursor-blur) * 0.45));
-  opacity: calc(1 - var(--hero-scroll) * 0.35);
+.interactive-hero__liquid-lens-glass {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 36% 30%,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(140, 200, 255, 0.05) 26%,
+    rgba(255, 120, 80, 0.035) 48%,
+    transparent 70%
+  );
+  backdrop-filter: blur(calc(12px + var(--hero-cursor-blur) * 0.85)) saturate(185%) contrast(1.1)
+    brightness(1.04);
+  -webkit-backdrop-filter: blur(calc(12px + var(--hero-cursor-blur) * 0.85)) saturate(185%)
+    contrast(1.1) brightness(1.04);
+  mask-image: radial-gradient(circle, #000 0%, #000 42%, transparent 78%);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, #000 42%, transparent 78%);
+  mix-blend-mode: soft-light;
+}
+
+.interactive-hero__liquid-lens-chroma {
+  position: absolute;
+  inset: -6%;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(
+    from 225deg at 50% 50%,
+    rgba(255, 88, 108, 0.42) 0deg,
+    rgba(255, 255, 255, 0.06) 72deg,
+    rgba(92, 148, 255, 0.38) 156deg,
+    rgba(255, 255, 255, 0.05) 240deg,
+    rgba(255, 88, 108, 0.42) 360deg
+  );
+  filter: blur(16px);
+  opacity: calc(0.22 + var(--hero-cursor-active) * 0.38);
+  mix-blend-mode: plus-lighter;
+  mask-image: radial-gradient(circle, transparent 48%, #000 62%, transparent 88%);
+  -webkit-mask-image: radial-gradient(circle, transparent 48%, #000 62%, transparent 88%);
+}
+
+.interactive-hero__frost-stack {
   transform: translate(var(--hero-frost-shift-x, 0px), var(--hero-frost-shift-y, 0px));
   transition: transform 0.14s ease-out;
-  -webkit-mask-image: radial-gradient(
-    ellipse 92% 82% at 50% 46%,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0.82) 38%,
-    rgba(0, 0, 0, 0.42) 62%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  opacity: calc(1 - var(--hero-scroll) * 0.35);
+}
+
+/* Base field blur — transparent tint so it reads optical, not foggy */
+.interactive-hero__frost-blur {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  backdrop-filter: blur(calc(14px + var(--hero-scroll) * 22px + var(--hero-cursor-blur) * 0.35))
+    saturate(172%) contrast(1.08) brightness(1.02);
+  -webkit-backdrop-filter: blur(calc(14px + var(--hero-scroll) * 22px + var(--hero-cursor-blur) * 0.35))
+    saturate(172%) contrast(1.08) brightness(1.02);
   mask-image: radial-gradient(
-    ellipse 92% 82% at 50% 46%,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0.82) 38%,
-    rgba(0, 0, 0, 0.42) 62%,
+    ellipse 88% 78% at 50% 44%,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.55) 42%,
+    rgba(0, 0, 0, 0.22) 68%,
     rgba(0, 0, 0, 0) 100%
   );
+  -webkit-mask-image: radial-gradient(
+    ellipse 88% 78% at 50% 44%,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.55) 42%,
+    rgba(0, 0, 0, 0.22) 68%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Second blur pass — deeper sample near the lens for depth */
+.interactive-hero__frost-depth {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  backdrop-filter: blur(calc(28px + var(--hero-cursor-blur) * 1.1)) saturate(195%) contrast(1.06);
+  -webkit-backdrop-filter: blur(calc(28px + var(--hero-cursor-blur) * 1.1)) saturate(195%) contrast(1.06);
+  opacity: calc(0.38 + var(--hero-cursor-active) * 0.42);
+  mask-image: radial-gradient(
+    circle at var(--hero-lens-x) var(--hero-lens-y),
+    rgba(0, 0, 0, 0.92) 0%,
+    rgba(0, 0, 0, 0.55) 28%,
+    rgba(0, 0, 0, 0.18) 46%,
+    transparent 62%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle at var(--hero-lens-x) var(--hero-lens-y),
+    rgba(0, 0, 0, 0.92) 0%,
+    rgba(0, 0, 0, 0.55) 28%,
+    rgba(0, 0, 0, 0.18) 46%,
+    transparent 62%
+  );
+}
+
+/* Chromatic dispersion in the background blur field */
+.interactive-hero__frost-chroma {
+  position: absolute;
+  left: var(--hero-lens-x);
+  top: var(--hero-lens-y);
+  width: min(440px, 56vw);
+  height: min(440px, 56vw);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  background: conic-gradient(
+    from 200deg at 50% 50%,
+    rgba(255, 96, 112, 0.28) 0deg,
+    rgba(255, 255, 255, 0.04) 80deg,
+    rgba(96, 156, 255, 0.26) 165deg,
+    rgba(255, 255, 255, 0.03) 250deg,
+    rgba(255, 96, 112, 0.28) 360deg
+  );
+  filter: blur(calc(22px + var(--hero-cursor-blur) * 0.5));
+  opacity: calc(0.18 + var(--hero-cursor-active) * 0.32);
+  mix-blend-mode: plus-lighter;
+  mask-image: radial-gradient(circle, transparent 36%, #000 52%, transparent 78%);
+  -webkit-mask-image: radial-gradient(circle, transparent 36%, #000 52%, transparent 78%);
 }
 
 .interactive-hero__mark {

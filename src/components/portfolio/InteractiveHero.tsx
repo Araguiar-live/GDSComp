@@ -149,12 +149,12 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
       const drawMetaballs = () => {
         ctx.save();
-        ctx.filter = "blur(28px)";
+        ctx.filter = "blur(22px)";
         ctx.globalCompositeOperation = "screen";
 
         blobs.forEach((blob) => {
           const gradient = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.r);
-          const alpha = isMobile ? 0.14 + Math.sin(pulse + blob.phase) * 0.04 : 0.22;
+          const alpha = isMobile ? 0.12 + Math.sin(pulse + blob.phase) * 0.035 : 0.17;
           gradient.addColorStop(0, `rgba(255,255,255,${alpha})`);
           gradient.addColorStop(0.55, `rgba(255,255,255,${alpha * 0.35})`);
           gradient.addColorStop(1, "rgba(255,255,255,0)");
@@ -181,7 +181,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
         let cursorBlur = 0;
         if (!isMobile && cursor.active) {
-          cursorBlur = 14;
+          cursorBlur = 22;
         }
         syncCursorVars(cursorBlur);
 
@@ -465,16 +465,17 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         style={{ opacity: canvasReady ? 1 : 0, transition: "opacity 0.5s ease" }}
       />
 
-      <div
-        aria-hidden
-        className="interactive-hero__liquid-lens pointer-events-none absolute z-[2]"
-      />
+      <div aria-hidden className="interactive-hero__liquid-lens pointer-events-none absolute z-[2]">
+        <div className="interactive-hero__liquid-lens-glass" />
+        <div className="interactive-hero__liquid-lens-chroma" />
+      </div>
 
-      {/* Figma 1769:208015 — full-frame progressive background blur */}
-      <div
-        aria-hidden
-        className="interactive-hero__frost pointer-events-none absolute inset-0 z-[3] bg-[rgba(255,255,255,0.03)] backdrop-blur-[18px]"
-      />
+      {/* Figma 1769:208015 — layered refraction blur (not flat frost) */}
+      <div aria-hidden className="interactive-hero__frost-stack pointer-events-none absolute inset-0 z-[3]">
+        <div className="interactive-hero__frost-blur" />
+        <div className="interactive-hero__frost-depth" />
+        <div className="interactive-hero__frost-chroma" />
+      </div>
 
       <nav className="relative z-10 flex w-full items-center justify-between px-9 pt-24 sm:pt-[139px]">
         <span
