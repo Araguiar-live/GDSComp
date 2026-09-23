@@ -481,13 +481,13 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         <span
           aria-hidden
           className="interactive-hero__mark shrink-0"
-          style={
-            {
-              maskImage: `url("${heroLogo}")`,
-              WebkitMaskImage: `url("${heroLogo}")`,
-            } as CSSProperties
-          }
-        />
+          style={{ "--hero-mark-mask": `url("${heroLogo}")` } as CSSProperties}
+        >
+          <span className="interactive-hero__mark-glass" />
+          <span className="interactive-hero__mark-lens" />
+          <span className="interactive-hero__mark-dispersion" />
+          <span className="interactive-hero__mark-rim" />
+        </span>
         <div className="text-right text-[rgba(255,255,255,0.6)]">
           <p className="text-base sm:text-[20px]">Ana.R Design</p>
           <p className="text-[11px] sm:text-[12px]">Product Designer</p>
