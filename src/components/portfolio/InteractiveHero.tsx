@@ -2,6 +2,7 @@ import { type CSSProperties, useEffect, useRef, useState } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
 import { HeroJengaGrid } from "@/components/portfolio/HeroJengaGrid";
+import { HERO_JENGA_BAND_H, HERO_JENGA_BAND_W } from "@/lib/hero-jenga";
 
 const HEADLINE = "Are you looking for me?";
 const SUBTITLE =
@@ -94,6 +95,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         syncBlobHomes();
         updateScrollProgress();
+        const jengaScale = Math.max(width / HERO_JENGA_BAND_W, height / HERO_JENGA_BAND_H);
+        container.style.setProperty("--hero-jenga-scale", String(jengaScale));
         measureTiles();
       };
 
@@ -448,7 +451,12 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       }
     >
       <div aria-hidden className="interactive-hero__grid">
-        <HeroJengaGrid />
+        <div
+          className="interactive-hero__jenga-stage"
+          style={{ width: HERO_JENGA_BAND_W, height: HERO_JENGA_BAND_H }}
+        >
+          <HeroJengaGrid />
+        </div>
       </div>
       <canvas
         ref={canvasRef}
