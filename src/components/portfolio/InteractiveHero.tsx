@@ -1,9 +1,16 @@
-import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
 import heroToggleKnob from "@/assets/portfolio/hero/toggle-knob-hover.svg";
-import { HeroJengaGrid } from "@/components/portfolio/HeroJengaGrid";
-import { HERO_JENGA_BAND_H, HERO_JENGA_BAND_W } from "@/lib/hero-jenga";
+import {
+  bandTilesToViewport,
+  buildJengaBandTiles,
+  buildTileNeighbors,
+  jengaScaleForViewport,
+  type ViewportTile,
+} from "@/lib/hero-jenga-layout";
+
+const JENGA_BAND_TILES = buildJengaBandTiles();
 
 const HEADLINE = "Are you looking for me?";
 const SUBTITLE =
@@ -28,16 +35,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const scrollProgressRef = useRef(0);
   const [canvasReady, setCanvasReady] = useState(false);
   const [toggleHover, setToggleHover] = useState(false);
-
-  useLayoutEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const w = el.clientWidth;
-    const h = el.clientHeight;
-    if (w < 1 || h < 1) return;
-    const jengaScale = Math.max(w / HERO_JENGA_BAND_W, h / HERO_JENGA_BAND_H);
-    el.style.setProperty("--hero-jenga-scale", String(jengaScale));
-  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -107,9 +104,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         syncBlobHomes();
         updateScrollProgress();
-        const jengaScale = Math.max(width / HERO_JENGA_BAND_W, height / HERO_JENGA_BAND_H);
-        container.style.setProperty("--hero-jenga-scale", String(jengaScale));
-        scheduleMeasureTiles();
+        container.style.setProperty("--hero-jenga-scale", String(jengaScaleForViewport(width, height)));
+        syncTilesFromLayout();
       };
 
       const onMove = (event: MouseEvent) => {
@@ -127,79 +123,17 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       let pulse = 0;
       let revealed = false;
 
-      type Tile = {
-        x: number;
-        y: number;
-        w: number;
-        h: number;
-        cx: number;
-        cy: number;
-        soft: boolean;
-      };
-      let tiles: Tile[] = [];
+      let tiles: ViewportTile[] = [];
       let tileNeighbors: number[][] = [];
       let tileRadius = 12;
 
-      const buildTileNeighbors = (next: Tile[]) => {
-        const neighbors = next.map(() => [] as number[]);
-        const gapSlack = 4;
-        for (let i = 0; i < next.length; i++) {
-          for (let j = i + 1; j < next.length; j++) {
-            const a = next[i];
-            const b = next[j];
-            if (!a || !b) continue;
-            const hOverlap = a.y < b.y + b.h - 0.5 && b.y < a.y + a.h - 0.5;
-            const vOverlap = a.x < b.x + b.w - 0.5 && b.x < a.x + a.w - 0.5;
-            const touchX =
-              hOverlap &&
-              (Math.abs(a.x + a.w - b.x) <= gapSlack || Math.abs(b.x + b.w - a.x) <= gapSlack);
-            const touchY =
-              vOverlap &&
-              (Math.abs(a.y + a.h - b.y) <= gapSlack || Math.abs(b.y + b.h - a.y) <= gapSlack);
-            if (touchX || touchY) {
-              neighbors[i].push(j);
-              neighbors[j].push(i);
-            }
-          }
+      const syncTilesFromLayout = () => {
+        tiles = bandTilesToViewport(JENGA_BAND_TILES, width, height);
+        tileNeighbors = buildTileNeighbors(tiles);
+        const unit = tiles.find((tile) => tile.w > 0 && tile.h > 0 && !tile.soft);
+        if (unit) {
+          tileRadius = Math.min(12, Math.min(unit.w, unit.h) * 0.14);
         }
-        return neighbors;
-      };
-
-      const measureTiles = () => {
-        const gridEl = container.querySelector<HTMLElement>(".interactive-hero__grid");
-        if (!gridEl) return;
-        void gridEl.offsetHeight;
-        const origin = canvas.getBoundingClientRect();
-        const next: Tile[] = [];
-        gridEl.querySelectorAll("[data-hero-tile]").forEach((span) => {
-          const el = span as HTMLElement;
-          const rect = el.getBoundingClientRect();
-          if (rect.width < 1 || rect.height < 1) return;
-          const x = rect.left - origin.left;
-          const y = rect.top - origin.top;
-          next.push({
-            x,
-            y,
-            w: rect.width,
-            h: rect.height,
-            cx: x + rect.width / 2,
-            cy: y + rect.height / 2,
-            soft: el.dataset.heroTileSoft === "true",
-          });
-        });
-        tiles = next;
-        tileNeighbors = buildTileNeighbors(next);
-        const first = gridEl.querySelector("[data-hero-tile]");
-        if (first) {
-          const radius = parseFloat(getComputedStyle(first).borderTopLeftRadius);
-          if (radius > 0) tileRadius = radius;
-        }
-      };
-
-      const scheduleMeasureTiles = () => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => measureTiles());
-        });
       };
 
       const drawMetaballs = () => {
@@ -247,7 +181,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         pulse += 0.014;
         const ambient = isMobile ? 0.04 + Math.sin(pulse) * 0.03 : 0;
 
-        if (tiles.length === 0) measureTiles();
+        if (tiles.length === 0) syncTilesFromLayout();
 
         const scrollParallax = scroll * 22;
         const minGap = 1;
@@ -268,7 +202,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           return { x: shiftX, y: shiftY, glow, dotDist };
         });
 
-        const clampShift = (tile: Tile, shift: { x: number; y: number }) => {
+        const clampShift = (tile: ViewportTile, shift: { x: number; y: number }) => {
           const minX = -tile.x;
           const minY = -tile.y;
           const maxX = Math.max(minX, width - tile.w - tile.x);
@@ -337,11 +271,23 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           sb[key] = nextB;
         };
 
-        for (let pass = 0; pass < 8; pass++) {
+        for (let pass = 0; pass < 6; pass++) {
           let hits = 0;
           for (let i = 0; i < tiles.length; i++) {
             for (const j of tileNeighbors[i] ?? []) {
               if (j <= i) continue;
+              const a = tiles[i];
+              const b = tiles[j];
+              const sa = shifts[i];
+              const sb = shifts[j];
+              if (!a || !b || !sa || !sb) continue;
+              const aL = a.x + sa.x;
+              const aT = a.y + sa.y;
+              const bL = b.x + sb.x;
+              const bT = b.y + sb.y;
+              const overlapX = Math.min(aL + a.w, bL + b.w) - Math.max(aL, bL);
+              const overlapY = Math.min(aT + a.h, bT + b.h) - Math.max(aT, bT);
+              if (overlapX <= 0 || overlapY <= 0) continue;
               separate(i, j);
               hits++;
             }
@@ -485,7 +431,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       ref={containerRef}
       className="interactive-hero relative flex h-dvh min-h-dvh w-full shrink-0 flex-col overflow-hidden bg-[#090e15] font-sans text-white"
       data-name="interactive-hero"
-      data-canvas-ready={canvasReady ? "true" : undefined}
       style={
         {
           "--hero-scroll": 0,
@@ -496,14 +441,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         } as CSSProperties
       }
     >
-      <div aria-hidden className="interactive-hero__grid">
-        <div
-          className="interactive-hero__jenga-stage"
-          style={{ width: HERO_JENGA_BAND_W, height: HERO_JENGA_BAND_H }}
-        >
-          <HeroJengaGrid />
-        </div>
-      </div>
+      <div aria-hidden className="interactive-hero__grid" />
       <canvas
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 z-[1]"
