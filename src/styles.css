@@ -3066,7 +3066,37 @@
   background-color: #090e15;
 }
 
-/* Hero jenga tiles render on canvas only (see hero-jenga-layout.ts). */
+.interactive-hero__jenga-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  flex-shrink: 0;
+  transform: translate(-50%, -50%) scale(var(--hero-jenga-scale, 1));
+  transform-origin: center center;
+}
+
+.interactive-hero__tile {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: min(12px, 18%);
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  will-change: transform;
+}
+
+.interactive-hero__tile--soft {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.interactive-hero__tile-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(209, 213, 219, 0.35);
+}
 
 /* Cursor-following liquid refraction disc */
 .interactive-hero__liquid-lens {

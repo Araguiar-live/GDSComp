@@ -1,16 +1,15 @@
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
 import heroToggleKnob from "@/assets/portfolio/hero/toggle-knob-hover.svg";
+import { HeroJengaGrid } from "@/components/portfolio/HeroJengaGrid";
+import { HERO_JENGA_BAND_H, HERO_JENGA_BAND_W } from "@/lib/hero-jenga";
+import { jengaScaleForViewport } from "@/lib/hero-jenga-layout";
 import {
-  bandTilesToViewport,
-  buildJengaBandTiles,
-  buildTileNeighbors,
-  jengaScaleForViewport,
-  type ViewportTile,
-} from "@/lib/hero-jenga-layout";
-
-const JENGA_BAND_TILES = buildJengaBandTiles();
+  buildHeroTileNeighbors,
+  solveHeroTileShifts,
+  type HeroTileRect,
+} from "@/lib/hero-tile-physics";
 
 const HEADLINE = "Are you looking for me?";
 const SUBTITLE =
@@ -33,8 +32,16 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollProgressRef = useRef(0);
-  const [canvasReady, setCanvasReady] = useState(false);
   const [toggleHover, setToggleHover] = useState(false);
+
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+    if (w < 1 || h < 1) return;
+    el.style.setProperty("--hero-jenga-scale", String(jengaScaleForViewport(w, h)));
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -105,7 +112,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         syncBlobHomes();
         updateScrollProgress();
         container.style.setProperty("--hero-jenga-scale", String(jengaScaleForViewport(width, height)));
-        syncTilesFromLayout();
+        scheduleMeasureDomTiles();
       };
 
       const onMove = (event: MouseEvent) => {
@@ -121,34 +128,44 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       };
 
       let pulse = 0;
-      let revealed = false;
 
-      let tiles: ViewportTile[] = [];
+      let tileEls: HTMLElement[] = [];
+      let tiles: HeroTileRect[] = [];
       let tileNeighbors: number[][] = [];
-      let tileRadius = 12;
 
-      const syncTilesFromLayout = () => {
-        tiles = bandTilesToViewport(JENGA_BAND_TILES, width, height);
-        tileNeighbors = buildTileNeighbors(tiles);
-        const unit = tiles.find((tile) => tile.w > 0 && tile.h > 0 && !tile.soft);
-        if (unit) {
-          tileRadius = Math.min(12, Math.min(unit.w, unit.h) * 0.14);
-        }
+      const measureDomTiles = () => {
+        container.querySelectorAll<HTMLElement>("[data-hero-tile]").forEach((el) => {
+          el.style.transform = "";
+          el.style.boxShadow = "";
+        });
+        void container.offsetHeight;
+        const origin = container.getBoundingClientRect();
+        const nextEls: HTMLElement[] = [];
+        const nextTiles: HeroTileRect[] = [];
+        container.querySelectorAll<HTMLElement>("[data-hero-tile]").forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.width < 1 || rect.height < 1) return;
+          const x = rect.left - origin.left;
+          const y = rect.top - origin.top;
+          nextEls.push(el);
+          nextTiles.push({
+            x,
+            y,
+            w: rect.width,
+            h: rect.height,
+            cx: x + rect.width / 2,
+            cy: y + rect.height / 2,
+          });
+        });
+        tileEls = nextEls;
+        tiles = nextTiles;
+        tileNeighbors = buildHeroTileNeighbors(tiles);
       };
 
-      const shiftedOverlap = (i: number, j: number, shifts: { x: number; y: number }[]) => {
-        const a = tiles[i];
-        const b = tiles[j];
-        const sa = shifts[i];
-        const sb = shifts[j];
-        if (!a || !b || !sa || !sb) return false;
-        const aL = a.x + sa.x;
-        const aT = a.y + sa.y;
-        const bL = b.x + sb.x;
-        const bT = b.y + sb.y;
-        const overlapX = Math.min(aL + a.w, bL + b.w) - Math.max(aL, bL);
-        const overlapY = Math.min(aT + a.h, bT + b.h) - Math.max(aT, bT);
-        return overlapX > 0 && overlapY > 0;
+      const scheduleMeasureDomTiles = () => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => measureDomTiles());
+        });
       };
 
       const drawMetaballs = () => {
@@ -190,166 +207,26 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         syncCursorVars(cursorBlur);
 
         ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = "#090e15";
-        ctx.fillRect(0, 0, width, height);
 
         pulse += 0.014;
-        const ambient = isMobile ? 0.04 + Math.sin(pulse) * 0.03 : 0;
 
-        if (tiles.length === 0) syncTilesFromLayout();
+        if (tiles.length === 0 || tileEls.length !== tiles.length) measureDomTiles();
 
-        const minGap = 1;
-        const shifts = tiles.map((tile) => {
-          let shiftX = 0;
-          let shiftY = 0;
-          let glow = 0;
-          let dotDist = 0;
-          if (!isMobile && cursor.active) {
-            const dist = Math.hypot(tile.cx - cursor.x, tile.cy - cursor.y);
-            glow = Math.max(0, 1 - dist / 240);
-            dotDist = dist;
-            const angle = Math.atan2(tile.cy - cursor.y, tile.cx - cursor.x);
-            const liquid = glow * 10;
-            shiftX += Math.cos(angle) * liquid;
-            shiftY += Math.sin(angle) * liquid;
-          }
-          return { x: shiftX, y: shiftY, glow, dotDist };
-        });
-
-        const clampShift = (tile: ViewportTile, shift: { x: number; y: number }) => {
-          const minX = -tile.x;
-          const minY = -tile.y;
-          const maxX = Math.max(minX, width - tile.w - tile.x);
-          const maxY = Math.max(minY, height - tile.h - tile.y);
-          shift.x = Math.min(Math.max(shift.x, minX), maxX);
-          shift.y = Math.min(Math.max(shift.y, minY), maxY);
-        };
-
-        for (let i = 0; i < tiles.length; i++) {
-          const tile = tiles[i];
-          const shift = shifts[i];
-          if (tile && shift) clampShift(tile, shift);
+        if (tiles.length > 0 && tileEls.length === tiles.length) {
+          const shifts = solveHeroTileShifts(tiles, tileNeighbors, width, height, cursor, isMobile);
+          tileEls.forEach((el, index) => {
+            const shift = shifts[index];
+            if (!shift) return;
+            el.style.transform = `translate(${shift.x}px, ${shift.y}px)`;
+            const glow = shift.glow;
+            el.style.boxShadow =
+              glow > 0.05 ? `inset 0 0 0 1px rgba(180, 210, 255, ${glow * 0.22})` : "";
+            el.style.backgroundColor =
+              el.classList.contains("interactive-hero__tile--soft")
+                ? `rgba(255,255,255,${0.05 + glow * 0.08})`
+                : `rgba(255,255,255,${0.1 + glow * 0.08})`;
+          });
         }
-
-        const separate = (i: number, j: number) => {
-          const a = tiles[i];
-          const b = tiles[j];
-          const sa = shifts[i];
-          const sb = shifts[j];
-          if (!a || !b || !sa || !sb) return;
-          const aL = a.x + sa.x;
-          const aT = a.y + sa.y;
-          const aR = aL + a.w;
-          const aB = aT + a.h;
-          const bL = b.x + sb.x;
-          const bT = b.y + sb.y;
-          const bR = bL + b.w;
-          const bB = bT + b.h;
-          const overlapX = Math.min(aR, bR) - Math.max(aL, bL);
-          const overlapY = Math.min(aB, bB) - Math.max(aT, bT);
-          const gapX = overlapX > 0 ? -overlapX : Math.max(aL, bL) - Math.min(aR, bR);
-          const gapY = overlapY > 0 ? -overlapY : Math.max(aT, bT) - Math.min(aB, bB);
-          if (gapX >= minGap || gapY >= minGap) return;
-
-          const needX = minGap - gapX;
-          const needY = minGap - gapY;
-          const key = needX <= needY ? "x" : "y";
-          const need = key === "x" ? needX : needY;
-          const aCenter = key === "x" ? (aL + aR) / 2 : (aT + aB) / 2;
-          const bCenter = key === "x" ? (bL + bR) / 2 : (bT + bB) / 2;
-          let sign = Math.sign(bCenter - aCenter);
-          if (sign === 0) {
-            sign = key === "x" ? (b.x >= a.x ? 1 : -1) : b.y >= a.y ? 1 : -1;
-          }
-
-          const minA = key === "x" ? -a.x : -a.y;
-          const maxA =
-            key === "x" ? Math.max(minA, width - a.w - a.x) : Math.max(minA, height - a.h - a.y);
-          const minB = key === "x" ? -b.x : -b.y;
-          const maxB =
-            key === "x" ? Math.max(minB, width - b.w - b.x) : Math.max(minB, height - b.h - b.y);
-          const beforeA = sa[key];
-          const beforeB = sb[key];
-          const clamp = (value: number, lo: number, hi: number) =>
-            Math.min(Math.max(value, lo), hi);
-          let nextA = clamp(beforeA - sign * (need / 2), minA, maxA);
-          let nextB = clamp(beforeB + sign * (need / 2), minB, maxB);
-          let short = need - sign * (nextB - beforeB - (nextA - beforeA));
-          if (short > 0) {
-            const pushedB = clamp(nextB + sign * short, minB, maxB);
-            short -= sign * (pushedB - nextB);
-            nextB = pushedB;
-          }
-          if (short > 0) nextA = clamp(nextA - sign * short, minA, maxA);
-          sa[key] = nextA;
-          sb[key] = nextB;
-        };
-
-        for (let pass = 0; pass < 3; pass++) {
-          for (let i = 0; i < tiles.length; i++) {
-            for (const j of tileNeighbors[i] ?? []) {
-              if (j <= i) continue;
-              if (!shiftedOverlap(i, j, shifts)) continue;
-              separate(i, j);
-            }
-          }
-          for (let i = 0; i < tiles.length; i++) {
-            const tile = tiles[i];
-            const shift = shifts[i];
-            if (tile && shift) clampShift(tile, shift);
-          }
-        }
-        for (let i = 0; i < tiles.length; i++) {
-          for (let j = i + 1; j < tiles.length; j++) {
-            if (!shiftedOverlap(i, j, shifts)) continue;
-            separate(i, j);
-          }
-        }
-        for (let i = 0; i < tiles.length; i++) {
-          const tile = tiles[i];
-          const shift = shifts[i];
-          if (tile && shift) clampShift(tile, shift);
-        }
-
-        tiles.forEach((tile, index) => {
-          const { w, h, cx, cy } = tile;
-          const shift = shifts[index];
-          const shiftX = shift?.x ?? 0;
-          const shiftY = shift?.y ?? 0;
-          const glow = shift?.glow ?? 0;
-          const dotDist = shift?.dotDist ?? 0;
-
-          const tileX = tile.x + shiftX;
-          const tileY = tile.y + shiftY;
-
-          const baseFill = tile.soft ? 0.05 : 0.1;
-          ctx.fillStyle = `rgba(255,255,255,${baseFill + glow * 0.08})`;
-          ctx.beginPath();
-          ctx.roundRect(tileX, tileY, w, h, tileRadius);
-          ctx.fill();
-
-          if (glow > 0.05) {
-            ctx.save();
-            ctx.strokeStyle = `rgba(180, 210, 255, ${glow * 0.22})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.roundRect(tileX + 0.5, tileY + 0.5, w - 1, h - 1, tileRadius);
-            ctx.stroke();
-            ctx.restore();
-          }
-
-          let dotAlpha = 0.2;
-          if (!isMobile && cursor.active) {
-            dotAlpha = 0.2 + Math.max(0, 1 - dotDist / 220) * 0.55;
-          } else if (isMobile) {
-            dotAlpha = 0.2 + ambient;
-          }
-
-          ctx.fillStyle = `rgba(209,213,219,${dotAlpha + glow * 0.15})`;
-          ctx.beginPath();
-          ctx.arc(cx + shiftX, cy + shiftY, 2, 0, Math.PI * 2);
-          ctx.fill();
-        });
 
         if (scroll > 0) {
           ctx.save();
@@ -379,12 +256,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         });
 
         drawMetaballs();
-        if (!revealed) {
-          revealed = true;
-          requestAnimationFrame(() => {
-            if (!cancelled) setCanvasReady(true);
-          });
-        }
         raf = requestAnimationFrame(draw);
       };
 
@@ -452,12 +323,18 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         } as CSSProperties
       }
     >
-      <div aria-hidden className="interactive-hero__grid" />
+      <div aria-hidden className="interactive-hero__grid">
+        <div
+          className="interactive-hero__jenga-stage"
+          style={{ width: HERO_JENGA_BAND_W, height: HERO_JENGA_BAND_H }}
+        >
+          <HeroJengaGrid />
+        </div>
+      </div>
       <canvas
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden
-        style={{ opacity: canvasReady ? 1 : 0, transition: "opacity 0.15s ease" }}
       />
 
       <div
