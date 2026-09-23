@@ -3055,26 +3055,27 @@
   flex-shrink: 0;
 }
 
-/* Static grid — 14 columns, 2px gaps (matches canvas before fade-in). */
+/* Jenga band — scaled to cover viewport (matches canvas before fade-in). */
 .interactive-hero__grid {
   position: absolute;
   inset: 0;
   z-index: 0;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(14, var(--hero-cell-w, minmax(0, 1fr)));
-  grid-template-rows: repeat(var(--hero-rows, 12), var(--hero-cell-h, minmax(0, 1fr)));
-  grid-auto-rows: 0;
-  align-content: start;
-  justify-content: start;
-  gap: 2px;
-  padding: 2px;
   overflow: hidden;
   pointer-events: none;
   background-color: #090e15;
 }
 
-.interactive-hero__grid > span {
+.interactive-hero__jenga-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  flex-shrink: 0;
+  transform: translate(-50%, -50%) scale(var(--hero-jenga-scale, 1));
+  transform-origin: center center;
+}
+
+.interactive-hero__tile {
   width: 100%;
   height: 100%;
   min-width: 0;
@@ -3085,14 +3086,13 @@
   position: relative;
 }
 
-.interactive-hero__grid > span::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
+.interactive-hero__tile--soft {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.interactive-hero__tile-dot {
   width: 4px;
   height: 4px;
-  margin: -2px 0 0 -2px;
   border-radius: 999px;
   background: rgba(209, 213, 219, 0.35);
 }

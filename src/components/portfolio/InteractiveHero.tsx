@@ -1,12 +1,13 @@
-import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
-import { heroGridLayout } from "@/lib/portfolio-grid";
+import heroToggleKnob from "@/assets/portfolio/hero/toggle-knob-hover.svg";
+import { HeroJengaGrid } from "@/components/portfolio/HeroJengaGrid";
+import { HERO_JENGA_BAND_H, HERO_JENGA_BAND_W } from "@/lib/hero-jenga";
 
 const HEADLINE = "Are you looking for me?";
 const SUBTITLE =
   "Product Designer specialising in complex B2B platforms, design systems, and interactive prototypes.";
-const HERO_GRID_CELLS = 14 * 48;
 
 type Blob = {
   homeX: number;
@@ -26,24 +27,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollProgressRef = useRef(0);
   const [canvasReady, setCanvasReady] = useState(false);
-
-  useLayoutEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const apply = () => {
-      const grid = el.querySelector<HTMLElement>(".interactive-hero__grid");
-      if (!grid) return;
-      const { rows, cols, cellW, cellH } = heroGridLayout(el.clientWidth, el.clientHeight);
-      grid.style.gridTemplateColumns = `repeat(${cols}, ${cellW}px)`;
-      grid.style.gridTemplateRows = `repeat(${rows}, ${cellH}px)`;
-    };
-
-    apply();
-    const observer = new ResizeObserver(apply);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -113,6 +96,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         syncBlobHomes();
         updateScrollProgress();
+        const jengaScale = Math.max(width / HERO_JENGA_BAND_W, height / HERO_JENGA_BAND_H);
+        container.style.setProperty("--hero-jenga-scale", String(jengaScale));
         measureTiles();
       };
 
@@ -138,13 +123,10 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       const measureTiles = () => {
         const gridEl = container.querySelector<HTMLElement>(".interactive-hero__grid");
         if (!gridEl) return;
-        const layout = heroGridLayout(container.clientWidth, container.clientHeight);
-        gridEl.style.gridTemplateColumns = `repeat(${layout.cols}, ${layout.cellW}px)`;
-        gridEl.style.gridTemplateRows = `repeat(${layout.rows}, ${layout.cellH}px)`;
         void gridEl.offsetHeight;
         const origin = canvas.getBoundingClientRect();
         const next: Tile[] = [];
-        gridEl.querySelectorAll("span").forEach((span) => {
+        gridEl.querySelectorAll("[data-hero-tile]").forEach((span) => {
           const rect = span.getBoundingClientRect();
           if (rect.width < 1 || rect.height < 1) return;
           const x = rect.left - origin.left;
@@ -159,7 +141,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           });
         });
         tiles = next;
-        const first = gridEl.querySelector("span");
+        const first = gridEl.querySelector("[data-hero-tile]");
         if (first) {
           const radius = parseFloat(getComputedStyle(first).borderTopLeftRadius);
           if (radius > 0) tileRadius = radius;
@@ -215,8 +197,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
         const scrollParallax = scroll * 22;
         const minGap = 1;
-        const cols = 14;
-        const rowCount = Math.floor(tiles.length / cols);
         const shifts = tiles.map((tile) => {
           let shiftX = width ? ((tile.cx / width - 0.5) * scrollParallax) / dpr : 0;
           let shiftY = height ? ((tile.cy / height - 0.5) * scrollParallax * 0.55) / dpr : 0;
@@ -303,23 +283,32 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           sb[key] = nextB;
         };
 
-        if (rowCount > 0 && tiles.length === rowCount * cols) {
-          for (let pass = 0; pass < 6; pass++) {
-            for (let row = 0; row < rowCount; row++) {
-              for (let col = 0; col < cols; col++) {
-                const i = row * cols + col;
-                if (col + 1 < cols) separate(i, i + 1);
-                if (row + 1 < rowCount) separate(i, i + cols);
-                if (col + 1 < cols && row + 1 < rowCount) separate(i, i + cols + 1);
-                if (col > 0 && row + 1 < rowCount) separate(i, i + cols - 1);
+        for (let pass = 0; pass < 6; pass++) {
+          let hits = 0;
+          for (let i = 0; i < tiles.length; i++) {
+            for (let j = i + 1; j < tiles.length; j++) {
+              const a = tiles[i];
+              const b = tiles[j];
+              if (!a || !b) continue;
+              const margin = minGap + 1;
+              if (
+                a.x + a.w + margin < b.x ||
+                b.x + b.w + margin < a.x ||
+                a.y + a.h + margin < b.y ||
+                b.y + b.h + margin < a.y
+              ) {
+                continue;
               }
-            }
-            for (let i = 0; i < tiles.length; i++) {
-              const tile = tiles[i];
-              const shift = shifts[i];
-              if (tile && shift) clampShift(tile, shift);
+              separate(i, j);
+              hits++;
             }
           }
+          for (let i = 0; i < tiles.length; i++) {
+            const tile = tiles[i];
+            const shift = shifts[i];
+            if (tile && shift) clampShift(tile, shift);
+          }
+          if (hits === 0) break;
         }
 
         tiles.forEach((tile, index) => {
@@ -463,9 +452,12 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       }
     >
       <div aria-hidden className="interactive-hero__grid">
-        {Array.from({ length: HERO_GRID_CELLS }, (_, index) => (
-          <span key={index} />
-        ))}
+        <div
+          className="interactive-hero__jenga-stage"
+          style={{ width: HERO_JENGA_BAND_W, height: HERO_JENGA_BAND_H }}
+        >
+          <HeroJengaGrid />
+        </div>
       </div>
       <canvas
         ref={canvasRef}
@@ -516,14 +508,21 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           type="button"
           onClick={scrollToWork}
           aria-label="Scroll to selected work"
-          className="interactive-hero__toggle relative h-[42px] w-[87px] shrink-0 cursor-pointer transition-transform duration-300 hover:scale-[1.06] active:scale-[0.94]"
+          className="interactive-hero__toggle group inline-flex h-[42px] shrink-0 cursor-pointer items-center transition-transform duration-300 active:scale-[0.94]"
         >
           <img
             src={heroToggle}
             alt=""
             aria-hidden
-            className="absolute inset-0 size-full max-w-none"
+            className="h-[42px] w-[87px] max-w-none transition-opacity duration-200 group-hover:absolute group-hover:opacity-0"
           />
+          <span
+            aria-hidden
+            className="hidden h-[42px] items-center gap-2 rounded-[64px] border border-[rgba(250,131,46,0.2)] bg-[rgba(255,81,38,0.4)] p-1 backdrop-blur-[4px] group-hover:inline-flex"
+          >
+            <img src={heroToggleKnob} alt="" className="size-8 shrink-0" />
+            <span className="pr-2 text-xs text-[#ff5126]">Press</span>
+          </span>
         </button>
       </div>
     </section>
