@@ -1,6 +1,8 @@
-/** Figma 1769:207580 — dark hero jenga (same topology as SiteWireframe JengaCellBand). */
-
-type Mark = "dot" | "none" | "house" | "modules" | "modules-tall" | "modules-l" | "modules-grid";
+import {
+  PortfolioJengaBand,
+  type JengaMark,
+  type JengaTileProps,
+} from "@/components/portfolio/PortfolioJengaBand";
 
 const CHIP = "bg-[rgba(209,213,219,0.2)]";
 
@@ -48,18 +50,11 @@ function ModulesLMark() {
   );
 }
 
-function HeroTile({
-  mark = "dot",
-  className = "",
-  soft = false,
-}: {
-  mark?: Mark;
-  className?: string;
-  soft?: boolean;
-}) {
+function HeroTile({ mark = "dot", className = "", soft = false }: JengaTileProps) {
   return (
     <div
       data-hero-tile
+      data-hero-tile-soft={soft ? "true" : undefined}
       className={`interactive-hero__tile flex items-center justify-center ${soft ? "interactive-hero__tile--soft" : ""} ${className}`}
     >
       {mark === "none" ? null : mark === "house" ? (
@@ -75,79 +70,12 @@ function HeroTile({
   );
 }
 
-function TileRow({
-  count,
-  marks,
-  className = "",
-}: {
-  count: number;
-  marks?: Partial<Record<number, Mark>>;
-  className?: string;
-}) {
-  return (
-    <div className={"flex min-h-0 w-full flex-1 gap-[2px] " + className}>
-      {Array.from({ length: count }, (_, i) => (
-        <HeroTile
-          key={i}
-          mark={marks?.[i] ?? "dot"}
-          className="min-h-0 min-w-0 flex-1 self-stretch"
-        />
-      ))}
-    </div>
-  );
-}
-
 export function HeroJengaGrid() {
   return (
-    <div className="interactive-hero__jenga flex h-full min-h-0 w-full flex-col gap-[2px] p-[2px]">
-      <div className="flex min-h-0 w-full flex-[88] gap-[2px]">
-        <TileRow count={14} marks={{ 0: "modules-l" }} />
-      </div>
-
-      <div className="flex min-h-0 w-full flex-[270] gap-[2px]">
-        <div className="flex min-h-0 min-w-0 flex-[1168] flex-col gap-[2px]">
-          <div className="flex min-h-0 flex-[178] gap-[2px]">
-            <div className="flex min-h-0 min-w-0 flex-[630] flex-col gap-[2px]">
-              <TileRow count={7} marks={{ 3: "modules-tall" }} />
-              <TileRow count={7} />
-            </div>
-            <HeroTile className="min-h-0 min-w-0 flex-[88] self-stretch" mark="none" soft />
-            <div className="flex min-h-0 min-w-0 flex-[446] flex-col gap-[2px]">
-              <TileRow count={5} marks={{ 3: "house" }} />
-              <TileRow count={5} />
-            </div>
-          </div>
-
-          <div className="flex min-h-0 flex-[90] gap-[2px]">
-            <div className="flex min-h-0 min-w-0 flex-[358] gap-[2px]">
-              <TileRow count={4} marks={{ 0: "none", 1: "none", 2: "none", 3: "none" }} />
-            </div>
-            <HeroTile className="min-h-0 min-w-0 flex-[178] self-stretch" mark="none" soft />
-            <div className="flex min-h-0 min-w-0 flex-[628] gap-[2px]">
-              <TileRow count={7} />
-            </div>
-          </div>
-        </div>
-
-        <HeroTile className="min-h-0 min-w-0 flex-[88] self-stretch" mark="none" soft />
-      </div>
-
-      <div className="flex min-h-0 w-full flex-[268] flex-col gap-[2px]">
-        <div className="flex min-h-0 flex-[88]">
-          <TileRow count={14} />
-        </div>
-        <div className="flex min-h-0 flex-[178] flex-col gap-[2px]">
-          <div className="flex min-h-0 flex-1 gap-[2px]">
-            <HeroTile className="min-h-0 min-w-0 flex-[178] self-stretch" mark="none" soft />
-            <div className="flex min-h-0 min-w-0 flex-[1078] gap-[2px]">
-              <TileRow count={12} marks={{ 1: "modules" }} />
-            </div>
-          </div>
-          <div className="flex min-h-0 flex-1">
-            <TileRow count={14} />
-          </div>
-        </div>
-      </div>
+    <div className="interactive-hero__jenga flex h-full min-h-0 w-full flex-col gap-[2px]">
+      <PortfolioJengaBand Tile={HeroTile} />
     </div>
   );
 }
+
+export type { JengaMark };

@@ -3097,6 +3097,10 @@
   background: rgba(209, 213, 219, 0.35);
 }
 
+.interactive-hero[data-canvas-ready="true"] .interactive-hero__tile {
+  visibility: hidden;
+}
+
 /* Cursor-following liquid refraction disc */
 .interactive-hero__liquid-lens {
   width: min(320px, 42vw);
@@ -3182,16 +3186,6 @@
 .interactive-hero__toggle-press {
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
-}
-
-@media (hover: hover) {
-  .interactive-hero__toggle:hover .interactive-hero__toggle-rest {
-    opacity: 0;
-  }
-
-  .interactive-hero__toggle:hover .interactive-hero__toggle-press {
-    opacity: 1;
-  }
 }
 
 @keyframes interactive-hero-ambient {
