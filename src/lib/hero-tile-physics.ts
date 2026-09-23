@@ -1,10 +1,18 @@
-export type HeroTileRect = {
+/** Figma jenga band — 14-column logical grid for occupancy (one tile id per cell at rest). */
+export const HERO_GRID_COLS = 14;
+export const HERO_GRID_ROWS = 8;
+
+export type HeroGridTile = {
+  id: number;
+  col: number;
+  row: number;
   x: number;
   y: number;
   w: number;
   h: number;
   cx: number;
   cy: number;
+  soft: boolean;
 };
 
 export type HeroTileShift = {
@@ -13,7 +21,124 @@ export type HeroTileShift = {
   glow: number;
 };
 
-export function buildHeroTileNeighbors(tiles: HeroTileRect[]): number[][] {
+export type HeroTileDrawCommand = {
+  id: number;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  cx: number;
+  cy: number;
+  soft: boolean;
+  glow: number;
+};
+
+function clamp(value: number, lo: number, hi: number) {
+  return Math.min(Math.max(value, lo), hi);
+}
+
+export function gridCellKey(col: number, row: number) {
+  return `${col},${row}`;
+}
+
+/** Assign stable grid coordinates from band-space layout (14 × 88px units). */
+export function attachGridCoordinates(
+  tiles: Omit<HeroGridTile, "col" | "row">[],
+  bandScale: number,
+): HeroGridTile[] {
+  const unit = 88 * bandScale + 2 * bandScale;
+  return tiles.map((tile) => {
+    const col = clamp(Math.floor((tile.x + tile.w * 0.5) / Math.max(unit, 1)), 0, HERO_GRID_COLS - 1);
+    const row = clamp(Math.floor((tile.y + tile.h * 0.5) / Math.max(unit, 1)), 0, HERO_GRID_ROWS - 1);
+    return { ...tile, col, row };
+  });
+}
+
+export class HeroTileGrid {
+  private tiles: HeroGridTile[] = [];
+  private neighbors: number[][] = [];
+  /** Rest-position occupancy: one tile id per cell. */
+  private cellOwner = new Map<string, number>();
+
+  reset(tiles: HeroGridTile[]) {
+    this.tiles = tiles;
+    this.neighbors = buildHeroTileNeighbors(tiles);
+    this.rebuildCellOwnership();
+  }
+
+  get size() {
+    return this.tiles.length;
+  }
+
+  getTiles() {
+    return this.tiles;
+  }
+
+  private rebuildCellOwnership() {
+    this.cellOwner.clear();
+    for (const tile of this.tiles) {
+      this.claimCell(tile.col, tile.row, tile.id);
+    }
+  }
+
+  private claimCell(col: number, row: number, tileId: number) {
+    const key = gridCellKey(col, row);
+    const existing = this.cellOwner.get(key);
+    if (existing !== undefined && existing !== tileId) {
+      return;
+    }
+    this.cellOwner.set(key, tileId);
+  }
+
+  solveShifts(
+    width: number,
+    height: number,
+    cursor: { x: number; y: number; active: boolean },
+    isMobile: boolean,
+  ): HeroTileShift[] {
+    return solveHeroTileShifts(this.tiles, this.neighbors, width, height, cursor, isMobile);
+  }
+
+  /** One draw command per tile id — no duplicate cells in a single frame. */
+  buildDrawCommands(shifts: HeroTileShift[]): HeroTileDrawCommand[] {
+    const seenIds = new Set<number>();
+    const seenCells = new Set<string>();
+    const commands: HeroTileDrawCommand[] = [];
+
+    for (let index = 0; index < this.tiles.length; index++) {
+      const tile = this.tiles[index];
+      const shift = shifts[index];
+      if (!tile || !shift) continue;
+      if (seenIds.has(tile.id)) continue;
+
+      const col = tile.col;
+      const row = tile.row;
+      const cell = gridCellKey(col, row);
+      const owner = this.cellOwner.get(cell);
+      if (owner !== undefined && owner !== tile.id) continue;
+      if (seenCells.has(cell)) continue;
+
+      seenIds.add(tile.id);
+      seenCells.add(cell);
+
+      commands.push({
+        id: tile.id,
+        x: tile.x + shift.x,
+        y: tile.y + shift.y,
+        w: tile.w,
+        h: tile.h,
+        cx: tile.cx + shift.x,
+        cy: tile.cy + shift.y,
+        soft: tile.soft,
+        glow: shift.glow,
+      });
+    }
+
+    return commands;
+  }
+}
+
+export function buildHeroTileNeighbors(tiles: Pick<HeroGridTile, "x" | "y" | "w" | "h">[]): number[][] {
   const neighbors = tiles.map(() => [] as number[]);
   const gapSlack = Math.max(3, tiles[0]?.w ? tiles[0].w * 0.06 : 4);
 
@@ -40,7 +165,7 @@ export function buildHeroTileNeighbors(tiles: HeroTileRect[]): number[][] {
 }
 
 export function solveHeroTileShifts(
-  tiles: HeroTileRect[],
+  tiles: Pick<HeroGridTile, "x" | "y" | "w" | "h" | "cx" | "cy">[],
   neighbors: number[][],
   width: number,
   height: number,
@@ -63,13 +188,13 @@ export function solveHeroTileShifts(
     return { x: shiftX, y: shiftY, glow };
   });
 
-  const clampShift = (tile: HeroTileRect, shift: HeroTileShift) => {
+  const clampShift = (tile: (typeof tiles)[number], shift: HeroTileShift) => {
     const minX = -tile.x;
     const minY = -tile.y;
     const maxX = Math.max(minX, width - tile.w - tile.x);
     const maxY = Math.max(minY, height - tile.h - tile.y);
-    shift.x = Math.min(Math.max(shift.x, minX), maxX);
-    shift.y = Math.min(Math.max(shift.y, minY), maxY);
+    shift.x = clamp(shift.x, minX, maxX);
+    shift.y = clamp(shift.y, minY, maxY);
   };
 
   for (let i = 0; i < tiles.length; i++) {
@@ -126,7 +251,6 @@ export function solveHeroTileShifts(
     const minB = key === "x" ? -b.x : -b.y;
     const maxB =
       key === "x" ? Math.max(minB, width - b.w - b.x) : Math.max(minB, height - b.h - b.y);
-    const clamp = (value: number, lo: number, hi: number) => Math.min(Math.max(value, lo), hi);
     const beforeA = sa[key];
     const beforeB = sb[key];
     let nextA = clamp(beforeA - sign * (need / 2), minA, maxA);
@@ -156,4 +280,41 @@ export function solveHeroTileShifts(
   }
 
   return shifts;
+}
+
+export function drawHeroTilesOnCanvas(
+  ctx: CanvasRenderingContext2D,
+  commands: HeroTileDrawCommand[],
+  tileRadius: number,
+  cursorActive: boolean,
+  isMobile: boolean,
+  ambient: number,
+) {
+  for (const cmd of commands) {
+    const baseFill = cmd.soft ? 0.05 : 0.1;
+    ctx.fillStyle = `rgba(255,255,255,${baseFill + cmd.glow * 0.08})`;
+    ctx.beginPath();
+    ctx.roundRect(cmd.x, cmd.y, cmd.w, cmd.h, tileRadius);
+    ctx.fill();
+
+    if (cmd.glow > 0.05) {
+      ctx.strokeStyle = `rgba(180, 210, 255, ${cmd.glow * 0.22})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(cmd.x + 0.5, cmd.y + 0.5, cmd.w - 1, cmd.h - 1, tileRadius);
+      ctx.stroke();
+    }
+
+    let dotAlpha = 0.2;
+    if (cursorActive && !isMobile) {
+      dotAlpha = 0.2 + cmd.glow * 0.55;
+    } else if (isMobile) {
+      dotAlpha = 0.2 + ambient;
+    }
+
+    ctx.fillStyle = `rgba(209,213,219,${dotAlpha + cmd.glow * 0.15})`;
+    ctx.beginPath();
+    ctx.arc(cmd.cx, cmd.cy, 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
 }

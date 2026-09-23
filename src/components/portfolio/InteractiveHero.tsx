@@ -6,9 +6,10 @@ import { HeroJengaGrid } from "@/components/portfolio/HeroJengaGrid";
 import { HERO_JENGA_BAND_H, HERO_JENGA_BAND_W } from "@/lib/hero-jenga";
 import { jengaScaleForViewport } from "@/lib/hero-jenga-layout";
 import {
-  buildHeroTileNeighbors,
-  solveHeroTileShifts,
-  type HeroTileRect,
+  attachGridCoordinates,
+  drawHeroTilesOnCanvas,
+  HeroTileGrid,
+  type HeroGridTile,
 } from "@/lib/hero-tile-physics";
 
 const HEADLINE = "Are you looking for me?";
@@ -32,6 +33,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollProgressRef = useRef(0);
+  const pointerRef = useRef({ x: -1000, y: -1000, active: false });
   const [toggleHover, setToggleHover] = useState(false);
 
   useLayoutEffect(() => {
@@ -54,7 +56,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     const setupFrame = requestAnimationFrame(() => {
       if (cancelled) return;
 
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext("2d", { alpha: true });
       if (!ctx) return;
 
       let raf = 0;
@@ -62,11 +64,13 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       let width = 0;
       let height = 0;
       let isMobile = window.innerWidth < 768;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const cursor = { x: -1000, y: -1000, active: false };
+      let dpr = Math.min(window.devicePixelRatio || 1, 2);
       let lensX = 0;
       let lensY = 0;
+      let pulse = 0;
+      let tileRadius = 12;
 
+      const tileGrid = new HeroTileGrid();
       const blobs: Blob[] = [
         { homeX: 0.08, homeY: 0.12, x: 0, y: 0, r: 92, phase: 0 },
         { homeX: 0.14, homeY: 0.07, x: 0, y: 0, r: 68, phase: 1.4 },
@@ -86,9 +90,12 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         container.style.setProperty("--hero-lens-x", `${lensX}px`);
         container.style.setProperty("--hero-lens-y", `${lensY}px`);
         container.style.setProperty("--hero-cursor-blur", `${blurPx}px`);
-        container.style.setProperty("--hero-cursor-active", cursor.active ? "1" : "0");
-        const frostShiftX = cursor.active ? (lensX / width - 0.5) * 14 : 0;
-        const frostShiftY = cursor.active ? (lensY / height - 0.5) * 10 : 0;
+        container.style.setProperty(
+          "--hero-cursor-active",
+          pointerRef.current.active ? "1" : "0",
+        );
+        const frostShiftX = pointerRef.current.active ? (lensX / width - 0.5) * 14 : 0;
+        const frostShiftY = pointerRef.current.active ? (lensY / height - 0.5) * 10 : 0;
         container.style.setProperty("--hero-frost-shift-x", `${frostShiftX}px`);
         container.style.setProperty("--hero-frost-shift-y", `${frostShiftY}px`);
       };
@@ -100,78 +107,87 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         container.style.setProperty("--hero-scroll", String(progress));
       };
 
-      const resize = () => {
-        isMobile = window.innerWidth < 768;
-        width = container.clientWidth;
-        height = container.clientHeight;
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
+      const clearCanvasBuffer = () => {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        syncBlobHomes();
-        updateScrollProgress();
-        container.style.setProperty("--hero-jenga-scale", String(jengaScaleForViewport(width, height)));
-        scheduleMeasureDomTiles();
       };
 
-      const onMove = (event: MouseEvent) => {
-        if (isMobile) return;
-        const rect = container.getBoundingClientRect();
-        cursor.x = event.clientX - rect.left;
-        cursor.y = event.clientY - rect.top;
-        cursor.active = true;
-      };
-
-      const onLeave = () => {
-        cursor.active = false;
-      };
-
-      let pulse = 0;
-
-      let tileEls: HTMLElement[] = [];
-      let tiles: HeroTileRect[] = [];
-      let tileNeighbors: number[][] = [];
-
-      const measureDomTiles = () => {
+      const measureLayoutTiles = () => {
         container.querySelectorAll<HTMLElement>("[data-hero-tile]").forEach((el) => {
           el.style.transform = "";
-          el.style.boxShadow = "";
         });
         void container.offsetHeight;
+
         const origin = container.getBoundingClientRect();
-        const nextEls: HTMLElement[] = [];
-        const nextTiles: HeroTileRect[] = [];
-        container.querySelectorAll<HTMLElement>("[data-hero-tile]").forEach((el) => {
+        const scale = jengaScaleForViewport(width, height);
+        const raw: Omit<HeroGridTile, "col" | "row">[] = [];
+
+        container.querySelectorAll<HTMLElement>("[data-hero-tile]").forEach((el, id) => {
           const rect = el.getBoundingClientRect();
           if (rect.width < 1 || rect.height < 1) return;
           const x = rect.left - origin.left;
           const y = rect.top - origin.top;
-          nextEls.push(el);
-          nextTiles.push({
+          raw.push({
+            id,
             x,
             y,
             w: rect.width,
             h: rect.height,
             cx: x + rect.width / 2,
             cy: y + rect.height / 2,
+            soft: el.dataset.heroTileSoft === "true",
           });
         });
-        tileEls = nextEls;
-        tiles = nextTiles;
-        tileNeighbors = buildHeroTileNeighbors(tiles);
+
+        const unit = raw.find((t) => !t.soft && t.w > 0);
+        if (unit) {
+          tileRadius = Math.min(12, Math.min(unit.w, unit.h) * 0.14);
+        }
+
+        tileGrid.reset(attachGridCoordinates(raw, scale));
       };
 
-      const scheduleMeasureDomTiles = () => {
+      const scheduleMeasure = () => {
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => measureDomTiles());
+          requestAnimationFrame(() => measureLayoutTiles());
         });
+      };
+
+      const resize = () => {
+        isMobile = window.innerWidth < 768;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = container.clientWidth;
+        height = container.clientHeight;
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        syncBlobHomes();
+        updateScrollProgress();
+        container.style.setProperty("--hero-jenga-scale", String(jengaScaleForViewport(width, height)));
+        scheduleMeasure();
+      };
+
+      const onPointerMove = (event: MouseEvent) => {
+        if (isMobile) return;
+        const rect = container.getBoundingClientRect();
+        pointerRef.current.x = event.clientX - rect.left;
+        pointerRef.current.y = event.clientY - rect.top;
+        pointerRef.current.active = true;
+      };
+
+      const onPointerLeave = () => {
+        pointerRef.current.active = false;
       };
 
       const drawMetaballs = () => {
         ctx.save();
-        ctx.filter = "blur(28px)";
         ctx.globalCompositeOperation = "screen";
+        ctx.filter = "blur(28px)";
 
         blobs.forEach((blob) => {
           const gradient = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.r);
@@ -185,65 +201,50 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           ctx.fill();
         });
 
+        ctx.filter = "none";
+        ctx.globalCompositeOperation = "source-over";
         ctx.restore();
       };
 
       const draw = () => {
         if (!loopActive) return;
-        const scroll = scrollProgressRef.current;
 
-        if (!isMobile && cursor.active) {
-          lensX += (cursor.x - lensX) * 0.18;
-          lensY += (cursor.y - lensY) * 0.18;
+        const scroll = scrollProgressRef.current;
+        const pointer = pointerRef.current;
+
+        if (!isMobile && pointer.active) {
+          lensX += (pointer.x - lensX) * 0.18;
+          lensY += (pointer.y - lensY) * 0.18;
         } else {
           lensX += (width * 0.5 - lensX) * 0.04;
           lensY += (height * 0.5 - lensY) * 0.04;
         }
 
-        let cursorBlur = 0;
-        if (!isMobile && cursor.active) {
-          cursorBlur = 14;
-        }
+        const cursorBlur = !isMobile && pointer.active ? 14 : 0;
         syncCursorVars(cursorBlur);
 
-        ctx.clearRect(0, 0, width, height);
+        clearCanvasBuffer();
+        ctx.fillStyle = "#090e15";
+        ctx.fillRect(0, 0, width, height);
 
         pulse += 0.014;
+        const ambient = isMobile ? 0.04 + Math.sin(pulse) * 0.03 : 0;
 
-        if (tiles.length === 0 || tileEls.length !== tiles.length) measureDomTiles();
+        if (tileGrid.size === 0) measureLayoutTiles();
 
-        if (tiles.length > 0 && tileEls.length === tiles.length) {
-          const shifts = solveHeroTileShifts(tiles, tileNeighbors, width, height, cursor, isMobile);
-          tileEls.forEach((el, index) => {
-            const shift = shifts[index];
-            if (!shift) return;
-            el.style.transform = `translate(${shift.x}px, ${shift.y}px)`;
-            const glow = shift.glow;
-            el.style.boxShadow =
-              glow > 0.05 ? `inset 0 0 0 1px rgba(180, 210, 255, ${glow * 0.22})` : "";
-            el.style.backgroundColor =
-              el.classList.contains("interactive-hero__tile--soft")
-                ? `rgba(255,255,255,${0.05 + glow * 0.08})`
-                : `rgba(255,255,255,${0.1 + glow * 0.08})`;
-          });
-        }
-
-        if (scroll > 0) {
-          ctx.save();
-          ctx.filter = `blur(${scroll * 4}px)`;
-          ctx.globalAlpha = 0.35;
-          ctx.fillStyle = "#090e15";
-          ctx.fillRect(0, 0, width, height);
-          ctx.restore();
+        if (tileGrid.size > 0) {
+          const shifts = tileGrid.solveShifts(width, height, pointer, isMobile);
+          const commands = tileGrid.buildDrawCommands(shifts);
+          drawHeroTilesOnCanvas(ctx, commands, tileRadius, pointer.active, isMobile, ambient);
         }
 
         blobs.forEach((blob) => {
           const homeX = blob.homeX * width;
           const homeY = blob.homeY * height;
 
-          if (!isMobile && cursor.active) {
-            const dx = cursor.x - blob.x;
-            const dy = cursor.y - blob.y;
+          if (!isMobile && pointer.active) {
+            const dx = pointer.x - blob.x;
+            const dy = pointer.y - blob.y;
             const dist = Math.hypot(dx, dy);
             const pull = Math.max(0, 1 - dist / 480) * 0.045;
             blob.x += dx * pull;
@@ -256,6 +257,18 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         });
 
         drawMetaballs();
+
+        if (scroll > 0) {
+          ctx.save();
+          ctx.filter = `blur(${scroll * 4}px)`;
+          ctx.globalAlpha = 0.35;
+          ctx.fillStyle = "#090e15";
+          ctx.fillRect(0, 0, width, height);
+          ctx.restore();
+          ctx.globalAlpha = 1;
+          ctx.filter = "none";
+        }
+
         raf = requestAnimationFrame(draw);
       };
 
@@ -270,30 +283,27 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         cancelAnimationFrame(raf);
       };
 
-      const onScroll = () => updateScrollProgress();
-
+      resize();
+      const ro = new ResizeObserver(resize);
+      ro.observe(container);
       const visibility = new IntersectionObserver(([entry]) => {
         if (entry?.isIntersecting) startLoop();
         else stopLoop();
       });
-
-      resize();
-      const ro = new ResizeObserver(resize);
-      ro.observe(container);
       visibility.observe(container);
       window.addEventListener("resize", resize);
-      window.addEventListener("scroll", onScroll, { passive: true });
-      container.addEventListener("mousemove", onMove);
-      container.addEventListener("mouseleave", onLeave);
+      window.addEventListener("scroll", updateScrollProgress, { passive: true });
+      container.addEventListener("mousemove", onPointerMove, { passive: true });
+      container.addEventListener("mouseleave", onPointerLeave);
 
       teardown = () => {
         stopLoop();
         visibility.disconnect();
         ro.disconnect();
         window.removeEventListener("resize", resize);
-        window.removeEventListener("scroll", onScroll);
-        container.removeEventListener("mousemove", onMove);
-        container.removeEventListener("mouseleave", onLeave);
+        window.removeEventListener("scroll", updateScrollProgress);
+        container.removeEventListener("mousemove", onPointerMove);
+        container.removeEventListener("mouseleave", onPointerLeave);
       };
     });
 
@@ -323,7 +333,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         } as CSSProperties
       }
     >
-      <div aria-hidden className="interactive-hero__grid">
+      <div aria-hidden className="interactive-hero__grid interactive-hero__grid--measure">
         <div
           className="interactive-hero__jenga-stage"
           style={{ width: HERO_JENGA_BAND_W, height: HERO_JENGA_BAND_H }}
@@ -331,18 +341,15 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           <HeroJengaGrid />
         </div>
       </div>
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none absolute inset-0 z-[1]"
-        aria-hidden
-      />
+      <div className="interactive-hero__canvas-wrap pointer-events-none absolute inset-0 z-[1]">
+        <canvas ref={canvasRef} className="interactive-hero__canvas" aria-hidden />
+      </div>
 
       <div
         aria-hidden
         className="interactive-hero__liquid-lens pointer-events-none absolute z-[2]"
       />
 
-      {/* Figma 1769:208015 — full-frame progressive background blur */}
       <div
         aria-hidden
         className="interactive-hero__frost pointer-events-none absolute inset-0 z-[3] bg-[rgba(255,255,255,0.03)] backdrop-blur-[18px]"
