@@ -5,6 +5,7 @@ import heroToggleKnob from "@/assets/portfolio/hero/toggle-knob-hover.svg";
 import {
   bandTilesToViewport,
   buildJengaBandTiles,
+  buildTileNeighbors,
   jengaScaleForViewport,
   type ViewportTile,
 } from "@/lib/hero-jenga-layout";
@@ -123,10 +124,12 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       let revealed = false;
 
       let tiles: ViewportTile[] = [];
+      let tileNeighbors: number[][] = [];
       let tileRadius = 12;
 
       const syncTilesFromLayout = () => {
         tiles = bandTilesToViewport(JENGA_BAND_TILES, width, height);
+        tileNeighbors = buildTileNeighbors(tiles);
         const unit = tiles.find((tile) => tile.w > 0 && tile.h > 0 && !tile.soft);
         if (unit) {
           tileRadius = Math.min(12, Math.min(unit.w, unit.h) * 0.14);
@@ -173,8 +176,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         const scroll = scrollProgressRef.current;
 
         if (!isMobile && cursor.active) {
-          lensX += (cursor.x - lensX) * 0.11;
-          lensY += (cursor.y - lensY) * 0.11;
+          lensX += (cursor.x - lensX) * 0.18;
+          lensY += (cursor.y - lensY) * 0.18;
         } else {
           lensX += (width * 0.5 - lensX) * 0.04;
           lensY += (height * 0.5 - lensY) * 0.04;
@@ -282,13 +285,12 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           sb[key] = nextB;
         };
 
-        for (let pass = 0; pass < 6; pass++) {
-          let hits = 0;
+        for (let pass = 0; pass < 3; pass++) {
           for (let i = 0; i < tiles.length; i++) {
-            for (let j = i + 1; j < tiles.length; j++) {
+            for (const j of tileNeighbors[i] ?? []) {
+              if (j <= i) continue;
               if (!shiftedOverlap(i, j, shifts)) continue;
               separate(i, j);
-              hits++;
             }
           }
           for (let i = 0; i < tiles.length; i++) {
@@ -296,7 +298,17 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
             const shift = shifts[i];
             if (tile && shift) clampShift(tile, shift);
           }
-          if (hits === 0) break;
+        }
+        for (let i = 0; i < tiles.length; i++) {
+          for (let j = i + 1; j < tiles.length; j++) {
+            if (!shiftedOverlap(i, j, shifts)) continue;
+            separate(i, j);
+          }
+        }
+        for (let i = 0; i < tiles.length; i++) {
+          const tile = tiles[i];
+          const shift = shifts[i];
+          if (tile && shift) clampShift(tile, shift);
         }
 
         tiles.forEach((tile, index) => {
@@ -445,7 +457,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden
-        style={{ opacity: canvasReady ? 1 : 0, transition: "opacity 0.5s ease" }}
+        style={{ opacity: canvasReady ? 1 : 0, transition: "opacity 0.15s ease" }}
       />
 
       <div

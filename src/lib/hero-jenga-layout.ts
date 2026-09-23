@@ -106,10 +106,7 @@ export function buildJengaBandTiles(): BandTileRect[] {
   return tiles;
 }
 
-/**
- * Match SiteWireframe JengaCellBand: scale from viewport width (1258 band),
- * then repeat the band vertically to fill the hero (same unit size as wireframe).
- */
+/** One Figma band, uniformly scaled to cover the hero (no vertical repeat). */
 export function bandTilesToViewport(
   bandTiles: BandTileRect[],
   viewportW: number,
@@ -117,33 +114,28 @@ export function bandTilesToViewport(
 ): ViewportTile[] {
   const pad = GRID_PAD;
   const innerW = Math.max(0, viewportW - pad * 2);
-  const scale = innerW / HERO_JENGA_BAND_W;
+  const innerH = Math.max(0, viewportH - pad * 2);
+  const scale = Math.max(innerW / HERO_JENGA_BAND_W, innerH / HERO_JENGA_BAND_H);
   const bandScreenW = HERO_JENGA_BAND_W * scale;
   const bandScreenH = HERO_JENGA_BAND_H * scale;
-  const offsetX = pad + (innerW - bandScreenW) / 2;
-  const bandStep = bandScreenH + JENGA_GAP * scale;
+  const offsetX = (viewportW - bandScreenW) / 2;
+  const offsetY = (viewportH - bandScreenH) / 2;
 
-  const tiles: ViewportTile[] = [];
-  let id = 0;
-  for (let bandTop = pad; bandTop < viewportH + bandScreenH; bandTop += bandStep) {
-    for (const tile of bandTiles) {
-      const x = offsetX + tile.x * scale;
-      const y = bandTop + tile.y * scale;
-      const w = tile.w * scale;
-      const h = tile.h * scale;
-      tiles.push({
-        ...tile,
-        id: id++,
-        x,
-        y,
-        w,
-        h,
-        cx: x + w / 2,
-        cy: y + h / 2,
-      });
-    }
-  }
-  return tiles;
+  return bandTiles.map((tile) => {
+    const x = offsetX + tile.x * scale;
+    const y = offsetY + tile.y * scale;
+    const w = tile.w * scale;
+    const h = tile.h * scale;
+    return {
+      ...tile,
+      x,
+      y,
+      w,
+      h,
+      cx: x + w / 2,
+      cy: y + h / 2,
+    };
+  });
 }
 
 export function buildTileNeighbors(tiles: ViewportTile[]): number[][] {
@@ -172,7 +164,8 @@ export function buildTileNeighbors(tiles: ViewportTile[]): number[][] {
   return neighbors;
 }
 
-export function jengaScaleForViewport(viewportW: number, _viewportH: number) {
+export function jengaScaleForViewport(viewportW: number, viewportH: number) {
   const innerW = Math.max(0, viewportW - GRID_PAD * 2);
-  return innerW / HERO_JENGA_BAND_W;
+  const innerH = Math.max(0, viewportH - GRID_PAD * 2);
+  return Math.max(innerW / HERO_JENGA_BAND_W, innerH / HERO_JENGA_BAND_H);
 }
