@@ -518,7 +518,7 @@ export function CrcleSignalHome({
                 {screen === "photo" ? (
                   <>
                     {signalActivated && !signalOff && !isIncognito && !mapBannerOpen ? (
-                      <div className="pointer-events-none absolute bottom-[34px] left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-xl bg-[rgba(255,255,255,0.1)] px-3 py-1">
+                      <div className="crcle-signal-live-pill pointer-events-none absolute bottom-[34px] left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-xl px-3 py-1">
                         <span className="relative flex size-2 shrink-0 items-center justify-center">
                           <span
                             aria-hidden

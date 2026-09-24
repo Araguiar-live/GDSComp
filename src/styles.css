@@ -1522,6 +1522,25 @@
   }
 }
 
+/* Signal Home photo — Figma 257:67512 */
+.crcle-signal-live-pill {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.crcle-phone--light .crcle-signal-live-pill {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.65) inset,
+    0 4px 10px rgba(2, 3, 29, 0.08);
+}
+
 .crcle-glass-btn--signal-live {
   background: linear-gradient(
     165deg,
