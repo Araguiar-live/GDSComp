@@ -645,16 +645,14 @@ export function SignalCard({
 
           <div className="flex w-full items-start justify-center gap-2">
             <span
-              className={`crcle-signal-card-time flex shrink-0 items-center rounded-[24px] p-2.5 ${
+              className={`crcle-signal-card-time flex size-[46px] shrink-0 items-center justify-center rounded-[24px] ${
                 isLight && !isSent ? "border border-[rgba(0,0,0,0.25)]" : ""
               }`}
             >
               <img
                 alt=""
                 src={timeGlyph.icon}
-                className={`size-6 max-w-none object-contain ${
-                  signal.timeOfDay === "evening" ? "-translate-x-0.5 -translate-y-px" : ""
-                }`}
+                className="size-6 max-w-none object-contain object-center"
                 draggable={false}
                 loading="lazy"
                 decoding="async"
