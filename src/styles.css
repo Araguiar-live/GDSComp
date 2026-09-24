@@ -1833,8 +1833,41 @@
   overflow: hidden;
 }
 
-.crcle-signal-card--received {
-  background: rgba(2, 3, 29, 0.4);
+.crcle-signal-card--received:not(.crcle-signal-card--received-light) {
+  isolation: isolate;
+  background: linear-gradient(
+    168deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(2, 3, 29, 0.32) 42%,
+    rgba(2, 3, 29, 0.26) 100%
+  );
+  backdrop-filter: blur(20px) saturate(165%);
+  -webkit-backdrop-filter: blur(20px) saturate(165%);
+  border: 1px solid rgba(247, 246, 242, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.crcle-signal-card--received:not(.crcle-signal-card--received-light)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.06) 32%,
+    transparent 58%
+  );
+  opacity: 0.65;
+}
+
+.crcle-signal-card--received:not(.crcle-signal-card--received-light) > * {
+  position: relative;
+  z-index: 1;
 }
 
 .crcle-signal-card--sent {
@@ -1931,7 +1964,13 @@
 }
 
 .crcle-signal-card:hover.crcle-signal-card--received:not(.crcle-signal-card--received-light) {
-  background: rgba(2, 3, 29, 0.48);
+  background: linear-gradient(
+    168deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(2, 3, 29, 0.36) 42%,
+    rgba(2, 3, 29, 0.3) 100%
+  );
+  border-color: rgba(247, 246, 242, 0.22);
 }
 
 .crcle-signal-card--received-light:hover {
