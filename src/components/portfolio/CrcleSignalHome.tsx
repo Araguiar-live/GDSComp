@@ -449,8 +449,10 @@ export function CrcleSignalHome({
 
               {screen === "photo" ? (
                 <div
-                  className={`pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 flex-col gap-1.5 ${
-                    signalActivated ? "z-[45]" : "z-[1]"
+                  className={`pointer-events-none absolute left-3 flex flex-col gap-1.5 ${
+                    signalActivated
+                      ? "top-[40%] z-[25]"
+                      : "top-1/2 z-[1] -translate-y-1/2"
                   }`}
                 >
                   <div className="pointer-events-auto">
@@ -494,7 +496,6 @@ export function CrcleSignalHome({
               <AnimatePresence>
                 {screen === "photo" && signalActivated ? (
                   <SignalCompleteSheet
-                    backdropImage={dropPhoto}
                     onGoToRecommendations={() => {
                       if (!signalOff) onGoToRadar?.();
                     }}
@@ -507,7 +508,7 @@ export function CrcleSignalHome({
 
               <div
                 className={`relative mt-auto flex w-full items-end justify-between ${
-                  screen === "photo" && signalActivated ? "z-[45]" : "z-[1]"
+                  screen === "photo" && signalActivated ? "z-[50]" : "z-[1]"
                 } ${
                   screen === "photo" && (signalOff || isIncognito || mapBannerOpen)
                     ? "pb-[88px]"
@@ -1335,15 +1336,13 @@ function buildSignalKeyframes(barIndex: number, frames: readonly [number, number
   return { heights, times, duration: total };
 }
 
-/** Figma 257:67520 — compact glass card at top of photo (same frost stack as SignalTuneDrawer). */
+/** Figma 257:67520 — glass card inset 11px from photo frame; samples live photo via backdrop-filter. */
 function SignalCompleteSheet({
-  backdropImage,
   onGoToRecommendations,
   onGoToProfile,
   onClose,
   recommendationsDisabled = false,
 }: {
-  backdropImage?: string;
   onGoToRecommendations: () => void;
   onGoToProfile: () => void;
   onClose: () => void;
@@ -1355,7 +1354,7 @@ function SignalCompleteSheet({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.24, ease: EASE }}
-      className="absolute inset-0 z-[35] flex flex-col items-center justify-start overflow-hidden rounded-[28px]"
+      className="absolute inset-0 z-[50] overflow-hidden rounded-[28px]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="signal-complete-title"
@@ -1371,21 +1370,8 @@ function SignalCompleteSheet({
         animate={{ y: 0 }}
         exit={{ y: "-108%" }}
         transition={{ duration: 0.34, ease: EASE }}
-        className="crcle-signal-complete-sheet pointer-events-auto relative z-[1] mt-[11px] w-[calc(100%-22px)] max-w-[402px] shrink-0 overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
+        className="crcle-signal-complete-sheet crcle-signal-complete-sheet--framed pointer-events-auto absolute inset-x-[11px] top-[11px] z-[2] overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
       >
-        {backdropImage ? (
-          <div className="crcle-tune-frost crcle-tune-frost--dark" aria-hidden>
-            <img
-              alt=""
-              src={backdropImage}
-              className="absolute left-1/2 top-0 h-[240%] w-[240%] max-w-none -translate-x-1/2 -translate-y-[18%] object-cover"
-              draggable={false}
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="absolute inset-0 bg-[rgba(2,2,23,0.3)] backdrop-blur-[6px] [-webkit-backdrop-filter:blur(6px)]" />
-          </div>
-        ) : null}
         <div className="relative z-[1] px-4 pb-[9px] pt-9">
           <div className="flex flex-col gap-2">
             <p
