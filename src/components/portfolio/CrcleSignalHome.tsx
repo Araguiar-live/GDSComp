@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useState, type ReactNode } from "react";
+import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import handleIcon from "@/assets/crcle/area/handle.svg";
 import batteryIcon from "@/assets/crcle/battery.svg";
 import cellularIcon from "@/assets/crcle/cellular.svg";
@@ -95,6 +95,39 @@ export function CrcleSignalHome({
   /** On-map footer styling only while the confirmation banner is visible — not the default photo state. */
   const onMapFooter = mapBannerOpen && screen === "photo" && !isIncognito && !signalOff;
 
+  const phoneRef = useRef<HTMLDivElement>(null);
+  const photoRef = useRef<HTMLDivElement>(null);
+  const [sheetAnchor, setSheetAnchor] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
+  const measureSheet = useCallback(() => {
+    const phone = phoneRef.current;
+    const photo = photoRef.current;
+    if (!phone || !photo) return;
+    const phoneBox = phone.getBoundingClientRect();
+    const photoBox = photo.getBoundingClientRect();
+    setSheetAnchor({
+      top: photoBox.top - phoneBox.top,
+      left: photoBox.left - phoneBox.left,
+      width: photoBox.width,
+      height: photoBox.height,
+    });
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!signalActivated) {
+      setSheetAnchor(null);
+      return;
+    }
+    measureSheet();
+    window.addEventListener("resize", measureSheet);
+    return () => window.removeEventListener("resize", measureSheet);
+  }, [signalActivated, measureSheet, screen, light]);
+
   const dismissOnboarding = useCallback(() => {
     setOnboardingOpen(false);
   }, []);
@@ -153,7 +186,10 @@ export function CrcleSignalHome({
           ) : undefined
         }
       >
-        <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]">
+        <div
+          ref={phoneRef}
+          className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#010211] transition-colors duration-300 [.crcle-phone--light_&]:bg-[var(--crcle-bg)]"
+        >
           <SignalTuneDrawer
             open={tuneOpen}
             onClose={() => setTuneOpen(false)}
@@ -272,6 +308,7 @@ export function CrcleSignalHome({
 
           <div className="relative mt-[25px] flex min-h-0 w-full flex-1 flex-col items-center gap-[18px] px-3 pb-[25px]">
             <div
+              ref={photoRef}
               className={`relative flex min-h-0 w-full flex-1 flex-col overflow-hidden p-3 transition-colors duration-300 ${
                 screen === "photo"
                   ? "rounded-[28px] border border-[#f7f6f2]"
@@ -495,14 +532,15 @@ export function CrcleSignalHome({
 
               <AnimatePresence>
                 {screen === "photo" && signalActivated ? (
-                  <SignalCompleteSheet
-                    backdropImage={dropPhoto}
-                    onGoToRecommendations={() => {
-                      if (!signalOff) onGoToRadar?.();
-                    }}
-                    onGoToProfile={() => onGoToProfile?.()}
-                    onClose={() => setSignalActivated(false)}
-                    recommendationsDisabled={signalOff}
+                  <motion.button
+                    type="button"
+                    aria-label="Dismiss"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.24, ease: EASE }}
+                    className="absolute inset-0 z-[40] rounded-[28px] bg-[rgba(2,3,29,0.12)]"
+                    onClick={() => setSignalActivated(false)}
                   />
                 ) : null}
               </AnimatePresence>
@@ -591,6 +629,20 @@ export function CrcleSignalHome({
               ) : null}
             </AnimatePresence>
           </div>
+          <AnimatePresence>
+            {screen === "photo" && signalActivated && sheetAnchor ? (
+              <SignalCompleteSheet
+                key="signal-complete"
+                anchor={sheetAnchor}
+                backdropImage={dropPhoto}
+                onGoToRecommendations={() => {
+                  if (!signalOff) onGoToRadar?.();
+                }}
+                onGoToProfile={() => onGoToProfile?.()}
+                recommendationsDisabled={signalOff}
+              />
+            ) : null}
+          </AnimatePresence>
         </div>
       </CrclePhoneFrame>
     </div>
@@ -1337,57 +1389,58 @@ function buildSignalKeyframes(barIndex: number, frames: readonly [number, number
   return { heights, times, duration: total };
 }
 
-/** Figma 257:67520 — glass card inset 11px from photo frame; samples live photo via backdrop-filter. */
+/** Figma 257:67520 — rests 11px inside the photo; slides in from the top of the phone screen. */
 function SignalCompleteSheet({
+  anchor,
   backdropImage,
   onGoToRecommendations,
   onGoToProfile,
-  onClose,
   recommendationsDisabled = false,
 }: {
+  anchor: { top: number; left: number; width: number; height: number };
   backdropImage?: string;
   onGoToRecommendations: () => void;
   onGoToProfile: () => void;
-  onClose: () => void;
   recommendationsDisabled?: boolean;
 }) {
+  const inset = 11;
+  const offscreen = `calc(-100% - ${anchor.top + inset}px)`;
+
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.24, ease: EASE }}
-      className="absolute inset-0 z-[50] overflow-hidden rounded-[28px] [container-type:size]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="signal-complete-title"
+      initial={{ y: offscreen }}
+      animate={{ y: 0 }}
+      exit={{ y: offscreen }}
+      transition={{ duration: 0.42, ease: EASE }}
+      className="crcle-signal-complete-sheet crcle-signal-complete-sheet--framed pointer-events-auto absolute z-[60] overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
+      style={{
+        top: anchor.top + inset,
+        left: anchor.left + inset,
+        width: Math.max(0, anchor.width - inset * 2),
+      }}
     >
-      <button
-        type="button"
-        aria-label="Dismiss"
-        className="absolute inset-0 bg-[rgba(2,3,29,0.12)]"
-        onClick={onClose}
-      />
-      <motion.div
-        initial={{ y: "-108%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "-108%" }}
-        transition={{ duration: 0.34, ease: EASE }}
-        className="crcle-signal-complete-sheet crcle-signal-complete-sheet--framed pointer-events-auto absolute inset-x-[11px] top-[11px] z-[2] overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
-      >
-        {backdropImage ? (
-          <div className="pointer-events-none absolute inset-0" aria-hidden>
-            <img
-              alt=""
-              src={backdropImage}
-              className="absolute left-[-11px] top-[-11px] h-[100cqh] w-[100cqw] max-w-none scale-110 object-cover blur-[8px]"
-              draggable={false}
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="absolute inset-0 bg-[rgba(2,2,23,0.3)]" />
-          </div>
-        ) : null}
+      {backdropImage ? (
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <img
+            alt=""
+            src={backdropImage}
+            className="absolute max-w-none scale-110 object-cover blur-[8px]"
+            style={{
+              left: -inset,
+              top: -inset,
+              width: anchor.width,
+              height: anchor.height,
+            }}
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="absolute inset-0 bg-[rgba(2,2,23,0.3)]" />
+        </div>
+      ) : null}
         <div className="relative z-[1] px-4 pb-[9px] pt-9">
           <div className="flex flex-col gap-2">
             <p
@@ -1439,7 +1492,6 @@ function SignalCompleteSheet({
             decoding="async"
           />
         </div>
-      </motion.div>
     </motion.div>
   );
 }
