@@ -1875,9 +1875,11 @@
   border-radius: 36px 36px 4px 36px;
 }
 
+/* Figma 769:204963 — received light: hairline frame, no fill */
 .crcle-signal-card--received-light {
   background: transparent;
   border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: none;
 }
 
 .crcle-signal-card-prompt {
@@ -1889,7 +1891,7 @@
 }
 
 .crcle-signal-card--received-light .crcle-signal-card-prompt {
-  color: #02031d;
+  color: #000;
 }
 
 .crcle-signal-card-icon img,
@@ -1933,20 +1935,30 @@
 }
 
 .crcle-signal-card--received-light .crcle-signal-card-venue {
+  gap: 6px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.25);
+  padding: 4px 4px 4px 12px;
 }
 
 .crcle-signal-card--received-light .crcle-signal-card-venue-text {
-  color: #02031d;
+  color: #000;
 }
 
-/* Figma 769:204963 — plus/arrow control on received light card */
+.crcle-signal-card--received-light .crcle-signal-card-time {
+  padding: 10px;
+}
+
+/* Figma 769:204963 — plus control (36px, 24px radius) */
 .crcle-signal-card--received-light .crcle-signal-card-plus.crcle-glass-btn {
+  width: 36px;
+  height: 36px;
+  padding: 10px;
+  border-radius: 24px;
   background: transparent;
   border: 1px solid rgba(2, 3, 29, 0.4);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   box-shadow: none;
 }
 
@@ -1960,6 +1972,8 @@
 }
 
 .crcle-signal-card--received-light .crcle-signal-card-plus.crcle-glass-btn img {
+  width: 20px;
+  height: 20px;
   filter: brightness(0);
 }
 
@@ -1974,7 +1988,8 @@
 }
 
 .crcle-signal-card--received-light:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.25);
 }
 
 /* Radar portrait card — soft gradient rim that blends into dark chrome */

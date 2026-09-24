@@ -1452,7 +1452,7 @@ function ChatThread({
   const messages = conversation?.messages ?? [];
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto bg-[var(--crcle-bg-deep)] px-4 pb-24 pt-6 transition-colors duration-300">
+    <div className="relative flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto bg-[var(--crcle-bg-deep)] px-4 pb-24 pt-6 transition-colors duration-300 [.crcle-phone--light_&]:bg-[#fdfcfb]">
       <div className="flex items-center justify-center gap-3">
         <span className="h-px w-12 bg-[#d9d9de]" />
         <p

@@ -545,6 +545,7 @@ export function SignalCard({
   const activity = ACTIVITIES.find((a) => a.id === signal.activityId) ?? ACTIVITIES[1];
   const timeGlyph = TIME_GLYPH[signal.timeOfDay];
   const isSent = signal.direction === "sent";
+  const isReceivedLight = isLight && !isSent;
   const canRespond = !isSent && signal.status === "pending";
   const showResponsePill = canRespond && responseOpen;
   const prompt = isSent
@@ -645,8 +646,10 @@ export function SignalCard({
 
           <div className="flex w-full items-start justify-center gap-2">
             <span
-              className={`crcle-signal-card-time flex size-[46px] shrink-0 items-center justify-center rounded-[24px] ${
-                isLight && !isSent ? "border border-[rgba(0,0,0,0.25)]" : ""
+              className={`crcle-signal-card-time flex shrink-0 items-center justify-center rounded-[24px] ${
+                isReceivedLight
+                  ? "border border-[rgba(0,0,0,0.25)]"
+                  : "size-[46px]"
               }`}
             >
               <img
@@ -659,7 +662,11 @@ export function SignalCard({
               />
             </span>
 
-            <div className="crcle-signal-card-venue flex min-w-0 flex-1 items-center gap-1.5 rounded-[24px] py-1 pl-3 pr-1">
+            <div
+              className={`crcle-signal-card-venue flex min-w-0 flex-1 items-center rounded-[24px] ${
+                isReceivedLight ? "" : "gap-1.5 py-1 pl-3 pr-1"
+              }`}
+            >
               <img
                 alt=""
                 src={locusPinRedIcon}
@@ -683,11 +690,13 @@ export function SignalCard({
                   e.stopPropagation();
                   if (canRespond) setResponseOpen((open) => !open);
                 }}
-                className={`crcle-glass-btn crcle-signal-card-plus relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[40px] p-1 backdrop-blur-[12px] transition hover:brightness-110 disabled:opacity-50 ${
-                  responseOpen && canRespond ? "is-open brightness-110" : ""
-                }`}
+                className={`crcle-signal-card-plus relative flex shrink-0 items-center justify-center overflow-hidden transition hover:brightness-110 disabled:opacity-50 ${
+                  isReceivedLight
+                    ? "crcle-glass-btn size-9 rounded-[24px] p-2.5"
+                    : "crcle-glass-btn size-10 rounded-[40px] p-1 backdrop-blur-[12px]"
+                } ${responseOpen && canRespond ? "is-open brightness-110" : ""}`}
               >
-                <div className="dock-glass-lens opacity-40" aria-hidden />
+                {!isReceivedLight ? <div className="dock-glass-lens opacity-40" aria-hidden /> : null}
                 <img
                   alt=""
                   src={locusPlusIcon}
