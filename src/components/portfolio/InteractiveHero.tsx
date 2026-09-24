@@ -6,7 +6,11 @@ import { heroGridLayout } from "@/lib/portfolio-grid";
 const HEADLINE = "Are you looking for me?";
 const SUBTITLE =
   "Product Designer specialising in complex B2B platforms, design systems, and interactive prototypes.";
-const HERO_GRID_CELLS = 14 * 48;
+const initialGridCells = () => {
+  if (typeof window === "undefined") return 14 * 12;
+  const { rows, cols } = heroGridLayout(window.innerWidth, window.innerHeight);
+  return rows * cols;
+};
 
 type Blob = {
   homeX: number;
@@ -25,16 +29,21 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollProgressRef = useRef(0);
+  const lensRef = useRef<HTMLDivElement>(null);
   const [canvasReady, setCanvasReady] = useState(false);
+  const [showDomGrid, setShowDomGrid] = useState(true);
+  const [gridCells, setGridCells] = useState(initialGridCells);
 
   useLayoutEffect(() => {
+    if (!showDomGrid) return;
     const el = containerRef.current;
     if (!el) return;
 
     const apply = () => {
+      const { rows, cols, cellW, cellH } = heroGridLayout(el.clientWidth, el.clientHeight);
+      setGridCells((count) => (count === rows * cols ? count : rows * cols));
       const grid = el.querySelector<HTMLElement>(".interactive-hero__grid");
       if (!grid) return;
-      const { rows, cols, cellW, cellH } = heroGridLayout(el.clientWidth, el.clientHeight);
       grid.style.gridTemplateColumns = `repeat(${cols}, ${cellW}px)`;
       grid.style.gridTemplateRows = `repeat(${rows}, ${cellH}px)`;
     };
@@ -43,7 +52,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     const observer = new ResizeObserver(apply);
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [showDomGrid]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -64,7 +73,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       let width = 0;
       let height = 0;
       let isMobile = window.innerWidth < 768;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
       const cursor = { x: -1000, y: -1000, active: false };
       let lensX = 0;
       let lensY = 0;
@@ -84,15 +93,11 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         lensY = height * 0.5;
       };
 
-      const syncCursorVars = (blurPx: number) => {
-        container.style.setProperty("--hero-lens-x", `${lensX}px`);
-        container.style.setProperty("--hero-lens-y", `${lensY}px`);
-        container.style.setProperty("--hero-cursor-blur", `${blurPx}px`);
-        container.style.setProperty("--hero-cursor-active", cursor.active ? "1" : "0");
-        const frostShiftX = cursor.active ? (lensX / width - 0.5) * 14 : 0;
-        const frostShiftY = cursor.active ? (lensY / height - 0.5) * 10 : 0;
-        container.style.setProperty("--hero-frost-shift-x", `${frostShiftX}px`);
-        container.style.setProperty("--hero-frost-shift-y", `${frostShiftY}px`);
+      const syncLens = () => {
+        const lens = lensRef.current;
+        if (!lens) return;
+        lens.style.left = `${lensX}px`;
+        lens.style.top = `${lensY}px`;
       };
 
       const updateScrollProgress = () => {
@@ -122,10 +127,12 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         cursor.x = event.clientX - rect.left;
         cursor.y = event.clientY - rect.top;
         cursor.active = true;
+        startLoop();
       };
 
       const onLeave = () => {
         cursor.active = false;
+        startLoop();
       };
 
       let pulse = 0;
@@ -136,39 +143,30 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       let tileRadius = 12;
 
       const measureTiles = () => {
-        const gridEl = container.querySelector<HTMLElement>(".interactive-hero__grid");
-        if (!gridEl) return;
-        const layout = heroGridLayout(container.clientWidth, container.clientHeight);
-        gridEl.style.gridTemplateColumns = `repeat(${layout.cols}, ${layout.cellW}px)`;
-        gridEl.style.gridTemplateRows = `repeat(${layout.rows}, ${layout.cellH}px)`;
-        void gridEl.offsetHeight;
-        const origin = canvas.getBoundingClientRect();
+        const layout = heroGridLayout(width, height);
         const next: Tile[] = [];
-        gridEl.querySelectorAll("span").forEach((span) => {
-          const rect = span.getBoundingClientRect();
-          if (rect.width < 1 || rect.height < 1) return;
-          const x = rect.left - origin.left;
-          const y = rect.top - origin.top;
-          next.push({
-            x,
-            y,
-            w: rect.width,
-            h: rect.height,
-            cx: x + rect.width / 2,
-            cy: y + rect.height / 2,
-          });
-        });
-        tiles = next;
-        const first = gridEl.querySelector("span");
-        if (first) {
-          const radius = parseFloat(getComputedStyle(first).borderTopLeftRadius);
-          if (radius > 0) tileRadius = radius;
+        const stepX = layout.cellW + layout.gap;
+        const stepY = layout.cellH + layout.gap;
+        for (let row = 0; row < layout.rows; row++) {
+          for (let col = 0; col < layout.cols; col++) {
+            const x = layout.pad + col * stepX;
+            const y = layout.pad + row * stepY;
+            next.push({
+              x,
+              y,
+              w: layout.cellW,
+              h: layout.cellH,
+              cx: x + layout.cellW / 2,
+              cy: y + layout.cellH / 2,
+            });
+          }
         }
+        tiles = next;
+        tileRadius = Math.min(12, layout.cellW * 0.18);
       };
 
       const drawMetaballs = () => {
         ctx.save();
-        ctx.filter = "blur(28px)";
         ctx.globalCompositeOperation = "screen";
 
         blobs.forEach((blob) => {
@@ -198,11 +196,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           lensY += (height * 0.5 - lensY) * 0.04;
         }
 
-        let cursorBlur = 0;
-        if (!isMobile && cursor.active) {
-          cursorBlur = 14;
-        }
-        syncCursorVars(cursorBlur);
+        syncLens();
 
         ctx.clearRect(0, 0, width, height);
         ctx.fillStyle = "#090e15";
@@ -303,8 +297,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           sb[key] = nextB;
         };
 
-        if (rowCount > 0 && tiles.length === rowCount * cols) {
-          for (let pass = 0; pass < 6; pass++) {
+        if (!isMobile && cursor.active && rowCount > 0 && tiles.length === rowCount * cols) {
+          for (let pass = 0; pass < 1; pass++) {
             for (let row = 0; row < rowCount; row++) {
               for (let col = 0; col < cols; col++) {
                 const i = row * cols + col;
@@ -361,15 +355,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           ctx.fill();
         });
 
-        if (scroll > 0) {
-          ctx.save();
-          ctx.filter = `blur(${scroll * 4}px)`;
-          ctx.globalAlpha = 0.35;
-          ctx.fillStyle = "#090e15";
-          ctx.fillRect(0, 0, width, height);
-          ctx.restore();
-        }
-
         blobs.forEach((blob) => {
           const homeX = blob.homeX * width;
           const homeY = blob.homeY * height;
@@ -388,14 +373,22 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           blob.y += (homeY + drift * 0.4 - blob.y) * 0.05;
         });
 
-        drawMetaballs();
+        if (cursor.active) drawMetaballs();
         if (!revealed) {
           revealed = true;
           requestAnimationFrame(() => {
             if (!cancelled) setCanvasReady(true);
           });
         }
-        raf = requestAnimationFrame(draw);
+
+        const lensSettled =
+          Math.abs(lensX - (cursor.active ? cursor.x : width * 0.5)) < 0.6 &&
+          Math.abs(lensY - (cursor.active ? cursor.y : height * 0.5)) < 0.6;
+        if (cursor.active || !lensSettled) {
+          raf = requestAnimationFrame(draw);
+        } else {
+          loopActive = false;
+        }
       };
 
       const startLoop = () => {
@@ -409,7 +402,10 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         cancelAnimationFrame(raf);
       };
 
-      const onScroll = () => updateScrollProgress();
+      const onScroll = () => {
+        updateScrollProgress();
+        startLoop();
+      };
 
       const visibility = new IntersectionObserver(([entry]) => {
         if (entry?.isIntersecting) startLoop();
@@ -443,6 +439,12 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!canvasReady) return;
+    const hide = window.setTimeout(() => setShowDomGrid(false), 420);
+    return () => window.clearTimeout(hide);
+  }, [canvasReady]);
+
   const scrollToWork = () => {
     onEnterWork?.();
   };
@@ -462,28 +464,38 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         } as CSSProperties
       }
     >
-      <div aria-hidden className="interactive-hero__grid">
-        {Array.from({ length: HERO_GRID_CELLS }, (_, index) => (
-          <span key={index} />
-        ))}
-      </div>
+      {showDomGrid ? (
+        <div
+          aria-hidden
+          className="interactive-hero__grid"
+          style={{ opacity: canvasReady ? 0 : 1, transition: "opacity 0.4s ease" }}
+        >
+          {Array.from({ length: gridCells }, (_, index) => (
+            <span key={index} />
+          ))}
+        </div>
+      ) : null}
       <canvas
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden
-        style={{ opacity: canvasReady ? 1 : 0, transition: "opacity 0.5s ease" }}
+        style={{ opacity: canvasReady ? 1 : 0, transition: "opacity 0.4s ease" }}
       />
 
-      <div
-        aria-hidden
-        className="interactive-hero__liquid-lens pointer-events-none absolute z-[2]"
-      />
+      {canvasReady ? (
+        <div
+          ref={lensRef}
+          aria-hidden
+          className="interactive-hero__liquid-lens pointer-events-none absolute z-[2]"
+        />
+      ) : null}
 
-      {/* Figma 1769:208015 — full-frame progressive background blur */}
-      <div
-        aria-hidden
-        className="interactive-hero__frost pointer-events-none absolute inset-0 z-[3] bg-[rgba(255,255,255,0.03)] backdrop-blur-[18px]"
-      />
+      {canvasReady ? (
+        <div
+          aria-hidden
+          className="interactive-hero__frost pointer-events-none absolute inset-0 z-[3] bg-[rgba(255,255,255,0.03)]"
+        />
+      ) : null}
 
       <nav className="relative z-10 flex w-full items-center justify-between px-9 pt-24 sm:pt-[139px]">
         <span
