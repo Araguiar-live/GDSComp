@@ -182,18 +182,6 @@ export function CrcleSignalHome({
             ) : null}
           </AnimatePresence>
           <AnimatePresence>
-            {signalActivated ? (
-              <SignalCompleteSheet
-                onGoToRecommendations={() => {
-                  if (!signalOff) onGoToRadar?.();
-                }}
-                onGoToProfile={() => onGoToProfile?.()}
-                onClose={() => setSignalActivated(false)}
-                recommendationsDisabled={signalOff}
-              />
-            ) : null}
-          </AnimatePresence>
-          <AnimatePresence>
             {menuOpen && !onboardingOpen ? (
               <CrcleSignalMoreMenu
                 signalOff={signalOff}
@@ -301,35 +289,16 @@ export function CrcleSignalHome({
               }
             >
               <AnimatePresence mode="wait">
-                {screen === "photo" ? (
+                {screen === "photo" && !signalActivated ? (
                   <motion.div
-                    key={signalActivated ? "activating" : "signal-strength"}
+                    key="signal-strength"
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.28, ease: EASE }}
-                    className={`absolute inset-x-0 top-0 z-30 flex rounded-[28px] bg-[rgba(247,246,242,0.2)] p-2 backdrop-blur-[12px] ${
-                      signalActivated ? "justify-center" : "items-center justify-between"
-                    }`}
+                    className="absolute inset-x-0 top-0 z-30 flex items-center justify-between rounded-[28px] bg-[rgba(247,246,242,0.2)] p-2 backdrop-blur-[12px]"
                   >
-                    {signalActivated ? (
-                      <div className="flex items-center gap-1 rounded-xl bg-[rgba(255,255,255,0.1)] px-3 py-1">
-                        <span className="relative flex size-2 items-center justify-center">
-                          <span
-                            aria-hidden
-                            className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/70"
-                          />
-                          <span className="relative size-1 rounded-full bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.85)]" />
-                        </span>
-                        <span
-                          className="text-[11px] leading-[1.4] text-[#22c55e]"
-                          style={{ fontFamily: FONT }}
-                        >
-                          Activating...
-                        </span>
-                      </div>
-                    ) : (
-                      <>
+                    <>
                         <div className="flex min-w-0 flex-1 items-center gap-3">
                           <SignalStrengthIcon activeBars={activeBars} />
                           <div className="min-w-0 flex-1 leading-[1.2] text-[#030426]">
@@ -367,8 +336,7 @@ export function CrcleSignalHome({
                             </span>
                           </button>
                         ) : null}
-                      </>
-                    )}
+                    </>
                   </motion.div>
                 ) : null}
               </AnimatePresence>
@@ -480,7 +448,11 @@ export function CrcleSignalHome({
               </AnimatePresence>
 
               {screen === "photo" ? (
-                <div className="pointer-events-none absolute left-3 top-1/2 z-[1] flex -translate-y-1/2 flex-col gap-1.5">
+                <div
+                  className={`pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 flex-col gap-1.5 ${
+                    signalActivated ? "z-[45]" : "z-[1]"
+                  }`}
+                >
                   <div className="pointer-events-auto">
                     <OverlayToolButton ariaLabel="Home" onClick={() => setTuneOpen(true)}>
                       <IconImg src={navHomeIcon} className="size-6" />
@@ -519,8 +491,23 @@ export function CrcleSignalHome({
                 ) : null}
               </AnimatePresence>
 
+              <AnimatePresence>
+                {screen === "photo" && signalActivated ? (
+                  <SignalCompleteSheet
+                    onGoToRecommendations={() => {
+                      if (!signalOff) onGoToRadar?.();
+                    }}
+                    onGoToProfile={() => onGoToProfile?.()}
+                    onClose={() => setSignalActivated(false)}
+                    recommendationsDisabled={signalOff}
+                  />
+                ) : null}
+              </AnimatePresence>
+
               <div
-                className={`relative z-[1] mt-auto flex w-full items-end justify-between ${
+                className={`relative mt-auto flex w-full items-end justify-between ${
+                  screen === "photo" && signalActivated ? "z-[45]" : "z-[1]"
+                } ${
                   screen === "photo" && (signalOff || isIncognito || mapBannerOpen)
                     ? "pb-[88px]"
                     : "pb-0.5"
@@ -528,6 +515,23 @@ export function CrcleSignalHome({
               >
                 {screen === "photo" ? (
                   <>
+                    {signalActivated && !signalOff && !isIncognito && !mapBannerOpen ? (
+                      <div className="pointer-events-none absolute bottom-[34px] left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-xl bg-[rgba(255,255,255,0.1)] px-3 py-1">
+                        <span className="relative flex size-2 shrink-0 items-center justify-center">
+                          <span
+                            aria-hidden
+                            className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/70"
+                          />
+                          <span className="relative size-2 rounded-full bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.85)]" />
+                        </span>
+                        <span
+                          className="whitespace-nowrap text-[11px] leading-[1.4] text-[#22c55e]"
+                          style={{ fontFamily: FONT }}
+                        >
+                          Signal Live
+                        </span>
+                      </div>
+                    ) : null}
                     {!signalOff && !isIncognito && !mapBannerOpen ? (
                       <div className="flex w-full items-center justify-center gap-2">
                         <span className="h-1.5 w-6 rounded-full bg-white" />
@@ -578,6 +582,7 @@ export function CrcleSignalHome({
                     incognito={isIncognito && !signalOff}
                     signalOff={signalOff}
                     onMap={onMapFooter}
+                    signalActivated={signalActivated}
                   />
                 </motion.div>
               ) : null}
@@ -1015,6 +1020,7 @@ function FooterSignal({
   incognito = false,
   signalOff = false,
   onMap = false,
+  signalActivated = false,
 }: {
   tone: "neutral" | "live";
   activeBars?: number;
@@ -1023,8 +1029,10 @@ function FooterSignal({
   incognito?: boolean;
   signalOff?: boolean;
   onMap?: boolean;
+  signalActivated?: boolean;
 }) {
-  const showLiveCopy = incognito || tone === "live" || !isLight;
+  const showLiveCopy =
+    !signalActivated && (incognito || tone === "live" || !isLight);
 
   return (
     <div className="crcle-footer-signal">
@@ -1326,7 +1334,7 @@ function buildSignalKeyframes(barIndex: number, frames: readonly [number, number
   return { heights, times, duration: total };
 }
 
-/** Figma 257:67520 — signal activated confirmation sheet. */
+/** Figma 257:67520 — signal activated sheet (slides from top of photo frame). */
 function SignalCompleteSheet({
   onGoToRecommendations,
   onGoToProfile,
@@ -1344,8 +1352,7 @@ function SignalCompleteSheet({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.24, ease: EASE }}
-      className="absolute inset-0 z-[60] flex flex-col justify-end overflow-hidden rounded-[53px]"
-      style={{ clipPath: "inset(0 round 53px)" }}
+      className="absolute inset-0 z-[35] flex flex-col justify-start overflow-hidden rounded-[28px]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="signal-complete-title"
@@ -1357,11 +1364,11 @@ function SignalCompleteSheet({
         onClick={onClose}
       />
       <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
+        initial={{ x: "-50%", y: "-160%" }}
+        animate={{ x: "-50%", y: "-50%" }}
+        exit={{ x: "-50%", y: "-160%" }}
         transition={{ duration: 0.34, ease: EASE }}
-        className="crcle-signal-complete-sheet relative z-[1] mx-3 mb-3 overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
+        className="crcle-signal-complete-sheet absolute left-1/2 top-[calc(50%-216px)] z-[1] w-[calc(100%-22px)] max-w-[402px] overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)] backdrop-blur-[6px]"
       >
         <div className="px-4 pb-[9px] pt-9">
           <div className="flex flex-col gap-2">
