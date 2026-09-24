@@ -496,6 +496,7 @@ export function CrcleSignalHome({
               <AnimatePresence>
                 {screen === "photo" && signalActivated ? (
                   <SignalCompleteSheet
+                    backdropImage={dropPhoto}
                     onGoToRecommendations={() => {
                       if (!signalOff) onGoToRadar?.();
                     }}
@@ -1338,11 +1339,13 @@ function buildSignalKeyframes(barIndex: number, frames: readonly [number, number
 
 /** Figma 257:67520 — glass card inset 11px from photo frame; samples live photo via backdrop-filter. */
 function SignalCompleteSheet({
+  backdropImage,
   onGoToRecommendations,
   onGoToProfile,
   onClose,
   recommendationsDisabled = false,
 }: {
+  backdropImage?: string;
   onGoToRecommendations: () => void;
   onGoToProfile: () => void;
   onClose: () => void;
@@ -1354,7 +1357,7 @@ function SignalCompleteSheet({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.24, ease: EASE }}
-      className="absolute inset-0 z-[50] overflow-hidden rounded-[28px]"
+      className="absolute inset-0 z-[50] overflow-hidden rounded-[28px] [container-type:size]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="signal-complete-title"
@@ -1372,6 +1375,19 @@ function SignalCompleteSheet({
         transition={{ duration: 0.34, ease: EASE }}
         className="crcle-signal-complete-sheet crcle-signal-complete-sheet--framed pointer-events-auto absolute inset-x-[11px] top-[11px] z-[2] overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
       >
+        {backdropImage ? (
+          <div className="pointer-events-none absolute inset-0" aria-hidden>
+            <img
+              alt=""
+              src={backdropImage}
+              className="absolute left-[-11px] top-[-11px] h-[100cqh] w-[100cqw] max-w-none scale-110 object-cover blur-[8px]"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="absolute inset-0 bg-[rgba(2,2,23,0.3)]" />
+          </div>
+        ) : null}
         <div className="relative z-[1] px-4 pb-[9px] pt-9">
           <div className="flex flex-col gap-2">
             <p
