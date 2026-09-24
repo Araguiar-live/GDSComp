@@ -494,6 +494,7 @@ export function CrcleSignalHome({
               <AnimatePresence>
                 {screen === "photo" && signalActivated ? (
                   <SignalCompleteSheet
+                    backdropImage={dropPhoto}
                     onGoToRecommendations={() => {
                       if (!signalOff) onGoToRadar?.();
                     }}
@@ -1334,13 +1335,15 @@ function buildSignalKeyframes(barIndex: number, frames: readonly [number, number
   return { heights, times, duration: total };
 }
 
-/** Figma 257:67520 — signal activated sheet (slides from top of photo frame). */
+/** Figma 257:67520 — compact glass card at top of photo (same frost stack as SignalTuneDrawer). */
 function SignalCompleteSheet({
+  backdropImage,
   onGoToRecommendations,
   onGoToProfile,
   onClose,
   recommendationsDisabled = false,
 }: {
+  backdropImage?: string;
   onGoToRecommendations: () => void;
   onGoToProfile: () => void;
   onClose: () => void;
@@ -1352,7 +1355,7 @@ function SignalCompleteSheet({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.24, ease: EASE }}
-      className="absolute inset-0 z-[35] flex flex-col justify-start overflow-hidden rounded-[28px]"
+      className="absolute inset-0 z-[35] flex flex-col items-center justify-start overflow-hidden rounded-[28px]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="signal-complete-title"
@@ -1360,17 +1363,30 @@ function SignalCompleteSheet({
       <button
         type="button"
         aria-label="Dismiss"
-        className="absolute inset-0 bg-[rgba(2,3,29,0.18)] backdrop-blur-[8px] [-webkit-backdrop-filter:blur(8px)]"
+        className="absolute inset-0 bg-[rgba(2,3,29,0.12)]"
         onClick={onClose}
       />
       <motion.div
-        initial={{ x: "-50%", y: "-160%" }}
-        animate={{ x: "-50%", y: "-50%" }}
-        exit={{ x: "-50%", y: "-160%" }}
+        initial={{ y: "-108%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "-108%" }}
         transition={{ duration: 0.34, ease: EASE }}
-        className="crcle-signal-complete-sheet absolute left-1/2 top-[calc(50%-216px)] z-[1] w-[calc(100%-22px)] max-w-[402px] overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)] backdrop-blur-[6px]"
+        className="crcle-signal-complete-sheet pointer-events-auto relative z-[1] mt-[11px] w-[calc(100%-22px)] max-w-[402px] shrink-0 overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
       >
-        <div className="px-4 pb-[9px] pt-9">
+        {backdropImage ? (
+          <div className="crcle-tune-frost crcle-tune-frost--dark" aria-hidden>
+            <img
+              alt=""
+              src={backdropImage}
+              className="absolute left-1/2 top-0 h-[240%] w-[240%] max-w-none -translate-x-1/2 -translate-y-[18%] object-cover"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="absolute inset-0 bg-[rgba(2,2,23,0.3)] backdrop-blur-[6px] [-webkit-backdrop-filter:blur(6px)]" />
+          </div>
+        ) : null}
+        <div className="relative z-[1] px-4 pb-[9px] pt-9">
           <div className="flex flex-col gap-2">
             <p
               id="signal-complete-title"
@@ -1388,7 +1404,7 @@ function SignalCompleteSheet({
             </p>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-4 border-t border-[rgba(2,3,29,0.05)] p-3">
+        <div className="relative z-[1] flex flex-col items-center gap-4 border-t border-[rgba(2,3,29,0.05)] p-3">
           <div className="flex w-full flex-col gap-3">
             <button
               type="button"
