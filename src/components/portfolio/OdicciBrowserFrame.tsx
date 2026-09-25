@@ -58,7 +58,7 @@ export function OdicciBrowserFrame({
 
   return (
     <div
-      className="relative w-full min-w-0 max-w-[980px] overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl shadow-black/40"
+      className="relative w-full min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl shadow-black/40"
       style={{ fontFamily: FONT }}
     >
       {/* Title bar */}

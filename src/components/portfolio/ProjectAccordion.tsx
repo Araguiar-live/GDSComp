@@ -255,7 +255,14 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
 
               {/* Copy + prototype — stack until lg so the 402px phone never overlaps copy */}
               <div className="mx-auto flex min-h-0 w-full flex-1 items-start px-4 pt-2 sm:px-8 lg:px-12 xl:px-[68px]">
-                <div className="grid w-full min-w-0 grid-cols-1 items-start gap-8 overflow-x-hidden lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-8">
+                <div
+                  className={
+                    "grid w-full min-w-0 grid-cols-1 items-start overflow-x-hidden " +
+                    (project.slug === "odicci"
+                      ? "gap-[46px] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.7fr)]"
+                      : "gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-8")
+                  }
+                >
                 {/* LEFT — case-study copy */}
                 <div className="flex max-h-[874px] min-h-0 min-w-0 flex-col overflow-y-auto overflow-x-hidden overscroll-contain">
                   <CaseStudyCopy project={project} tab={activeTab} content={tabContent} />
@@ -264,11 +271,7 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                 {/* RIGHT — prototype fills the grid column and hugs the right edge */}
                 <div className="relative flex w-full min-w-0 shrink-0 items-start justify-end">
                   <div
-                    className={`flex items-start justify-end overflow-visible ${
-                      project.slug === "odicci"
-                        ? "ml-auto w-full min-w-0 max-w-[980px] md:w-[min(980px,46vw)]"
-                        : "w-full min-w-0"
-                    }`}
+                    className="flex w-full min-w-0 items-start justify-end overflow-visible"
                   >
                     {tabContent.customBody ? (
                       <Suspense
@@ -355,35 +358,51 @@ function CaseStudyCopy({
     content.notes ??
     "Replace this outcome — what shipped, what you learned, and what you’d iterate next.";
 
+  const compact = project.slug === "odicci";
+
   return (
     <div
       key={featureKey ?? "tab"}
-      className="flex w-full min-w-0 flex-col gap-[36px] py-0"
+      className={`flex w-full min-w-0 flex-col py-0 ${compact ? "gap-6" : "gap-[36px]"}`}
     >
-      <div className="flex flex-col gap-5">
+      <div className={`flex flex-col ${compact ? "gap-3.5" : "gap-5"}`}>
         <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-400">
           {copy.label ?? `${project.title} — ${tab}`}
         </span>
         <h3 className="text-3xl font-medium leading-[1.15] tracking-tight text-zinc-900 md:text-[40px]">
           {copy.subtitle ?? "Case study headline — edit me"}
         </h3>
-        <p className="text-base leading-8 text-zinc-500">{overview}</p>
+        <p className={`text-base text-zinc-500 ${compact ? "leading-7" : "leading-8"}`}>{overview}</p>
       </div>
 
-      <TextBlock heading="Challenge">{challenge}</TextBlock>
-      <TextBlock heading="Approach">{approach}</TextBlock>
-      <TextBlock heading="Outcome">{outcome}</TextBlock>
+      <TextBlock heading="Challenge" compact={compact}>
+        {challenge}
+      </TextBlock>
+      <TextBlock heading="Approach" compact={compact}>
+        {approach}
+      </TextBlock>
+      <TextBlock heading="Outcome" compact={compact}>
+        {outcome}
+      </TextBlock>
     </div>
   );
 }
 
-function TextBlock({ heading, children }: { heading: string; children: React.ReactNode }) {
+function TextBlock({
+  heading,
+  children,
+  compact = false,
+}: {
+  heading: string;
+  children: React.ReactNode;
+  compact?: boolean;
+}) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className={`flex flex-col ${compact ? "gap-2" : "gap-3"}`}>
       <div className="text-[10px] font-semibold tracking-[0.2em] uppercase text-zinc-900">
         {heading}
       </div>
-      <p className="text-base leading-8 text-zinc-500">{children}</p>
+      <p className={`text-base text-zinc-500 ${compact ? "leading-7" : "leading-8"}`}>{children}</p>
     </div>
   );
 }
