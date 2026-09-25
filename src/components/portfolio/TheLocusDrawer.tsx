@@ -540,7 +540,7 @@ export function SignalCard({
   onCounterPropose: () => void;
   isLight?: boolean;
 }) {
-  const [counterText, setCounterText] = useState("Try tomorrow instead?");
+  const [counterText, setCounterText] = useState("Try tomorrow instead");
   const [responseOpen, setResponseOpen] = useState(false);
   const activity = ACTIVITIES.find((a) => a.id === signal.activityId) ?? ACTIVITIES[1];
   const timeGlyph = TIME_GLYPH[signal.timeOfDay];
@@ -741,26 +741,27 @@ export function SignalCard({
 
         {signal.status === "raincheck" ? (
           <div
-            className="flex items-center gap-2 border-t border-white/10 pt-3"
+            className="flex w-full items-center justify-between rounded-[36px] border border-[rgba(247,246,242,0.1)] bg-[#010211] py-1 pl-4 pr-1"
             onClick={(e) => e.stopPropagation()}
           >
             <input
               value={counterText}
               onChange={(e) => setCounterText(e.target.value)}
-              className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/5 px-3 py-2.5 text-[13px] text-[#f7f6f2] outline-none"
+              aria-label="Counter proposal"
+              className="h-9 min-w-0 w-[178px] flex-1 bg-transparent text-[13px] leading-[1.4] text-[#f7f6f2] outline-none placeholder:text-[#f7f6f2]"
               style={{ fontFamily: FONT }}
-              placeholder="Try tomorrow instead?"
+              placeholder="Try tomorrow instead"
             />
             <button
               type="button"
               aria-label="Send counter-proposal"
               onClick={onCounterPropose}
-              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#f7f6f2]"
+              className="flex size-11 shrink-0 items-center justify-center rounded-[24px] p-2.5"
             >
               <img
                 alt=""
                 src={locusSendLightIcon}
-                className="size-5 max-w-none -translate-x-[1.5px] translate-y-[1.5px] object-contain"
+                className="size-6 max-w-none object-contain"
                 draggable={false}
                 loading="lazy"
                 decoding="async"
