@@ -505,6 +505,7 @@ export function CrcleHeaderNavPill({
 /**
  * Onboarding dismiss control — Figma 322:117840.
  * 48×40 cream glass pill, shared by every CRCLE onboarding sheet.
+ * The wireframe stroke reads as a hard ring on the dark overlay, so the pill stays borderless.
  */
 export function CrcleOnboardingCloseButton({ onClick }: { onClick: () => void }) {
   return (
@@ -512,7 +513,7 @@ export function CrcleOnboardingCloseButton({ onClick }: { onClick: () => void })
       type="button"
       onClick={onClick}
       aria-label="Close onboarding"
-      className="box-border flex h-10 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-[#f7f6f2] bg-[rgba(253,252,251,0.2)] backdrop-blur-[6px]"
+      className="box-border flex h-10 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[24px] border-0 bg-[rgba(253,252,251,0.2)] shadow-none outline-none backdrop-blur-[6px]"
     >
       <img alt="" src={closeAddIcon} className="size-6 max-w-none" draggable={false} />
     </button>
