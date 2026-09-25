@@ -1,4 +1,4 @@
-import { type CSSProperties, useLayoutEffect, useRef } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
 import { heroGridLayout } from "@/lib/portfolio-grid";
@@ -27,7 +27,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const scrollProgressRef = useRef(0);
   const cursorRef = useRef({ x: -1000, y: -1000, active: false });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
@@ -45,7 +45,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     return () => observer.disconnect();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const container = containerRef.current;
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
@@ -104,8 +104,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         g.fill();
         sprites.set(radius, { canvas: sprite, css });
       };
-      blobs.forEach((blob) => makeSprite(blob.r));
-
       const syncCursorVars = (blurPx: number) => {
         container.style.setProperty("--hero-lens-x", `${lensX}px`);
         container.style.setProperty("--hero-lens-y", `${lensY}px`);
@@ -498,31 +496,39 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         }
       });
 
-      resize();
-      const visibleNow = container.getBoundingClientRect();
-      if (visibleNow.bottom > 0 && visibleNow.top < window.innerHeight) {
-        onScreen = true;
-        draw();
-      }
       const ro = new ResizeObserver(resize);
-      ro.observe(container);
-      visibility.observe(container);
-      window.addEventListener("resize", resize);
-      window.addEventListener("scroll", onScroll, { passive: true });
-      container.addEventListener("mousemove", onMove);
-      container.addEventListener("mouseleave", onLeave);
+      let bootId = 0;
 
-      teardown = () => {
-        stopLoop();
-        visibility.disconnect();
-        ro.disconnect();
-        window.removeEventListener("resize", resize);
-        window.removeEventListener("scroll", onScroll);
-        container.removeEventListener("mousemove", onMove);
-        container.removeEventListener("mouseleave", onLeave);
+      const boot = () => {
+        blobs.forEach((blob) => makeSprite(blob.r));
+        resize();
+        const visibleNow = container.getBoundingClientRect();
+        if (visibleNow.bottom > 0 && visibleNow.top < window.innerHeight) {
+          onScreen = true;
+          draw();
+        }
+        ro.observe(container);
+        visibility.observe(container);
+        window.addEventListener("resize", resize);
+        window.addEventListener("scroll", onScroll, { passive: true });
+        container.addEventListener("mousemove", onMove);
+        container.addEventListener("mouseleave", onLeave);
+
+        teardown = () => {
+          stopLoop();
+          visibility.disconnect();
+          ro.disconnect();
+          window.removeEventListener("resize", resize);
+          window.removeEventListener("scroll", onScroll);
+          container.removeEventListener("mousemove", onMove);
+          container.removeEventListener("mouseleave", onLeave);
+        };
       };
 
+      bootId = requestAnimationFrame(boot);
+
     return () => {
+      cancelAnimationFrame(bootId);
       teardown();
     };
   }, []);
@@ -538,6 +544,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       data-name="interactive-hero"
       style={
         {
+          backgroundColor: "#090e15",
+          color: "#ffffff",
           "--hero-scroll": 0,
           "--hero-lens-x": "50%",
           "--hero-lens-y": "50%",

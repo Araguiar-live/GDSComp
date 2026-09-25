@@ -3151,6 +3151,7 @@
   inset: 0;
   z-index: 0;
   box-sizing: border-box;
+  contain: layout paint;
   display: grid;
   grid-template-columns: repeat(14, var(--hero-cell-w, minmax(0, 1fr)));
   grid-template-rows: repeat(var(--hero-rows, 12), var(--hero-cell-h, minmax(0, 1fr)));
