@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type CSSProperties, useLayoutEffect, useRef } from "react";
 import heroLogo from "@/assets/portfolio/hero/metaball-logo.svg";
 import heroToggle from "@/assets/portfolio/hero/scroll-toggle.svg";
 import { heroGridLayout } from "@/lib/portfolio-grid";
@@ -25,7 +25,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollProgressRef = useRef(0);
-  const [canvasReady, setCanvasReady] = useState(false);
+  const cursorRef = useRef({ x: -1000, y: -1000, active: false });
 
   useLayoutEffect(() => {
     const el = containerRef.current;
@@ -50,7 +50,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
-    let cancelled = false;
     let teardown = () => {};
 
     const ctx = canvas.getContext("2d");
@@ -62,7 +61,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       let height = 0;
       let isMobile = window.innerWidth < 768;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const cursor = { x: -1000, y: -1000, active: false };
+      const cursor = cursorRef.current;
       let lensX = 0;
       let lensY = 0;
 
@@ -80,6 +79,32 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         lensX = width * 0.5;
         lensY = height * 0.5;
       };
+
+      // Soft metaball sprites, blurred once. A full-frame ctx.filter each tick
+      // was keeping the hero frozen for the first pointer move.
+      const sprites = new Map<number, { canvas: HTMLCanvasElement; css: number }>();
+      const makeSprite = (radius: number) => {
+        const blur = 28;
+        const css = Math.ceil((radius + blur * 3) * 2);
+        const sprite = document.createElement("canvas");
+        sprite.width = Math.max(1, Math.ceil(css * dpr));
+        sprite.height = Math.max(1, Math.ceil(css * dpr));
+        const g = sprite.getContext("2d");
+        if (!g) return;
+        g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        g.filter = `blur(${blur}px)`;
+        const cx = css / 2;
+        const gradient = g.createRadialGradient(cx, cx, 0, cx, cx, radius);
+        gradient.addColorStop(0, "rgba(255,255,255,1)");
+        gradient.addColorStop(0.55, "rgba(255,255,255,0.35)");
+        gradient.addColorStop(1, "rgba(255,255,255,0)");
+        g.fillStyle = gradient;
+        g.beginPath();
+        g.arc(cx, cx, radius, 0, Math.PI * 2);
+        g.fill();
+        sprites.set(radius, { canvas: sprite, css });
+      };
+      blobs.forEach((blob) => makeSprite(blob.r));
 
       const syncCursorVars = (blurPx: number) => {
         container.style.setProperty("--hero-lens-x", `${lensX}px`);
@@ -99,6 +124,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         container.style.setProperty("--hero-scroll", String(progress));
       };
 
+      let bounds = container.getBoundingClientRect();
+
       const resize = () => {
         isMobile = window.innerWidth < 768;
         width = container.clientWidth;
@@ -111,22 +138,31 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         syncBlobHomes();
         updateScrollProgress();
         measureTiles();
+        bounds = container.getBoundingClientRect();
+        if (onScreen) {
+          cancelAnimationFrame(raf);
+          loopActive = false;
+          draw();
+        }
       };
 
       const onMove = (event: MouseEvent) => {
         if (isMobile) return;
-        const rect = container.getBoundingClientRect();
-        cursor.x = event.clientX - rect.left;
-        cursor.y = event.clientY - rect.top;
+        cursor.x = event.clientX - bounds.left;
+        cursor.y = event.clientY - bounds.top;
         cursor.active = true;
+        if (!onScreen) return;
+        if (loopActive) return;
+        loopActive = true;
+        draw();
       };
 
       const onLeave = () => {
         cursor.active = false;
+        ensureLoop();
       };
 
       let pulse = 0;
-      let revealed = false;
 
       type Tile = { x: number; y: number; w: number; h: number; cx: number; cy: number };
       let tiles: Tile[] = [];
@@ -157,26 +193,29 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
 
       const drawMetaballs = () => {
         ctx.save();
-        ctx.filter = "blur(28px)";
         ctx.globalCompositeOperation = "screen";
 
         blobs.forEach((blob) => {
-          const gradient = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.r);
+          const sprite = sprites.get(blob.r);
+          if (!sprite) return;
           const alpha = isMobile ? 0.14 + Math.sin(pulse + blob.phase) * 0.04 : 0.22;
-          gradient.addColorStop(0, `rgba(255,255,255,${alpha})`);
-          gradient.addColorStop(0.55, `rgba(255,255,255,${alpha * 0.35})`);
-          gradient.addColorStop(1, "rgba(255,255,255,0)");
-          ctx.fillStyle = gradient;
-          ctx.beginPath();
-          ctx.arc(blob.x, blob.y, blob.r, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(
+            sprite.canvas,
+            blob.x - sprite.css / 2,
+            blob.y - sprite.css / 2,
+            sprite.css,
+            sprite.css,
+          );
         });
 
         ctx.restore();
       };
 
+      let gridHidden = false;
+      let onScreen = false;
+
       const draw = () => {
-        if (!loopActive) return;
         const scroll = scrollProgressRef.current;
 
         if (!isMobile && cursor.active) {
@@ -292,15 +331,41 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           sb[key] = nextB;
         };
 
-        if (rowCount > 0 && tiles.length === rowCount * cols) {
+        const cursorHot = !isMobile && cursor.active && scroll <= 0.001;
+        const hot = cursorHot ? new Uint8Array(tiles.length) : null;
+        if (hot) {
+          const reach = 256;
+          for (let i = 0; i < tiles.length; i++) {
+            const tile = tiles[i];
+            if (!tile) continue;
+            if (Math.hypot(tile.cx - cursor.x, tile.cy - cursor.y) <= reach) hot[i] = 1;
+          }
+          for (let row = 0; row < rowCount; row++) {
+            for (let col = 0; col < cols; col++) {
+              const i = row * cols + col;
+              if (!hot[i]) continue;
+              if (col + 1 < cols) hot[i + 1] = 1;
+              if (col > 0) hot[i - 1] = 1;
+              if (row + 1 < rowCount) hot[i + cols] = 1;
+              if (row > 0) hot[i - cols] = 1;
+            }
+          }
+        }
+
+        const needsSeparation = (!isMobile && cursor.active) || scroll > 0.001;
+        if (needsSeparation && rowCount > 0 && tiles.length === rowCount * cols) {
           for (let pass = 0; pass < 6; pass++) {
             for (let row = 0; row < rowCount; row++) {
               for (let col = 0; col < cols; col++) {
                 const i = row * cols + col;
-                if (col + 1 < cols) separate(i, i + 1);
-                if (row + 1 < rowCount) separate(i, i + cols);
-                if (col + 1 < cols && row + 1 < rowCount) separate(i, i + cols + 1);
-                if (col > 0 && row + 1 < rowCount) separate(i, i + cols - 1);
+                const touch = (j: number) => {
+                  if (hot && !hot[i] && !hot[j]) return;
+                  separate(i, j);
+                };
+                if (col + 1 < cols) touch(i + 1);
+                if (row + 1 < rowCount) touch(i + cols);
+                if (col + 1 < cols && row + 1 < rowCount) touch(i + cols + 1);
+                if (col > 0 && row + 1 < rowCount) touch(i + cols - 1);
               }
             }
             for (let i = 0; i < tiles.length; i++) {
@@ -378,34 +443,67 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         });
 
         drawMetaballs();
-        if (!revealed) {
-          revealed = true;
-          setCanvasReady(true);
+        if (!gridHidden) {
+          gridHidden = true;
+          const grid = container.querySelector<HTMLElement>(".interactive-hero__grid");
+          if (grid) grid.style.display = "none";
         }
+
+        if (onScreen && shouldKeepPainting()) {
+          loopActive = true;
+          raf = requestAnimationFrame(draw);
+        } else {
+          loopActive = false;
+        }
+      };
+
+      const shouldKeepPainting = () => {
+        if (!onScreen) return false;
+        if (isMobile) return true;
+        if (cursor.active) return true;
+        if (Math.hypot(lensX - width * 0.5, lensY - height * 0.5) > 0.6) return true;
+        return blobs.some((blob) => {
+          const homeX = blob.homeX * width;
+          const homeY = blob.homeY * height;
+          return Math.hypot(blob.x - homeX, blob.y - homeY) > 0.6;
+        });
+      };
+
+      const ensureLoop = () => {
+        if (!onScreen || loopActive) return;
+        loopActive = true;
+        cancelAnimationFrame(raf);
         raf = requestAnimationFrame(draw);
       };
 
-      const startLoop = () => {
-        if (loopActive) return;
-        loopActive = true;
-        draw();
-      };
-
       const stopLoop = () => {
+        onScreen = false;
         loopActive = false;
         cancelAnimationFrame(raf);
       };
 
-      const onScroll = () => updateScrollProgress();
+      const onScroll = () => {
+        updateScrollProgress();
+        bounds = container.getBoundingClientRect();
+        ensureLoop();
+      };
 
       const visibility = new IntersectionObserver(([entry]) => {
-        if (entry?.isIntersecting) startLoop();
-        else stopLoop();
+        if (entry?.isIntersecting) {
+          onScreen = true;
+          ensureLoop();
+          if (!loopActive) draw();
+        } else {
+          stopLoop();
+        }
       });
 
       resize();
       const visibleNow = container.getBoundingClientRect();
-      if (visibleNow.bottom > 0 && visibleNow.top < window.innerHeight) startLoop();
+      if (visibleNow.bottom > 0 && visibleNow.top < window.innerHeight) {
+        onScreen = true;
+        draw();
+      }
       const ro = new ResizeObserver(resize);
       ro.observe(container);
       visibility.observe(container);
@@ -425,7 +523,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       };
 
     return () => {
-      cancelled = true;
       teardown();
     };
   }, []);
@@ -458,7 +555,6 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden
-        style={{ opacity: canvasReady ? 1 : 0 }}
       />
 
       <div

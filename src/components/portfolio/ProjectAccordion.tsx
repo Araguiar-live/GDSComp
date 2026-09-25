@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
-import { forwardRef, useEffect, useState, type MutableRefObject } from "react";
+import { Suspense, forwardRef, useEffect, useState, type MutableRefObject } from "react";
 import { MockupGradientRing } from "@/components/portfolio/MockupGradientRing";
 import {
   requestOpenMessaging,
@@ -271,17 +271,23 @@ export const ProjectAccordion = forwardRef<HTMLDivElement, Props>(function Proje
                     }`}
                   >
                     {tabContent.customBody ? (
-                      typeof tabContent.customBody === "function"
-                        ? tabContent.customBody({
-                            onNextTab: () => {
-                              setActiveTab(tabs[(tabIndex + 1) % tabs.length]);
-                            },
-                            onPrevTab: () => {
-                              setActiveTab(tabs[(tabIndex - 1 + tabs.length) % tabs.length]);
-                            },
-                            goToTab: (tab) => setActiveTab(tab),
-                          })
-                        : tabContent.customBody
+                      <Suspense
+                        fallback={
+                          <div className="h-[874px] w-full max-w-[402px]" aria-hidden />
+                        }
+                      >
+                        {typeof tabContent.customBody === "function"
+                          ? tabContent.customBody({
+                              onNextTab: () => {
+                                setActiveTab(tabs[(tabIndex + 1) % tabs.length]);
+                              },
+                              onPrevTab: () => {
+                                setActiveTab(tabs[(tabIndex - 1 + tabs.length) % tabs.length]);
+                              },
+                              goToTab: (tab) => setActiveTab(tab),
+                            })
+                          : tabContent.customBody}
+                      </Suspense>
                     ) : (
                       <MockupGradientRing className="aspect-[4/5] h-[874px] max-h-[874px] w-auto max-w-full overflow-hidden rounded-3xl">
                         <div className="absolute inset-[1px] z-[1] flex items-center justify-center overflow-hidden rounded-[23px]">

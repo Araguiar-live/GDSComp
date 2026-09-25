@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import { useWorkScrollGate } from "@/hooks/use-work-scroll-gate";
 import girlPleaseLogo from "@/assets/girl-please.svg";
 import designToggleKnob from "@/assets/portfolio/design-toggle-knob.svg";
@@ -10,21 +10,47 @@ import { Dock } from "@/components/portfolio/Dock";
 import { ProjectDock } from "@/components/portfolio/ProjectDock";
 import { Marquee } from "@/components/portfolio/Marquee";
 import { Footer } from "@/components/portfolio/Footer";
-import { OdicciWorkspacePicker } from "@/components/portfolio/OdicciWorkspacePicker";
-import { OdicciColourPalette } from "@/components/portfolio/OdicciColourPalette";
-import { OdicciSignUp } from "@/components/portfolio/OdicciSignUp";
-import { OdicciTemplateLibrary } from "@/components/portfolio/OdicciTemplateLibrary";
 import { Sidebar, SIDEBAR_PANEL_ID } from "@/components/portfolio/Sidebar";
-import { CrcleMessaging } from "@/components/portfolio/CrcleMessaging";
-import { CrcleProfile } from "@/components/portfolio/CrcleProfile";
-import { CrcleRadar } from "@/components/portfolio/CrcleRadar";
 import { requestOpenMessaging } from "@/components/portfolio/crcleBroadcast";
-import { CrcleSignalHome } from "@/components/portfolio/CrcleSignalHome";
-import { FirstDesignComingSoon } from "@/components/portfolio/FirstDesignComingSoon";
 import { WireframeStage } from "@/components/portfolio/SiteWireframe";
 import { PortfolioCalculatorCard } from "@/components/portfolio/PortfolioCalculatorCard";
 import { PortfolioPeekMouse } from "@/components/portfolio/PortfolioPeekMouse";
 
+const OdicciWorkspacePicker = lazy(() =>
+  import("@/components/portfolio/OdicciWorkspacePicker").then((m) => ({
+    default: m.OdicciWorkspacePicker,
+  })),
+);
+const OdicciColourPalette = lazy(() =>
+  import("@/components/portfolio/OdicciColourPalette").then((m) => ({
+    default: m.OdicciColourPalette,
+  })),
+);
+const OdicciSignUp = lazy(() =>
+  import("@/components/portfolio/OdicciSignUp").then((m) => ({ default: m.OdicciSignUp })),
+);
+const OdicciTemplateLibrary = lazy(() =>
+  import("@/components/portfolio/OdicciTemplateLibrary").then((m) => ({
+    default: m.OdicciTemplateLibrary,
+  })),
+);
+const CrcleMessaging = lazy(() =>
+  import("@/components/portfolio/CrcleMessaging").then((m) => ({ default: m.CrcleMessaging })),
+);
+const CrcleProfile = lazy(() =>
+  import("@/components/portfolio/CrcleProfile").then((m) => ({ default: m.CrcleProfile })),
+);
+const CrcleRadar = lazy(() =>
+  import("@/components/portfolio/CrcleRadar").then((m) => ({ default: m.CrcleRadar })),
+);
+const CrcleSignalHome = lazy(() =>
+  import("@/components/portfolio/CrcleSignalHome").then((m) => ({ default: m.CrcleSignalHome })),
+);
+const FirstDesignComingSoon = lazy(() =>
+  import("@/components/portfolio/FirstDesignComingSoon").then((m) => ({
+    default: m.FirstDesignComingSoon,
+  })),
+);
 export const Route = createFileRoute("/")({
   component: Index,
 });
