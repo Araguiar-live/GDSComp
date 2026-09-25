@@ -201,6 +201,8 @@ type TheLocusDrawerProps = {
   onSendSignal: (payload: LocusSignalPayload) => void;
   /** Figma 769:205283 — ice cream preselected when opening from chat plus */
   presetActivityId?: LocusActivityId;
+  /** Reopen the builder with a signal the user is editing. */
+  draft?: LocusSignalPayload | null;
 };
 
 export function TheLocusDrawer({
@@ -208,6 +210,7 @@ export function TheLocusDrawer({
   onClose,
   onSendSignal,
   presetActivityId,
+  draft = null,
 }: TheLocusDrawerProps) {
   const [tab, setTab] = useState<LocusTab>("intent");
   const [activityId, setActivityId] = useState<LocusActivityId | null>(null);
@@ -224,11 +227,19 @@ export function TheLocusDrawer({
       setLocation("Nearby café");
       return;
     }
+    if (draft) {
+      setActivityId(draft.activityId);
+      setWhen(draft.when);
+      setTimeOfDay(draft.timeOfDay);
+      setLocation(draft.location);
+      setTab("venue");
+      return;
+    }
     if (presetActivityId) {
       setActivityId(presetActivityId);
       setTab("venue");
     }
-  }, [open, presetActivityId]);
+  }, [open, presetActivityId, draft]);
 
   const selectActivity = (id: LocusActivityId) => {
     setActivityId(id);
@@ -544,6 +555,7 @@ export function SignalCard({
   onRaincheck,
   onCounterPropose,
   onDelete,
+  onEdit,
   counterpartyName = "Jane",
   isLight = false,
 }: {
@@ -552,6 +564,7 @@ export function SignalCard({
   onRaincheck: () => void;
   onCounterPropose: () => void;
   onDelete?: () => void;
+  onEdit?: () => void;
   counterpartyName?: string;
   isLight?: boolean;
 }) {
@@ -589,6 +602,10 @@ export function SignalCard({
             <button
               type="button"
               aria-label="Edit signal"
+              onClick={() => {
+                setEditOpen(false);
+                onEdit?.();
+              }}
               className="flex size-6 shrink-0 items-center justify-center"
             >
               <img
@@ -603,7 +620,8 @@ export function SignalCard({
             <button
               type="button"
               aria-label="Delete signal"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setEditOpen(false);
                 onDelete?.();
               }}

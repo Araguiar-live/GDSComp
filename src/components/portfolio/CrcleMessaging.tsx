@@ -246,6 +246,7 @@ export function CrcleMessaging({
   /** Light Figma 257:63418 · Dark Figma 257:63596 */
   const [light, setLight] = useState(true);
   const [locusOpen, setLocusOpen] = useState(false);
+  const [locusDraft, setLocusDraft] = useState<LocusSignalPayload | null>(null);
   const [attachOpen, setAttachOpen] = useState(false);
   const [signalCard, setSignalCard] = useState<SignalCardModel | null>(null);
   const [moodOpen, setMoodOpen] = useState(false);
@@ -271,6 +272,7 @@ export function CrcleMessaging({
   }, [clearLocusNotificationTimer]);
 
   const openLocusComposer = useCallback(() => {
+    setLocusDraft(null);
     setAttachOpen(true);
     setLocusOpen(true);
   }, []);
@@ -278,6 +280,7 @@ export function CrcleMessaging({
   const closeLocusComposer = useCallback(() => {
     setAttachOpen(false);
     setLocusOpen(false);
+    setLocusDraft(null);
   }, []);
 
   const clearAreaNotificationTimer = useCallback(() => {
@@ -467,6 +470,7 @@ export function CrcleMessaging({
       clearLocusNotificationTimer();
       setLocusOpen(false);
       setAttachOpen(false);
+      setLocusDraft(null);
       setSignalCard({
         ...payload,
         id: `signal-${Date.now()}`,
@@ -602,13 +606,34 @@ export function CrcleMessaging({
                       : s,
                   )
                 }
-                onDeleteSignal={() => setSignalCard(null)}
+                onDeleteSignal={() => {
+                  clearLocusNotificationTimer();
+                  setLocusDraft(null);
+                  setLocusOpen(false);
+                  setSignalCard(null);
+                }}
+                onEditSignal={() => {
+                  if (!signalCard || signalCard.direction !== "sent") return;
+                  setLocusDraft({
+                    activityId: signalCard.activityId,
+                    activityLabel: signalCard.activityLabel,
+                    when: signalCard.when,
+                    timeOfDay: signalCard.timeOfDay,
+                    location: signalCard.location,
+                  });
+                  setAttachOpen(true);
+                  setLocusOpen(true);
+                }}
               />
               <TheLocusDrawer
                 open={locusOpen}
-                onClose={() => setLocusOpen(false)}
+                onClose={() => {
+                  setLocusOpen(false);
+                  setLocusDraft(null);
+                }}
                 onSendSignal={handleSendSignal}
-                presetActivityId="icecream"
+                presetActivityId={locusDraft ? undefined : "icecream"}
+                draft={locusDraft}
               />
               <ChatComposer
                 draft={draft}
@@ -1443,6 +1468,7 @@ function ChatThread({
   onRaincheckSignal,
   onCounterPropose,
   onDeleteSignal,
+  onEditSignal,
 }: {
   conversation: ChatConversation | null;
   signal: SignalCardModel | null;
@@ -1451,6 +1477,7 @@ function ChatThread({
   onRaincheckSignal: () => void;
   onCounterPropose: () => void;
   onDeleteSignal: () => void;
+  onEditSignal: () => void;
 }) {
   const messages = conversation?.messages ?? [];
 
@@ -1520,6 +1547,7 @@ function ChatThread({
               onRaincheck={onRaincheckSignal}
               onCounterPropose={onCounterPropose}
               onDelete={onDeleteSignal}
+              onEdit={onEditSignal}
             />
           </motion.div>
         ) : null}
