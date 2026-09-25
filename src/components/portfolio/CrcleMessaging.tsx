@@ -689,6 +689,9 @@ export function CrcleMessaging({
                 onClick={() => menuOpen && setMenuOpen(false)}
               >
                 {areaInbox === "off" ? (
+                  onboardingOpen ? (
+                    <OnboardingInboxBackdrop />
+                  ) : (
                   <motion.div
                     key="inbox"
                     initial={{ opacity: 0, y: 12 }}
@@ -714,6 +717,7 @@ export function CrcleMessaging({
                       onViewDailyDrop={goRadar}
                     />
                   </motion.div>
+                  )
                 ) : null}
               </div>
             </motion.div>
@@ -946,7 +950,63 @@ function ChatHeader({
   );
 }
 
-/* ——— Messaging Onboarding (Figma 385:135261) ——— */
+/* ——— Messaging Onboarding (Figma 322:117724) ——— */
+
+function OnboardingInboxBackdrop() {
+  return (
+    <div className="absolute inset-x-3 top-0 flex flex-col gap-8 pt-4">
+      <div className="relative h-[132px] overflow-hidden rounded-2xl bg-[#c5e4e2]">
+        <div className="absolute -left-4 top-6 size-24 rounded-full bg-[#8fd0c4]/80 blur-md" />
+        <div className="absolute left-24 -top-6 size-16 rounded-full bg-[#d7f3ef]/90 blur-sm" />
+        <div className="absolute right-2 -top-8 size-32 rounded-full bg-[#6eb8b4]/80 blur-md" />
+        <div className="absolute bottom-2 left-16 size-14 rounded-full bg-[#9ad4dc]/70 blur-sm" />
+        <div className="relative flex items-start justify-between px-3 pb-4 pt-3">
+          <div className="font-normal" style={{ fontFamily: FONT }}>
+            <p className="text-[15px] leading-[21px] text-[#030426]">New Requests</p>
+            <p className="text-[13px] leading-[1.4] text-[#fefefe]">2 Requests • 1 Pending</p>
+          </div>
+          <span
+            className="flex size-6 items-center justify-center rounded-full bg-[#030426] text-[13px] leading-none text-white"
+            style={{ fontFamily: FONT }}
+          >
+            3
+          </span>
+        </div>
+      </div>
+
+      <p
+        className="text-center text-[15px] font-normal leading-[21px] text-[rgba(3,4,38,0.3)]"
+        style={{ fontFamily: FONT }}
+      >
+        You have no active chats
+      </p>
+
+      <div className="relative">
+        {Array.from({ length: 4 }, (_, index) => (
+          <div
+            key={index}
+            className="mb-2 flex items-center justify-between rounded-2xl bg-[rgba(2,3,29,0.02)] p-3"
+          >
+            <div className="size-[42px] rounded-full bg-black/[0.02]" />
+            <div className="size-5 rounded-full bg-[rgba(2,3,29,0.03)]" />
+          </div>
+        ))}
+        <div className="absolute inset-x-4 top-6 flex flex-col items-center gap-4 text-center text-[rgba(2,3,29,0.4)]">
+          <div className="rounded-[60px] border border-black/25 bg-[rgba(247,246,242,0.4)] p-4 backdrop-blur-[4px]">
+            <IconImg src={message2Icon} className="size-9 brightness-0" />
+          </div>
+          <p className="text-[24px] font-medium leading-[1.2]" style={{ fontFamily: FONT }}>
+            No Messages Yet
+          </p>
+          <p className="text-[11px] font-normal leading-normal" style={{ fontFamily: FONT }}>
+            Your signal is currently broadcasting. Once another frequency responds to your
+            transmission, your active matches and direct conversations will appear right here.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function MessagingOnboarding({
   onClose,
@@ -961,13 +1021,12 @@ function MessagingOnboarding({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.28, ease: EASE }}
-      className="absolute inset-0 z-[55] flex flex-col overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.82)] backdrop-blur-[12px] transition-colors duration-300 [.crcle-phone--light_&]:bg-[rgba(247,246,242,0.92)]"
+      className="absolute inset-0 z-[55] flex flex-col overflow-hidden bg-[rgba(2,3,29,0.6)] backdrop-blur-[8px]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="messaging-onboarding-title"
     >
-      {/* Figma 385:135317 — clipped to screen curve; dense scrim so dock/list don’t bleed through */}
-      <div className="flex min-h-0 flex-1 flex-col px-3.5 pb-11 pt-[112px]">
+      <div className="flex min-h-0 flex-1 flex-col px-3.5 pb-8 pt-[112px]">
         <div className="flex min-h-0 flex-1 flex-col items-center gap-[39px]">
           <div className="flex w-full shrink-0 flex-col items-center gap-9">
             <div className="flex w-full flex-col items-end">
@@ -975,10 +1034,9 @@ function MessagingOnboarding({
                 type="button"
                 onClick={onClose}
                 aria-label="Close onboarding"
-                className="crcle-glass-btn relative flex h-10 shrink-0 items-center justify-center overflow-hidden rounded-[24px] px-2 py-0.5"
+                className="flex h-10 shrink-0 items-center justify-center rounded-[24px] border border-[#f7f6f2] bg-[rgba(253,252,251,0.2)] px-2 py-0.5 backdrop-blur-[6px]"
               >
-                <div className="dock-glass-lens opacity-40" aria-hidden />
-                <IconImg src={closeAddIcon} className="relative z-[1] size-6" />
+                <IconImg src={closeAddIcon} className="size-6" />
               </button>
             </div>
 
@@ -987,13 +1045,13 @@ function MessagingOnboarding({
             <div className="flex w-full flex-col items-center gap-2 text-center">
               <p
                 id="messaging-onboarding-title"
-                className="w-full text-[14px] font-medium leading-[21px] text-[var(--crcle-fg)] transition-colors duration-300"
+                className="w-full text-[14px] font-medium leading-[21px] text-[#f7f6f2]"
                 style={{ fontFamily: FONT }}
               >
                 Your connection nerve center.
               </p>
               <p
-                className="w-full text-[13px] font-light leading-[1.4] text-[var(--crcle-fg-muted)] transition-colors duration-300"
+                className="w-full text-[13px] font-light leading-[1.4] text-[rgba(247,246,242,0.6)]"
                 style={{ fontFamily: FONT }}
               >
                 One simple list for everything. Your ongoing chats and your new invites live
@@ -1017,14 +1075,13 @@ function MessagingOnboarding({
               icon={<IconImg src={chatDotsIcon} className="size-4" />}
               title="Seamless Transition"
               body="Hitting Accept unlocks the profile and instantly opens your live chat thread."
-              showDivider={false}
             />
           </div>
         </div>
 
-        <div className="mt-auto flex shrink-0 flex-col items-center gap-[18px] pt-6">
+        <div className="mt-auto flex shrink-0 flex-col items-center gap-8 pt-4">
           <p
-            className="w-full text-center text-[14px] font-medium leading-[21px] text-[var(--crcle-fg)] transition-colors duration-300"
+            className="w-full text-center text-[14px] font-medium leading-[21px] text-[#f7f6f2]"
             style={{ fontFamily: FONT }}
           >
             Messaging Hub features
@@ -1032,11 +1089,11 @@ function MessagingOnboarding({
           <button
             type="button"
             onClick={onContinue}
-            className="flex w-[91px] flex-col items-center gap-[5px] rounded-xl transition hover:bg-black/5 [.crcle-phone:not(.crcle-phone--light)_&]:hover:bg-white/5"
+            className="flex w-[91px] flex-col items-center gap-[5px]"
           >
-            <IconImg src={crcleLogo} className="crcle-theme-icon h-[17px] w-[49px]" />
+            <IconImg src={crcleLogo} className="h-[17px] w-[49px]" />
             <span
-              className="w-full text-center text-[11px] leading-[1.1] tracking-[-0.2px] text-[var(--crcle-fg-faint)] transition-colors duration-300"
+              className="w-full text-center text-[11px] leading-[1.1] tracking-[-0.2px] text-[rgba(247,246,242,0.4)]"
               style={{ fontFamily: FONT }}
             >
               Verified Social
@@ -1064,20 +1121,20 @@ function OnboardingFeature({
       <div className="flex items-center gap-2">
         <div className="flex size-4 shrink-0 items-center justify-center">{icon}</div>
         <p
-          className="min-w-0 text-[15px] font-normal leading-[1.2] text-[var(--crcle-fg)] transition-colors duration-300"
+          className="min-w-0 text-[15px] font-normal leading-[1.2] text-[#f7f6f2]"
           style={{ fontFamily: FONT }}
         >
           {title}
         </p>
       </div>
       <p
-        className="text-[13px] font-light leading-[1.35] text-[var(--crcle-fg-muted)] transition-colors duration-300"
+        className="text-[13px] font-light leading-[1.4] text-[rgba(247,246,242,0.6)]"
         style={{ fontFamily: FONT }}
       >
         {body}
       </p>
       {showDivider ? (
-        <div className="h-px w-[168px] bg-[var(--crcle-border)] transition-colors duration-300" />
+        <div className="h-px w-[168px] bg-[rgba(247,246,242,0.35)]" />
       ) : null}
     </div>
   );
