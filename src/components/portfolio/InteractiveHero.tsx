@@ -45,7 +45,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current;
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
@@ -53,10 +53,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
     let cancelled = false;
     let teardown = () => {};
 
-    const setupFrame = requestAnimationFrame(() => {
-      if (cancelled) return;
-
-      const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
       let raf = 0;
@@ -136,34 +133,26 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       let tileRadius = 12;
 
       const measureTiles = () => {
-        const gridEl = container.querySelector<HTMLElement>(".interactive-hero__grid");
-        if (!gridEl) return;
-        const layout = heroGridLayout(container.clientWidth, container.clientHeight);
-        gridEl.style.gridTemplateColumns = `repeat(${layout.cols}, ${layout.cellW}px)`;
-        gridEl.style.gridTemplateRows = `repeat(${layout.rows}, ${layout.cellH}px)`;
-        void gridEl.offsetHeight;
-        const origin = canvas.getBoundingClientRect();
+        const layout = heroGridLayout(width, height);
+        const stepX = layout.cellW + layout.gap;
+        const stepY = layout.cellH + layout.gap;
         const next: Tile[] = [];
-        gridEl.querySelectorAll("span").forEach((span) => {
-          const rect = span.getBoundingClientRect();
-          if (rect.width < 1 || rect.height < 1) return;
-          const x = rect.left - origin.left;
-          const y = rect.top - origin.top;
-          next.push({
-            x,
-            y,
-            w: rect.width,
-            h: rect.height,
-            cx: x + rect.width / 2,
-            cy: y + rect.height / 2,
-          });
-        });
-        tiles = next;
-        const first = gridEl.querySelector("span");
-        if (first) {
-          const radius = parseFloat(getComputedStyle(first).borderTopLeftRadius);
-          if (radius > 0) tileRadius = radius;
+        for (let row = 0; row < layout.rows; row++) {
+          for (let col = 0; col < layout.cols; col++) {
+            const x = layout.pad + col * stepX;
+            const y = layout.pad + row * stepY;
+            next.push({
+              x,
+              y,
+              w: layout.cellW,
+              h: layout.cellH,
+              cx: x + layout.cellW / 2,
+              cy: y + layout.cellH / 2,
+            });
+          }
         }
+        tiles = next;
+        tileRadius = Math.min(12, layout.cellW * 0.18);
       };
 
       const drawMetaballs = () => {
@@ -391,9 +380,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         drawMetaballs();
         if (!revealed) {
           revealed = true;
-          requestAnimationFrame(() => {
-            if (!cancelled) setCanvasReady(true);
-          });
+          setCanvasReady(true);
         }
         raf = requestAnimationFrame(draw);
       };
@@ -401,7 +388,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       const startLoop = () => {
         if (loopActive) return;
         loopActive = true;
-        raf = requestAnimationFrame(draw);
+        draw();
       };
 
       const stopLoop = () => {
@@ -417,6 +404,8 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
       });
 
       resize();
+      const visibleNow = container.getBoundingClientRect();
+      if (visibleNow.bottom > 0 && visibleNow.top < window.innerHeight) startLoop();
       const ro = new ResizeObserver(resize);
       ro.observe(container);
       visibility.observe(container);
@@ -434,11 +423,9 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         container.removeEventListener("mousemove", onMove);
         container.removeEventListener("mouseleave", onLeave);
       };
-    });
 
     return () => {
       cancelled = true;
-      cancelAnimationFrame(setupFrame);
       teardown();
     };
   }, []);
@@ -471,7 +458,7 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden
-        style={{ opacity: canvasReady ? 1 : 0, transition: "opacity 0.5s ease" }}
+        style={{ opacity: canvasReady ? 1 : 0 }}
       />
 
       <div
