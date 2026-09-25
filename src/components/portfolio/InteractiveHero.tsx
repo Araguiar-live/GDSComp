@@ -608,24 +608,17 @@ export function InteractiveHero({ onEnterWork }: InteractiveHeroProps) {
           type="button"
           onClick={scrollToWork}
           aria-label="Scroll to selected work"
-          className="interactive-hero__toggle group relative h-[42px] w-[87px] shrink-0 cursor-pointer active:scale-[0.94]"
+          className="interactive-hero__toggle relative h-[42px] w-[87px] shrink-0 cursor-pointer active:scale-[0.94]"
         >
           <img
             src={heroToggle}
             alt=""
             aria-hidden
-            className="absolute inset-0 size-full max-w-none transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0"
+            className="interactive-hero__toggle-rest absolute inset-0 size-full max-w-none"
           />
-          <span className="pointer-events-none absolute inset-0 flex items-center gap-2 rounded-[64px] border border-[rgba(250,131,46,0.2)] bg-[rgba(255,81,38,0.4)] p-1 opacity-0 backdrop-blur-[4px] transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
-            <img
-              src={heroToggleKnobHover}
-              alt=""
-              aria-hidden
-              className="size-8 shrink-0"
-            />
-            <span className="whitespace-nowrap text-[12px] font-normal leading-normal text-[#ff5126]">
-              Press
-            </span>
+          <span className="interactive-hero__toggle-hover" aria-hidden>
+            <img src={heroToggleKnobHover} alt="" className="size-8 shrink-0" />
+            <span>Press</span>
           </span>
         </button>
       </div>

@@ -3270,6 +3270,48 @@
   transition: opacity 0.08s linear, transform 0.08s linear;
 }
 
+/* Figma 1819:1476 — orange Press pill on hover */
+.interactive-hero__toggle-rest,
+.interactive-hero__toggle-hover {
+  transition: opacity 0.2s ease;
+}
+
+.interactive-hero__toggle-hover {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  padding: 4px;
+  border-radius: 64px;
+  border: 1px solid rgba(250, 131, 46, 0.2);
+  background: rgba(255, 81, 38, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+}
+
+.interactive-hero__toggle-hover span {
+  font-family: Inter, "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: normal;
+  color: #ff5126;
+  white-space: nowrap;
+}
+
+.interactive-hero__toggle:hover .interactive-hero__toggle-rest,
+.interactive-hero__toggle:focus-visible .interactive-hero__toggle-rest {
+  opacity: 0;
+}
+
+.interactive-hero__toggle:hover .interactive-hero__toggle-hover,
+.interactive-hero__toggle:focus-visible .interactive-hero__toggle-hover {
+  opacity: 1;
+}
+
 @keyframes interactive-hero-ambient {
   0%,
   100% {
