@@ -25,6 +25,7 @@ import locusSentPenIcon from "@/assets/crcle/locus/sent-pen.svg";
 import locusSentPinIcon from "@/assets/crcle/locus/sent-pin.svg";
 import locusSentPlusIcon from "@/assets/crcle/locus/sent-plus.svg";
 import locusSentRainIcon from "@/assets/crcle/locus/sent-rain.svg";
+import locusSentSunIcon from "@/assets/crcle/locus/sent-sun.svg";
 import locusSentTrashIcon from "@/assets/crcle/locus/sent-trash.svg";
 import locusSunDuotoneIcon from "@/assets/crcle/locus/sun-duotone.svg";
 import locusSunFillIcon from "@/assets/crcle/locus/sun-fill.svg";
@@ -733,7 +734,13 @@ export function SignalCard({
             >
               <img
                 alt=""
-                src={isSent && signal.timeOfDay === "evening" ? locusSentMoonIcon : timeGlyph.icon}
+                src={
+                  isSent && signal.timeOfDay === "evening"
+                    ? locusSentMoonIcon
+                    : isSent && signal.timeOfDay === "morning"
+                      ? locusSentSunIcon
+                      : timeGlyph.icon
+                }
                 className="size-6 max-w-none object-contain object-center"
                 draggable={false}
                 loading="lazy"
