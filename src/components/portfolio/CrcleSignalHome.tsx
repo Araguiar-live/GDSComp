@@ -1176,7 +1176,12 @@ function signalBarClass(
       : "border border-[rgba(247,246,242,0.6)]";
   }
   if (index < activeBars) {
-    return allLit ? "border border-[#e7fcee] bg-[#0fc950]" : "bg-[#0fc950]";
+    if (allLit && isLight) {
+      return index === 2
+        ? "box-border border border-[#00a200] bg-[#0fc950]"
+        : "box-border border border-[#e7fcee] bg-[#0fc950]";
+    }
+    return allLit ? "box-border border border-[#e7fcee] bg-[#0fc950]" : "bg-[#0fc950]";
   }
   if (activeBars === 0) {
     return isLight ? "bg-[rgba(0,0,0,0.2)]" : "bg-[rgba(247,246,242,0.3)]";
