@@ -339,7 +339,6 @@ export function CrcleMessaging({
   useEffect(() => {
     const tryOpen = () => {
       if (consumeOpenMessaging()) {
-        setOnboardingOpen(false);
         setPhase("inbox");
         setNotificationsOpen(true);
         setMenuOpen(false);
