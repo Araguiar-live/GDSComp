@@ -20,6 +20,7 @@ import locusSendLightIcon from "@/assets/crcle/locus/send-light.svg";
 import locusSunDuotoneIcon from "@/assets/crcle/locus/sun-duotone.svg";
 import locusSunFillIcon from "@/assets/crcle/locus/sun-fill.svg";
 import locusThumbsUpIcon from "@/assets/crcle/locus/thumbs-up.svg";
+import locusThumbsUpInIcon from "@/assets/crcle/locus/thumbs-up-in.svg";
 
 const FONT = "Montserrat, ui-sans-serif, system-ui, sans-serif";
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -711,31 +712,54 @@ export function SignalCard({
         </div>
 
         {signal.status === "accepted" ? (
-          <div className="flex w-full justify-center border-t border-white/10 pt-2">
-            <div
-              className="crcle-glass-btn crcle-glass-btn--success relative flex h-10 items-center justify-center gap-2 overflow-hidden rounded-full px-4"
-              aria-label="You're in"
-            >
-              <div className="dock-glass-lens opacity-35" aria-hidden />
-              <span className="relative z-[1] size-5 shrink-0">
-                <span className="absolute inset-[1.75%_9.57%_0_12.5%]">
-                  <img
-                    alt=""
-                    src={locusThumbsUpIcon}
-                    className="absolute inset-0 size-full max-w-none brightness-0 invert"
-                    draggable={false}
-                    loading="lazy"
-                    decoding="async"
-                  />
+          <div
+            className={`flex w-full justify-center ${
+              isReceivedLight ? "pt-2" : "border-t border-white/10 pt-2"
+            }`}
+          >
+            {isReceivedLight ? (
+              <div className="flex items-center justify-center gap-2" aria-label="You're in">
+                <img
+                  alt=""
+                  src={locusThumbsUpInIcon}
+                  className="size-8 shrink-0"
+                  draggable={false}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span
+                  className="whitespace-nowrap text-[13px] font-normal leading-[1.4] text-black"
+                  style={{ fontFamily: FONT }}
+                >
+                  You’re In
                 </span>
-              </span>
-              <span
-                className="relative z-[1] text-[13px] font-medium text-[#0fc950]"
-                style={{ fontFamily: FONT }}
+              </div>
+            ) : (
+              <div
+                className="crcle-glass-btn crcle-glass-btn--success relative flex h-10 items-center justify-center gap-2 overflow-hidden rounded-full px-4"
+                aria-label="You're in"
               >
-                You&apos;re In
-              </span>
-            </div>
+                <div className="dock-glass-lens opacity-35" aria-hidden />
+                <span className="relative z-[1] size-5 shrink-0">
+                  <span className="absolute inset-[1.75%_9.57%_0_12.5%]">
+                    <img
+                      alt=""
+                      src={locusThumbsUpIcon}
+                      className="absolute inset-0 size-full max-w-none brightness-0 invert"
+                      draggable={false}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </span>
+                </span>
+                <span
+                  className="relative z-[1] text-[13px] font-medium text-[#0fc950]"
+                  style={{ fontFamily: FONT }}
+                >
+                  You&apos;re In
+                </span>
+              </div>
+            )}
           </div>
         ) : null}
 
