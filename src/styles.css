@@ -1906,9 +1906,23 @@
   z-index: 1;
 }
 
+/* Figma 769:206163 — sent signal on the outgoing side */
 .crcle-signal-card--sent {
-  background: rgba(2, 3, 29, 0.4);
+  background: rgba(247, 246, 242, 0.8);
   border-radius: 36px 36px 4px 36px;
+}
+
+.crcle-signal-card--sent .crcle-signal-card-icon img {
+  filter: brightness(0);
+}
+
+.crcle-signal-card--sent .crcle-signal-card-venue {
+  background: #dbdad9;
+  border: 1px solid rgba(2, 3, 29, 0.3);
+}
+
+.crcle-signal-card--sent .crcle-signal-card-venue-text {
+  color: rgba(2, 3, 29, 0.4);
 }
 
 /* Figma 769:204963 — received light: hairline frame, no fill */

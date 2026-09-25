@@ -18,6 +18,14 @@ import locusPizzaIcon from "@/assets/crcle/locus/pizza.svg";
 import locusPlusIcon from "@/assets/crcle/locus/plus.svg";
 import locusRainFillIcon from "@/assets/crcle/locus/rain-fill.svg";
 import locusSendLightIcon from "@/assets/crcle/locus/send-light.svg";
+import locusSentCrosshairIcon from "@/assets/crcle/locus/sent-crosshair.svg";
+import locusSentDotIcon from "@/assets/crcle/locus/sent-dot.svg";
+import locusSentMoonIcon from "@/assets/crcle/locus/sent-moon.svg";
+import locusSentPenIcon from "@/assets/crcle/locus/sent-pen.svg";
+import locusSentPinIcon from "@/assets/crcle/locus/sent-pin.svg";
+import locusSentPlusIcon from "@/assets/crcle/locus/sent-plus.svg";
+import locusSentRainIcon from "@/assets/crcle/locus/sent-rain.svg";
+import locusSentTrashIcon from "@/assets/crcle/locus/sent-trash.svg";
 import locusSunDuotoneIcon from "@/assets/crcle/locus/sun-duotone.svg";
 import locusSunFillIcon from "@/assets/crcle/locus/sun-fill.svg";
 import locusThumbsUpIcon from "@/assets/crcle/locus/thumbs-up.svg";
@@ -535,33 +543,83 @@ export function SignalCard({
   onAccept,
   onRaincheck,
   onCounterPropose,
+  onDelete,
+  counterpartyName = "Jane",
   isLight = false,
 }: {
   signal: SignalCardModel;
   onAccept: () => void;
   onRaincheck: () => void;
   onCounterPropose: () => void;
+  onDelete?: () => void;
+  counterpartyName?: string;
   isLight?: boolean;
 }) {
   const [counterText, setCounterText] = useState("Try tomorrow instead");
   const [responseOpen, setResponseOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const activity = ACTIVITIES.find((a) => a.id === signal.activityId) ?? ACTIVITIES[1];
   const timeGlyph = TIME_GLYPH[signal.timeOfDay];
   const isSent = signal.direction === "sent";
   const isReceivedLight = isLight && !isSent;
   const canRespond = !isSent && signal.status === "pending";
+  const canEdit = isSent && signal.status !== "raincheck";
   const showResponsePill = canRespond && responseOpen;
+  const showEditToolbar = canEdit && editOpen;
   const prompt = isSent
     ? `Up for ${signal.activityLabel.toLowerCase()} ${signal.when.toLowerCase()} ${signal.timeOfDay}?`
     : `Up for ${signal.activityLabel} ${signal.when.toLowerCase()}?`;
 
   return (
     <div
-      className={`relative flex w-full max-w-[286px] flex-col gap-3 ${
-        isSent ? "items-end self-end" : "items-start self-start"
+      className={`relative flex w-full max-w-[286px] flex-col ${
+        isSent ? "items-end self-end gap-2" : "items-start self-start gap-3"
       }`}
     >
       <AnimatePresence>
+        {showEditToolbar ? (
+          <motion.div
+            key="signal-edit-toolbar"
+            initial={{ opacity: 0, y: 6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.98 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            className="flex h-14 items-center gap-3 rounded-[56px] bg-white/15 p-3"
+          >
+            <button
+              type="button"
+              aria-label="Edit signal"
+              className="flex size-6 shrink-0 items-center justify-center"
+            >
+              <img
+                alt=""
+                src={locusSentPenIcon}
+                className="size-6 max-w-none"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+            <button
+              type="button"
+              aria-label="Delete signal"
+              onClick={() => {
+                setEditOpen(false);
+                onDelete?.();
+              }}
+              className="flex size-6 shrink-0 items-center justify-center"
+            >
+              <img
+                alt=""
+                src={locusSentTrashIcon}
+                className="h-5 w-[18px] max-w-none object-contain"
+                draggable={false}
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </motion.div>
+        ) : null}
         {showResponsePill ? (
           <motion.div
             key="signal-response-pill"
@@ -617,7 +675,7 @@ export function SignalCard({
       <div
         className={`crcle-signal-card flex w-full flex-col p-4 text-left ${
           isSent
-            ? "crcle-signal-card--sent gap-4"
+            ? "crcle-signal-card--sent gap-6 rounded-tl-[36px] rounded-tr-[36px] rounded-br-[4px] rounded-bl-[36px]"
             : "crcle-signal-card--received gap-6 rounded-tl-[36px] rounded-tr-[36px] rounded-br-[36px] rounded-bl-[4px]"
         } ${isLight && !isSent ? "crcle-signal-card--received-light" : ""}`}
       >
@@ -628,7 +686,7 @@ export function SignalCard({
           <span className="crcle-signal-card-crosshair relative block size-6 shrink-0">
             <img
               alt=""
-              src={locusCrosshairPlusIcon}
+              src={isSent ? locusSentCrosshairIcon : locusCrosshairPlusIcon}
               className="size-6 max-w-none"
               draggable={false}
               loading="lazy"
@@ -648,14 +706,16 @@ export function SignalCard({
           <div className="flex w-full items-start justify-center gap-2">
             <span
               className={`crcle-signal-card-time flex shrink-0 items-center justify-center rounded-[24px] ${
-                isReceivedLight
-                  ? "border border-[rgba(0,0,0,0.25)]"
-                  : "size-[46px]"
+                isSent
+                  ? "border border-[rgba(2,3,29,0.3)] bg-[rgba(247,246,242,0.4)] p-2.5"
+                  : isReceivedLight
+                    ? "border border-[rgba(0,0,0,0.25)]"
+                    : "size-[46px]"
               }`}
             >
               <img
                 alt=""
-                src={timeGlyph.icon}
+                src={isSent && signal.timeOfDay === "evening" ? locusSentMoonIcon : timeGlyph.icon}
                 className="size-6 max-w-none object-contain object-center"
                 draggable={false}
                 loading="lazy"
@@ -665,12 +725,16 @@ export function SignalCard({
 
             <div
               className={`crcle-signal-card-venue flex min-w-0 flex-1 items-center rounded-[24px] ${
-                isReceivedLight ? "" : "gap-1.5 py-1 pl-3 pr-1"
+                isSent
+                  ? "h-11 gap-1.5 py-0.5 pl-3 pr-1"
+                  : isReceivedLight
+                    ? ""
+                    : "gap-1.5 py-1 pl-3 pr-1"
               }`}
             >
               <img
                 alt=""
-                src={locusPinRedIcon}
+                src={isSent ? locusSentPinIcon : locusPinRedIcon}
                 className="size-4 shrink-0 object-contain"
                 draggable={false}
                 loading="lazy"
@@ -684,23 +748,36 @@ export function SignalCard({
               </span>
               <button
                 type="button"
-                aria-label={responseOpen ? "Hide response options" : "Show response options"}
-                aria-expanded={responseOpen}
-                disabled={!canRespond}
+                aria-label={
+                  isSent
+                    ? editOpen
+                      ? "Hide edit options"
+                      : "Edit signal"
+                    : responseOpen
+                      ? "Hide response options"
+                      : "Show response options"
+                }
+                aria-expanded={isSent ? editOpen : responseOpen}
+                disabled={!isSent && !canRespond}
                 onClick={(e) => {
                   e.stopPropagation();
                   if (canRespond) setResponseOpen((open) => !open);
+                  if (canEdit) setEditOpen((open) => !open);
                 }}
                 className={`crcle-signal-card-plus relative flex shrink-0 items-center justify-center overflow-hidden transition hover:brightness-110 disabled:opacity-50 ${
-                  isReceivedLight
-                    ? "crcle-glass-btn size-9 rounded-[24px] p-2.5"
-                    : "crcle-glass-btn size-10 rounded-[40px] p-1 backdrop-blur-[12px]"
+                  isSent
+                    ? "size-9 rounded-[24px] bg-[rgba(2,3,29,0.1)] p-2.5"
+                    : isReceivedLight
+                      ? "crcle-glass-btn size-9 rounded-[24px] p-2.5"
+                      : "crcle-glass-btn size-10 rounded-[40px] p-1 backdrop-blur-[12px]"
                 } ${responseOpen && canRespond ? "is-open brightness-110" : ""}`}
               >
-                {!isReceivedLight ? <div className="dock-glass-lens opacity-40" aria-hidden /> : null}
+                {!isSent && !isReceivedLight ? (
+                  <div className="dock-glass-lens opacity-40" aria-hidden />
+                ) : null}
                 <img
                   alt=""
-                  src={locusPlusIcon}
+                  src={isSent ? locusSentPlusIcon : locusPlusIcon}
                   className="relative z-[1] size-5 max-w-none"
                   draggable={false}
                   loading="lazy"
@@ -711,7 +788,7 @@ export function SignalCard({
           </div>
         </div>
 
-        {signal.status === "accepted" ? (
+        {signal.status === "accepted" && !isSent ? (
           <div
             className={`flex w-full justify-center ${
               isReceivedLight ? "pt-2" : "border-t border-white/10 pt-2"
@@ -755,7 +832,31 @@ export function SignalCard({
           </div>
         ) : null}
 
-        {signal.status === "raincheck" ? (
+        {signal.status === "raincheck" && isSent ? (
+          <div className="flex w-full flex-col items-center gap-2">
+            <img alt="" src={locusSentDotIcon} className="size-[3px] shrink-0" draggable={false} />
+            <div className="flex items-center justify-center gap-1.5">
+              <span className="relative flex size-8 shrink-0 items-center justify-center">
+                <img
+                  alt=""
+                  src={locusSentRainIcon}
+                  className="h-[24px] w-6 max-w-none"
+                  draggable={false}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span
+                className="whitespace-nowrap text-center text-[13px] font-normal leading-[1.4] text-[#02031d]"
+                style={{ fontFamily: FONT }}
+              >
+                {counterpartyName} Rainchecked
+              </span>
+            </div>
+          </div>
+        ) : null}
+
+        {signal.status === "raincheck" && !isSent ? (
           <div
             className="flex w-full items-center justify-between rounded-[36px] border border-[rgba(247,246,242,0.1)] bg-[#010211] py-1 pl-4 pr-1"
             onClick={(e) => e.stopPropagation()}

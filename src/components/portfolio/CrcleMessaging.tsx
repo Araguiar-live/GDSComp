@@ -602,6 +602,7 @@ export function CrcleMessaging({
                       : s,
                   )
                 }
+                onDeleteSignal={() => setSignalCard(null)}
               />
               <TheLocusDrawer
                 open={locusOpen}
@@ -1441,6 +1442,7 @@ function ChatThread({
   onAcceptSignal,
   onRaincheckSignal,
   onCounterPropose,
+  onDeleteSignal,
 }: {
   conversation: ChatConversation | null;
   signal: SignalCardModel | null;
@@ -1448,6 +1450,7 @@ function ChatThread({
   onAcceptSignal: () => void;
   onRaincheckSignal: () => void;
   onCounterPropose: () => void;
+  onDeleteSignal: () => void;
 }) {
   const messages = conversation?.messages ?? [];
 
@@ -1507,14 +1510,16 @@ function ChatThread({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: 0.32, ease: EASE }}
-            className="flex w-full justify-start"
+            className={`flex w-full ${signal.direction === "sent" ? "justify-end" : "justify-start"}`}
           >
             <SignalCard
               signal={signal}
               isLight={isLight}
+              counterpartyName={conversation?.userName.split(" ")[0] ?? "Jane"}
               onAccept={onAcceptSignal}
               onRaincheck={onRaincheckSignal}
               onCounterPropose={onCounterPropose}
+              onDelete={onDeleteSignal}
             />
           </motion.div>
         ) : null}
