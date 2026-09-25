@@ -711,7 +711,7 @@ export function SignalCard({
         </div>
 
         {signal.status === "accepted" ? (
-          <div className="flex w-full justify-center border-t border-white/10 pt-3">
+          <div className="flex w-full justify-center border-t border-white/10 pt-2">
             <div
               className="crcle-glass-btn crcle-glass-btn--success relative flex h-10 items-center justify-center gap-2 overflow-hidden rounded-full px-4"
               aria-label="You're in"
