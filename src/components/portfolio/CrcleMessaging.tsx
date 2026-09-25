@@ -1033,11 +1033,14 @@ function MessagingOnboarding({
                 type="button"
                 onClick={onClose}
                 aria-label="Close onboarding"
-                className="flex h-10 shrink-0 items-center justify-center rounded-[24px] border border-[#f7f6f2] bg-[rgba(253,252,251,0.2)] px-2 py-0.5 backdrop-blur-[6px]"
+                className="box-border flex h-10 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-[#f7f6f2] bg-[rgba(253,252,251,0.2)] backdrop-blur-[6px]"
               >
-                <span className="flex size-8 items-center justify-center">
-                  <IconImg src={closeAddIcon} className="size-6" />
-                </span>
+                <img
+                  alt=""
+                  src={closeAddIcon}
+                  className="size-6 max-w-none"
+                  draggable={false}
+                />
               </button>
             </div>
 
