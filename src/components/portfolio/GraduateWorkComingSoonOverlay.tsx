@@ -19,7 +19,6 @@ const ESCALATOR_RAIL: OverlayRailProject[] = [
   { id: "poqy", title: "Poqy", image: poqyRail },
   { id: "strolla", title: "Strolla", image: strollaRail },
   { id: "roamer", title: "Roamer", image: roamerRail },
-  { id: "artaeka", title: "Artaeka", image: featuredHero },
   { id: "beese", title: "Beese", image: beeseRail },
 ];
 
