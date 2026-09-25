@@ -11,6 +11,7 @@ import navUserIcon from "@/assets/crcle/nav-user-figma.svg";
 import arrowLeftIcon from "@/assets/crcle/arrow-left.svg";
 import moreHorizIcon from "@/assets/crcle/more-horiz.svg";
 import moreDotsIcon from "@/assets/crcle/more-dots.svg";
+import closeAddIcon from "@/assets/crcle/onboarding/close-add.svg";
 import { useCrcleBroadcast, useCrcleIncognito } from "@/components/portfolio/crcleBroadcast";
 
 export type CrcleDockTab = "profile" | "signal" | "messages";
@@ -498,6 +499,23 @@ export function CrcleHeaderNavPill({
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * Onboarding dismiss control — Figma 322:117840.
+ * 48×40 cream glass pill, shared by every CRCLE onboarding sheet.
+ */
+export function CrcleOnboardingCloseButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="Close onboarding"
+      className="box-border flex h-10 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-[#f7f6f2] bg-[rgba(253,252,251,0.2)] backdrop-blur-[6px]"
+    >
+      <img alt="" src={closeAddIcon} className="size-6 max-w-none" draggable={false} />
+    </button>
   );
 }
 

@@ -21,7 +21,6 @@ import chatHeaderBlobB from "@/assets/crcle/chat-header-blob-b.svg";
 import chatHeaderBlobC from "@/assets/crcle/chat-header-blob-c.svg";
 import chatHeaderBlobD from "@/assets/crcle/chat-header-blob-d.svg";
 import chatDotsIcon from "@/assets/crcle/onboarding/chat-dots.svg";
-import closeAddIcon from "@/assets/crcle/onboarding/close-add.svg";
 import listIcon from "@/assets/crcle/onboarding/list.svg";
 import message2Icon from "@/assets/crcle/onboarding/message-2.svg";
 import onboardLaptopIcon from "@/assets/crcle/onboarding/laptop-mini.svg";
@@ -33,6 +32,7 @@ import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
   CrcleBackButton,
   CrcleMoreButton,
+  CrcleOnboardingCloseButton,
   CrclePrimaryDock,
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
@@ -1029,19 +1029,7 @@ function MessagingOnboarding({
         <div className="flex min-h-0 flex-1 flex-col items-center gap-[39px]">
           <div className="flex w-full shrink-0 flex-col items-center gap-9">
             <div className="flex w-full flex-col items-end">
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close onboarding"
-                className="box-border flex h-10 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-[#f7f6f2] bg-[rgba(253,252,251,0.2)] backdrop-blur-[6px]"
-              >
-                <img
-                  alt=""
-                  src={closeAddIcon}
-                  className="size-6 max-w-none"
-                  draggable={false}
-                />
-              </button>
+              <CrcleOnboardingCloseButton onClick={onClose} />
             </div>
 
             <IconImg src={message2Icon} className="size-9 shrink-0" />

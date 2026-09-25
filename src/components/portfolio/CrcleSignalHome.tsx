@@ -8,7 +8,6 @@ import arrowChevronIcon from "@/assets/crcle/arrow-chevron.svg";
 import locusCloseIcon from "@/assets/crcle/locus/close-x.svg";
 import locusPinIcon from "@/assets/crcle/locus/pin.svg";
 import locusSendLightIcon from "@/assets/crcle/locus/send-light.svg";
-import closeAddIcon from "@/assets/crcle/onboarding/close-add.svg";
 import radarFireIcon from "@/assets/crcle/onboarding/radar-fire.svg";
 import radarHeartIcon from "@/assets/crcle/onboarding/radar-heart.svg";
 import radarLaptopIcon from "@/assets/crcle/onboarding/radar-laptop.svg";
@@ -30,6 +29,7 @@ import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
   CrcleBackButton,
   CrcleHeaderNavPill,
+  CrcleOnboardingCloseButton,
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
 } from "@/components/portfolio/CrcleChrome";
@@ -673,15 +673,7 @@ function SignalOnboarding({
       <div className="flex min-h-0 flex-1 flex-col px-9 pb-11 pt-[112px]">
         <div className="flex min-h-0 flex-1 flex-col">
           <div className="mb-[12px] flex w-full shrink-0 flex-col items-end">
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close onboarding"
-              className="crcle-glass-btn relative flex h-10 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[24px] px-2 py-0.5"
-            >
-              <div className="dock-glass-lens opacity-40" aria-hidden />
-              <IconImg src={closeAddIcon} className="relative z-[1] size-6" />
-            </button>
+            <CrcleOnboardingCloseButton onClick={onClose} />
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain">

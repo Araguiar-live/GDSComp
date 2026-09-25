@@ -15,7 +15,6 @@ import linkInnerIcon from "@/assets/crcle/link-inner.svg";
 import locusCloseIcon from "@/assets/crcle/locus/close-x.svg";
 import locusPlusIcon from "@/assets/crcle/locus/plus.svg";
 import mapPinIcon from "@/assets/crcle/map-pin.svg";
-import radarCloseIcon from "@/assets/crcle/onboarding/radar-close.svg";
 import radarDividerIcon from "@/assets/crcle/onboarding/radar-divider.svg";
 import radarFireIcon from "@/assets/crcle/onboarding/radar-fire.svg";
 import radarHeartIcon from "@/assets/crcle/onboarding/radar-heart.svg";
@@ -49,6 +48,7 @@ import unlockIcon from "@/assets/crcle/unlock.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
+  CrcleOnboardingCloseButton,
   CrclePrimaryDock,
   CrcleThemeToggle,
   crcleThemeToggleAboveClass,
@@ -798,15 +798,7 @@ function RadarOnboarding({ onClose, onContinue }: { onClose: () => void; onConti
         <div className="flex min-h-0 flex-1 flex-col items-center gap-[39px]">
           <div className="flex w-full shrink-0 flex-col items-center gap-9">
             <div className="flex w-full flex-col items-end">
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close onboarding"
-                className="crcle-glass-btn relative flex h-10 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[24px] px-2 py-0.5"
-              >
-                <div className="dock-glass-lens opacity-40" aria-hidden />
-                <IconImg src={radarCloseIcon} className="relative z-[1] size-6" />
-              </button>
+              <CrcleOnboardingCloseButton onClick={onClose} />
             </div>
 
             <IconImg src={radarOutlineIcon} className="size-9 shrink-0" />

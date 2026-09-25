@@ -56,7 +56,6 @@ import workBriefcaseIcon from "@/assets/crcle/profile/work-briefcase.svg";
 import workLogoPreviewIcon from "@/assets/crcle/profile/work-logo-preview.svg";
 import workMarkIcon from "@/assets/crcle/profile/work-mark.svg";
 import logoRadioDotIcon from "@/assets/crcle/profile/logo-radio-dot.svg";
-import closeAddIcon from "@/assets/crcle/onboarding/close-add.svg";
 import shareIcon from "@/assets/crcle/share.svg";
 import shareInnerIcon from "@/assets/crcle/share-inner.svg";
 import wifiIcon from "@/assets/crcle/wifi.svg";
@@ -64,6 +63,7 @@ import { CrcleMoodSwitch, PROFILE_MOOD_IDS } from "@/components/portfolio/CrcleM
 import { CrclePhoneFrame } from "@/components/portfolio/CrclePhoneFrame";
 import {
   CrcleMoreButtonSpacer,
+  CrcleOnboardingCloseButton,
   CrclePrimaryDock,
   CrcleStickyMoreButton,
   CrcleThemeToggle,
@@ -470,15 +470,7 @@ function ProfileOnboarding({
     >
       <div className="flex min-h-0 flex-1 flex-col px-3 pb-11 pt-[112px]">
         <div className="flex w-full shrink-0 flex-col items-end gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close onboarding"
-            className="crcle-glass-btn relative flex h-10 shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-[#f7f6f2] px-2 py-0.5 backdrop-blur-[6px]"
-          >
-            <div className="dock-glass-lens opacity-40" aria-hidden />
-            <IconImg src={closeAddIcon} className="relative z-[1] size-6" />
-          </button>
+          <CrcleOnboardingCloseButton onClick={onClose} />
 
           <div className="w-full overflow-hidden rounded-[24px] border border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.2)] backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]">
             <div className="border-b border-[rgba(255,255,255,0.05)] px-4 py-4">
