@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import handleIcon from "@/assets/crcle/area/handle.svg";
 import batteryIcon from "@/assets/crcle/battery.svg";
@@ -450,7 +450,6 @@ export function CrcleSignalHome({
                       onClick={() => {
                         setScreen("photo");
                         setSignalStrength(33);
-                        setLight(false);
                       }}
                       className={`absolute inset-0 z-0 flex flex-col items-center justify-center gap-2 px-3 pt-24 transition active:scale-[0.995] ${
                         light ? "hover:bg-black/[0.03]" : "hover:bg-white/[0.03]"
@@ -639,6 +638,7 @@ export function CrcleSignalHome({
                   if (!signalOff) onGoToRadar?.();
                 }}
                 onGoToProfile={() => onGoToProfile?.()}
+                onDismiss={() => setSignalActivated(false)}
                 recommendationsDisabled={signalOff}
               />
             ) : null}
@@ -1395,16 +1395,19 @@ function SignalCompleteSheet({
   backdropImage,
   onGoToRecommendations,
   onGoToProfile,
+  onDismiss,
   recommendationsDisabled = false,
 }: {
   anchor: { top: number; left: number; width: number; height: number };
   backdropImage?: string;
   onGoToRecommendations: () => void;
   onGoToProfile: () => void;
+  onDismiss: () => void;
   recommendationsDisabled?: boolean;
 }) {
   const inset = 11;
   const offscreen = `calc(-100% - ${anchor.top + inset}px)`;
+  const dragControls = useDragControls();
 
   return (
     <motion.div
@@ -1415,6 +1418,16 @@ function SignalCompleteSheet({
       animate={{ y: 0 }}
       exit={{ y: offscreen }}
       transition={{ duration: 0.42, ease: EASE }}
+      drag="y"
+      dragControls={dragControls}
+      dragListener={false}
+      dragMomentum={false}
+      dragSnapToOrigin
+      dragConstraints={{ top: -(anchor.top + inset + 280), bottom: 0 }}
+      dragElastic={0.08}
+      onDragEnd={(_, info) => {
+        if (info.offset.y < -56 || info.velocity.y < -420) onDismiss();
+      }}
       className="crcle-signal-complete-sheet crcle-signal-complete-sheet--framed pointer-events-auto absolute z-[60] overflow-hidden rounded-[24px] border border-[rgba(253,252,251,0.7)]"
       style={{
         top: anchor.top + inset,
@@ -1483,14 +1496,19 @@ function SignalCompleteSheet({
               Go back to profile
             </button>
           </div>
-          <img
-            alt=""
-            src={handleIcon}
-            className="h-[3px] w-[66px] max-w-none object-contain opacity-70"
-            draggable={false}
-            loading="lazy"
-            decoding="async"
-          />
+          <button
+            type="button"
+            aria-label="Slide back into the frame"
+            className="flex h-6 w-full cursor-grab items-center justify-center touch-none active:cursor-grabbing"
+            onPointerDown={(event) => dragControls.start(event)}
+          >
+            <img
+              alt=""
+              src={handleIcon}
+              className="pointer-events-none h-[3px] w-[66px] max-w-none object-contain opacity-70"
+              draggable={false}
+            />
+          </button>
         </div>
     </motion.div>
   );
