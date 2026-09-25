@@ -1347,7 +1347,7 @@ function SentReceivedToggle({
     <div
       role="tablist"
       aria-label="Notification direction"
-      className="crcle-glass-btn flex w-[178px] items-center gap-1 rounded-[24px] bg-transparent p-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)] backdrop-blur-[8px]"
+      className="crcle-glass-btn flex w-[178px] items-center gap-1 rounded-[24px] bg-transparent p-1 opacity-70 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)] backdrop-blur-[8px]"
     >
       {(["sent", "received"] as const).map((key) => {
         const active = tab === key;
