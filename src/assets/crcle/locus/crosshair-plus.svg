@@ -1,0 +1,9 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 16V21M12 3V8M16 12H21M3 12H8" stroke="url(#crcle-crosshair-plus)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="crcle-crosshair-plus" x1="5.75" y1="6" x2="17.75" y2="19.25" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7F6F2" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#F7F6F2" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+</svg>

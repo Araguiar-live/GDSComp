@@ -4,6 +4,7 @@ import locusCinemaIcon from "@/assets/crcle/locus/cinema.svg";
 import locusCloseIcon from "@/assets/crcle/locus/close-x.svg";
 import locusCoffeeIcon from "@/assets/crcle/locus/coffee.svg";
 import locusCrosshairIcon from "@/assets/crcle/locus/crosshair.svg";
+import locusCrosshairPlusIcon from "@/assets/crcle/locus/crosshair-plus.svg";
 import locusDinnerAIcon from "@/assets/crcle/locus/dinner-a.svg";
 import locusDinnerBIcon from "@/assets/crcle/locus/dinner-b.svg";
 import locusIcecreamAIcon from "@/assets/crcle/locus/icecream-a.svg";
@@ -624,16 +625,14 @@ export function SignalCard({
             {activity.icon}
           </span>
           <span className="crcle-signal-card-crosshair relative block size-6 shrink-0">
-            <span className="absolute inset-[12.5%]">
-              <img
-                alt=""
-                src={locusCrosshairIcon}
-                className="absolute inset-[-5.56%] size-[111.12%] max-w-none"
-                draggable={false}
-                loading="lazy"
-                decoding="async"
-              />
-            </span>
+            <img
+              alt=""
+              src={locusCrosshairPlusIcon}
+              className="size-6 max-w-none"
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+            />
           </span>
         </div>
 

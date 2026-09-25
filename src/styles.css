@@ -1930,8 +1930,7 @@
   color: #000;
 }
 
-.crcle-signal-card-icon img,
-.crcle-signal-card-crosshair img {
+.crcle-signal-card-icon img {
   filter: brightness(0) invert(1);
 }
 
@@ -1967,7 +1966,7 @@
 }
 
 .crcle-signal-card--received-light .crcle-signal-card-crosshair img {
-  filter: none;
+  filter: brightness(0);
 }
 
 .crcle-signal-card--received-light .crcle-signal-card-venue {
