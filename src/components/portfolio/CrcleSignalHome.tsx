@@ -137,9 +137,9 @@ export function CrcleSignalHome({
     onGoToMessages?.();
   }, [onGoToMessages]);
 
-  const showPhoneChrome =
-    !onboardingOpen && !tuneOpen && !intentOpen && !locationOpen && !menuOpen && !sharecodeOpen;
-
+  // Popups (location, intent, tune, menu, sharecode) overlay the home.
+  // Chrome stays mounted so the photo frame, nav, and footer do not reflow.
+  const showPhoneChrome = !onboardingOpen;
   const showFooterSignal = showPhoneChrome;
 
   const enableIncognito = useCallback(() => {
