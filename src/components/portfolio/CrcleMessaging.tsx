@@ -1020,7 +1020,7 @@ function MessagingOnboarding({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.28, ease: EASE }}
-      className="absolute inset-0 z-[55] flex flex-col overflow-hidden bg-[rgba(2,3,29,0.6)] backdrop-blur-[8px]"
+      className="absolute inset-0 z-[55] flex flex-col overflow-hidden rounded-[53px] bg-[rgba(2,3,29,0.6)] backdrop-blur-[8px]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="messaging-onboarding-title"
@@ -1035,7 +1035,9 @@ function MessagingOnboarding({
                 aria-label="Close onboarding"
                 className="flex h-10 shrink-0 items-center justify-center rounded-[24px] border border-[#f7f6f2] bg-[rgba(253,252,251,0.2)] px-2 py-0.5 backdrop-blur-[6px]"
               >
-                <IconImg src={closeAddIcon} className="size-6" />
+                <span className="flex size-8 items-center justify-center">
+                  <IconImg src={closeAddIcon} className="size-6" />
+                </span>
               </button>
             </div>
 
