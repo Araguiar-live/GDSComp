@@ -3203,9 +3203,9 @@
 }
 
 .interactive-hero__frost {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  opacity: calc(0.85 - var(--hero-scroll) * 0.35);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: calc(1 - var(--hero-scroll) * 0.25);
   -webkit-mask-image: radial-gradient(
     ellipse 92% 82% at 50% 46%,
     rgba(0, 0, 0, 1) 0%,
