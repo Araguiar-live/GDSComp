@@ -8,22 +8,25 @@ import {
   useCrcleVerifyOpen,
 } from "@/components/portfolio/crcleBroadcast";
 
-/** Figma 530:151835 — row hover gradients + play accent per project */
+/**
+ * Figma 530:151835 — row hover gradients + play accent per project.
+ * Hue is 30% less saturated than the wireframe accents, and the tint is 30% lighter.
+ */
 const ROW_HOVER: Record<string, { gradient: string; playColor: string }> = {
   crcle: {
     gradient:
-      "linear-gradient(90deg, rgba(2, 3, 29, 0.22) 0%, rgba(255, 255, 255, 0.28) 100%)",
-    playColor: "#02031D",
+      "linear-gradient(90deg, rgba(3, 3, 22, 0.154) 0%, rgba(255, 255, 255, 0.28) 100%)",
+    playColor: "#030316",
   },
   "first-design": {
     gradient:
-      "linear-gradient(90deg, rgba(139, 92, 247, 0.32) 0%, rgba(255, 255, 255, 0.28) 100%)",
-    playColor: "#8B5CF6",
+      "linear-gradient(90deg, rgba(131, 98, 207, 0.224) 0%, rgba(255, 255, 255, 0.28) 100%)",
+    playColor: "#8362CF",
   },
   odicci: {
     gradient:
-      "linear-gradient(90deg, rgba(255, 81, 38, 0.36) 0%, rgba(255, 255, 255, 0.28) 100%)",
-    playColor: "#FF5126",
+      "linear-gradient(90deg, rgba(213, 91, 61, 0.252) 0%, rgba(255, 255, 255, 0.28) 100%)",
+    playColor: "#D55B3D",
   },
 };
 
