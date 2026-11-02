@@ -2,7 +2,6 @@
   var STORAGE_KEY = "book-space-travel";
 
   var DESTINATION_LABELS = {
-    "low-earth-orbit": "Low Earth orbit",
     "the-moon": "The Moon",
     mars: "Mars"
   };
@@ -50,17 +49,34 @@
 
     if (details) {
       var name = document.getElementById("full-name");
-      var address = document.getElementById("address");
+      var line1 = document.getElementById("address-line-1");
+      var town = document.getElementById("town");
+      var postcode = document.getElementById("postcode");
+      var manual = document.getElementById("manual-address");
       if (name && typeof data["full-name"] === "string") {
         name.value = data["full-name"];
       }
-      if (address && typeof data.address === "string") {
-        address.value = data.address;
+      if (line1 && typeof data["address-line-1"] === "string") {
+        line1.value = data["address-line-1"];
+      } else if (line1 && typeof data.address === "string") {
+        line1.value = data.address;
+      }
+      if (town && typeof data.town === "string") {
+        town.value = data.town;
+      }
+      if (postcode && typeof data.postcode === "string") {
+        postcode.value = data.postcode;
+      }
+      if (manual && ((line1 && line1.value) || (town && town.value) || (postcode && postcode.value))) {
+        manual.hidden = false;
       }
       details.addEventListener("submit", function () {
         var next = load();
         next["full-name"] = name ? name.value.trim() : "";
-        next.address = address ? address.value.trim() : "";
+        next["address-line-1"] = line1 ? line1.value.trim() : "";
+        next.town = town ? town.value.trim() : "";
+        next.postcode = postcode ? postcode.value.trim() : "";
+        next.address = [next["address-line-1"], next.town, next.postcode].filter(Boolean).join(", ");
         delete next.email;
         save(next);
       });
