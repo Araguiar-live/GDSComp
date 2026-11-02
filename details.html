@@ -70,11 +70,24 @@
       <div class="govuk-form-group">
         <label class="govuk-label" for="postcode">Postcode</label>
         <p class="govuk-error-message" id="postcode-error" style="display: none;">
-          <span class="govuk-visually-hidden">Error:</span> Enter your postcode
+          <span class="govuk-visually-hidden">Error:</span> Enter a postcode
         </p>
         <input class="govuk-input govuk-input--width-10" id="postcode" name="postcode" type="text" autocomplete="postal-code" spellcheck="false">
       </div>
       <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="find-address">Find address</button>
+      <div id="address-results" hidden>
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="address-select">Select an address</label>
+          <p class="govuk-error-message" id="address-select-error" style="display: none;">
+            <span class="govuk-visually-hidden">Error:</span> Select an address
+          </p>
+          <select class="govuk-select" id="address-select" name="address-select">
+            <option value="">1 address found</option>
+            <option value="10 Downing Street, London, SW1A 2AA">10 Downing Street, London, SW1A 2AA</option>
+          </select>
+        </div>
+        <p class="govuk-body"><a class="govuk-link" href="#address-line-1" id="enter-address-manually">Enter address manually</a></p>
+      </div>
       <div id="manual-address" hidden>
         <div class="govuk-form-group">
           <label class="govuk-label" for="address-line-1">Address line 1</label>
@@ -165,19 +178,20 @@
 <script>
 (function () {
   var STORAGE_KEY = "book-space-travel";
-  var fields = [
-    { inputId: "full-name", errorId: "name-error", message: "Enter your full name", key: "full-name" },
-    { inputId: "address-line-1", errorId: "address-line-1-error", message: "Enter address line 1", key: "address-line-1" },
-    { inputId: "town", errorId: "town-error", message: "Enter your town or city", key: "town" },
-    { inputId: "postcode", errorId: "postcode-error", message: "Enter your postcode", key: "postcode" }
-  ];
+  var fields = {
+    name: { inputId: "full-name", errorId: "name-error", message: "Enter your full name", key: "full-name" },
+    postcode: { inputId: "postcode", errorId: "postcode-error", message: "Enter a postcode", key: "postcode" },
+    select: { inputId: "address-select", errorId: "address-select-error", message: "Select an address", key: "address-select" },
+    line1: { inputId: "address-line-1", errorId: "address-line-1-error", message: "Enter address line 1", key: "address-line-1" },
+    town: { inputId: "town", errorId: "town-error", message: "Enter your town or city", key: "town" }
+  };
 
   function clearField(field) {
     var input = document.getElementById(field.inputId);
     var error = document.getElementById(field.errorId);
     var group = input.closest(".govuk-form-group");
     error.style.display = "none";
-    input.classList.remove("govuk-input--error", "govuk-textarea--error");
+    input.classList.remove("govuk-input--error", "govuk-textarea--error", "govuk-select--error");
     if (group) {
       group.classList.remove("govuk-form-group--error");
     }
@@ -196,7 +210,7 @@
     var error = document.getElementById(field.errorId);
     var group = input.closest(".govuk-form-group");
     error.style.display = "";
-    input.classList.add(input.tagName === "TEXTAREA" ? "govuk-textarea--error" : "govuk-input--error");
+    input.classList.add(input.tagName === "SELECT" ? "govuk-select--error" : "govuk-input--error");
     if (group) {
       group.classList.add("govuk-form-group--error");
     }
@@ -218,31 +232,91 @@
       return;
     }
 
+    function valueOf(field) {
+      return document.getElementById(field.inputId).value.trim();
+    }
+
     document.getElementById("find-address").addEventListener("click", function () {
+      if (!valueOf(fields.postcode)) {
+        showField(fields.postcode);
+        document.getElementById("address-results").hidden = true;
+        document.getElementById("manual-address").hidden = true;
+        document.getElementById("postcode").focus();
+        return;
+      }
+      clearField(fields.postcode);
+      document.getElementById("address-results").hidden = false;
+      document.getElementById("address-select").focus();
+    });
+
+    document.getElementById("enter-address-manually").addEventListener("click", function (event) {
+      event.preventDefault();
       document.getElementById("manual-address").hidden = false;
       document.getElementById("address-line-1").focus();
     });
 
-    fields.forEach(function (field) {
+    [fields.name, fields.postcode, fields.line1, fields.town].forEach(function (field) {
       document.getElementById(field.inputId).addEventListener("input", function () {
         if (this.value.trim()) {
           clearField(field);
         }
       });
     });
+    document.getElementById("address-select").addEventListener("change", function () {
+      if (this.value.trim()) {
+        clearField(fields.select);
+      }
+    });
 
     form.addEventListener("submit", function (event) {
       var invalid = false;
-      document.getElementById("manual-address").hidden = false;
-      fields.forEach(function (field) {
-        var input = document.getElementById(field.inputId);
-        if (!input.value.trim()) {
+      var selectedAddress = valueOf(fields.select);
+      var manual = document.getElementById("manual-address");
+      var manualOpen = !manual.hidden;
+
+      if (!valueOf(fields.name)) {
+        invalid = true;
+        showField(fields.name);
+      } else {
+        clearField(fields.name);
+      }
+
+      if (!valueOf(fields.postcode)) {
+        invalid = true;
+        showField(fields.postcode);
+      } else {
+        clearField(fields.postcode);
+      }
+
+      if (selectedAddress) {
+        clearField(fields.select);
+        clearField(fields.line1);
+        clearField(fields.town);
+      } else if (manualOpen) {
+        clearField(fields.select);
+        if (!valueOf(fields.line1)) {
           invalid = true;
-          showField(field);
+          showField(fields.line1);
         } else {
-          clearField(field);
+          clearField(fields.line1);
         }
-      });
+        if (!valueOf(fields.town)) {
+          invalid = true;
+          showField(fields.town);
+        } else {
+          clearField(fields.town);
+        }
+      } else if (valueOf(fields.postcode)) {
+        invalid = true;
+        document.getElementById("address-results").hidden = false;
+        showField(fields.select);
+        clearField(fields.line1);
+        clearField(fields.town);
+      } else {
+        clearField(fields.select);
+        clearField(fields.line1);
+        clearField(fields.town);
+      }
 
       if (invalid) {
         event.preventDefault();
@@ -259,10 +333,14 @@
       } catch (error) {
         stored = {};
       }
-      fields.forEach(function (field) {
-        stored[field.key] = document.getElementById(field.inputId).value.trim();
-      });
-      stored.address = [stored["address-line-1"], stored.town, stored.postcode].filter(Boolean).join(", ");
+      stored["full-name"] = valueOf(fields.name);
+      stored.postcode = valueOf(fields.postcode);
+      stored["address-select"] = selectedAddress;
+      stored["address-line-1"] = valueOf(fields.line1);
+      stored.town = valueOf(fields.town);
+      stored.address = (stored["address-line-1"] && stored.town)
+        ? [stored["address-line-1"], stored.town, stored.postcode].filter(Boolean).join(", ")
+        : selectedAddress;
       delete stored.email;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
     }, true);
