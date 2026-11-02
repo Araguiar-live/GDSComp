@@ -25,3 +25,4 @@ npm run preview
 TanStack Start, React, Vite, Tailwind CSS, Framer Motion, and shadcn/ui.
 
 Source of truth while editing was GitHub. This Origin copy is the restoration workspace.
+# GDSComp
