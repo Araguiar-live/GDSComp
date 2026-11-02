@@ -2,6 +2,7 @@
   var STORAGE_KEY = "book-space-travel";
 
   var DESTINATION_LABELS = {
+    "low-earth-orbit": "Low Earth orbit",
     "the-moon": "The Moon",
     mars: "Mars"
   };
@@ -17,7 +18,9 @@
   }
 
   function save(data) {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    var json = JSON.stringify(data);
+    sessionStorage.setItem(STORAGE_KEY, json);
+    localStorage.setItem(STORAGE_KEY, json);
   }
 
   function display(key, value) {
@@ -47,17 +50,18 @@
 
     if (details) {
       var name = document.getElementById("full-name");
-      var email = document.getElementById("email");
+      var address = document.getElementById("address");
       if (name && typeof data["full-name"] === "string") {
         name.value = data["full-name"];
       }
-      if (email && typeof data.email === "string") {
-        email.value = data.email;
+      if (address && typeof data.address === "string") {
+        address.value = data.address;
       }
       details.addEventListener("submit", function () {
         var next = load();
         next["full-name"] = name ? name.value.trim() : "";
-        next.email = email ? email.value.trim() : "";
+        next.address = address ? address.value.trim() : "";
+        delete next.email;
         save(next);
       });
     }

@@ -68,11 +68,11 @@
         <input class="govuk-input govuk-!-width-two-thirds" id="full-name" name="full-name" type="text" autocomplete="name">
       </div>
       <div class="govuk-form-group">
-        <label class="govuk-label" for="email">Email address</label>
-        <p class="govuk-error-message" id="email-error" style="display: none;">
-          <span class="govuk-visually-hidden">Error:</span> Enter your email address
+        <label class="govuk-label" for="address">Address</label>
+        <p class="govuk-error-message" id="address-error" style="display: none;">
+          <span class="govuk-visually-hidden">Error:</span> Enter your address
         </p>
-        <input class="govuk-input govuk-!-width-two-thirds" id="email" name="email" type="email" autocomplete="email" spellcheck="false">
+        <textarea class="govuk-textarea" id="address" name="address" rows="3" autocomplete="street-address"></textarea>
       </div>
       <button class="govuk-button" data-module="govuk-button" type="submit">Continue</button>
     </form>
@@ -150,7 +150,7 @@
   var STORAGE_KEY = "book-space-travel";
   var fields = [
     { inputId: "full-name", errorId: "name-error", message: "Enter your full name", key: "full-name" },
-    { inputId: "email", errorId: "email-error", message: "Enter your email address", key: "email" }
+    { inputId: "address", errorId: "address-error", message: "Enter your address", key: "address" }
   ];
 
   function clearField(field) {
@@ -158,7 +158,7 @@
     var error = document.getElementById(field.errorId);
     var group = input.closest(".govuk-form-group");
     error.style.display = "none";
-    input.classList.remove("govuk-input--error");
+    input.classList.remove("govuk-input--error", "govuk-textarea--error");
     if (group) {
       group.classList.remove("govuk-form-group--error");
     }
@@ -177,7 +177,7 @@
     var error = document.getElementById(field.errorId);
     var group = input.closest(".govuk-form-group");
     error.style.display = "";
-    input.classList.add("govuk-input--error");
+    input.classList.add(input.tagName === "TEXTAREA" ? "govuk-textarea--error" : "govuk-input--error");
     if (group) {
       group.classList.add("govuk-form-group--error");
     }
@@ -237,6 +237,7 @@
       fields.forEach(function (field) {
         stored[field.key] = document.getElementById(field.inputId).value.trim();
       });
+      delete stored.email;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
     }, true);
   });
