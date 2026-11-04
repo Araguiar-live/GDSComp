@@ -97,11 +97,11 @@
           <input class="govuk-input govuk-!-width-two-thirds" id="address-line-1" name="address-line-1" type="text" autocomplete="address-line1">
         </div>
         <div class="govuk-form-group">
-          <label class="govuk-label" for="town">Town or city</label>
+          <label class="govuk-label" for="town-or-city">Town or city</label>
           <p class="govuk-error-message" id="town-error" style="display: none;">
             <span class="govuk-visually-hidden">Error:</span> Enter your town or city
           </p>
-          <input class="govuk-input govuk-!-width-two-thirds" id="town" name="town" type="text" autocomplete="address-level2">
+          <input class="govuk-input govuk-!-width-two-thirds" id="town-or-city" name="town" type="text" autocomplete="address-level2">
         </div>
       </div>
       <button class="govuk-button" data-module="govuk-button" type="submit">Continue</button>
@@ -183,7 +183,7 @@
     postcode: { inputId: "postcode", errorId: "postcode-error", message: "Enter a postcode", key: "postcode" },
     select: { inputId: "address-select", errorId: "address-select-error", message: "Select an address", key: "address-select" },
     line1: { inputId: "address-line-1", errorId: "address-line-1-error", message: "Enter address line 1", key: "address-line-1" },
-    town: { inputId: "town", errorId: "town-error", message: "Enter your town or city", key: "town" }
+    town: { inputId: "town-or-city", errorId: "town-error", message: "Enter your town or city", key: "town" }
   };
 
   function clearField(field) {
@@ -263,6 +263,13 @@
       });
     });
     document.getElementById("address-select").addEventListener("change", function () {
+      if (this.value === "10 Downing Street, London, SW1A 2AA") {
+        document.getElementById("address-line-1").value = "10 Downing Street";
+        document.getElementById("town-or-city").value = "London";
+        document.getElementById("manual-address").hidden = false;
+        clearField(fields.line1);
+        clearField(fields.town);
+      }
       if (this.value.trim()) {
         clearField(fields.select);
       }

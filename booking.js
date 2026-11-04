@@ -50,7 +50,7 @@
     if (details) {
       var name = document.getElementById("full-name");
       var line1 = document.getElementById("address-line-1");
-      var town = document.getElementById("town");
+      var town = document.getElementById("town-or-city");
       var postcode = document.getElementById("postcode");
       var manual = document.getElementById("manual-address");
       var select = document.getElementById("address-select");
